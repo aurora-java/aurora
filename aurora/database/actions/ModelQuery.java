@@ -1,0 +1,78 @@
+/*
+ * Created on 2008-6-11
+ */
+package aurora.database.actions;
+
+import java.sql.Connection;
+import java.util.List;
+
+import uncertain.composite.CompositeMap;
+import uncertain.composite.DynamicObject;
+import uncertain.composite.transform.Transformer;
+import uncertain.ocm.OCManager;
+import uncertain.proc.ProcedureRunner;
+import aurora.database.FetchDescriptor;
+import aurora.database.IResultSetConsumer;
+import aurora.database.service.BusinessModelService;
+import aurora.database.service.BusinessModelServiceContext;
+import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.ServiceOption;
+
+public class ModelQuery extends AbstractQueryAction {
+ 
+    String                      model;    
+    
+    DatabaseServiceFactory      svcFactory;
+    
+    BusinessModelService        service;
+    
+    BusinessModelServiceContext serviceContext; 
+
+    public ModelQuery( DatabaseServiceFactory  svcFactory, OCManager manager) {
+        super(manager);
+        this.svcFactory = svcFactory;
+    }
+    
+    public BusinessModelService getService(){
+        return service;
+    }
+    
+    public DatabaseServiceFactory getServiceFactory(){
+        return svcFactory;
+    }
+
+    /**
+     * @return the model
+     */
+    public String getModel() {
+        return model;
+    }
+    
+    protected void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc )
+        throws Exception
+    {
+        service.query(param, consumer, desc);
+    }
+    
+    protected void prepare( ProcedureRunner runner )
+        throws Exception
+    {
+        if(model==null)
+            throw new IllegalArgumentException("Must set 'model' property");
+        CompositeMap context = runner.getContext();
+        service = svcFactory.getModelService(model, context);
+        service.setTrace(getTrace());
+        serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
+    }
+    
+    protected void cleanUp( ProcedureRunner runner ){
+    }
+
+    /**
+     * @param model the model to set
+     */
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+}

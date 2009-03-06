@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procedure xmlns="uncertain.proc" participants="aurora.service.json.JSONDispatcher, aurora.database.service.SqlServiceFactory" debug="false">
+	<fields>
+		<field name="http_request" type="javax.servlet.http.HttpServletRequest"/>
+		<field name="http_response" type="javax.servlet.http.HttpServletResponse"/>
+		<field name="service_name" type="java.lang.String"/>
+	</fields>
+	<action name="LoadService" />
+	<action name="ParseParameter" input="http_request, http_response"/>
+	<action name="InitSession"/>
+	<action name="CheckPriviledge" />
+	<action name="ValidateInput" />
+	<action name="InvokeService"/>
+	<action name="CreateSuccessResponse" input="http_request,http_response"/>
+	<exception-handles>
+		<catch Exception="*">
+			<action name="CreateFailResponse" input="http_request,http_response"/>
+		</catch>
+	</exception-handles>
+</procedure>

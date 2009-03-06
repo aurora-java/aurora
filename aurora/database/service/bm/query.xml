@@ -1,0 +1,15 @@
+<procedure xmlns="uncertain.proc">
+	<fields>
+		<field name="BusinessModel" type="aurora.bm.BusinessModel" usage="input"/>
+		<field name="ResultsetConsumer" type="aurora.database.IResultSetConsumer" usage="input" />
+		<field name="FetchDescriptor" type="aurora.database.FetchDescriptor" usage="input" />
+		<field name="SqlStatement" type="aurora.database.sql.ISqlStatement" />
+		<field name="SqlString" type="StringBuffer" />
+	</fields>
+	<action name="CreateQueryStatement" input="BusinessModel" output="SqlStatement"/>
+	<action name="PopulateStatement" input="SqlStatement,BusinessModel" />
+	<action name="CreateQuerySql" input="SqlStatement,BusinessModel" output="SqlString" />
+	<action name="ExecuteQuery" input="SqlString,BusinessModel"/>
+	<action name="QueryFinish" />
+	<action name="FetchResultSet" />
+</procedure>
