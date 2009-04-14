@@ -10,7 +10,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.core.UncertainEngine;
-import uncertain.ocm.ObjectSpace;
+import uncertain.ocm.IObjectRegistry;
 import aurora.service.ServiceContext;
 
 public class ExceptionDescriptorConfig implements IExceptionDescriptor {
@@ -47,9 +47,9 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
         String cls = desc.getHandleClass();
         if(cls==null) throw new ConfigurationError("Must set 'handleClass' property");
         Class handle_cls = Class.forName(cls);
-        Object instance = mUncertainEngine.getObjectSpace().getParameterOfType(handle_cls);
+        Object instance = mUncertainEngine.getObjectSpace().getInstanceOfType(handle_cls);
         if(instance==null)
-            instance = mUncertainEngine.getObjectSpace().createInstance(handle_cls);
+            instance = mUncertainEngine.getObjectCreator().createInstance(handle_cls);
         if(instance==null)
             throw new IllegalArgumentException("Can't create exception handle class " + handle_cls.getName() );
         mUncertainEngine.getOcManager().populateObject(item, instance);
@@ -75,10 +75,10 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
     }
     
     public void registerInstance(){
-        ObjectSpace os = mUncertainEngine.getObjectSpace();
-        Object o = os.getParameterOfType(IExceptionDescriptor.class);
+        IObjectRegistry os = mUncertainEngine.getObjectSpace();
+        Object o = os.getInstanceOfType(IExceptionDescriptor.class);
         if(o==null)
-            os.registerParameter(IExceptionDescriptor.class, this);
+            os.registerInstance(IExceptionDescriptor.class, this);
     }    
 
 }

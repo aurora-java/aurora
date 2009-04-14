@@ -4,7 +4,7 @@
 package aurora.database.actions;
 
 import uncertain.core.UncertainEngine;
-import uncertain.ocm.ClassMapping;
+import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
 import aurora.database.service.DatabaseServiceFactory;
 
@@ -12,6 +12,7 @@ public class ServiceInitiator {
     
     UncertainEngine             uncertainEngine;
     DatabaseServiceFactory      factory;
+    ILogger                     logger;
     
     /**
      * @param uncertainEngine
@@ -33,7 +34,8 @@ public class ServiceInitiator {
         reg.addClassMapping( "model-insert", ModelUpdate.class );
         reg.addClassMapping( "model-delete", ModelUpdate.class );
         reg.addClassMapping( "model-invoke", ModelUpdate.class );
-        uncertainEngine.getLogger().info("BusinessModel service started");
+        logger = uncertainEngine.getLogger("aurora.database");
+        logger.info("BusinessModel service started");
     }
     
 

@@ -16,7 +16,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
 import uncertain.event.RuntimeContext;
-import uncertain.ocm.ObjectSpace;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.ModelFactory;
@@ -74,29 +74,29 @@ public class DatabaseServiceFactory {
     
     protected void init()
     {
-        ObjectSpace os = uncertainEngine.getObjectSpace();
+        IObjectRegistry os = uncertainEngine.getObjectSpace();
         
-        os.registerParameter(DatabaseServiceFactory.class, this);
+        os.registerInstance(DatabaseServiceFactory.class, this);
         
-        databaseProfile = (IDatabaseProfile)os.getParameterOfType(IDatabaseProfile.class);
+        databaseProfile = (IDatabaseProfile)os.getInstanceOfType(IDatabaseProfile.class);
         if(databaseProfile==null){
             databaseProfile = new DefaultDatabaseProfile("SQL92");
-            os.registerParameter(IDatabaseProfile.class, databaseProfile);
+            os.registerInstance(IDatabaseProfile.class, databaseProfile);
         }
         
-        sqlBuilderRegistry = (ISqlBuilderRegistry)os.getParameterOfType(ISqlBuilderRegistry.class);
+        sqlBuilderRegistry = (ISqlBuilderRegistry)os.getInstanceOfType(ISqlBuilderRegistry.class);
         if(sqlBuilderRegistry==null){
             sqlBuilderRegistry = new SqlBuilderRegistry(databaseProfile);
-            os.registerParameter(ISqlBuilderRegistry.class, sqlBuilderRegistry);
+            os.registerInstance(ISqlBuilderRegistry.class, sqlBuilderRegistry);
         }
 
-        modelFactory = (ModelFactory)os.getParameterOfType(ModelFactory.class);
+        modelFactory = (ModelFactory)os.getInstanceOfType(ModelFactory.class);
         if(modelFactory==null){
             modelFactory = new ModelFactory(uncertainEngine);
-            os.registerParameter(ModelFactory.class, modelFactory);
+            os.registerInstance(ModelFactory.class, modelFactory);
         }
         
-        dataSource = (DataSource)os.getParameterOfType(DataSource.class);
+        dataSource = (DataSource)os.getInstanceOfType(DataSource.class);
         addDefaultParticipants();
     }
     
