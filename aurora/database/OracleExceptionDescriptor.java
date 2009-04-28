@@ -6,23 +6,18 @@
  */
 package aurora.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.RawSqlService;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceContext;
 import aurora.service.validation.ErrorMessage;
-import uncertain.composite.CompositeMap;
-import uncertain.core.UncertainEngine;
 
 /**
  * OracleExceptionDescriptor.
  * 
- * @version $Id: OracleExceptionDescriptor.java v 1.0 2009-4-28 04:52:25
- *          znjqolf Exp $
+ * @version $Id: OracleExceptionDescriptor.java v 1.0 2009-4-28 znjqolf Exp $
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
@@ -44,16 +39,12 @@ public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
 	
 	private CompositeMap parseErrorMessage(ServiceContext context, Throwable exception) {
 		CompositeMap error = new CompositeMap(ErrorMessage.ERROR_MESSAGE);
-		PreparedStatement pst = null;
-		ResultSet rs = null;
 		String message = null;
-		Connection conn = null;
 		try {
 			String errMsg = exception.getMessage();
 			int endIndex = errMsg.indexOf("\n");
 			int startIndex = errMsg.indexOf(": ") + 2;
-			Integer errLineId = new Integer(Integer.parseInt(errMsg.substring(startIndex, endIndex)));
-			conn = getConnection(context);
+			Integer errLineId = Integer.valueOf(errMsg.substring(startIndex, endIndex));
 
 			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
 			DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectSpace().getInstanceOfType(DatabaseServiceFactory.class);
@@ -68,18 +59,6 @@ public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
 			return error;
 		} catch (Exception e) {
 			return super.getParsedError(context, exception);
-		} finally {
-			try {
-				DBUtil.closeConnection(conn);
-				DBUtil.closeResultSet(rs);
-				DBUtil.closeStatement(pst);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
 		}
-	}
-
-	private Connection getConnection(ServiceContext context) {
-		return (Connection) context.getInstanceOfType(Connection.class);
 	}
 }
