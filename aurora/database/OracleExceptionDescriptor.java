@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.lwap.database.DBUtil;
-
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.RawSqlService;
 import aurora.database.service.SqlServiceContext;
@@ -23,7 +21,7 @@ import uncertain.core.UncertainEngine;
 /**
  * OracleExceptionDescriptor.
  * 
- * @version $Id: OracleExceptionDescriptor.java v 1.0 2009-4-28 下午04:52:25
+ * @version $Id: OracleExceptionDescriptor.java v 1.0 2009-4-28 04:52:25
  *          znjqolf Exp $
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
@@ -54,7 +52,7 @@ public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
 			String errMsg = exception.getMessage();
 			int endIndex = errMsg.indexOf("\n");
 			int startIndex = errMsg.indexOf(": ") + 2;
-			Integer errLineId = Integer.parseInt(errMsg.substring(startIndex, endIndex));
+			Integer errLineId = new Integer(Integer.parseInt(errMsg.substring(startIndex, endIndex)));
 			conn = getConnection(context);
 
 			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
