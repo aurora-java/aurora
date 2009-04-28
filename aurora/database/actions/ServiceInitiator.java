@@ -24,6 +24,8 @@ public class ServiceInitiator {
     
     public void onInitialize(){
         factory = new DatabaseServiceFactory( uncertainEngine );
+        uncertainEngine.getObjectSpace().registerInstance(DatabaseServiceFactory.class, factory);
+        
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
         reg.addClassMapping( "model-query", ModelQuery.class );
         reg.addClassMapping( "model-update", ModelUpdate.class );
