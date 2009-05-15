@@ -8,7 +8,7 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
-import aurora.util.template.TextTemplate;
+import uncertain.util.template.TextTemplate;
 
 /**
  * A container to hold data shared among view creators, such as html tag attributes, 
@@ -22,7 +22,7 @@ public class ViewContext {
     
     CompositeMap        model;
     CompositeMap        view;
-    HashMap             context_map;
+    CompositeMap        context_map;
     //IViewBuilder        view_builder;
     TextTemplate        view_template;
     
@@ -33,7 +33,7 @@ public class ViewContext {
     
 
     public ViewContext(){
-        context_map = new HashMap();
+        context_map = new CompositeMap();
     }
     
     public ViewContext(CompositeMap model, CompositeMap view) {
@@ -47,6 +47,10 @@ public class ViewContext {
      * @return
      */
     public Map getMap() {
+        return context_map;
+    }
+    
+    public CompositeMap getContextMap(){
         return context_map;
     }
     

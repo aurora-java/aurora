@@ -6,20 +6,20 @@ package aurora.presentation;
 import uncertain.composite.ElementIdentifier;
 import uncertain.util.StringSplitter;
 
-public class Component {
+public class ViewComponent {
     
     String                  name;
     Class                   builder;
     String                  feature_classes;
-    Class[]                 feature_class_array;
-    String                  default_template; 
-    ComponentPackage        owner;
+    ViewComponentPackage    owner;
     
     String                  nameSpace;
     String                  elementName;
-   
+    String                  default_template;   
+/*
     // to be 
     String                  features;
+    Class[]                 feature_class_array;
     
     public void setFeatureClasses( String classes )
         throws ClassNotFoundException
@@ -39,7 +39,8 @@ public class Component {
     public Class[] getFeatureClassArray(){
         return feature_class_array;
     }
-
+*/
+    
     /**
      * @return the builder
      */
@@ -85,14 +86,14 @@ public class Component {
     /**
      * @return the _package
      */
-    public ComponentPackage getOwner() {
+    public ViewComponentPackage getOwner() {
         return owner;
     }
 
     /**
      * @param _package the _package to set
      */
-    public void setOwner(ComponentPackage owner) {
+    public void setOwner(ViewComponentPackage owner) {
         this.owner = owner;
     }
 

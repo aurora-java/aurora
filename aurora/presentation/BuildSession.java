@@ -1,18 +1,23 @@
 /*
- * BuildSession.java
- *
- * Created on 2007Äê7ÔÂ8ÈÕ, 23:29
+ * Created on 2007-7-8, 23:29
  */
 
 package aurora.presentation;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
+import java.util.HashSet;
+import java.util.Set;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
 import uncertain.event.HandleManager;
-import aurora.util.template.TextTemplate;
+import uncertain.event.RuntimeContext;
+import uncertain.logging.DummyLogger;
+import uncertain.logging.ILogger;
+import uncertain.logging.ILoggerProvider;
+import uncertain.util.template.TextTemplate;
 
 /**
  * The 'cursor' in View creation hierarchy 
@@ -21,27 +26,37 @@ import aurora.util.template.TextTemplate;
  */
 public class BuildSession {
     
+    public static final String LOGGING_TOPIC = "aurora.presentation.buildsession";
+    
     // Writer to write output content
-    protected                   Writer  writer;
+    protected                   Writer  mWriter;
     
     // Current Configuration generated from root view config
-    Configuration               current_config;
+    Configuration               mCurrentConfig;
     
     // PresentationManager that associated with this instance
-    PresentationManager         owner;
-    
-    // A object that can identify client that make this request 
-    Object                      client_info;
-    
+    PresentationManager         mOwner;
+
     // provider of current view
-    ComponentPackage           current_package;
+    ViewComponentPackage           mCurrentPackage;
     
     // Theme name that applies to this session
-    String                      theme;
+    String                      mTheme = "default";
     
+    // The build session data container
+    CompositeMap              mSessionContext;
+    
+    // mSessionContext in RuntimeContext type
+    RuntimeContext            mRuntimeContext;
+    
+    // A Set container to save included resource
+    Set                       mIncludedResourceSet;    
     
     public BuildSession( PresentationManager pm){
-        this.owner = pm;
+        this.mOwner = pm;
+        mSessionContext = new CompositeMap("build-session");
+        mRuntimeContext = RuntimeContext.getInstance(mSessionContext);
+        
     }
 /*    
     public void setConfiguration( Configuration config){
@@ -49,17 +64,25 @@ public class BuildSession {
     }
 */    
     public PresentationManager getPresentationManager(){
-        return owner;
+        return mOwner;
     }
     
     private void startSession( CompositeMap view){
-        current_config = owner.createConfiguration();
-        current_config.loadConfig(view);
+        mCurrentConfig = mOwner.createConfiguration();
+        mCurrentConfig.loadConfig(view);
+/*
+        if(mSessionContext!=null)
+            mSessionContext.clear();
+*/            
     }
     
     private void endSession(){
-        current_config = null;
-        current_package = null;
+        mCurrentConfig = null;
+        mCurrentPackage = null;
+  /*
+        if(mSessionContext!=null)
+            mSessionContext.clear();
+                    */
     }
     
 
@@ -68,66 +91,53 @@ public class BuildSession {
         throws Exception
     {
         boolean from_begin = false;
-        if(current_config==null){
+        if(mCurrentConfig==null){
             startSession(view);
             from_begin = true;
         }
-        current_package = owner.getPackage(view);
-        
-        ViewContext     context = new ViewContext(model,view);
-  
-        IViewBuilder builder = owner.getViewBuilder(view);
+        ViewComponentPackage old_package = mCurrentPackage;
+        mCurrentPackage = mOwner.getPackage(view);        
+        ViewContext     context = new ViewContext(model,view);  
+        IViewBuilder builder = mOwner.getViewBuilder(view);
         if(builder==null) throw new IllegalStateException("Can't get IViewBuilder instance for "+view.toXML());
         String[]    events   = builder.getBuildSteps(context);
         if(events!=null)
             fireBuildEvents(events, context);            
         builder.buildView(this, context);
-        
+        mCurrentPackage = old_package;
         if(from_begin){
             endSession();
         }
     }
     
-    public TextTemplate getTemplate( String name ){
-        return null;
-        /*
-        if(current_package==null)
-        else{
-            File file = current_package.getResourceFile();
-        }
-        */
-    }
-    
-    public String getResourceURL(String resource_name) {
-        if(current_package==null)
-            return null;
-        else
-            return current_package.getResourceURL(theme, resource_name);
-    }
-    
-    public File getResourceFile(String resource_name){
-        if(current_package==null)
-            return null;
-        else
-            return null;
-    }    
-/*
-    public ViewContext fireBuildEvent( String event_name, CompositeMap model, CompositeMap view )
-        throws Exception
+    public TextTemplate getTemplate( String name )
+        throws IOException
     {
-        ViewContext     context = new ViewContext(model,view);
-        fireBuildEvent(event_name, context);
-        return context;
+       if(mCurrentPackage==null) throw new IllegalStateException("package of current component is undefined");
+       File template_file = mCurrentPackage.getTemplateFile( getTheme(), name);
+       if( template_file==null ) return null;
+       else return mOwner.parseTemplate(template_file);       
     }
-  */  
-    public void fireBuildEvent( String event_name, ViewContext context)
+    
+    public void fireBuildEvent( String event_name, ViewContext context, boolean for_all_components )
         throws Exception
     {
         Object[] args = new Object[2];
         args[0] = this;
         args[1] = context;
-        HandleManager manager = current_config.createHandleManager(context.getView());
-        current_config.fireEvent(event_name, args, manager);
+        if( for_all_components ){
+            mCurrentConfig.fireEvent(event_name, mSessionContext, args );
+        }else{
+            HandleManager manager = mCurrentConfig.createHandleManager(context.getView());
+            mCurrentConfig.fireEvent(event_name, args, mSessionContext, manager);            
+        }
+    }
+    
+    
+    public void fireBuildEvent( String event_name, ViewContext context)
+        throws Exception
+    {
+        fireBuildEvent( event_name, context, false );
     }
 
     public void fireBuildEvents( String[] event_name, ViewContext context)
@@ -136,80 +146,147 @@ public class BuildSession {
         Object[] args = new Object[2];
         args[0] = this;
         args[1] = context;
-        HandleManager manager = current_config.createHandleManager(context.getView());
+        HandleManager manager = mCurrentConfig.createHandleManager(context.getView());
         for(int i=0; i<event_name.length; i++)
-            current_config.fireEvent(event_name[i], args, manager);
+            mCurrentConfig.fireEvent(event_name[i], args, mSessionContext, manager);
     }
     
     public String getLocalizedPrompt(String key){
         return key;
     }
     
-    /*
-    public Object getInstanceOf(Class type, ViewContext context)
-        throws Exception
-    {
-        String name = type.getName();
-        name = name.substring(name.lastIndexOf('.')+1);
-        fireBuildEvent( "Create"+name, context);
-        return context.getMap().get("instance."+name);
-    }
-    */
-    
-    
-    
-    /*    
-    
-    public void fireBuildEvent( String event_name, Object[] args) 
-        throws Exception
-    {
-        current_config.fireEvent(event_name, args);
-    }
-    */
-
-    public void buildNamedPart( String name, CompositeMap model, ViewContext context ){
-        
-    }
-    
-    
     public Writer getWriter(){
-        return writer;
+        return mWriter;
     }
-/*
-    public String parseText( String content, CompositeMap model){
-        return TextParser.parse(content, model);
-    }
-  */
+
     
     /**
      * @param writer A java.io.Writer to write content
      */
     public void setWriter(Writer writer) {
-        this.writer = writer;
+        this.mWriter = writer;
     }
-    
-    /**
-     * @return An object that can identify client request
-     */
+
+/*    
     public Object getClientInfo() {
         return client_info;
     }
-    /**
-     * @param Sets an object that can identify client request, such as a HttpSession 
-     */
+
     public void setClientInfo(Object client_info) {
         this.client_info = client_info;
     }
+*/
+    
     /**
      * @return the theme
      */
     public String getTheme() {
-        return theme;
+        return mTheme;
     }
     /**
      * @param theme the theme to set
      */
     public void setTheme(String theme) {
-        this.theme = theme;
+        this.mTheme = theme;
     }
+    /**
+     * @return the mLogger
+     */
+    public ILogger getLogger() {
+        ILogger logger = (ILogger)mRuntimeContext.getInstanceOfType(ILogger.class);
+        return logger==null?DummyLogger.getInstance():logger;
+    }
+    /**
+     * @param logger the mLogger to set
+     */
+    public void setLogger(ILogger logger) {
+        mRuntimeContext.setInstanceOfType(ILogger.class, logger);
+    }
+    
+    public void setLoggerProvider( ILoggerProvider provider ){
+        mRuntimeContext.setInstanceOfType(ILoggerProvider.class, provider);
+    }
+    
+    /**
+     * Get web URL of a physical resource file, according to current theme
+     * @param pkg 
+     * @param resource
+     * @return
+     */
+    public String getResourceUrl( ViewComponentPackage pkg, String resource ){
+        IResourceUrlMapper mapper = mOwner.getResourceUrlMapper();
+        if(mapper==null) throw new IllegalStateException("No instance of " + IResourceUrlMapper.class.getName() + " defined");
+        String theme = null;
+        if(pkg.isResourceExist(mTheme, resource))
+            theme = mTheme;
+        else{
+            theme = ViewComponentPackage.DEFAULT_THEME;
+            if(!pkg.isResourceExist(theme, resource))
+                return null;
+        }
+        return mapper.getResourceUrl( pkg.getName(), theme, resource );            
+    }
+    
+    
+    public String getResourceUrl( String package_name, String resource ){
+        ViewComponentPackage pkg = mOwner.getPackage(package_name);
+        if(pkg==null) throw new IllegalArgumentException("packge "+package_name+" does not exist");
+        return getResourceUrl( pkg, resource );
+    }
+    
+    public String getResourceUrl( String resource ){
+        if(mCurrentPackage==null) return null;
+        return getResourceUrl( mCurrentPackage, resource );
+    }
+    
+    /**
+     * Get full resource name with package prefix concatenated
+     * @param package_name name of package
+     * @param resource name of resource file, without theme prefix
+     */
+    protected String getResourceFullName( String package_name, String resource ){
+        return package_name +'.' + resource;
+    }
+    
+    protected void checkResourceSet(){
+        if( mIncludedResourceSet == null )
+            mIncludedResourceSet = new HashSet();       
+    }
+    
+    /**
+     * Decides whether a resource file is already included in BuilSession
+     * @param package_name
+     * @param resource
+     * @return false if this resource has not been included yet, and the resource will 
+     * be marked as included. true if the resource is already marked as included.
+     */
+    public boolean includeResource( String package_name, String resource ){
+        String full_name = getResourceFullName(package_name, resource);
+        checkResourceSet();
+        if( mIncludedResourceSet.contains(full_name))
+            return true;
+        else{
+            mIncludedResourceSet.add(full_name);
+            return false;
+        }
+    }
+    
+    public boolean includeResource( String resource ){
+        String pkg_name = mCurrentPackage==null?null:mCurrentPackage.getName();
+        return includeResource( pkg_name, resource);
+    }
+    
+    public void setResourceIncluded( String package_name, String resource, boolean included ){
+        String full_name = getResourceFullName(package_name, resource);
+        checkResourceSet();
+        if( included )
+            mIncludedResourceSet.add(full_name);
+        else
+            mIncludedResourceSet.remove(full_name);            
+    }
+    
+    public ViewComponentPackage getCurrentPackage(){
+        return mCurrentPackage;
+    }
+
 }

@@ -4,70 +4,85 @@
 package aurora.presentation;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
+import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
-import uncertain.ocm.ClassRegistry;
-import uncertain.ocm.FeatureAttach;
+import uncertain.logging.DummyLogger;
+import uncertain.logging.ILogger;
+import uncertain.ocm.ISingleton;
 import uncertain.ocm.OCManager;
+import uncertain.pkg.PackageManager;
 import uncertain.proc.ParticipantRegistry;
-import aurora.util.template.ITemplateFactory;
+import uncertain.util.template.*;
+/*
+import aurora.util.template.TagTemplateParser;
+import aurora.util.template.TextTemplate;
+*/
 
 /**
  * Manage all aspects of aurora presentation framework
  * @author Zhou Fan
  */
-public class PresentationManager {
+public class PresentationManager implements IGlobalInstance {
+    
+    public static final String LOGGING_TOPIC = "aurora.presentation.manager";
     
     static final TemplateBasedView TEMPLATE_BASED_VIEW = new TemplateBasedView();
     
-    OCManager               ocManager;
-    ParticipantRegistry     registry;
-    ITemplateFactory        template_factory;
-    UncertainEngine         uncertainEngine;
+    OCManager               mOcManager;
+    ParticipantRegistry     mRegistry;
+    //ITemplateFactory        template_factory;
+    UncertainEngine         mUncertainEngine;
+    TagTemplateParser       mParser  = new TagTemplateParser();
     
     // ElementID -> Component
-    HashMap                 component_id_map = new HashMap();
-    // name -> ComponentPackage
-    HashMap                 package_name_map = new HashMap();
+    HashMap                 mComponentIdMap = new HashMap();
+    
+    PackageManager          mPackageManager;
+    ILogger                 mLogger;
+    IResourceUrlMapper      mResourceUrlMapper = DefaultResourceMapper.getInstance();
+    TagCreatorRegistry      mTagCreatorRegistry = new TagCreatorRegistry();
     
     // mappable properties
-    String                  resource_url;
+    // String                  resource_url;
     
     public PresentationManager(){
-        ocManager = OCManager.getInstance();
-        registry = ParticipantRegistry.defaultInstance();
+        mOcManager = OCManager.getInstance();
+        mRegistry = ParticipantRegistry.defaultInstance();
+        mPackageManager = new PackageManager();
+        mLogger = DummyLogger.getInstance();
     }
-
+/*
     public PresentationManager( OCManager manager ){
-        this.ocManager = manager;
-        registry = ParticipantRegistry.defaultInstance();
+        this.mOcManager = manager;
+        mRegistry = ParticipantRegistry.defaultInstance();
     }
-    
+*/    
     public PresentationManager( UncertainEngine engine){
-        this.uncertainEngine = engine;
-        this.ocManager = engine.getOcManager();
-        this.registry = engine.getParticipantRegistry();
+        this.mUncertainEngine = engine;
+        this.mOcManager = engine.getOcManager();
+        this.mRegistry = engine.getParticipantRegistry();
+        mPackageManager = new PackageManager(engine.getCompositeLoader(), engine.getOcManager());
+        ViewComponentPackage.loadBuiltInRegistry(engine.getClassRegistry());
+        mLogger = engine.getLogger(LOGGING_TOPIC);
     }
     
-    /**
-     * @return the template_factory
-     */
+/*
     public ITemplateFactory getTemplateFactory() {
         return template_factory;
     }
 
-    /**
-     * @param template_factory the template_factory to set
-     */
     public void setTemplateFactory(ITemplateFactory template_factory) {
         this.template_factory = template_factory;
     }
-
+*/
     
     public BuildSession createSession( Writer writer ){
         BuildSession session = new BuildSession(this );
@@ -76,14 +91,14 @@ public class PresentationManager {
     }
     
     public Configuration createConfiguration(){
-        if(uncertainEngine==null)
-            return new Configuration(registry, ocManager);
+        if(mUncertainEngine==null)
+            return new Configuration(mRegistry, mOcManager);
         else
-            return uncertainEngine.createConfig();
+            return mUncertainEngine.createConfig();
     }
     
-    protected Component getComponent( CompositeMap view ){
-        return (Component)component_id_map.get(view.getIdentifier());
+    protected ViewComponent getComponent( CompositeMap view ){
+        return (ViewComponent)mComponentIdMap.get(view.getIdentifier());
     }
     
     /**
@@ -93,7 +108,7 @@ public class PresentationManager {
      * @return
      */
     public IViewBuilder getViewBuilder( CompositeMap view_config ){
-        Component component = getComponent(view_config);
+        ViewComponent component = getComponent(view_config);
         if(component==null){
             return new TemplateBasedView();
         }
@@ -101,65 +116,126 @@ public class PresentationManager {
             Class type = component.getBuilder();
             if(type==null) return null;
             try{
-                return (IViewBuilder)ocManager.getObjectCreator().createInstance(type);
+                return (IViewBuilder)mOcManager.getObjectCreator().createInstance(type);
             } catch(Exception ex){
                 throw new RuntimeException("can't create instance of "+type.getName()+" when getting IViewBuilder from view config");
             }
         }
     }
     
-    public ComponentPackage getPackage( CompositeMap view ){
-        Component component = getComponent(view);
+    public ViewComponentPackage getPackage( CompositeMap view ){
+        ViewComponent component = getComponent(view);
         if(component==null) return null;
         return component.getOwner();
     }
     
-    public ComponentPackage getPackage( String name){
-        return (ComponentPackage)package_name_map.get(name);
+    public ViewComponentPackage getPackage( String name){
+        return (ViewComponentPackage)mPackageManager.getPackage(name);
     }
     
-    public void addPackage( ComponentPackage p ){
-        component_id_map.putAll(p.component_id_map);
-        package_name_map.put(p.getName(), p);
-        
+    public PackageManager getPackageManager(){
+        return mPackageManager;
+    }
+    
+    public ViewComponentPackage loadViewComponentPackage( String path )
+        throws IOException
+    {
+        mLogger.log(Level.CONFIG, "Loading package from "+path);
+        ViewComponentPackage pkg = (ViewComponentPackage)mPackageManager.loadPackage(path, ViewComponentPackage.class );
+        addPackage(pkg);
+        mLogger.log(Level.CONFIG, "Loaded package "+pkg.getName() );
+        return pkg;
+    }
+    
+    public void addPackage( ViewComponentPackage p ){
+        mComponentIdMap.putAll(p.getComponentMap());
+        if(mUncertainEngine!=null){
+            mUncertainEngine.getClassRegistry().addAll(p.getClassRegistry());
+        }
+        mPackageManager.addPackage(p);
+        //mPackageManager.l
         // Add all attached features
-        ClassRegistry cr = ocManager.getClassRegistry();
+        // ClassRegistry cr = mOcManager.getClassRegistry();
+        /*
         Iterator it = p.getComponents().iterator();
         while(it.hasNext()){
-            Component c = (Component)it.next();
+            ViewComponent c = (ViewComponent)it.next();
             Class[] types = c.getFeatureClassArray();
-            for(int i=0; i<types.length; i++){
-                FeatureAttach f = new FeatureAttach(c.getNameSpace(), c.getName(), types[i].getName());
-                try{
-                    cr.addFeatureAttach(f);
-                }catch(ClassNotFoundException ex){
-                    throw new RuntimeException(ex);
+            if(types!=null)
+                for(int i=0; i<types.length; i++){
+                    FeatureAttach f = new FeatureAttach(c.getNameSpace(), c.getName(), types[i].getName());
+                    try{
+                        cr.addFeatureAttach(f);
+                    }catch(ClassNotFoundException ex){
+                        throw new RuntimeException(ex);
+                    }
                 }
-            }                
+            
         }
+             */
     }
     
-    public ComponentPackage loadPackage( File base_path, CompositeMap config ){
-        ComponentPackage pkg = new ComponentPackage();
+    /*
+    public ViewComponentPackage loadPackage( File base_path, CompositeMap config ){
+        ViewComponentPackage pkg = new ViewComponentPackage();
         //pkg.base_path = base_path;        
-        ocManager.populateObject(config, pkg);
+        mOcManager.populateObject(config, pkg);
         addPackage(pkg);
         return pkg;
     }
-
-    /**
-     * @return the resource_url
-     */
-    public String getResourceURL() {
-        return resource_url;
+    */
+ 
+    public TextTemplate parseTemplate( File template_file )
+        throws IOException
+    {
+       return mParser.buildTemplate( new FileReader(template_file));
+    }
+    
+    public TagTemplateParser getTemplateParser(){
+        return mParser;
     }
 
-    /**
-     * @param resource_url the resource_url to set
-     */
-    public void getResourceURL(String resource_url) {
-        this.resource_url = resource_url;
+    
+    /*
+    public String getThemeFromRequest( HttpServletRequest request ){
+        HttpSession session = request.getSession();
+        if(session == null) return "default";
+        String theme = (String)session.getAttribute("_theme_");
+        if(theme==null) return "default";
+        return theme;
     }
-
+    */
+    
+    public void addPackages( PackagePath[] pkg_path ){
+        mLogger.log(Level.CONFIG, "Loading "+pkg_path.length+" view component packages");
+        for( int i=0; i<pkg_path.length; i++){
+            String path = pkg_path[i].getPath();
+            if(path==null){
+                mLogger.warning("Package No."+i+" doesn't define path property");
+                continue;
+            }
+            try{
+                loadViewComponentPackage(path);
+            }catch(Exception ex){
+                mLogger.log(Level.WARNING, "Error when loading package "+path, ex);
+            }
+        }
+    }
+    /**
+     * @return the mResourceUrlMapper
+     */
+    public IResourceUrlMapper getResourceUrlMapper() {
+        return mResourceUrlMapper;
+    }
+    /**
+     * @param resourceUrlMapper the mResourceUrlMapper to set
+     */
+    public void setResourceUrlMapper(IResourceUrlMapper resourceUrlMapper) {
+        mResourceUrlMapper = resourceUrlMapper;
+    }
+    
+    public ITagCreatorRegistry getTagCreatorRegistry(){
+        return mTagCreatorRegistry;
+    }
 
 }

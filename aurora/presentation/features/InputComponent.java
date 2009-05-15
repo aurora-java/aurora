@@ -1,7 +1,7 @@
 /*
  * Created on 2007-8-22
  */
-package aurora.presentation.component;
+package aurora.presentation.features;
 
 import java.util.Map;
 
