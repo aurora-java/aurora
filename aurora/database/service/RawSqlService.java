@@ -16,6 +16,7 @@ import uncertain.event.Configuration;
 import uncertain.ocm.IConfigurable;
 import uncertain.ocm.OCManager;
 import aurora.bm.BusinessModel;
+import aurora.database.CompositeMapCreator;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
@@ -23,7 +24,6 @@ import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
 import aurora.service.ServiceContext;
-import aurora.service.exception.IExceptionDescriptor;
 import aurora.service.validation.Parameter;
 import aurora.service.validation.ParameterListIterator;
 import aurora.service.validation.ParameterParser;
@@ -176,6 +176,23 @@ public class RawSqlService implements IConfigurable
     SqlRunner createRunner( SqlServiceContext context ){
         return createRunner(mSql, context);
     }
+    
+    public CompositeMap queryAsMap( SqlServiceContext context, FetchDescriptor desc  )
+        throws Exception
+    {
+        CompositeMap result = new CompositeMap("result");
+        CompositeMapCreator compositeCreator = new CompositeMapCreator(result);
+        query(context, compositeCreator, desc);
+        return result;
+    }
+    
+    /*
+    public CompositeMap queryOneRecord( SqlServiceContext context )
+        throws Exception
+    {
+        return null;
+    }
+    */
     
     public void query(SqlServiceContext context, IResultSetConsumer consumer, FetchDescriptor desc )
         throws Exception

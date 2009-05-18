@@ -14,7 +14,7 @@ import uncertain.composite.TextParser;
 import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.html.HTMLContent;
+import aurora.presentation.markup.HTMLContent;
 
 /**
  * 

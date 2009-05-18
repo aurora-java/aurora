@@ -22,6 +22,12 @@ import aurora.presentation.ViewConfigurationError;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 
+/**
+ * Implements &lt;template&gt; tag
+ * TemplateRenderer
+ * @author Zhou Fan
+ *
+ */
 public class TemplateRenderer implements IViewBuilder, ISingleton {
     
     //ResourceTemplateFactory     mFactory;

@@ -1,7 +1,7 @@
 /*
  * Created on 2007-8-22
  */
-package aurora.util.template;
+package aurora.presentation.markup;
 
 import java.util.HashMap;
 import java.util.Iterator;

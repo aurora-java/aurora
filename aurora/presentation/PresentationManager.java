@@ -15,16 +15,17 @@ import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
 import uncertain.logging.DummyLogger;
+import uncertain.logging.DummyLoggerProvider;
 import uncertain.logging.ILogger;
-import uncertain.ocm.ISingleton;
+import uncertain.logging.ILoggerProvider;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
 import uncertain.pkg.PackageManager;
 import uncertain.proc.ParticipantRegistry;
-import uncertain.util.template.*;
-/*
-import aurora.util.template.TagTemplateParser;
-import aurora.util.template.TextTemplate;
-*/
+import uncertain.util.template.ITagCreatorRegistry;
+import uncertain.util.template.TagCreatorRegistry;
+import uncertain.util.template.TagTemplateParser;
+import uncertain.util.template.TextTemplate;
 
 /**
  * Manage all aspects of aurora presentation framework
@@ -47,6 +48,8 @@ public class PresentationManager implements IGlobalInstance {
     
     PackageManager          mPackageManager;
     ILogger                 mLogger;
+    ILoggerProvider         mLoggerProvider;
+    
     IResourceUrlMapper      mResourceUrlMapper = DefaultResourceMapper.getInstance();
     TagCreatorRegistry      mTagCreatorRegistry = new TagCreatorRegistry();
     
@@ -58,6 +61,7 @@ public class PresentationManager implements IGlobalInstance {
         mRegistry = ParticipantRegistry.defaultInstance();
         mPackageManager = new PackageManager();
         mLogger = DummyLogger.getInstance();
+        mLoggerProvider = DummyLoggerProvider.getInstance();
     }
 /*
     public PresentationManager( OCManager manager ){
@@ -72,6 +76,7 @@ public class PresentationManager implements IGlobalInstance {
         mPackageManager = new PackageManager(engine.getCompositeLoader(), engine.getOcManager());
         ViewComponentPackage.loadBuiltInRegistry(engine.getClassRegistry());
         mLogger = engine.getLogger(LOGGING_TOPIC);
+        mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectSpace());
     }
     
 /*
@@ -87,6 +92,7 @@ public class PresentationManager implements IGlobalInstance {
     public BuildSession createSession( Writer writer ){
         BuildSession session = new BuildSession(this );
         session.setWriter(writer);
+        session.setLogger(mLoggerProvider.getLogger(BuildSession.LOGGING_TOPIC));
         return session;
     }
     
@@ -236,6 +242,10 @@ public class PresentationManager implements IGlobalInstance {
     
     public ITagCreatorRegistry getTagCreatorRegistry(){
         return mTagCreatorRegistry;
+    }
+    
+    public ILoggerProvider getLoggerProvider(){
+        return mLoggerProvider;
     }
 
 }
