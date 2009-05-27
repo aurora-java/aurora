@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
@@ -70,6 +71,7 @@ public class BuildSession {
     private void startSession( CompositeMap view){
         mCurrentConfig = mOwner.createConfiguration();
         mCurrentConfig.loadConfig(view);
+        mCurrentConfig.setLogger(getLogger());
 /*
         if(mSessionContext!=null)
             mSessionContext.clear();
@@ -90,16 +92,19 @@ public class BuildSession {
     public void buildView( CompositeMap model, CompositeMap view ) 
         throws Exception
     {
+        ILogger     logger = getLogger();
         boolean from_begin = false;
         if(mCurrentConfig==null){
             startSession(view);
             from_begin = true;
+            logger.config("Start build session");
         }
         ViewComponentPackage old_package = mCurrentPackage;
         mCurrentPackage = mOwner.getPackage(view);        
         ViewContext     context = new ViewContext(model,view);  
         IViewBuilder builder = mOwner.getViewBuilder(view);
         if(builder==null) throw new IllegalStateException("Can't get IViewBuilder instance for "+view.toXML());
+        logger.log(Level.CONFIG, "building view: <{0}> -> {1}", new Object[]{view.getName(), builder});
         String[]    events   = builder.getBuildSteps(context);
         if(events!=null)
             fireBuildEvents(events, context);            
@@ -107,6 +112,7 @@ public class BuildSession {
         mCurrentPackage = old_package;
         if(from_begin){
             endSession();
+            logger.config("End build session");
         }
     }
     

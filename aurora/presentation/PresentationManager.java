@@ -78,7 +78,7 @@ public class PresentationManager implements IGlobalInstance {
         mLogger = engine.getLogger(LOGGING_TOPIC);
         mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectSpace());
     }
-    
+
 /*
     public ITemplateFactory getTemplateFactory() {
         return template_factory;
@@ -92,7 +92,8 @@ public class PresentationManager implements IGlobalInstance {
     public BuildSession createSession( Writer writer ){
         BuildSession session = new BuildSession(this );
         session.setWriter(writer);
-        session.setLogger(mLoggerProvider.getLogger(BuildSession.LOGGING_TOPIC));
+        ILogger logger = mLoggerProvider.getLogger(BuildSession.LOGGING_TOPIC);
+        session.setLogger(logger);
         return session;
     }
     
