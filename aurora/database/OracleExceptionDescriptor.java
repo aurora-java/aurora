@@ -47,12 +47,17 @@ public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
 			Integer errLineId = Integer.valueOf(errMsg.substring(startIndex, endIndex));
 
 			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
+			sqlServiceContext.getParameter().put("lineId", errLineId);
+            
 			DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectSpace().getInstanceOfType(DatabaseServiceFactory.class);
 			RawSqlService sqlService = svcFactory.getSqlService(SERVICE_NAME, context);
+			CompositeMap resultMap = sqlService.queryAsMap(sqlServiceContext, FetchDescriptor.getDefaultInstance());
+			/*
 			CompositeMapCreator cmc = new CompositeMapCreator();
 			sqlServiceContext.getParameter().put("lineId", errLineId);
 			sqlService.query(sqlServiceContext, cmc, FetchDescriptor.getDefaultInstance());
 			CompositeMap resultMap = cmc.getCompositeMap();
+			*/
 			CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);
 			message = (String) msg.getObject("@MESSAGE");
 			error.put(ErrorMessage.KEY_MESSAGE, message);
