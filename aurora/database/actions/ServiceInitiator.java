@@ -20,9 +20,10 @@ public class ServiceInitiator {
     public ServiceInitiator(UncertainEngine uncertainEngine) {
         super();
         this.uncertainEngine = uncertainEngine;
+        init();
     }
     
-    public void onInitialize(){
+    public void init(){
         factory = new DatabaseServiceFactory( uncertainEngine );
         uncertainEngine.getObjectSpace().registerInstance(DatabaseServiceFactory.class, factory);
         
