@@ -34,6 +34,13 @@ public class SqlServiceContext extends ServiceContext {
         return context;
     }
     
+    public static SqlServiceContext createSqlServiceContext( Connection conn ){
+        CompositeMap map = new CompositeMap("sql-service");
+        SqlServiceContext context = createSqlServiceContext(map);
+        context.setConnection(conn);
+        return context;
+    }
+    
     //ICompositeAccessor      CompositeAccessor;
 
     public Connection getConnection(){
