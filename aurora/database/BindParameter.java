@@ -121,5 +121,13 @@ public class BindParameter {
     public void setPath(String path){
         this.input_path = path;
     }
+    
+    public String toString(){
+        StringBuffer buf = new StringBuffer();
+        buf.append("<parameter inputPath=\"").append(input_path)
+           .append("\" output_path=\"").append(output_path).append("\" DataType=\"")
+           .append(this.data_type).append("\" />");
+        return buf.toString();
+    }
 
 }
