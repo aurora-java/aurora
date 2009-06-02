@@ -173,7 +173,7 @@ public class RawSqlService implements IConfigurable
         return runner;        
     }
     
-    SqlRunner createRunner( SqlServiceContext context ){
+    public SqlRunner createRunner( SqlServiceContext context ){
         return createRunner(mSql, context);
     }
     

@@ -19,6 +19,14 @@ import uncertain.composite.ICompositeAccessor;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceContext;
 
+/**
+ * Execute query or update on ParsedSql
+ * *** NOTE: ***
+ * If sql contains dynamic part (such as ${:/path/@sql}), actual sql statement
+ * will change each time SqlRunner got invoked, according to corresponding parameter
+ * @author Zhou Fan
+ *
+ */
 public class SqlRunner {
     
     boolean                 trace = false;
@@ -87,6 +95,7 @@ public class SqlRunner {
     
     public String generateSQL( CompositeMap param ){
         if(statement.isStaticStatement()) return statement.getParsedSQL();
+        /*
         StringBuffer buf = new StringBuffer( statement.getParsedSQL());
         int offset = 0;
         Iterator it = statement.getBindParameters().iterator();
@@ -102,6 +111,10 @@ public class SqlRunner {
             }
         }
         return buf.toString();
+        */
+        String sql = DynamicSqlParseHandle.processSql(statement.getOriginSQL(), param);
+        statement.parse(sql);
+        return statement.getParsedSQL();
     }
     
     void addBindDescriptor( BindDescriptor desc ){

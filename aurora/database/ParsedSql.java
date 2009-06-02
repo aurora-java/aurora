@@ -52,6 +52,7 @@ public class ParsedSql {
     };
 
     StringBuffer        parsed_sql;
+    String              origin_sql;
     LinkedList          parameter_list;
     // access_path -> BindParameter
     HashMap             parameter_map;
@@ -94,6 +95,7 @@ public class ParsedSql {
     }
     
     public void parse( String sql ){
+        origin_sql = sql;
         parsed_sql.setLength(0);
         parameter_list.clear();
         QuickTagParser parser = new QuickTagParser();
@@ -109,6 +111,10 @@ public class ParsedSql {
     
     public String getParsedSQL(){
         return parsed_sql.toString();
+    }
+    
+    public String getOriginSQL(){
+        return origin_sql;
     }
 
     /**
