@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
+import uncertain.document.DocumentFactory;
 import uncertain.event.Configuration;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.DummyLoggerProvider;
@@ -57,9 +58,11 @@ public class PresentationManager implements IGlobalInstance {
     // String                  resource_url;
     
     public PresentationManager(){
+        DocumentFactory docFact = new DocumentFactory();
         mOcManager = OCManager.getInstance();
         mRegistry = ParticipantRegistry.defaultInstance();
-        mPackageManager = new PackageManager();
+        mPackageManager = new PackageManager(docFact.getCompositeLoader(), mOcManager);
+        ViewComponentPackage.loadBuiltInRegistry(mOcManager.getClassRegistry());
         mLogger = DummyLogger.getInstance();
         mLoggerProvider = DummyLoggerProvider.getInstance();
     }
@@ -79,16 +82,6 @@ public class PresentationManager implements IGlobalInstance {
         mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectSpace());
     }
 
-/*
-    public ITemplateFactory getTemplateFactory() {
-        return template_factory;
-    }
-
-    public void setTemplateFactory(ITemplateFactory template_factory) {
-        this.template_factory = template_factory;
-    }
-*/
-    
     public BuildSession createSession( Writer writer ){
         BuildSession session = new BuildSession(this );
         session.setWriter(writer);
@@ -247,6 +240,14 @@ public class PresentationManager implements IGlobalInstance {
     
     public ILoggerProvider getLoggerProvider(){
         return mLoggerProvider;
+    }
+    
+    public ILogger getLogger(){
+        return mLogger;
+    }
+    
+    public void setLogger( ILogger logger ){
+        mLogger = logger;
     }
 
 }

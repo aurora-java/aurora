@@ -41,6 +41,23 @@ public class ViewComponent {
     }
 */
     
+    /** Default constructor without parameters */
+    public ViewComponent(){
+        
+    }
+    
+    /**
+     * @param namespace namespace of view tag
+     * @param name name of view tag
+     * @param builder_type type of builder 
+     */
+    public ViewComponent( String namespace, String name, Class builder_type ){
+        setElementName(name);
+        setNameSpace(namespace);
+        setBuilder(builder_type);
+    }
+    
+    
     /**
      * @return the builder
      */

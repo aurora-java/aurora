@@ -16,12 +16,12 @@ package aurora.presentation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
-import uncertain.ocm.ClassMapping;
 import uncertain.ocm.ClassRegistry;
 import uncertain.pkg.ComponentPackage;
 import uncertain.pkg.PackageConfigurationError;
@@ -56,6 +56,7 @@ public class ViewComponentPackage extends ComponentPackage {
         CompositeLoader loader = super.getPackageManager().getCompositeLoader();
         try{
             CompositeMap components = loader.loadByFullFilePath(component_file.getPath());
+            //System.out.println(components.toXML());
             super.getPackageManager().getOCManager().populateObject(components, this);
         }catch(Exception ex){
             throw new PackageConfigurationError("Error when loading "+FILE_COMPONENTS_CONFIG, ex);
@@ -156,5 +157,9 @@ public class ViewComponentPackage extends ComponentPackage {
     
     protected Map getComponentMap(){
         return mComponentMap;
+    }
+    
+    public Collection getAllComponents(){
+        return mComponentMap.values();
     }
 }
