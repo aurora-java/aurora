@@ -18,5 +18,9 @@ public class ViewContextTagCreator implements ITagCreator {
     public ITagContent createInstance(String name_space, String tag) {
         return new ViewContextTag( mViewContext, tag );
     }
+    
+    public ViewContext getViewContext(){
+        return mViewContext;
+    }
 
 }
