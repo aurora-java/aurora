@@ -78,8 +78,9 @@ public class PresentationManager implements IGlobalInstance {
         this.mRegistry = engine.getParticipantRegistry();
         mPackageManager = new PackageManager(engine.getCompositeLoader(), engine.getOcManager());
         ViewComponentPackage.loadBuiltInRegistry(engine.getClassRegistry());
-        mLogger = engine.getLogger(LOGGING_TOPIC);
         mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectSpace());
+        mLogger = mLoggerProvider.getLogger(LOGGING_TOPIC);
+        mLogger.info("Aurora Presentation Framework Startup... ");
     }
 
     public BuildSession createSession( Writer writer ){
@@ -154,6 +155,7 @@ public class PresentationManager implements IGlobalInstance {
             mUncertainEngine.getClassRegistry().addAll(p.getClassRegistry());
         }
         mPackageManager.addPackage(p);
+        mLogger.log(Level.CONFIG, "Components:{0}", new Object[]{p.getComponentMap()});
         //mPackageManager.l
         // Add all attached features
         // ClassRegistry cr = mOcManager.getClassRegistry();
