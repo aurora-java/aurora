@@ -7,7 +7,9 @@ package aurora.presentation;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -113,6 +115,16 @@ public class BuildSession {
         if(from_begin){
             endSession();
             logger.config("End build session");
+        }
+    }
+    
+    public void buildViews( CompositeMap model, Collection view_list )
+        throws Exception
+    {
+        Iterator it = view_list.iterator();
+        while(it.hasNext()){
+            CompositeMap view = (CompositeMap)it.next();
+            buildView( model, view );
         }
     }
     
