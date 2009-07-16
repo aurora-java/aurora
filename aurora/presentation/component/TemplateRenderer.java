@@ -30,6 +30,7 @@ import aurora.presentation.ViewCreationException;
  */
 public class TemplateRenderer implements IViewBuilder, ISingleton {
     
+    public static final String KEY_TEMPLATE = "template";
     //ResourceTemplateFactory     mFactory;
     TagTemplateParser             mTemplateParser;
     
@@ -37,14 +38,14 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
         mTemplateParser = new TagTemplateParser();
     }
     
-    protected TextTemplate getViewTemplate( BuildSession session, ViewContext view_context, ITagCreatorRegistry tag_reg )
+    protected static TextTemplate getViewTemplate( BuildSession session, ViewContext view_context, ITagCreatorRegistry tag_reg )
         throws ViewCreationException, IOException
     {
         PresentationManager prm = session.getPresentationManager();
         // Get template name
         CompositeMap view = view_context.getView();
-        String name = view.getString("name");
-        if(name==null) throw new ViewConfigurationError("template name must be set");
+        String name = view.getString(KEY_TEMPLATE);
+        if(name==null) throw new ViewConfigurationError("'template' must be set");
         if(name.indexOf('.')<0)
             name += TemplateBasedView.TEMPLATE_EXT;
         // Get package name
