@@ -110,7 +110,8 @@ public class PresentationManager implements IGlobalInstance {
     public IViewBuilder getViewBuilder( CompositeMap view_config ){
         ViewComponent component = getComponent(view_config);
         if(component==null){
-            return new TemplateBasedView();
+            throw new IllegalArgumentException("Unknown view config:"+view_config.toXML());
+            //return new TemplateBasedView();
         }
         else{
             Class type = component.getBuilder();
