@@ -22,25 +22,14 @@ public class TextField extends Field {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		
-		String classname = getStyleSheet(session, context, "textfield/TextField.css");
-		if(!"".equals(classname)){
-			String sb = (String)context.getContextMap().get("css");
-			context.getContextMap().put("css",sb + classname);
-		}
-		
-		String javascript = getJavaScript(session, context, "textfield/TextField.js");
-		if(!"".equals(javascript)){
-			String sb = (String)context.getContextMap().get("script");
-			context.getContextMap().put("script",sb + javascript);
-		}
+		addStyleSheet(session, context, "textfield/TextField.css");
+		addJavaScript(session, context, "textfield/TextField.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)  {
 		super.onCreateViewContent(session, context);
-		CompositeMap view = context.getView();
+//		CompositeMap view = context.getView();
 		Map map = context.getMap();		
 		map.put(PROPERTITY_CONFIG, getConfigString());
-		System.out.println(getConfigString());
-//		map.put(PROPERTITY_VALUE, "测试");
 	}
 }

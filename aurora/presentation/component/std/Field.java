@@ -46,38 +46,38 @@ public class Field {
 	
 	
 	/**
-	 * 获取JavaScript
+	 * 加入JavaScript
 	 * 
 	 * @param session
 	 * @param context
 	 * @param javascript
 	 * @return String
 	 */
-	protected String getJavaScript(BuildSession session, ViewContext context, String javascript) {
+	protected void addJavaScript(BuildSession session, ViewContext context, String javascript) {
 		boolean b = session.includeResource(javascript);
 		if (!b) {
-			String js = session.getResourceUrl(javascript);
-			return "<script language='javascript' type='text/javascript' src='"+ js + "'></script>";
-		}else{
-			return "";			
+			String js = session.getResourceUrl(javascript);			
+			String jsurl =  "<script language='javascript' type='text/javascript' src='"+ js + "'></script>";
+			String sb = (String)context.getContextMap().getString("script", "");
+			context.getContextMap().put("script",sb + jsurl);
 		}
 	}
 	
 	/**
-	 * 获取StyleSheet
+	 * 加入StyleSheet
 	 * 
 	 * @param session
 	 * @param context
 	 * @param style
 	 * @return String
 	 */
-	protected String getStyleSheet(BuildSession session, ViewContext context,String style) {
+	protected void addStyleSheet(BuildSession session, ViewContext context,String style) {
 		boolean b = session.includeResource(style);
 		if (!b) {
 			String href = session.getResourceUrl(style);
-			return "<link type='text/css' rel='stylesheet' href='" + href+ "'></link>";
-		}else{
-			return "";
+			String cssurl = "<link type='text/css' rel='stylesheet' href='" + href+ "'></link>";
+			String sb = (String)context.getContextMap().getString("css", "");
+			context.getContextMap().put("css",sb + cssurl);
 		}
 	}
 	
@@ -89,17 +89,10 @@ public class Field {
 	 * @throws IOException
 	 */
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		StringBuffer css = new StringBuffer();
-		StringBuffer js = new StringBuffer();
-		css.append(getStyleSheet(session, context, "core/Aurora.css"));
-		if(!"".equals(css.toString()))
-		context.getContextMap().put("css",css.toString());
-		
-		js.append(getJavaScript(session, context, "core/ext-core.js"));
-		js.append(getJavaScript(session, context, "core/Aurora.js"));
-		js.append(getJavaScript(session, context, "core/Field.js"));
-		if(!"".equals(js.toString()))
-		context.getContextMap().put("script",js.toString());
+		addStyleSheet(session, context, "core/Aurora.css");
+		addJavaScript(session, context, "core/ext-core.js");
+		addJavaScript(session, context, "core/Aurora.js");
+		addJavaScript(session, context, "core/Field.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context){
@@ -116,8 +109,7 @@ public class Field {
 			wrapClass += " " + className;
 			map.put(WRAP_CSS, wrapClass);
 		}
-		
-		
+				
 		/** 样式 **/
 		String style = view.getString(PROPERTITY_STYLE, "");
 		if(!"".equals(style)) {
