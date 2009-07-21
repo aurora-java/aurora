@@ -1,0 +1,79 @@
+/*
+ * Created on 2009-5-22
+ */
+package aurora.presentation.markup;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import uncertain.composite.DynamicObject;
+import aurora.presentation.ViewContext;
+
+public class HtmlPageContext  {
+    
+    private static final String HTML_HEAD_CSS = "html.head.css";
+    private static final String HTML_HEAD_SCRIPT = "html.head.script";
+    
+    Set     mIncludedResources;
+    Map     mContextMap;
+    
+    public static HtmlPageContext getInstance( ViewContext context ){
+        HtmlPageContext page = (HtmlPageContext)context.getInstance(HtmlPageContext.class);
+        if( page == null ){
+            page = new HtmlPageContext( context.getMap() ); 
+            context.setInstance(HtmlPageContext.class, page );
+        }
+        return page;
+    }
+    
+    public HtmlPageContext( Map context_map ){
+        mContextMap = context_map;
+        mIncludedResources = new HashSet();
+    }
+ 
+    public void addResource( String url ){
+        mIncludedResources.add(url);
+    }
+    
+    public boolean containsResource( String url ){
+        return mIncludedResources.contains(url);
+    }
+    
+    public TagList getNamedTagList( String name ){
+        TagList list = (TagList)mContextMap.get(name);
+        if(list==null){
+            list = new TagList();
+            mContextMap.put(name, list);
+        }
+        return list;
+    }
+    
+    public TagList getScriptReference(){
+        return getNamedTagList(HTML_HEAD_SCRIPT);
+    }
+    
+    public void addScript( String url ){
+        boolean is_added = containsResource(url);
+        if(!is_added){
+            addResource( url );
+            TagList list = getScriptReference();
+            list.add( new ScriptReference(url));
+        }
+    }
+
+    
+    public TagList getCssReference(){
+        return getNamedTagList(HTML_HEAD_CSS);
+    }
+    
+    public void addStyleSheet( String url ){
+        boolean is_added = containsResource(url);
+        if(!is_added){
+            addResource( url );
+            TagList list = getCssReference();
+            list.add( new StyleSheetReference(url));
+        }
+    }    
+
+}

@@ -26,7 +26,7 @@ public class TagList extends LinkedList {
         while( it.hasNext()){
             Object obj = it.next(); 
             if(obj!=null){
-                if(n>0) 
+                if( n>0 && endLine ) 
                     buf.append('\n');
                 buf.append(obj.toString());
                 n++;
