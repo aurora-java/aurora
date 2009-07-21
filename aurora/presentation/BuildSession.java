@@ -89,7 +89,12 @@ public class BuildSession {
                     */
     }
     
-
+    /**
+     * Create output content, from given data model and view config
+     * @param model Data model in CompositeMap
+     * @param view View configuration in CompositeMap
+     * @throws Exception 
+     */
 
     public void buildView( CompositeMap model, CompositeMap view ) 
         throws Exception
@@ -137,6 +142,14 @@ public class BuildSession {
        else return mOwner.parseTemplate(template_file);       
     }
     
+    /**
+     * Fire a build event
+     * @param event_name name of event
+     * @param context ViewContext that this event apply to
+     * @param for_all_components whether this event will fire to current view component,
+     *        or all components in one BuildSession
+     * @throws Exception
+     */
     public void fireBuildEvent( String event_name, ViewContext context, boolean for_all_components )
         throws Exception
     {
@@ -239,8 +252,10 @@ public class BuildSession {
             theme = mTheme;
         else{
             theme = ViewComponentPackage.DEFAULT_THEME;
-            if(!pkg.isResourceExist(theme, resource))
+            if(!pkg.isResourceExist(theme, resource)){
+                this.getLogger().warning("Required resource not found:"+resource);
                 return null;
+            }
         }
         return mapper.getResourceUrl( pkg.getName(), theme, resource );            
     }

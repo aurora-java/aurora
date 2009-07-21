@@ -19,6 +19,8 @@ import aurora.presentation.ViewCreationException;
 
 public class HtmlPage implements IViewBuilder, ISingleton {
     
+    public static final String EVENT_PREPARE_PAGE_CONTENT = "PreparePageContent";
+
     /**
      * Handle ${page:content} in html page template
      * @author Zhou Fan
@@ -86,7 +88,7 @@ public class HtmlPage implements IViewBuilder, ISingleton {
             throws IOException, ViewCreationException 
     {
         try{
-            session.fireBuildEvent("PreparePageContent", view_context, true);
+            session.fireBuildEvent(EVENT_PREPARE_PAGE_CONTENT, view_context, true);
         }catch(Exception ex){
             throw new ViewCreationException("Error when fire 'PreparePageContent' event",ex);
         }
