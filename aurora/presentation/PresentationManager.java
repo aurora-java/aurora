@@ -191,7 +191,7 @@ public class PresentationManager implements IGlobalInstance {
     public TextTemplate parseTemplate( File template_file )
         throws IOException
     {
-       return mParser.buildTemplate( new FileReader(template_file));
+       return mParser.buildTemplate( template_file);
     }
     
     public TagTemplateParser getTemplateParser(){
