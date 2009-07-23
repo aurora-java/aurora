@@ -322,4 +322,8 @@ public class BuildSession {
         return mCurrentPackage;
     }
 
+    public CompositeMap getSessionContext() {
+        return mSessionContext;
+    }
+
 }
