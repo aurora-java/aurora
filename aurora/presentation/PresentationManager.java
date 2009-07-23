@@ -54,6 +54,9 @@ public class PresentationManager implements IGlobalInstance {
     IResourceUrlMapper      mResourceUrlMapper = DefaultResourceMapper.getInstance();
     TagCreatorRegistry      mTagCreatorRegistry = new TagCreatorRegistry();
     
+    // DefaultViewBuilder for unknown view config
+    DefaultViewBuilder      mDefaultViewBuilder = new DefaultViewBuilder();
+    
     // mappable properties
     // String                  resource_url;
     
@@ -111,8 +114,7 @@ public class PresentationManager implements IGlobalInstance {
     public IViewBuilder getViewBuilder( CompositeMap view_config ){
         ViewComponent component = getComponent(view_config);
         if(component==null){
-            throw new IllegalArgumentException("Unknown view config:"+view_config.toXML());
-            //return new TemplateBasedView();
+            return getDefaultViewBuilder();
         }
         else{
             Class type = component.getBuilder();
@@ -251,6 +253,10 @@ public class PresentationManager implements IGlobalInstance {
     
     public void setLogger( ILogger logger ){
         mLogger = logger;
+    }
+    
+    public IViewBuilder getDefaultViewBuilder(){
+        return mDefaultViewBuilder;
     }
 
 }
