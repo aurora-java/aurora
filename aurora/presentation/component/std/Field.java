@@ -22,23 +22,21 @@ import uncertain.composite.CompositeMap;
  * className:额外样式名	String
  * style:样式描述			String
  */
-public class Field {
+public class Field extends Component{
 	
-	public static int idIndex = 1;
+	
 	
 	protected static final String PROPERTITY_NOTBLANK = "notBlank";
 	protected static final String PROPERTITY_READONLY = "readOnly";
 	protected static final String PROPERTITY_EMPTYTEXT = "emptyText";
 	protected static final String PROPERTITY_CLASSNAME = "className";
-	protected static final String PROPERTITY_STYLE = "style";
-	protected static final String PROPERTITY_VALUE = "value";
-	protected static final String PROPERTITY_CONFIG = "config";
 	
-	protected static final String WRAP_CSS = "wrapClass";
+	
 	
 	protected static final String CLASSNAME_WRAP = "item-wrap";
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
 	protected static final String CLASSNAME_READONLY = "item-readOnly";
+
 	protected static final String CLASSNAME_EMPTYTEXT = "item-emptyText";
 	
 	
@@ -89,6 +87,7 @@ public class Field {
 	 * @throws IOException
 	 */
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
+		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "core/Aurora.css");
 		addJavaScript(session, context, "core/ext-core.js");
 		addJavaScript(session, context, "core/Aurora.js");
@@ -96,6 +95,7 @@ public class Field {
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context){
+		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
@@ -108,12 +108,6 @@ public class Field {
 			String wrapClass = (String)map.get(WRAP_CSS);
 			wrapClass += " " + className;
 			map.put(WRAP_CSS, wrapClass);
-		}
-				
-		/** 样式 **/
-		String style = view.getString(PROPERTITY_STYLE, "");
-		if(!"".equals(style)) {
-			map.put(PROPERTITY_STYLE, "style='"+style+"'");
 		}
 		
 		/** 是否为空 **/
@@ -135,13 +129,7 @@ public class Field {
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
 		
-		/** id name 属性 **/
-		String id = view.getString("id");
-		if("".equals(id)) id= "aid-"+(idIndex++);
-		map.put("id", id);
-		String name = view.getString("name");
-		if("".equals(name)) name= "aname-"+(idIndex++);
-		map.put("name", name);
+		
 		
 		/** 文本提示 **/
 		String emptyText = view.getString(PROPERTITY_EMPTYTEXT,"");
@@ -154,13 +142,14 @@ public class Field {
 		}
 		
 		/** 值 **/
-		String value = view.getString(PROPERTITY_VALUE);
-		if(value != null) {
+		String value = (String)map.get(PROPERTITY_VALUE);
+		if(value != null && !"".equals(value)) {
 			String wrapClass = (String)map.get(WRAP_CSS);
 			wrapClass = wrapClass.replaceAll(CLASSNAME_EMPTYTEXT, "");
 			map.put(WRAP_CSS, wrapClass);
-			map.put(PROPERTITY_VALUE, value);
 		}
+		
+
 	}
 	
 	protected void addConfig(String key, Object value) {
