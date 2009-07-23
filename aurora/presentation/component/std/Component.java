@@ -19,6 +19,7 @@ public class Component {
 	protected static final String PROPERTITY_VALUE = "value";
 	protected static final String PROPERTITY_CONFIG = "config";
 	protected static final String PROPERTITY_EVENTS = "events";
+	protected static final String PROPERTITY_CLASSNAME = "className";
 	
 	protected static final String WRAP_CSS = "wrapClass";
 	
@@ -29,7 +30,7 @@ public class Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		Map map = context.getMap();
-//		map.put(ID_INDEX, new Integer(1));//TODO:好像不管用
+//		map.put(ID_INDEX, new Integer(1));//TODO:不管用
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context){
@@ -53,18 +54,11 @@ public class Component {
 //			map.put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_NAME, name);
-		
-		
-		/** 样式 **/
-		String style = view.getString(PROPERTITY_STYLE, "");
-		if(!"".equals(style)) {
-			map.put(PROPERTITY_STYLE, "style='"+style+"'");
-		}
+
 		
 		/** 值 **/
 		String value = view.getString(PROPERTITY_VALUE);
-		if(value != null) {
-			
+		if(value != null) {			
 			map.put(PROPERTITY_VALUE, value);
 		}
 		
@@ -85,6 +79,27 @@ public class Component {
 			}
 		}
 		map.put(PROPERTITY_EVENTS, esb.toString());
+	}
+	
+	
+	/**
+	 * 增加ClassName
+	 */
+	public void addClassName(CompositeMap view, Map map){
+		String className = view.getString(PROPERTITY_CLASSNAME, "");
+		if(!"".equals(className)) {
+			map.put(PROPERTITY_CLASSNAME, className);
+		}		
+	}
+	
+	/**
+	 * 增加Style
+	 */
+	public void addStyle(CompositeMap view, Map map){
+		String style = view.getString(PROPERTITY_STYLE, "");
+		if(!"".equals(style)) {
+			map.put(PROPERTITY_STYLE, "style='"+style+"'");
+		}		
 	}
 	
 	protected void addEvent(String id, String eventName, String handler){

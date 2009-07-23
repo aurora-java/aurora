@@ -29,7 +29,7 @@ public class Field extends Component{
 	protected static final String PROPERTITY_NOTBLANK = "notBlank";
 	protected static final String PROPERTITY_READONLY = "readOnly";
 	protected static final String PROPERTITY_EMPTYTEXT = "emptyText";
-	protected static final String PROPERTITY_CLASSNAME = "className";
+	
 	
 	
 	
@@ -102,13 +102,7 @@ public class Field extends Component{
 		/** 包装样式 **/
 		map.put(WRAP_CSS, CLASSNAME_WRAP);
 		
-		/** 额外样式名 **/
-		String className = view.getString(PROPERTITY_CLASSNAME, "");
-		if(!"".equals(className)) {
-			String wrapClass = (String)map.get(WRAP_CSS);
-			wrapClass += " " + className;
-			map.put(WRAP_CSS, wrapClass);
-		}
+
 		
 		/** 是否为空 **/
 		String notBlank = view.getString(PROPERTITY_NOTBLANK, "false");
@@ -150,6 +144,15 @@ public class Field extends Component{
 		}
 		
 
+	}
+	
+	public void addClassName(CompositeMap view, Map map){
+		String className = view.getString(PROPERTITY_CLASSNAME, "");
+		if(!"".equals(className)) {
+			String wrapClass = (String)map.get(WRAP_CSS);
+			wrapClass += " " + className;
+			map.put(WRAP_CSS, wrapClass);
+		}		
 	}
 	
 	protected void addConfig(String key, Object value) {
