@@ -25,14 +25,9 @@ import uncertain.composite.CompositeMap;
  */
 public class Field extends Component{
 	
-	
-	
 	protected static final String PROPERTITY_NOTBLANK = "notBlank";
 	protected static final String PROPERTITY_READONLY = "readOnly";
 	protected static final String PROPERTITY_EMPTYTEXT = "emptyText";
-	
-	
-	
 	
 	protected static final String CLASSNAME_WRAP = "item-wrap";
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
@@ -87,8 +82,6 @@ public class Field extends Component{
 			map.put(WRAP_CSS, wrapClass);
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
-		
-		
 		
 		/** 文本提示 **/
 		String emptyText = view.getString(PROPERTITY_EMPTYTEXT,"");

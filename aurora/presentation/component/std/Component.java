@@ -12,7 +12,7 @@ import aurora.presentation.markup.HtmlPageContext;
 
 public class Component {
 	
-	private static int idIndex = 1;
+//	private static int idIndex = 1;
 	
 	protected static final String PROPERTITY_ID = "id";
 	protected static final String PROPERTITY_NAME = "name";
@@ -31,20 +31,20 @@ public class Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		Map map = context.getMap();
-//		map.put(ID_INDEX, new Integer(1));//TODO:不管用
+		session.getSessionContext().put(ID_INDEX, new Integer(1));
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
-//		int idIndex = ((Integer)map.get(ID_INDEX)).intValue();
+		int idIndex = ((Integer)session.getSessionContext().get(ID_INDEX)).intValue();
 		
 		/** ID属性 **/
 		String id = view.getString(PROPERTITY_ID);
 		if("".equals(id)) {
 			id= "aid-"+(idIndex++);
-//			map.put(ID_INDEX, new Integer(idIndex));
+			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_ID, id);
 		
@@ -52,7 +52,7 @@ public class Component {
 		String name = view.getString(PROPERTITY_NAME);
 		if("".equals(name)) {
 			name= "aname-"+(idIndex++);
-//			map.put(ID_INDEX, new Integer(idIndex));
+			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_NAME, name);
 
