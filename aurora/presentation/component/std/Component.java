@@ -8,6 +8,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.markup.HtmlPageContext;
 
 public class Component {
 	
@@ -83,9 +84,38 @@ public class Component {
 	
 	
 	/**
+	 * 加入JavaScript
+	 * 
+	 * @param session
+	 * @param context
+	 * @param javascript
+	 * @return String
+	 */
+	protected void addJavaScript(BuildSession session, ViewContext context, String javascript) {
+		HtmlPageContext page = HtmlPageContext.getInstance(context);
+        String js = session.getResourceUrl(javascript);
+        page.addScript(js);
+	}
+	
+	/**
+	 * 加入StyleSheet
+	 * 
+	 * @param session
+	 * @param context
+	 * @param style
+	 * @return String
+	 */
+	protected void addStyleSheet(BuildSession session, ViewContext context,String style) {
+		HtmlPageContext page = HtmlPageContext.getInstance(context);
+        String styleSheet = session.getResourceUrl(style);
+        page.addStyleSheet(styleSheet);
+	}
+	
+	
+	/**
 	 * 增加ClassName
 	 */
-	public void addClassName(CompositeMap view, Map map){
+	protected void addClassName(CompositeMap view, Map map){
 		String className = view.getString(PROPERTITY_CLASSNAME, "");
 		if(!"".equals(className)) {
 			map.put(PROPERTITY_CLASSNAME, className);
@@ -95,7 +125,7 @@ public class Component {
 	/**
 	 * 增加Style
 	 */
-	public void addStyle(CompositeMap view, Map map){
+	protected void addStyle(CompositeMap view, Map map){
 		String style = view.getString(PROPERTITY_STYLE, "");
 		if(!"".equals(style)) {
 			map.put(PROPERTITY_STYLE, "style='"+style+"'");

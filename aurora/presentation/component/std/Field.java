@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.markup.HtmlPageContext;
 import uncertain.composite.CompositeMap;
 
 /**
@@ -42,42 +43,6 @@ public class Field extends Component{
 	
 	private JSONObject config = new JSONObject();
 	
-	
-	/**
-	 * 加入JavaScript
-	 * 
-	 * @param session
-	 * @param context
-	 * @param javascript
-	 * @return String
-	 */
-	protected void addJavaScript(BuildSession session, ViewContext context, String javascript) {
-		boolean b = session.includeResource(javascript);
-		if (!b) {
-			String js = session.getResourceUrl(javascript);			
-			String jsurl =  "<script language='javascript' type='text/javascript' src='"+ js + "'></script>";
-			String sb = (String)context.getContextMap().getString("script", "");
-			context.getContextMap().put("script",sb + jsurl);
-		}
-	}
-	
-	/**
-	 * 加入StyleSheet
-	 * 
-	 * @param session
-	 * @param context
-	 * @param style
-	 * @return String
-	 */
-	protected void addStyleSheet(BuildSession session, ViewContext context,String style) {
-		boolean b = session.includeResource(style);
-		if (!b) {
-			String href = session.getResourceUrl(style);
-			String cssurl = "<link type='text/css' rel='stylesheet' href='" + href+ "'></link>";
-			String sb = (String)context.getContextMap().getString("css", "");
-			context.getContextMap().put("css",sb + cssurl);
-		}
-	}
 	
 	/**
 	 * 加载Aurora组件库以及样式文件
