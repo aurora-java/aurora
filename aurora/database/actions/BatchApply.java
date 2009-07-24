@@ -27,22 +27,26 @@ public class BatchApply extends Procedure {
 
     public void run(ProcedureRunner runner) throws Exception {
         CompositeMap map = runner.getContext();
-        SqlServiceContext svcContext = SqlServiceContext.createSqlServiceContext(map);
+        SqlServiceContext svcContext = SqlServiceContext.createSqlServiceContext(map);        
+        CompositeMap old_current_param = svcContext.getCurrentParameter();
         Collection records = SqlRunner.getSourceParameter(map, sourcePath);
         if(records!=null){
             Iterator it = records.iterator();
+            int mod_count = 0;
             while(it.hasNext()){
                 Object obj = it.next();
                 if( obj==null ) continue;
                 if(! (obj instanceof CompositeMap) )
                     throw new IllegalStateException("item in batch source collection should be instance of CompositeMap: "+obj);
                 CompositeMap item = (CompositeMap)obj;
-                //System.out.println("batch on "+item.toXML());
                 svcContext.setCurrentParameter(item);
+                mod_count++;
                 super.run(runner);
             }
+            if(mod_count>0)
+                svcContext.setCurrentParameter(old_current_param);
         }
-        svcContext.setCurrentParameter(null);
+        
     }
 
     /**
