@@ -20,10 +20,10 @@ import aurora.presentation.ViewContext;
  * 
  */
 public class ComboBox extends TextField {
-	private static final String PROPERTITY_VALUE_FIELD = "valueField";
-	private static final String PROPERTITY_DISPLAY_FIELD = "displayField";	
-	private static final String PROPERTITY_DATA_MODEL = "dataModel";	
-	private static final String KEY_DATA_SOURCE = "dataSource";
+	private final String PROPERTITY_VALUE_FIELD = "valueField";
+	private final String PROPERTITY_DISPLAY_FIELD = "displayField";	
+	private final String PROPERTITY_DATA_MODEL = "dataModel";	
+	private final String KEY_DATA_SOURCE = "dataSource";
 	private String valueKey="value";
 	private String promptKey="prompt";
 	private String valueField;
