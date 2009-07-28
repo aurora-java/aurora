@@ -117,7 +117,7 @@ public class Field extends Component{
 		try {
 			config.put(key, value);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
