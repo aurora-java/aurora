@@ -35,7 +35,8 @@ public class ComboBox extends TextField {
 		addJavaScript(session, context, "core/TriggerField.js");
 		addJavaScript(session, context, "combobox/ComboBox.js");
 	}
-	public void onCreateViewContent(BuildSession session, ViewContext view_context)  {
+	public void onCreateViewContent(BuildSession session, ViewContext view_context)  
+	{
 		super.onCreateViewContent(session, view_context);		
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
@@ -57,7 +58,8 @@ public class ComboBox extends TextField {
 		Map map = view_context.getMap();		
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}
-	private void createComboBoxDataModel(CompositeMap options){		
+	private void createComboBoxDataModel(CompositeMap options)
+	{		
 		Iterator it = options.getChildIterator();		
         if( it != null){
             while( it.hasNext()){
@@ -65,13 +67,14 @@ public class ComboBox extends TextField {
             	String value = option.getString(this.valueKey);
                 String prompt = option.getString(this.promptKey);
                 JSONObject record=new JSONObject();
-                try {                	
+                try{
                 	record.put(this.valueField, value);
                 	record.put(this.displayField, prompt);
                 	dm.add(record);                	
-        		} catch (JSONException e) {
-        			e.printStackTrace();
-        		}
+                }catch(JSONException ex){
+                    throw new RuntimeException(ex);
+                }
+        		
             }
 		}		
 	}	
