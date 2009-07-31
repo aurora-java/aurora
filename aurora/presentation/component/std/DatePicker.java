@@ -13,6 +13,8 @@ import aurora.presentation.ViewContext;
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class DatePicker extends TextField {
+	protected static final String PROPERTITY_POPWIDTH = "popWidth";
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);		
 		addStyleSheet(session, context, "datefield/DateField.css");
@@ -23,8 +25,12 @@ public class DatePicker extends TextField {
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)  {
 		super.onCreateViewContent(session, context);
-//		CompositeMap view = context.getView();
-		Map map = context.getMap();		
+		Map map = context.getMap();
+		
+		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
+		map.put(PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
+		map.put(PROPERTITY_POPWIDTH, new Integer(width.intValue()-2));
+			
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}
 }

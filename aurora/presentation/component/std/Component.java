@@ -21,6 +21,7 @@ public class Component {
 	protected static final String PROPERTITY_CONFIG = "config";
 	protected static final String PROPERTITY_EVENTS = "events";
 	protected static final String PROPERTITY_CLASSNAME = "className";
+	protected static final String PROPERTITY_WIDTH = "width";
 	
 	protected static final String WRAP_CSS = "wrapClass";
 	
@@ -41,15 +42,19 @@ public class Component {
 		int idIndex = ((Integer)session.getSessionContext().get(ID_INDEX)).intValue();
 		
 		/** ID属性 **/
-		String id = view.getString(PROPERTITY_ID);
+		String id = view.getString(PROPERTITY_ID, "");
 		if("".equals(id)) {
 			id= "aid-"+(idIndex++);
 			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_ID, id);
 		
+		/** Width属性**/
+		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, "150"));//TODO:默认值??
+		map.put(PROPERTITY_WIDTH, width);
+		
 		/** NAME属性 **/
-		String name = view.getString(PROPERTITY_NAME);
+		String name = view.getString(PROPERTITY_NAME, "");
 		if("".equals(name)) {
 			name= "aname-"+(idIndex++);
 			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
@@ -58,10 +63,8 @@ public class Component {
 
 		
 		/** 值 **/
-		String value = view.getString(PROPERTITY_VALUE);
-		if(value != null) {			
-			map.put(PROPERTITY_VALUE, value);
-		}
+		String value = view.getString(PROPERTITY_VALUE, "");		
+		map.put(PROPERTITY_VALUE, value);
 		
 		/** 组件注册事件 **/
 		CompositeMap events = view.getChild(PROPERTITY_EVENTS);
@@ -128,7 +131,7 @@ public class Component {
 	protected void addStyle(CompositeMap view, Map map){
 		String style = view.getString(PROPERTITY_STYLE, "");
 		if(!"".equals(style)) {
-			map.put(PROPERTITY_STYLE, "style='"+style+"'");
+			map.put(PROPERTITY_STYLE, style);
 		}		
 	}
 	

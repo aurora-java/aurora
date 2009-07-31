@@ -28,6 +28,7 @@ public class Field extends Component{
 	protected static final String PROPERTITY_NOTBLANK = "notBlank";
 	protected static final String PROPERTITY_READONLY = "readOnly";
 	protected static final String PROPERTITY_EMPTYTEXT = "emptyText";
+	protected static final String PROPERTITY_INPUTWIDTH = "inputWidth";
 	
 	protected static final String CLASSNAME_WRAP = "item-wrap";
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
@@ -62,7 +63,10 @@ public class Field extends Component{
 		/** 包装样式 **/
 		map.put(WRAP_CSS, CLASSNAME_WRAP);
 		
-
+		/** 输入框宽度**/
+		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
+		map.put(PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-3));
+		
 		
 		/** 是否为空 **/
 		String notBlank = view.getString(PROPERTITY_NOTBLANK, "false");
@@ -83,24 +87,24 @@ public class Field extends Component{
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
 		
+		
+		/** 值 **/
+		String value = (String)map.get(PROPERTITY_VALUE);
+//		if(value != null && !"".equals(value)) {
+//			String wrapClass = (String)map.get(WRAP_CSS);
+//			wrapClass = wrapClass.replaceAll(CLASSNAME_EMPTYTEXT, "");
+//			map.put(WRAP_CSS, wrapClass);
+//		}
+		
 		/** 文本提示 **/
 		String emptyText = view.getString(PROPERTITY_EMPTYTEXT,"");
-		if(!"".equals(emptyText)) {
+		if(!"".equals(emptyText) && "".equals(value)) {
 			String wrapClass = (String)map.get(WRAP_CSS);
 			wrapClass += " " + CLASSNAME_EMPTYTEXT;
 			map.put(WRAP_CSS, wrapClass);
 			map.put(PROPERTITY_VALUE, emptyText);
 			addConfig(PROPERTITY_EMPTYTEXT, emptyText);
 		}
-		
-		/** 值 **/
-		String value = (String)map.get(PROPERTITY_VALUE);
-		if(value != null && !"".equals(value)) {
-			String wrapClass = (String)map.get(WRAP_CSS);
-			wrapClass = wrapClass.replaceAll(CLASSNAME_EMPTYTEXT, "");
-			map.put(WRAP_CSS, wrapClass);
-		}
-		
 
 	}
 	
