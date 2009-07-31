@@ -152,7 +152,7 @@ public class ViewComponentPackage extends ComponentPackage {
     }
     
     public ViewComponent getComponent( CompositeMap view ){
-        return (ViewComponent)mComponentMap.get(view.getIdentifier());
+        return (ViewComponent)mComponentMap.get(view.getQName());
     }
     
     protected Map getComponentMap(){

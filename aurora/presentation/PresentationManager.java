@@ -102,7 +102,7 @@ public class PresentationManager implements IGlobalInstance {
     }
     
     protected ViewComponent getComponent( CompositeMap view ){
-        return (ViewComponent)mComponentIdMap.get(view.getIdentifier());
+        return (ViewComponent)mComponentIdMap.get(view.getQName());
     }
     
     /**

@@ -3,7 +3,7 @@
  */
 package aurora.presentation;
 
-import uncertain.composite.ElementIdentifier;
+import uncertain.composite.QualifiedName;
 import uncertain.util.StringSplitter;
 
 public class ViewComponent {
@@ -142,8 +142,8 @@ public class ViewComponent {
         this.nameSpace = nameSpace;
     }
     
-    public ElementIdentifier getElementIdentifier(){
-        return new ElementIdentifier(nameSpace, elementName);
+    public QualifiedName getElementIdentifier(){
+        return new QualifiedName(nameSpace, elementName);
     }
 
 }
