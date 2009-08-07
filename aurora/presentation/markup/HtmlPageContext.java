@@ -12,8 +12,9 @@ import aurora.presentation.ViewContext;
 
 public class HtmlPageContext  {
     
-    private static final String HTML_HEAD_CSS = "html.head.css";
-    private static final String HTML_HEAD_SCRIPT = "html.head.script";
+    public static final String HTML_HEAD_CSS = "html.head.css";
+    public static final String HTML_HEAD_SCRIPT = "html.head.script";
+    public static final String HTML_INIT_SCRIPT = "html.init_script";    
     
     Set     mIncludedResources;
     Map     mContextMap;
@@ -49,6 +50,15 @@ public class HtmlPageContext  {
         return list;
     }
     
+    public StringBuffer getNamedPart( String name ){
+        StringBuffer buf = (StringBuffer)mContextMap.get(name);
+        if(buf==null){
+            buf = new StringBuffer();
+            mContextMap.put(name, buf);
+        }
+        return buf;
+    }
+    
     public TagList getScriptReference(){
         return getNamedTagList(HTML_HEAD_SCRIPT);
     }
@@ -74,6 +84,10 @@ public class HtmlPageContext  {
             TagList list = getCssReference();
             list.add( new StyleSheetReference(url));
         }
-    }    
+    }
+    
+    public StringBuffer getInitScript(){
+        return getNamedPart(HTML_INIT_SCRIPT);
+    }
 
 }

@@ -8,12 +8,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.QualifiedName;
 import uncertain.event.Configuration;
 import uncertain.event.HandleManager;
 import uncertain.event.RuntimeContext;
@@ -54,7 +57,10 @@ public class BuildSession {
     
     // A Set container to save included resource
     Set                       mIncludedResourceSet;    
-    
+
+    // Named ViewContext
+    Map                       mNamedViewContextMap;    
+
     public BuildSession( PresentationManager pm){
         this.mOwner = pm;
         mSessionContext = new CompositeMap("build-session");
@@ -108,7 +114,17 @@ public class BuildSession {
         }
         ViewComponentPackage old_package = mCurrentPackage;
         mCurrentPackage = mOwner.getPackage(view);        
-        ViewContext     context = new ViewContext(model,view);  
+        
+        // Init ViewContext
+        ViewContext     context = getNamedViewContext(view.getQName());
+        if(context!=null){
+            context.model = model;
+            context.view = view;
+        }else{
+            context = new ViewContext(model,view);
+        }
+        
+        
         IViewBuilder builder = mOwner.getViewBuilder(view);
         if(builder==null) throw new IllegalStateException("Can't get IViewBuilder instance for "+view.toXML());
         logger.log(Level.CONFIG, "building view: <{0}> -> {1}", new Object[]{view.getName(), builder});
@@ -325,5 +341,21 @@ public class BuildSession {
     public CompositeMap getSessionContext() {
         return mSessionContext;
     }
+ 
 
+    public ViewContext  createNamedViewContext( QualifiedName qname ){
+        if(mNamedViewContextMap==null)
+            mNamedViewContextMap = new HashMap();        
+        ViewContext context = (ViewContext)mNamedViewContextMap.get(qname);
+        if(context==null){
+            context = new ViewContext();
+            mNamedViewContextMap.put(qname, context);
+        }
+        return context;
+    }
+    
+    
+    public ViewContext getNamedViewContext(  QualifiedName qname ){
+        return mNamedViewContextMap == null ? null: (ViewContext)mNamedViewContextMap.get(qname);
+    }
 }
