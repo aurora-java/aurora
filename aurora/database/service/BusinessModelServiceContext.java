@@ -20,7 +20,7 @@ public class BusinessModelServiceContext extends SqlServiceContext {
     
     public static final String KEY_SQL_RUNNER = "SqlRunner";
     
-    public static BusinessModelServiceContext getServiceInstance( CompositeMap map ){
+    public static BusinessModelServiceContext getContextInstance( CompositeMap map ){
         BusinessModelServiceContext context = new BusinessModelServiceContext();
         context.initialize(map);
         return context;
