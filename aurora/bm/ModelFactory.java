@@ -28,7 +28,13 @@ public class ModelFactory {
         modelCache = new HashMap();
     }
     
-    
+    /**
+     * Get a model instance. The returned model is for read only.
+     * Invoker shall not make any modification to returned model.
+     * @param name name of model
+     * @return A read-only BusinessModel instance
+     * @throws IOException
+     */
     public BusinessModel getModelForRead( String name )
         throws IOException
     {
@@ -39,20 +45,37 @@ public class ModelFactory {
         }
         return model;
     }
-
     
-    public BusinessModel getNewModelInstance( String name )
+    /**
+     * 
+     * @param config
+     * @return
+     */
+    public BusinessModel getModel( CompositeMap config ){
+        BusinessModel model = new BusinessModel();
+        model.setModelFactory(this);
+        model.initialize(config);
+        model.makeReady();
+        modelCache.put(model.getName(), model);
+        return model;        
+    }
+
+    public CompositeMap getModelConfig( String name )
+        throws IOException
+    {
+        CompositeMap config = uncertainEngine.loadCompositeMap(name);
+        if(config==null) throw new IOException("Can't load resource "+name);
+        return config;        
+    }
+    
+    protected BusinessModel getNewModelInstance( String name )
         throws IOException
     {
         if(name==null)
             throw new IllegalArgumentException("model name is null");
-        CompositeMap config = uncertainEngine.loadCompositeMap(name);
-        if(config==null) throw new IOException("Can't load resource "+name);
-        BusinessModel model = new BusinessModel();
-        model.setModelFactory(this);
-        model.initialize(config);
+        CompositeMap config = getModelConfig(name);
+        BusinessModel model = getModel( config );
         model.setName(name);
-        model.makeReady();
         return model;
     }
     
@@ -62,27 +85,6 @@ public class ModelFactory {
     {
         return getNewModelInstance(name);
     }    
-    /*
-    public void invoke( Model model, String procedure_name, CompositeMap context ) 
-        throws Throwable 
-    {
-        ProcedureRunner runner = uncertainEngine.createProcedureRunner(procedure_name);
-        if(runner==null) throw new IllegalArgumentException("can't load procedure "+procedure_name);
-        runner.run();
-        if(runner.getException()!=null)
-            throw runner.getException();
-    }
-    */
-    
-    /*
-    public StringBuffer generateSql( BusinessModel meta, String sql_type){
-        ProcedureRunner runner = uncertainEngine.createProcedureRunner(PROC_GENERATE_SQL);
-        if(runner==null) throw new IllegalStateException("Can't load "+PROC_GENERATE_SQL);
-        Configuration config = uncertainEngine.createConfig(meta.getObjectContext());
-        runner.setConfiguration(config);
-        StringBuffer sql = (StringBuffer)runner.getContextField("GeneratedSql");        
-        return sql;
-    }
-    */
+
 
 }
