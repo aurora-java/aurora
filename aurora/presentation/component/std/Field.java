@@ -52,6 +52,7 @@ public class Field extends Component{
 		addStyleSheet(session, context, "core/Aurora.css");
 		addJavaScript(session, context, "core/ext-core.js");
 		addJavaScript(session, context, "core/Aurora.js");
+		addJavaScript(session, context, "core/Component.js");
 		addJavaScript(session, context, "core/Field.js");
 	}
 
