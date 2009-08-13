@@ -18,7 +18,7 @@ public class StyleSheetReference {
     public String toString(){
         StringBuffer buf = new StringBuffer("<link href=\"");
         buf.append(css_url);
-        buf.append("\" rel=\"stylesheet\" type=\"text/css\">");
+        buf.append("\" rel=\"stylesheet\" type=\"text/css\"/>");
         return buf.toString();        
     }
 
