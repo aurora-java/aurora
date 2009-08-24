@@ -4,16 +4,15 @@
 package aurora.presentation;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
-import uncertain.document.DocumentFactory;
 import uncertain.event.Configuration;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.DummyLoggerProvider;
@@ -61,10 +60,11 @@ public class PresentationManager implements IGlobalInstance {
     // String                  resource_url;
     
     public PresentationManager(){
-        DocumentFactory docFact = new DocumentFactory();
+        //DocumentFactory docFact = new DocumentFactory();
         mOcManager = OCManager.getInstance();
         mRegistry = ParticipantRegistry.defaultInstance();
-        mPackageManager = new PackageManager(docFact.getCompositeLoader(), mOcManager);
+        CompositeLoader loader = CompositeLoader.createInstanceForOCM();
+        mPackageManager = new PackageManager(loader, mOcManager);
         ViewComponentPackage.loadBuiltInRegistry(mOcManager.getClassRegistry());
         mLogger = DummyLogger.getInstance();
         mLoggerProvider = DummyLoggerProvider.getInstance();
