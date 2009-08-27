@@ -16,7 +16,7 @@ import aurora.presentation.features.DataBinding;
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  * 
  */
-public class TextField extends Field {	
+public class TextField extends InputField {	
 	
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
@@ -28,7 +28,6 @@ public class TextField extends Field {
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)  {
 		super.onCreateViewContent(session, context);
-//		CompositeMap view = context.getView();
 		Map map = context.getMap();		
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}

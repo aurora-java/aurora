@@ -5,34 +5,42 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.markup.HtmlPageContext;
 
 public class Component {
-	
-//	private static int idIndex = 1;
-	
+		
 	protected static final String PROPERTITY_ID = "id";
 	protected static final String PROPERTITY_NAME = "name";
 	protected static final String PROPERTITY_STYLE = "style";
 	protected static final String PROPERTITY_VALUE = "value";
 	protected static final String PROPERTITY_CONFIG = "config";
 	protected static final String PROPERTITY_EVENTS = "events";
+	protected static final String PROPERTITY_BINDING = "binding";
 	protected static final String PROPERTITY_CLASSNAME = "className";
 	protected static final String PROPERTITY_WIDTH = "width";
+	protected static final String PROPERTITY_BINDTARGET = "bindTarget";
+	protected static final String PROPERTITY_BINDNAME = "bindName";
 	
 	protected static final String WRAP_CSS = "wrapClass";
-	
 	
 	protected static final String ID_INDEX = "_id_index";
 	
 	private StringBuffer esb = new StringBuffer();
+	private StringBuffer bsb = new StringBuffer();
+	private JSONObject config = new JSONObject();
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		Map map = context.getMap();
 		session.getSessionContext().put(ID_INDEX, new Integer(1));
+		addStyleSheet(session, context, "core/Aurora.css");
+		addJavaScript(session, context, "core/ext-core.js");
+		addJavaScript(session, context, "core/Aurora.js");
+		addJavaScript(session, context, "core/Component.js");
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context){
@@ -48,6 +56,7 @@ public class Component {
 			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_ID, id);
+		addConfig(PROPERTITY_ID, id);
 		
 		/** Width属性**/
 		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, "150"));//TODO:默认值??
@@ -60,6 +69,11 @@ public class Component {
 			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
 		map.put(PROPERTITY_NAME, name);
+		
+		String style = view.getString(PROPERTITY_STYLE, "");
+		if(!"".equals(style)) {
+			map.put(PROPERTITY_STYLE, style);
+		}
 
 		
 		/** 值 **/
@@ -83,6 +97,18 @@ public class Component {
 			}
 		}
 		map.put(PROPERTITY_EVENTS, esb.toString());
+		
+		/** 绑定DataSet **/
+		String bindTarget = view.getString(PROPERTITY_BINDTARGET, "");
+		String bindName = "";
+		if(!bindTarget.equals("")){			
+			bindName = view.getString(PROPERTITY_BINDNAME, "");
+			if(bindName.equals("")){
+				bindName = name;				
+			}
+			bsb.append(id+".bind(" + bindTarget + ",'" + bindName + "');\n");
+			map.put(PROPERTITY_BINDING, bsb.toString());
+		}
 	}
 	
 	
@@ -126,16 +152,35 @@ public class Component {
 	}
 	
 	/**
-	 * 增加Style
+	 * 增加事件
+	 * 
+	 * @param id 组件ID
+	 * @param eventName 事件名
+	 * @param handler 事件函数
 	 */
-	protected void addStyle(CompositeMap view, Map map){
-		String style = view.getString(PROPERTITY_STYLE, "");
-		if(!"".equals(style)) {
-			map.put(PROPERTITY_STYLE, style);
-		}		
-	}
-	
 	protected void addEvent(String id, String eventName, String handler){
 		esb.append(id+".on('" + eventName + "'," + handler + ");\n");
+	}
+	
+	/**
+	 * 增加配置信息.
+	 * 
+	 * @param key 名称
+	 * @param value 值
+	 */
+	protected void addConfig(String key, Object value) {
+		try {
+			config.put(key, value);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * 配置信息.
+	 * @return
+	 */
+	protected String getConfigString(){
+		return config.toString();
 	}
 }

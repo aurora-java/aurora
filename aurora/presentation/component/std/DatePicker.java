@@ -13,7 +13,8 @@ import aurora.presentation.ViewContext;
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class DatePicker extends TextField {
-	protected static final String PROPERTITY_POPWIDTH = "popWidth";
+	
+	private static final String PROPERTITY_POPWIDTH = "popWidth";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);		
