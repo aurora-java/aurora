@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
@@ -16,7 +15,6 @@ import aurora.presentation.ViewContext;
 public class DataSet extends Component{
 	
 	private static final String PROPERTITY_FIELDS = "fields";
-	private static final String PROPERTITY_FIELD = "field";
 	private static final String PROPERTITY_DATAS = "datas";
 	private static final String PROPERTITY_DATASOURCE = "dataSource";
 	
