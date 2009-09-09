@@ -44,6 +44,6 @@ public class Box extends GridLayout {
 		String label = field.getString("label", "");
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
 		if(!"".equals(label))
-		out.write("<th class='"+DEFAULT_TH_CLASS+"'><div style='width:"+labelWidth+"px;'>"+label+":</div></th>");
+		out.write("<th class='"+DEFAULT_TH_CLASS+"' width="+labelWidth+"><div>"+label+":</div></th>");
 	}
 }

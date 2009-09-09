@@ -29,7 +29,7 @@ public class Component {
 	
 	protected static final String WRAP_CSS = "wrapClass";
 	
-	protected static final String ID_INDEX = "_id_index";
+	public static final String ID_INDEX = "cid_index";
 	
 	private StringBuffer esb = new StringBuffer();
 	private StringBuffer bsb = new StringBuffer();
@@ -52,9 +52,10 @@ public class Component {
 		/** ID属性 **/
 		String id = view.getString(PROPERTITY_ID, "");
 		if("".equals(id)) {
-			id= "aid-"+(idIndex++);
+			id= "aid_"+(idIndex++);
 			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
 		}
+		view.put(PROPERTITY_ID, id);
 		map.put(PROPERTITY_ID, id);
 		addConfig(PROPERTITY_ID, id);
 		
@@ -106,7 +107,8 @@ public class Component {
 			if(bindName.equals("")){
 				bindName = name;				
 			}
-			bsb.append(id+".bind(" + bindTarget + ",'" + bindName + "');\n");
+//			bsb.append(id+".bind(" + bindTarget + ",'" + bindName + "');\n");
+			bsb.append("$('"+id+"').bind(" + bindTarget + ",'" + bindName + "');\n");
 			map.put(PROPERTITY_BINDING, bsb.toString());
 		}
 	}
@@ -159,7 +161,7 @@ public class Component {
 	 * @param handler 事件函数
 	 */
 	protected void addEvent(String id, String eventName, String handler){
-		esb.append(id+".on('" + eventName + "'," + handler + ");\n");
+		esb.append("$('"+id+"').on('" + eventName + "'," + handler + ");\n");
 	}
 	
 	/**

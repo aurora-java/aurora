@@ -17,6 +17,7 @@ public class DataSet extends Component{
 	private static final String PROPERTITY_FIELDS = "fields";
 	private static final String PROPERTITY_DATAS = "datas";
 	private static final String PROPERTITY_DATASOURCE = "dataSource";
+	private static final String PROPERTITY_CREATERECORD = "autoCreate";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);	
@@ -34,8 +35,8 @@ public class DataSet extends Component{
 			Iterator it = fields.getChildIterator();			
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
-				field.put("required", field.getBoolean("required", false));
-				field.put("readonly", field.getBoolean("readonly", false));
+				field.putBoolean("required", field.getBoolean("required", false));
+				field.putBoolean("readonly", field.getBoolean("readonly", false));
 				JSONObject json = new JSONObject(field);
 				fieldList.add(json);
 			}
@@ -65,6 +66,12 @@ public class DataSet extends Component{
 				}						
 			}
 		}
-		map.put(PROPERTITY_DATAS, dataList.toString());
+		boolean create = view.getBoolean(PROPERTITY_CREATERECORD, false);
+		if(dataList.size() == 0 && create) {
+			JSONObject json = new JSONObject();
+			dataList.add(json);
+			
+		}
+		map.put(PROPERTITY_DATAS, dataList.toString());		
 	}
 }

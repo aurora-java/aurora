@@ -59,25 +59,25 @@ public class Field extends Component {
 		map.put(WRAP_CSS, CLASSNAME_WRAP);
 		
 		/** 是否为空 **/
-		Boolean notBlank = view.getBoolean(PROPERTITY_REQUIRED, false);
-		map.put(PROPERTITY_REQUIRED, notBlank);
+		boolean notBlank = view.getBoolean(PROPERTITY_REQUIRED, false);
+		map.put(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		if(notBlank) {
 			String wrapClass = (String)map.get(WRAP_CSS);
 			wrapClass += " " + CLASSNAME_NOTBLANK;
 			map.put(WRAP_CSS, wrapClass);
-			addConfig(PROPERTITY_REQUIRED, notBlank);
+			addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		}
-		addConfig(PROPERTITY_REQUIRED, notBlank);
+		addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		
 		/** 是否只读 **/
-		Boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
+		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
 		if(readOnly) {
 			String wrapClass = (String)map.get(WRAP_CSS);
 			wrapClass += " "+CLASSNAME_READONLY;
 			map.put(WRAP_CSS, wrapClass);
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
-		addConfig(PROPERTITY_READONLY, readOnly);
+		addConfig(PROPERTITY_READONLY, Boolean.valueOf(readOnly));
 	}
 	
 	
