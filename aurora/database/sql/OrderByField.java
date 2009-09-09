@@ -3,6 +3,7 @@
  */
 package aurora.database.sql;
 
+import aurora.database.Constant;
 import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class OrderByField extends AbstractStatement {

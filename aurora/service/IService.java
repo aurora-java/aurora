@@ -17,6 +17,6 @@ public interface IService {
     
     public ServiceContext getServiceContext();
     
-    public void invoke();
+    public void invoke() throws Exception;
 
 }

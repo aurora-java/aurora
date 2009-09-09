@@ -27,16 +27,11 @@ public class AutoQueryCounter implements ISingleton {
             StringBuffer oldsql = context.getSqlString();
             if(oldsql==null) return;
             StringBuffer sql = new StringBuffer(oldsql.toString());            
-            sql.insert(0, "select count(*) from ( ");
+            sql.insert(0, "select count(1) from ( ");
             sql.append(" )");
             ParsedSql s = new ParsedSql(sql.toString());
             SqlRunner runner = new SqlRunner(context, s);
             runner.setTrace(context.isTrace());
-            /*
-            if(runner.isTrace()){
-                System.out.println(runner.getStatement().getParsedSQL());
-            }
-            */
             ResultSet rs = null;
             try{
                 rs = runner.query(context.getCurrentParameter());

@@ -13,10 +13,13 @@ import java.util.List;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.IConfigurable;
 import uncertain.ocm.OCManager;
 import aurora.bm.BusinessModel;
 import aurora.database.CompositeMapCreator;
+import aurora.database.Constant;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
@@ -161,9 +164,11 @@ public class RawSqlService implements IConfigurable
         return createStatement(mSql.toString());
     }
     
-    void printTraceInfo(String type, SqlRunner runner){
-        if(!getTrace()) return;
-        DBUtil.printTraceInfo( type, new PrintWriter(System.out), runner);
+    void printTraceInfo(String type, SqlRunner runner, long exec_time ){
+        //if(!getTrace()) return;
+        ILogger logger = LoggingContext.getLogger(runner.getSqlServiceContext().getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
+        DBUtil.printTraceInfo( type, logger, runner);
+        logger.log("Execution time:{0}", new Object[]{new Long(exec_time)} );
     }
     
     SqlRunner createRunner( StringBuffer sql, SqlServiceContext context ){
@@ -197,14 +202,18 @@ public class RawSqlService implements IConfigurable
     public void query(SqlServiceContext context, IResultSetConsumer consumer, FetchDescriptor desc )
         throws Exception
     {
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
         parseParameter(context);
         mConfiguration.fireEvent("PopulateQuerySql", context.getObjectContext(), new Object[]{ this, mSql} );
         SqlRunner runner = createRunner(mSql, context);
         context.setSqlString( mSql );
 
         ResultSet rs = null;
+        long exec_time = 0;
         try{
+            long tick = System.currentTimeMillis();            
             rs = runner.query(context.getCurrentParameter());
+            logger.config("query execute time:"+(System.currentTimeMillis()-tick));
             if(rs!=null){
                 if(mModel!=null && mModel.getFields()!=null){
                     mRsLoader.loadByConfig( rs, desc, mModel, consumer );
@@ -212,10 +221,11 @@ public class RawSqlService implements IConfigurable
                 else
                     mRsLoader.loadByResultSet( rs, desc, consumer );                
             }
+            exec_time = System.currentTimeMillis() - tick;
             mConfiguration.fireEvent("QueryFinish", context.getObjectContext(), null );
         }finally{
             DBUtil.closeResultSet(rs);
-            printTraceInfo(QUERY, runner);
+            printTraceInfo(QUERY, runner, exec_time);
         } 
     }
     
@@ -228,7 +238,7 @@ public class RawSqlService implements IConfigurable
         try{
             runner.update(context.getCurrentParameter());
         } finally{
-            printTraceInfo(UPDATE, runner);
+            printTraceInfo(UPDATE, runner, runner.getLastExecutionTime());
         }
     }
     
@@ -241,7 +251,7 @@ public class RawSqlService implements IConfigurable
         try{
             return runner.updateList(params);
         }finally{
-            printTraceInfo(UPDATE,runner);
+            printTraceInfo(UPDATE,runner, runner.getLastExecutionTime());
         }
     }
 

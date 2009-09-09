@@ -3,6 +3,8 @@
  */
 package aurora.database.actions;
 
+import javax.sql.DataSource;
+
 import uncertain.core.UncertainEngine;
 import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
@@ -25,7 +27,7 @@ public class ServiceInitiator {
     
     public void init(){
         factory = new DatabaseServiceFactory( uncertainEngine );
-        uncertainEngine.getObjectSpace().registerInstance(DatabaseServiceFactory.class, factory);
+        uncertainEngine.getObjectRegistry().registerInstance(DatabaseServiceFactory.class, factory);
         
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
         reg.addClassMapping( "model-query", ModelQuery.class );
@@ -39,6 +41,16 @@ public class ServiceInitiator {
         reg.addClassMapping( "model-invoke", ModelUpdate.class );
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
+    }
+    
+    
+    public void onInitialize(){
+        DataSource ds = factory.getDataSource();
+        if(ds==null){
+            ds = (DataSource)uncertainEngine.getObjectRegistry().getInstanceOfType(DataSource.class);
+            factory.setDataSource(ds);
+        }
+        logger.info("Using DataSource:"+ds);
     }
     
 

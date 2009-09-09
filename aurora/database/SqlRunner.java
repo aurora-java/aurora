@@ -39,6 +39,7 @@ public class SqlRunner {
     Connection              conn = null;
     
     List                    bind_param_list;
+    long                    exec_time;
     
     
     static void setException(ServiceContext context, Throwable ex){
@@ -215,6 +216,7 @@ public class SqlRunner {
     protected int updateInternal( CompositeMap param, CompositeMap output )
         throws SQLException
     {
+        exec_time = 0;
         prepareConnection();            
         String sql = generateSQL(param);            
         PreparedStatement ps = null;
@@ -224,7 +226,9 @@ public class SqlRunner {
             else
                 ps = conn.prepareStatement(sql);
             bindParameters(ps, param);
+            exec_time = System.currentTimeMillis();
             int result = ps.executeUpdate();
+            exec_time = System.currentTimeMillis() - exec_time;
             if(statement.hasOutputParameter())
                 fetchOutputParameters((CallableStatement)ps, output);
             return result;
@@ -268,6 +272,7 @@ public class SqlRunner {
     public boolean updateList( Collection param_list ) 
         throws SQLException
     {
+        long tick = System.currentTimeMillis();
         prepareConnection(); 
         boolean success = true;
         //context.setCurrentFailedRecord(null);
@@ -290,6 +295,7 @@ public class SqlRunner {
             */
         }
         context.setSuccess(success);
+        exec_time = System.currentTimeMillis() - tick;
         return success;        
         
     }
@@ -298,13 +304,14 @@ public class SqlRunner {
         throws SQLException
     {
         boolean success = true;
-        
+        exec_time = 0;
         prepareConnection(); 
         if(!statement.isStaticStatement())
             throw new IllegalStateException("Can't do batch update with sql statement that contains dynamic part");
         String sql = statement.getParsedSQL();
         PreparedStatement ps = null;
         try{
+            exec_time = System.currentTimeMillis();
             ps = conn.prepareStatement(sql);        
             Iterator it = param_list.iterator();
             while(it.hasNext()){
@@ -321,6 +328,7 @@ public class SqlRunner {
                 success = false;
             }
             */
+            exec_time = System.currentTimeMillis() - exec_time;
             return success;
         }finally{
             DBUtil.closeStatement(ps);
@@ -362,6 +370,10 @@ public class SqlRunner {
      */
     public SqlServiceContext getSqlServiceContext() {
         return context;
+    }
+    
+    public long getLastExecutionTime(){
+        return exec_time;   
     }
     
 

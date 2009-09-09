@@ -81,7 +81,7 @@ public class PresentationManager implements IGlobalInstance {
         this.mRegistry = engine.getParticipantRegistry();
         mPackageManager = new PackageManager(engine.getCompositeLoader(), engine.getOcManager());
         ViewComponentPackage.loadBuiltInRegistry(engine.getClassRegistry());
-        mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectSpace());
+        mLoggerProvider = LoggingContext.getLoggerProvider(engine.getObjectRegistry());
         mLogger = mLoggerProvider.getLogger(LOGGING_TOPIC);
         mLogger.info("Aurora Presentation Framework Startup... ");
     }

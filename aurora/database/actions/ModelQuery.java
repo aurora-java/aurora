@@ -54,18 +54,17 @@ public class ModelQuery extends AbstractQueryAction {
         service.query(param, consumer, desc);
     }
     
-    protected void prepare( ProcedureRunner runner )
+    protected void prepare( CompositeMap context )
         throws Exception
     {
         if(model==null)
             throw new IllegalArgumentException("Must set 'model' property");
-        CompositeMap context = runner.getContext();
         service = svcFactory.getModelService(model, context);
         service.setTrace(getTrace());
         serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
     }
     
-    protected void cleanUp( ProcedureRunner runner ){
+    protected void cleanUp( CompositeMap context ){
     }
 
     /**

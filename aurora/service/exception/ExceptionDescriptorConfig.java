@@ -47,7 +47,7 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
         String cls = desc.getHandleClass();
         if(cls==null) throw new ConfigurationError("Must set 'handleClass' property");
         Class handle_cls = Class.forName(cls);
-        Object instance = mUncertainEngine.getObjectSpace().getInstanceOfType(handle_cls);
+        Object instance = mUncertainEngine.getObjectRegistry().getInstanceOfType(handle_cls);
         if(instance==null)
             instance = mUncertainEngine.getObjectCreator().createInstance(handle_cls);
         if(instance==null)
@@ -75,7 +75,7 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
     }
     
     public void registerInstance(){
-        IObjectRegistry os = mUncertainEngine.getObjectSpace();
+        IObjectRegistry os = mUncertainEngine.getObjectRegistry();
         Object o = os.getInstanceOfType(IExceptionDescriptor.class);
         if(o==null)
             os.registerInstance(IExceptionDescriptor.class, this);

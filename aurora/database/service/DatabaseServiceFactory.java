@@ -74,7 +74,7 @@ public class DatabaseServiceFactory {
     
     protected void init()
     {
-        IObjectRegistry os = uncertainEngine.getObjectSpace();
+        IObjectRegistry os = uncertainEngine.getObjectRegistry();
         
         os.registerInstance(DatabaseServiceFactory.class, this);
         

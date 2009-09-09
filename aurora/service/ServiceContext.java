@@ -45,6 +45,12 @@ public class ServiceContext extends RuntimeContext {
     public static final String KEY_SERVICE_NAME = "__service_name__";
     
     public static final String KEY_ERROR_DESCRIPTION = "__error_description__";
+    
+    public static ServiceContext createServiceContext( CompositeMap map ){
+        ServiceContext context = new ServiceContext();
+        context.initialize(map);
+        return context;
+    }
 
     protected CompositeMap getChildSection(String name){
         CompositeMap result = object_context.getChild(name);

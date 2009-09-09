@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import aurora.service.http.WebContextInit;
+
 import uncertain.core.UncertainEngine;
 
 public class ResourceDispatchServlet extends HttpServlet implements IResourceUrlMapper {
@@ -52,10 +54,11 @@ public class ResourceDispatchServlet extends HttpServlet implements IResourceUrl
     {
         if( mPresentationManager == null ){
             if(mUncertainEngine==null){
-                mUncertainEngine = (UncertainEngine)mServletContext.getAttribute("uncertain");
+                mUncertainEngine = WebContextInit.getUncertainEngine(mServletContext);
+                //mUncertainEngine = (UncertainEngine)mServletContext.getAttribute("uncertain");
                 if(mUncertainEngine==null) throw new ServletException("Can't get uncertain engine from servlet context");
             }
-            mPresentationManager = (PresentationManager)mUncertainEngine.getObjectSpace().getInstanceOfType(PresentationManager.class);
+            mPresentationManager = (PresentationManager)mUncertainEngine.getObjectRegistry().getInstanceOfType(PresentationManager.class);
             if(mPresentationManager==null)
                 throw new ServletException("Can't get PresentationManager instance from UncertainEngine");
             mPresentationManager.setResourceUrlMapper(this);            

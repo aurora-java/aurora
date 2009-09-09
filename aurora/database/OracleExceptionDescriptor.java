@@ -49,7 +49,7 @@ public class OracleExceptionDescriptor extends SQLExceptionDescriptor {
 			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
 			sqlServiceContext.getParameter().put("lineId", errLineId);
             
-			DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectSpace().getInstanceOfType(DatabaseServiceFactory.class);
+			DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
 			RawSqlService sqlService = svcFactory.getSqlService(SERVICE_NAME, context);
 			CompositeMap resultMap = sqlService.queryAsMap(sqlServiceContext, FetchDescriptor.getDefaultInstance());
 			/*

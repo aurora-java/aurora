@@ -8,6 +8,7 @@ import java.util.List;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.transform.Transformer;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractDeferredEntry;
 import uncertain.proc.ProcedureRunner;
@@ -32,19 +33,20 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     
     protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
     
-    protected abstract void prepare( ProcedureRunner runner ) throws Exception ;
+    protected abstract void prepare( CompositeMap context_map ) throws Exception ;
     
-    protected abstract void cleanUp( ProcedureRunner runner );
+    protected abstract void cleanUp( CompositeMap context_map );
     
     public AbstractQueryAction( OCManager oc_manager ){
         super(oc_manager);
     }
-
-    public void run(ProcedureRunner runner) throws Exception {
+    
+    public void query( CompositeMap context_map ) throws Exception
+    {
         super.doPopulate();
-        prepare( runner );
-        SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(runner.getContext(), SqlServiceContext.class);
-        context.setTrace(trace);
+        prepare( context_map );
+        SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);
+        //context.setTrace(trace);
         
         ServiceOption option = ServiceOption.createInstance();
         option.setQueryMode(mode);
@@ -64,8 +66,6 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
                     param = (CompositeMap)obj;                    
                 }  
             }
-            //System.out.println(parameter);
-            //System.out.println(param.toXML());
             
             // page settings
             FetchDescriptor desc = FetchDescriptor.createFromParameter(context.getParameter());
@@ -88,8 +88,12 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         }finally{
             context.setServiceOption(null);
             context.setResultsetConsumer(null);
-            cleanUp( runner );
-        }
+            cleanUp( context_map );
+        }        
+    }
+
+    public void run(ProcedureRunner runner) throws Exception {
+        query(runner.getContext());
     }
 
     /**

@@ -10,8 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
+import uncertain.logging.ILogger;
 
 /**
  *  quietly close jdbc connection, statement, etc
@@ -49,15 +51,6 @@ public class DBUtil {
             out.println("============= [" + type + "] SQL Statement execution dump ============");
             out.println("Execution Date:"+new Date());
             out.println("------------------------------------------------------");  
-            /*
-            out.println("=== Defined parameters ===");
-            int id=1;
-            for(Iterator it=params_list.iterator(); it.hasNext();){
-                Parameter param = (Parameter)it.next();
-                out.println("No."+(id++)+": "+param);
-            }
-            out.println("------------------------------------------------------");        
-            */ 
             out.println("=== Parsed SQL ===");
             out.println(runner.getStatement().getParsedSQL());
             out.println("------------------------------------------------------");  
@@ -74,6 +67,16 @@ public class DBUtil {
             out.println();
             out.flush();
         }
-    
 
+     public static void printTraceInfo( String type, ILogger logger, SqlRunner runner){
+         logger.log(Level.CONFIG, "============= [{0}] SQL Statement execution dump ============", new Object[]{type});
+         logger.config("=== Parsed SQL ===");
+         logger.config(runner.getStatement().getParsedSQL());
+         logger.config("------------------------------------------------------");
+         logger.config("=== Binding info ===");
+         logger.config(runner.getBindDescription());
+         logger.config("================== END of [" + type + "]==================");
+         logger.config("");
+     }
+     
 }

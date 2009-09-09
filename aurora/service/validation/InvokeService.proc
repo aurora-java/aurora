@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procedure xmlns="uncertain.proc">
+	<action Name="BeginService" />
+	<action Name="ParseParameter" />
+	<action Name="PrepareService" />
+	<action Name="CheckPrivilege" />
+	<action Name="CreateModel" />
+	<action Name="CreateView" />	
+	<action Name="PopulateView" />
+	<switch Test="@output">
+		<case Value="true">
+			<action Name="BuildOutputContent" />
+		</case>
+		<case>
+			<action Name="DoDispatch" />
+		</case>
+	</switch>
+</procedure>

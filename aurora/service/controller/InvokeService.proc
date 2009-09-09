@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procedure xmlns="uncertain.proc">
+	<fields>
+		<field name="service" type="aurora.service.IService"/>
+	</fields>
+	<action name="ParseParameter" input="service" />
+	<action name="ValidateInput"  input="service" />
+	<action name="InvokeService" input="service" />
+	<action name="CreateSuccessResponse" input="service"/>
+	<exception-handles>
+		<catch Exception="*">
+			<action name="CreateFailResponse" input="service"/>
+		</catch>
+	</exception-handles>
+</procedure>

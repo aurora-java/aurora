@@ -1,7 +1,7 @@
 /*
  * Created on 2008-4-2
  */
-package aurora.database.sql;
+package aurora.database;
 
 public final class Constant {
 
@@ -26,5 +26,6 @@ public final class Constant {
     /** Order by */
     public static final String ASCENT = "ASC";
     public static final String DESCENT = "DESC";
+    public static final String AURORA_DATABASE_LOGGING_TOPIC = "aurora.database";
 
 }

@@ -14,43 +14,39 @@ import aurora.database.service.RawSqlService;
 import aurora.database.service.SqlServiceContext;
 
 public class SqlQuery extends AbstractQueryAction {
-    
-    public static final String MODE_BATCH = "batch";
-    
-    DatabaseServiceFactory  svcFactory;
-    
-    String                  service;
-    String                  sourcePath;
-    String                  mode = "single";
-    
-    SqlServiceContext       context;
-    RawSqlService           sqlService;        
-    
 
-    public SqlQuery( DatabaseServiceFactory svcFactory, OCManager manager ) {
+    // public static final String MODE_BATCH = "batch";
+    // String mode = "single";
+  
+    DatabaseServiceFactory svcFactory;
+
+    String service;
+    String sourcePath;
+
+    SqlServiceContext context;
+    RawSqlService sqlService;
+
+    public SqlQuery(DatabaseServiceFactory svcFactory, OCManager manager) {
         super(manager);
         this.svcFactory = svcFactory;
     }
-    
-    protected void prepare( ProcedureRunner runner )
-        throws Exception
-    {
-        context = SqlServiceContext.createSqlServiceContext(runner.getContext());
-        if( service==null ) throw new ConfigurationError("Must set 'service' property");
-        sqlService = svcFactory.getSqlService(service, context); 
+
+    protected void prepare( CompositeMap context_map ) throws Exception {
+        context = SqlServiceContext
+                .createSqlServiceContext(context_map);
+        if (service == null)
+            throw new ConfigurationError("Must set 'service' property");
+        sqlService = svcFactory.getSqlService(service, context);
     }
 
-    protected void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc )
-        throws Exception
-    {
+    protected void doQuery(CompositeMap param, IResultSetConsumer consumer,
+            FetchDescriptor desc) throws Exception {
         sqlService.query(context, consumer, desc);
     }
-    
-    
-    protected void cleanUp( ProcedureRunner runner ){
 
-    }    
+    protected void cleanUp(CompositeMap context_map ) {
 
+    }
 
     /**
      * @return the service
@@ -60,7 +56,8 @@ public class SqlQuery extends AbstractQueryAction {
     }
 
     /**
-     * @param service the service to set
+     * @param service
+     *            the service to set
      */
     public void setService(String service) {
         this.service = service;
@@ -74,7 +71,8 @@ public class SqlQuery extends AbstractQueryAction {
     }
 
     /**
-     * @param source the source to set
+     * @param source
+     *            the source to set
      */
     public void setSourcePath(String source) {
         this.sourcePath = source;
