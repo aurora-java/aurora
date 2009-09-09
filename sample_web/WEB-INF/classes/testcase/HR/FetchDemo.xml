@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql-service>
+	<parameters>
+		<parameter name="sysdate1"  dataType="java.sql.Date" input="false" output="true" inputPath="@sysdate1" outputPath="/model/E/@A"/>
+	</parameters>
+	<update>
+	<![CDATA[
+		begin
+			select sysdate into ${@sysdate1} from dual;
+		end;		
+	]]>
+	</update>
+</sql-service>

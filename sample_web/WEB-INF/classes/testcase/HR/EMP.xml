@@ -1,0 +1,47 @@
+<model baseTable="EMP" alias="e">
+	<fields>
+		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" required="true"/>
+		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>
+		<field name="job" datatype="java.lang.String" databaseType="BIGINT"/>
+		<field name="mgr" datatype="java.lang.Long" databaseType="BIGINT"/>
+		<field name="hiredate" datatype="java.sql.Date" databaseType="DATE"/>
+		<field name="deptno" datatype="java.lang.Long" databaseType="BIGINT"/>
+		<field name="sal" datatype="java.lang.Long" databaseType="FLOAT"/>
+		<field name="comm" datatype="java.lang.Long" databaseType="FLOAT"/>
+		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE" updateExpression="sysdate"/>
+		<field name="NOW_DATE" datatype="lava.sql.Date" expression="sysdate" databaseType="DATE"/>
+		<ref-field name="dname" sourceField="dname" sourceModel="testcase.HR.DEPT"/>
+		<ref-field name="mgr_name" sourceField="ename" relationName="MGR"/>
+	</fields>
+	<primary-key>
+		<field name="empno"/>
+	</primary-key>
+	<relations>
+		<relation joinType="INNER" refModel="testcase.HR.DEPT">
+			<reference localField="DEPTNO" foreignField="DEPTNO"/>
+		</relation>
+		<relation name="MGR" joinType="LEFT OUTER" refModel="testcase.HR.EMP" refAlias="M1">
+			<reference localField="MGR" foreignField="EMPNO"/>
+			<reference expression="M1.DEPTNO is not null"/>
+		</relation>
+	</relations>
+	<query-fields>
+		<query-field field="sal" queryOperator=">="/>
+		<query-field field="ename" queryOperator="like" matchMode="full"/>
+		<query-field field="deptno" queryOperator="="/>
+		<query-field field="mgr" queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)"/>
+		<query-field field="creation_date" queryOperator=">="/>
+
+		<query-field name="hiredate_from" dataType="java.sql.Date" queryExpression="e.hiredate >= ${@hiredate_from}" />
+		<query-field name="hiredate_to" dataType="java.sql.Date" queryExpression="e.hiredate &lt;= ${@hiredate_to}" />		
+		
+	</query-fields>
+	<data-filters>
+		<data-filter name="MustInDepartment" enforceActions="query" expression="e.deptno is not null"/>
+		<data-filter expression="e.creation_date is not null"/>
+	</data-filters>
+	<order-by>
+		<field name="DNAME"/>
+		<field name="hiredate" order="desc"/>
+	</order-by>
+</model>

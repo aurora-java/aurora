@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a:screen xmlns:a="http://www.aurora-framework.org/application" trace="true">
+	<a:init-procedure>
+		<sql-query service="testcase.HR.EmpQueryMatrix" rootPath="EMP-LIST"  fetchAll="true" autoCount="true" />
+	</a:init-procedure>
+	<page template="default" package="aurora.testcase.ui">
+		<template template="employee_form" package="aurora.testcase.ui" datamodel="employee">
+			<textedit name="name" datafield="/model/employee/@name"/>
+			<textedit name="address" datafield="/model/employee/@address" class="textedit.normal" enabled="false" viewObject="aaa.a.a" onclick="alert('test!');"/>
+			<textarea name="memo" rows="7"/>
+			<select datasource="/model/depts" name="deptid" displayfield="@name" valuefield="@value" datafield="/model/employee/@deptid">
+				<options>
+					<record value="0" prompt="All"/>
+				</options>
+			</select>
+		</template>
+		<!--
+		<script>
+			window.onload = function(){
+				alert('test ${/model/employee/@name}');
+			}
+		</script>
+		-->
+	</page>
+</a:screen>

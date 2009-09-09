@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql-service>
+	<parameters>
+		<parameter name="empno" dataType="java.lang.Long" required="true"/>
+		<parameter name="name" dataType="java.lang.String"/>
+		<parameter name="deptno" dataType="java.lang.String"/>
+		<parameter name="creation_date" dataType="java.sql.Date"/>
+	</parameters>
+	<update>
+	<![CDATA[
+		begin
+			update emp
+			set    ename = ${@name}, deptno = ${@deptno}, creation_date = sysdate	
+			where empno = ${@empno} ;
+		end;		
+	]]>
+	</update>
+	<!-- the following demos update with dynamic where clause -->
+	<!--
+	<update><![CDATA[
+		begin
+			update emp
+			set    ename = ${@name}, deptno = ${@deptno}, creation_date = sysdate	
+			#WHERE_CLAUSE# ;
+		end;
+	]]></update>
+	<data-filters>
+		<data-filter expression="empno = ${@empno}"/>
+	</data-filters>
+	<query-fields>
+		<query-field name="creation_date" queryOperator="&gt;=" dataType="java.sql.Date"/>
+	</query-fields>
+	-->
+</sql-service>

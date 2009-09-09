@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<uncertain-engine>
+	<class-registry>
+		<package-mapping packageName="aurora.application.features"/>
+		<package-mapping packageName="aurora.service"/>
+		<package-mapping packageName="aurora.presentation"/>
+		<package-mapping packageName="aurora.database.service"/>
+		<package-mapping packageName="aurora.database.actions"/>
+		<package-mapping packageName="aurora.service.exception"/>
+		<package-mapping packageName="aurora.plugin.c3p0"/>
+		<feature-attach elementName="page" featureClass="aurora.application.features.ScreenRenderer"/>
+		<feature-attach elementName="init-procedure" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.InitProcedureInvoker"/>
+		<feature-attach elementName="service" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.service.json.JSONDispatcher"/>
+	</class-registry>
+	<logging-config logPath="d:/logs">
+		<providers>
+			<logger-provider name="default">
+				<topics>
+					<logging-topic name="uncertain.core" level="CONFIG"/>
+					<logging-topic name="uncertain.proc" level="INFO"/>
+				</topics>
+				<handles>
+					<log-console-handler/>
+					<log-file-handler logPath="d:/logs" append="false" logFilePrefix="aurora-application" logFilePostfix="log"/>
+				</handles>
+			</logger-provider>
+			<logger-provider name="error">
+				<topics>
+					<logging-topic name="aurora-error" level="INFO"/>
+				</topics>
+				<handles>
+					<log-file-handler append="true" logFilePrefix="error" logFilePostfix="log" logPath="d:/logs"/>
+					<log-console-handler/>
+				</handles>
+			</logger-provider>
+		</providers>
+	</logging-config>
+</uncertain-engine>

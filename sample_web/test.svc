@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a:service xmlns:a="http://www.aurora-framework.org/application">
+	<a:init-procedure>
+		<a:sql-query service="testcase.HR.EmpQueryMatrix" rootpath="EMPLOYEES" fetchall="true" autocount="true"/>
+	</a:init-procedure>
+</a:service>

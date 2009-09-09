@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<listener>
+		<listener-class>aurora.service.http.WebContextInit</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>service</servlet-name>
+		<servlet-class>aurora.service.http.FacadeServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>resource</servlet-name>
+		<servlet-class>aurora.presentation.ResourceDispatchServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>service</servlet-name>
+		<url-pattern>*.screen</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>service</servlet-name>
+		<url-pattern>*.svc</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>resource</servlet-name>
+		<url-pattern>/resource/*</url-pattern>
+	</servlet-mapping>
+</web-app>
