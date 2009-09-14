@@ -3,7 +3,9 @@
 	<a:init-procedure>
 		<sql-query service="testcase.HR.EmpQueryMatrix" rootPath="EMP-LIST"  fetchAll="true" autoCount="true" />
 	</a:init-procedure>
+	
 	<page template="default" package="aurora.testcase.ui">
+		<dataset ref="testcase.HR.EMP" />
 		<template template="employee_form" package="aurora.testcase.ui" datamodel="employee">
 			<textedit name="name" datafield="/model/employee/@name"/>
 			<textedit name="address" datafield="/model/employee/@address" class="textedit.normal" enabled="false" viewObject="aaa.a.a" onclick="alert('test!');"/>

@@ -10,6 +10,10 @@
 		<servlet-class>aurora.service.http.FacadeServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>autocrud</servlet-name>
+		<servlet-class>aurora.service.http.AutoCrudServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>resource</servlet-name>
 		<servlet-class>aurora.presentation.ResourceDispatchServlet</servlet-class>
 	</servlet>
@@ -25,4 +29,8 @@
 		<servlet-name>resource</servlet-name>
 		<url-pattern>/resource/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>autocrud</servlet-name>
+		<url-pattern>/autocrud/*</url-pattern>
+	</servlet-mapping>	
 </web-app>
