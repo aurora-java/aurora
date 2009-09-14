@@ -9,15 +9,17 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.database.CompositeMapCreator;
+import aurora.database.Constant;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
 import aurora.database.SqlRunner;
 import aurora.service.ServiceContext;
-import aurora.service.exception.IExceptionDescriptor;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.ParameterParser;
 import aurora.service.validation.ValidationException;
@@ -192,9 +194,14 @@ public class BusinessModelService {
     }
 
     void printTraceInfo(){
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
+        SqlRunner runner = context.getSqlRunner();
+        /*
         SqlRunner runner = context.getSqlRunner();
         if(!getTrace()||runner==null) return;
         DBUtil.printTraceInfo( action, new PrintWriter(System.out), runner);
+        */
+        DBUtil.printTraceInfo(action, logger, runner);
     }    
     /**
      * @return the trace

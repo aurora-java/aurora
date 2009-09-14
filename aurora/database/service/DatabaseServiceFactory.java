@@ -19,6 +19,7 @@ import uncertain.event.RuntimeContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
+import aurora.bm.IModelFactory;
 import aurora.bm.ModelFactory;
 import aurora.bm.QuerySqlCreator;
 import aurora.bm.UpdateSqlCreator;
@@ -33,7 +34,7 @@ import aurora.database.sql.builder.SqlBuilderRegistry;
 public class DatabaseServiceFactory {
     
     UncertainEngine         uncertainEngine;
-    ModelFactory            modelFactory;
+    IModelFactory            modelFactory;
     DataSource              dataSource;
     IDatabaseProfile        databaseProfile;
     ISqlBuilderRegistry     sqlBuilderRegistry;
@@ -90,10 +91,10 @@ public class DatabaseServiceFactory {
             os.registerInstance(ISqlBuilderRegistry.class, sqlBuilderRegistry);
         }
 
-        modelFactory = (ModelFactory)os.getInstanceOfType(ModelFactory.class);
+        modelFactory = (IModelFactory)os.getInstanceOfType(IModelFactory.class);
         if(modelFactory==null){
             modelFactory = new ModelFactory(uncertainEngine);
-            os.registerInstance(ModelFactory.class, modelFactory);
+            os.registerInstance(IModelFactory.class, modelFactory);
         }
         
         dataSource = (DataSource)os.getInstanceOfType(DataSource.class);
@@ -155,14 +156,14 @@ public class DatabaseServiceFactory {
     /**
      * @return ModelFactory instance to create BusinessModel from xml config
      */
-    public ModelFactory getModelFactory() {
+    public IModelFactory getModelFactory() {
         return modelFactory;
     }
 
     /**
      * @param metadataFactory the ModelFactory to set
      */
-    public void setModelFactory(ModelFactory factory) {
+    public void setModelFactory(IModelFactory factory) {
         this.modelFactory = factory;
     }
 
