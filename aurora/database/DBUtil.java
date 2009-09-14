@@ -70,12 +70,14 @@ public class DBUtil {
 
      public static void printTraceInfo( String type, ILogger logger, SqlRunner runner){
          logger.log(Level.CONFIG, "============= [{0}] SQL Statement execution dump ============", new Object[]{type});
-         logger.config("=== Parsed SQL ===");
-         logger.config(runner.getStatement().getParsedSQL());
-         logger.config("------------------------------------------------------");
-         logger.config("=== Binding info ===");
-         logger.config(runner.getBindDescription());
-         logger.config("================== END of [" + type + "]==================");
+         if(runner!=null){
+             logger.config("=== Parsed SQL ===");
+             logger.config(runner.getStatement().getParsedSQL());
+             logger.config("------------------------------------------------------");
+             logger.config("=== Binding info ===");
+             logger.config(runner.getBindDescription());
+             logger.config("================== END of [" + type + "]==================");
+         }
          logger.config("");
      }
      
