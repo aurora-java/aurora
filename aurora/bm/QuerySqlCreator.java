@@ -26,7 +26,7 @@ import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class QuerySqlCreator extends AbstractSqlCreator {
     
-    public QuerySqlCreator(ModelFactory fact, ISqlBuilderRegistry reg){
+    public QuerySqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
         super(fact,reg);
     }
    

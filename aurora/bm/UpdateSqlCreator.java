@@ -27,7 +27,7 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
     }
     */
     
-    public UpdateSqlCreator(ModelFactory fact, ISqlBuilderRegistry reg){
+    public UpdateSqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
         super(fact,reg);
     }    
     

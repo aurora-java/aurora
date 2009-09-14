@@ -8,10 +8,10 @@ import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public abstract class AbstractSqlCreator {
     
-    ModelFactory                    modelFactory;
+    IModelFactory                    modelFactory;
     ISqlBuilderRegistry             registry;
     
-    public AbstractSqlCreator(ModelFactory fact, ISqlBuilderRegistry reg){
+    public AbstractSqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
         modelFactory = fact;        
         registry = reg;
     }

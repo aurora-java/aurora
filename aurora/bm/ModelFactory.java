@@ -11,21 +11,24 @@ import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 
-public class ModelFactory {
+public class ModelFactory implements IModelFactory {
     
     //public static final String PROC_GENERATE_SQL = "aurora.database.sql.GenerateSqlStatement"; 
     
-    UncertainEngine         uncertainEngine;
+    public static final String DEFAULT_MODEL_EXTENSION = "bm";
+
+    UncertainEngine         mUncertainEngine;
     
-    CompositeLoader         compositeLoader; 
+    CompositeLoader         mCompositeLoader; 
     
     // name -> BusinessModel
-    Map                     modelCache;
+    Map                     mModelCache;
     
     public ModelFactory(UncertainEngine  engine){
-        this.uncertainEngine = engine;
-        this.compositeLoader = engine.getCompositeLoader();
-        modelCache = new HashMap();
+        mUncertainEngine = engine;
+        mCompositeLoader = CompositeLoader.createInstanceForOCM();
+        mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
+        mModelCache = new HashMap();
     }
     
     /**
@@ -38,32 +41,27 @@ public class ModelFactory {
     public BusinessModel getModelForRead( String name )
         throws IOException
     {
-        BusinessModel model = (BusinessModel)modelCache.get(name);
+        BusinessModel model = (BusinessModel)mModelCache.get(name);
         if(model==null){
             model = getNewModelInstance( name );
-            modelCache.put(name, model);
+            mModelCache.put(name, model);
         }
         return model;
     }
     
-    /**
-     * 
-     * @param config
-     * @return
-     */
     public BusinessModel getModel( CompositeMap config ){
         BusinessModel model = new BusinessModel();
         model.setModelFactory(this);
         model.initialize(config);
         model.makeReady();
-        modelCache.put(model.getName(), model);
+        mModelCache.put(model.getName(), model);
         return model;        
     }
 
     public CompositeMap getModelConfig( String name )
         throws IOException
     {
-        CompositeMap config = uncertainEngine.loadCompositeMap(name);
+        CompositeMap config = mUncertainEngine.loadCompositeMap(name);
         if(config==null) throw new IOException("Can't load resource "+name);
         return config;        
     }
