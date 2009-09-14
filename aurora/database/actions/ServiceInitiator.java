@@ -8,6 +8,8 @@ import javax.sql.DataSource;
 import uncertain.core.UncertainEngine;
 import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
+import uncertain.ocm.IObjectRegistry;
+import aurora.bm.IModelFactory;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class ServiceInitiator {
@@ -27,8 +29,9 @@ public class ServiceInitiator {
     
     public void init(){
         factory = new DatabaseServiceFactory( uncertainEngine );
-        uncertainEngine.getObjectRegistry().registerInstance(DatabaseServiceFactory.class, factory);
-        
+        IObjectRegistry objreg = uncertainEngine.getObjectRegistry(); 
+        objreg.registerInstance(DatabaseServiceFactory.class, factory);
+        //objreg.registerInstance(IModelFactory.class, factory.getModelFactory());
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
         reg.addClassMapping( "model-query", ModelQuery.class );
         reg.addClassMapping( "model-update", ModelUpdate.class );
