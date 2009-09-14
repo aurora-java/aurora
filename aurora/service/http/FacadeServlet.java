@@ -41,10 +41,12 @@ public class FacadeServlet extends AbstractFacadeServlet {
     protected void populateService(HttpServletRequest request,
             HttpServletResponse response, IService service) throws Exception {
         ServiceInstance svc = (ServiceInstance) service;
+        
+        // load configure map
         String name = svc.getName();
         CompositeMap config = mServiceFactory.loadServiceConfig(name);
         svc.setServiceConfigData(config);
-        
+        // set procedure name
         String extension = name.substring(name.lastIndexOf('.')+1);
         String proc = mServiceFactory.getProcedureName(extension);        
         svc.getController().setProcedureName(proc);

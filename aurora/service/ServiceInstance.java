@@ -140,7 +140,8 @@ public class ServiceInstance implements IService {
         mProcManager.destroyContext(mContextMap);
         clearMap(mContextMap);
         clearMap(mConfigMap);
-        mConfig.clear();
+        if(mConfig!=null)
+            mConfig.clear();
     }
 
     public ServiceController getController() {
