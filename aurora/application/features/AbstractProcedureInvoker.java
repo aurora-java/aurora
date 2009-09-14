@@ -35,6 +35,7 @@ public abstract class AbstractProcedureInvoker {
     DataSource          mDataSource;
     Connection          mConnection;
     
+    /** @todo Use JTA instead */
     void beginTransaction( ServiceContext context ) throws Exception {
         mConnection = (Connection)context.getInstanceOfType(Connection.class);
         if(mConnection==null){
