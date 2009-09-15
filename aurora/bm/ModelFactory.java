@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.xml.sax.SAXException;
+
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
@@ -61,9 +63,13 @@ public class ModelFactory implements IModelFactory {
     public CompositeMap getModelConfig( String name )
         throws IOException
     {
-        CompositeMap config = mUncertainEngine.loadCompositeMap(name);
-        if(config==null) throw new IOException("Can't load resource "+name);
-        return config;        
+        try{
+            CompositeMap config = mCompositeLoader.loadFromClassPath(name);
+            if(config==null) throw new IOException("Can't load resource "+name);
+            return config;
+        }catch(SAXException ex){
+            throw new RuntimeException("Error when parsing "+name, ex);
+        }
     }
     
     protected BusinessModel getNewModelInstance( String name )
