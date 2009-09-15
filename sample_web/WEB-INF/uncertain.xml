@@ -16,6 +16,7 @@
 		<providers>
 			<logger-provider name="default">
 				<topics>
+					<logging-topic name="aurora.presentation.manager" level="CONFIG"/>
 					<logging-topic name="uncertain.core" level="CONFIG"/>
 					<logging-topic name="uncertain.proc" level="INFO"/>
 				</topics>
@@ -26,10 +27,10 @@
 			</logger-provider>
 			<logger-provider name="error">
 				<topics>
-					<logging-topic name="aurora-error" level="INFO"/>
+					<logging-topic name="error" level="INFO"/>
 				</topics>
 				<handles>
-					<log-file-handler append="true" logFilePrefix="error" logFilePostfix="log" logPath="d:/logs"/>
+					<log-file-handler append="true" logFilePrefix="aurora-error" logFilePostfix="log" logPath="d:/logs"/>
 					<log-console-handler/>
 				</handles>
 			</logger-provider>
