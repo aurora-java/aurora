@@ -73,5 +73,14 @@ public class ModelQuery extends AbstractQueryAction {
     public void setModel(String model) {
         this.model = model;
     }
-
+/*
+    public String getRootPath() {
+        // TODO Auto-generated method stub
+        String path =  super.getRootPath();
+        if(path==null)
+            return service.getBusinessModel().getBaseTable();
+        else
+            return path;
+    }
+*/
 }

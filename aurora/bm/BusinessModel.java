@@ -376,5 +376,9 @@ public class BusinessModel extends DynamicObject {
     public void setModelFactory(ModelFactory modelFactory) {
         this.modelFactory = modelFactory;
     }
+    
+    public void extendFrom( BusinessModel another ){
+        
+    }
 
 }

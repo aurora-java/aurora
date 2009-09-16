@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.config.ScreenConfig;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
 import aurora.database.service.DatabaseServiceFactory;
@@ -44,12 +45,19 @@ public class AutoCrudServlet extends FacadeServlet {
         String object_name = args[start_index+2];
         String action_name = args[start_index+3];
         CompositeMap service_config = (CompositeMap)mServiceConfig.clone();
+        
+        ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
         if("query".equals(action_name)){
             ModelQueryConfig mq = ActionConfigManager.createModelQuery(object_name);
-            mq.setRootPath("list");            
-            service_config.getChild("init-procedure").addChild(0,mq.getObjectContext());
-            svc.setServiceConfigData(service_config);
+            mq.setParameters(svc.getServiceContext().getParameter());
+            screen.getInitProcedureConfig().addChild(0,mq.getObjectContext());
         }
+        /*
+        else if("update".equals(action_name)){
+            
+        }
+        */
+        svc.setServiceConfigData(service_config);        
         //BusinessModelService bmsvc = mDatabaseServiceFactory.getModelService(object_name);
         
     }

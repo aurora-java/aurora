@@ -4,8 +4,7 @@
  */
 package aurora.database.actions.config;
 
-import java.util.List;
-
+import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 
 public class AbstractQueryActionConfig extends DynamicObject {
@@ -16,6 +15,8 @@ public class AbstractQueryActionConfig extends DynamicObject {
     public static final String KEY_AUTOCOUNT = "autocount";
     private static final String KEY_FETCHALL = "fetchall";
     public static final String KEY_PARAMETER = "parameter";
+    
+    static final String[] POPULATABLE_PARAMETERS = {KEY_ROOTPATH, KEY_RECORDNAME, KEY_AUTOCOUNT, KEY_FETCHALL };
 
     public String getParameter() {
         return getString(KEY_PARAMETER);
@@ -63,6 +64,15 @@ public class AbstractQueryActionConfig extends DynamicObject {
 
     public void setRecordName(String recordName) {
         putString(KEY_RECORDNAME, recordName);
+    }
+    
+    public void setParameters( CompositeMap params ){
+        for(int i=0; i<POPULATABLE_PARAMETERS.length; i++){
+            String key = "_" + POPULATABLE_PARAMETERS[i];
+            Object value = params.get(key);
+            if(value!=null)
+                super.object_context.put(POPULATABLE_PARAMETERS[i], value);
+        }
     }
 
 }
