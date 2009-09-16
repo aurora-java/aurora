@@ -4,11 +4,17 @@
 		<sql-query service="testcase.HR.EmpQueryMatrix" rootPath="EMP-LIST"  fetchAll="true" autoCount="true" />
 	</a:init-procedure>
 	
-	<page template="default" package="aurora.testcase.ui">
-		<dataset ref="testcase.HR.EMP" />
+	<a:datasets>
+		<a:dataset ref="testcase.HR.EMP" />
+		<a:dataset ref="testcase.HR.DEPT" />
+	</a:datasets>
+			
+	<a:view template="default" package="aurora.testcase.ui">
+
+		
 		<template template="employee_form" package="aurora.testcase.ui" datamodel="employee">
-			<textedit name="name" datafield="/model/employee/@name"/>
-			<textedit name="address" datafield="/model/employee/@address" class="textedit.normal" enabled="false" viewObject="aaa.a.a" onclick="alert('test!');"/>
+			<textedit name="name" dataField="/model/employee/@name"/>
+			<textedit name="address" dataField="/model/employee/@address" class="textedit.normal" enabled="false" viewObject="aaa.a.a" onclick="alert('test!');"/>
 			<textarea name="memo" rows="7"/>
 			<select datasource="/model/depts" name="deptid" displayfield="@name" valuefield="@value" datafield="/model/employee/@deptid">
 				<options>
@@ -23,5 +29,5 @@
 			}
 		</script>
 		-->
-	</page>
+	</a:view>
 </a:screen>

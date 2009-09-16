@@ -16,7 +16,9 @@ public class DataSetInit {
         ServiceInstance svc = ServiceInstance.getInstance(context);
         ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
         
-        screen.getDataSetsConfig();
+        CompositeMap data = screen.getDataSetsConfig();
+        System.out.println(data.toXML());
+        
         
     }
 

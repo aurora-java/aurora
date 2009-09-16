@@ -5,5 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/uncertain"/>
 	<classpathentry kind="var" path="LIB_SERVLET"/>
 	<classpathentry kind="lib" path="G:/Java/lib/freemarker.jar"/>
+	<classpathentry kind="lib" path="G:/Java/c3p0-0.9.1.2/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
