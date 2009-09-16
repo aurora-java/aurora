@@ -60,6 +60,7 @@ public class ScreenRenderer {
         response.setContentType("text/html;charset=utf-8");
         Writer out = response.getWriter();
         BuildSession session = mPrtManager.createSession(out);
+        session.setBaseConfig(mService.getServiceConfig());
         ILogger logger = LoggingContext.getLogger(runner.getContext(), BuildSession.LOGGING_TOPIC);
         session.setLogger(logger);
         session.buildView(mService.getServiceContext().getModel(), mScreen);

@@ -59,7 +59,10 @@ public class BuildSession {
     Set                       mIncludedResourceSet;    
 
     // Named ViewContext
-    Map                       mNamedViewContextMap;    
+    Map                       mNamedViewContextMap;   
+    
+    // Base configuration
+    Configuration             mBaseConfig;
 
     public BuildSession( PresentationManager pm){
         this.mOwner = pm;
@@ -78,6 +81,8 @@ public class BuildSession {
     
     private void startSession( CompositeMap view){
         mCurrentConfig = mOwner.createConfiguration();
+        if(mBaseConfig!=null)
+            mCurrentConfig.setParent(mBaseConfig);
         mCurrentConfig.loadConfig(view);
         mCurrentConfig.setLogger(getLogger());
 /*
@@ -357,5 +362,11 @@ public class BuildSession {
     
     public ViewContext getNamedViewContext(  QualifiedName qname ){
         return mNamedViewContextMap == null ? null: (ViewContext)mNamedViewContextMap.get(qname);
+    }
+    public Configuration getBaseConfig() {
+        return mBaseConfig;
+    }
+    public void setBaseConfig(Configuration baseConfig) {
+        mBaseConfig = baseConfig;
     }
 }
