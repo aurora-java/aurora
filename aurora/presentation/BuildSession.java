@@ -178,6 +178,7 @@ public class BuildSession {
         args[0] = this;
         args[1] = context;
         if( for_all_components ){
+            //mCurrentConfig.getLogger().info("to fire global "+event_name);
             mCurrentConfig.fireEvent(event_name, mSessionContext, args );
         }else{
             HandleManager manager = mCurrentConfig.createHandleManager(context.getView());

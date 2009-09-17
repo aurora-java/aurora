@@ -62,6 +62,8 @@ public class ScreenRenderer {
         BuildSession session = mPrtManager.createSession(out);
         session.setBaseConfig(mService.getServiceConfig());
         ILogger logger = LoggingContext.getLogger(runner.getContext(), BuildSession.LOGGING_TOPIC);
+        //System.out.println("session "+logger);
+        //logger.info("start build session");
         session.setLogger(logger);
         session.buildView(mService.getServiceContext().getModel(), mScreen);
         out.flush();
