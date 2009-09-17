@@ -81,8 +81,10 @@ public class BuildSession {
     
     private void startSession( CompositeMap view){
         mCurrentConfig = mOwner.createConfiguration();
+        /*
         if(mBaseConfig!=null)
             mCurrentConfig.setParent(mBaseConfig);
+            */
         mCurrentConfig.loadConfig(view);
         mCurrentConfig.setLogger(getLogger());
 /*
@@ -180,6 +182,10 @@ public class BuildSession {
         if( for_all_components ){
             //mCurrentConfig.getLogger().info("to fire global "+event_name);
             mCurrentConfig.fireEvent(event_name, mSessionContext, args );
+            if(mBaseConfig!=null){
+                mBaseConfig.fireEvent(event_name, mSessionContext, args );
+                mBaseConfig.getLogger().info("Fired "+event_name);
+            }
         }else{
             HandleManager manager = mCurrentConfig.createHandleManager(context.getView());
             mCurrentConfig.fireEvent(event_name, args, mSessionContext, manager);            
