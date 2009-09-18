@@ -370,10 +370,20 @@ public class BuildSession {
     public ViewContext getNamedViewContext(  QualifiedName qname ){
         return mNamedViewContextMap == null ? null: (ViewContext)mNamedViewContextMap.get(qname);
     }
+    
     public Configuration getBaseConfig() {
         return mBaseConfig;
     }
+    
     public void setBaseConfig(Configuration baseConfig) {
         mBaseConfig = baseConfig;
+    }
+    
+    public void setInstanceOfType( Class type, Object instance ){
+        mRuntimeContext.setInstanceOfType(type, instance);
+    }
+    
+    public Object getInstanceOfType( Class type ){
+        return mRuntimeContext.getInstanceOfType(type);
     }
 }

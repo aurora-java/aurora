@@ -16,6 +16,7 @@ import aurora.application.config.ScreenConfig;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.PresentationManager;
+import aurora.service.IService;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
@@ -61,6 +62,7 @@ public class ScreenRenderer {
         Writer out = response.getWriter();
         BuildSession session = mPrtManager.createSession(out);
         session.setBaseConfig(mService.getServiceConfig());
+        session.setInstanceOfType(IService.class, mService);
         ILogger logger = LoggingContext.getLogger(runner.getContext(), BuildSession.LOGGING_TOPIC);
         //System.out.println("session "+logger);
         //logger.info("start build session");
