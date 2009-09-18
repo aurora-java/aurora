@@ -1,13 +1,7 @@
 <model baseTable="DEPT">
 	<fields>
-		<field name="DEPTNO" datatype="java.lang.Long" databaseType="BIGINT">
-			<validators>
-				<validator type="required" />
-				<validator type="email" />
-				<validator type="range" minValue="3" maxValue="10" />
-			</validators>
-		</field>
-		<field name="DNAME" datatype="java.lang.String" databaseType="VARCHAR"/>
+		<field name="DEPTNO" datatype="java.lang.Long" databaseType="BIGINT" />
+		<field name="DNAME1" datatype="java.lang.String" databaseType="VARCHAR"/>
 		<field name="LOC" datatype="java.lang.String" databaseType="VARCHAR"/>
 	</fields>
 	<primary-key>

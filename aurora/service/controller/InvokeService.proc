@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<procedure xmlns="uncertain.proc">
+<procedure xmlns="uncertain.proc" participants="aurora.service.exception.ExceptionHandler">
 	<fields>
 		<field name="service" type="aurora.service.IService"/>
 	</fields>
@@ -9,6 +9,7 @@
 	<action name="CreateSuccessResponse" input="service"/>
 	<exception-handles>
 		<catch Exception="*">
+			<action name="HandleException" />		
 			<action name="CreateFailResponse" input="service"/>
 		</catch>
 	</exception-handles>

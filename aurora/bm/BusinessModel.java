@@ -270,8 +270,7 @@ public class BusinessModel extends DynamicObject {
                     String name = field.getString(Field.KEY_NAME);
                     if(name==null) throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
                     Field f = (Field)fieldMap.get(name.toLowerCase());
-                    f.setPrimaryKey(true);
-                    if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());
+                    if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());                    f.setPrimaryKey(true);
                     pkFieldsArray[n++] = f;
                 }
         }
