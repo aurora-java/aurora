@@ -4,45 +4,91 @@
  */
 package aurora.application.features;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import aurora.application.config.ScreenConfig;
-import aurora.presentation.BuildSession;
-import aurora.presentation.ViewContext;
-import aurora.service.ServiceInstance;
 import uncertain.composite.CompositeMap;
 import uncertain.proc.ProcedureRunner;
+import aurora.application.config.ScreenConfig;
+import aurora.bm.IModelFactory;
+import aurora.presentation.BuildSession;
+import aurora.presentation.IViewBuilder;
+import aurora.presentation.ViewContext;
+import aurora.presentation.ViewCreationException;
+import aurora.service.ServiceInstance;
 
-public class DataSetInit {
+public class DataSetInit implements IViewBuilder {
     
-    CompositeMap data ;
+	private static final String PROPERTITY_HREF = "href";
+	private static final String PROPERTITY_FIELDS = "fields";
+	
+	IModelFactory mFactory;
+
+    public DataSetInit(IModelFactory factory) {
+        this.mFactory = factory;
+    }
     
-    public void onInitService( ProcedureRunner runner ){
+	
+    public void onInitService( ProcedureRunner runner ) throws Exception{
         CompositeMap context = runner.getContext();
         ServiceInstance svc = ServiceInstance.getInstance(context);
         ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
-        
-        data = screen.getDataSetsConfig();
-        System.out.println(data.toXML());
-        
-        
+        CompositeMap datasets = screen.getDataSetsConfig();
+        List list = datasets.getChildsNotNull();
+        Iterator it = list.iterator();
+        while(it.hasNext()){
+        	CompositeMap dataset = (CompositeMap)it.next();
+        	processDataSet(dataset);
+        }
     }
     
-    public void onPreparePageContent( BuildSession session, ViewContext context )
-        throws Exception
-    {
-        
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter writer = new OutputStreamWriter(baos);
-        BuildSession _session = new BuildSession(session.getPresentationManager());
-        _session.setWriter(writer);
-        _session.buildViews(context.getModel(), data.getChilds());   
-        context.getMap().put("dataset.init", baos.toString());
-        
-
+    private void processDataSet(CompositeMap view) throws Exception{
+    	
+		String href = view.getString(PROPERTITY_HREF, "");
+		if(!"".equals(href)){
+			CompositeMap bm = mFactory.getModelConfig(href);
+			CompositeMap bmfields = bm.getChild(PROPERTITY_FIELDS);
+			if(bmfields != null){
+				CompositeMap fields = view.getChild(PROPERTITY_FIELDS);
+				if(fields == null){
+					fields = new CompositeMap(PROPERTITY_FIELDS);
+					view.addChild(fields);
+				}
+				List childs = new ArrayList();
+				List list = fields.getChildsNotNull();
+				List bmlist = bmfields.getChilds();
+				
+				Iterator bit = bmlist.iterator();
+				while(bit.hasNext()){
+					CompositeMap field = (CompositeMap)bit.next();
+					Iterator lit = list.iterator();
+					while(lit.hasNext()){
+						CompositeMap lfield = (CompositeMap)lit.next();
+						if(field.getString("name").equals(lfield.getString("name"))){
+							field.putAll(lfield);
+						}
+					}
+					childs.add(field);
+				}
+				fields.getChilds().clear();
+				fields.getChilds().addAll(childs);
+			}
+		}
     }
+
+	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
+		try {
+			session.buildViews(view_context.getModel(), view_context.getView().getChilds());
+		} catch (Exception e) {
+			throw new ViewCreationException(e);
+		}
+		
+	}
+
+	public String[] getBuildSteps(ViewContext context) {
+		return null;
+	}
 
 }

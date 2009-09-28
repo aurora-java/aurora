@@ -14,7 +14,7 @@ import aurora.presentation.ViewContext;
  */
 public class DatePicker extends TextField {
 	
-	private static final String PROPERTITY_POPWIDTH = "popWidth";
+	private static final String PROPERTITY_POPWIDTH = "popwidth";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);		
@@ -24,7 +24,7 @@ public class DatePicker extends TextField {
 		addJavaScript(session, context, "datefield/DatePicker.js");
 	}
 
-	public void onCreateViewContent(BuildSession session, ViewContext context)  {
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		

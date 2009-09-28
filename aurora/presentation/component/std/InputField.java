@@ -12,8 +12,8 @@ public class InputField extends Field {
 	
 	
 	
-	protected static final String PROPERTITY_EMPTYTEXT = "emptyText";
-	protected static final String PROPERTITY_INPUTWIDTH = "inputWidth";	
+	protected static final String PROPERTITY_EMPTYTEXT = "emptytext";
+	protected static final String PROPERTITY_INPUTWIDTH = "inputwidth";	
 
 	protected static final String CLASSNAME_EMPTYTEXT = "item-emptyText";
 	
@@ -29,7 +29,7 @@ public class InputField extends Field {
 		addJavaScript(session, context, "core/Field.js");
 	}
 	
-	public void onCreateViewContent(BuildSession session, ViewContext context){
+	public void onCreateViewContent(BuildSession session, ViewContext context)throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();

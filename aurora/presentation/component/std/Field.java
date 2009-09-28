@@ -50,7 +50,7 @@ public class Field extends Component {
 		addJavaScript(session, context, "core/Component.js");
 	}
 
-	public void onCreateViewContent(BuildSession session, ViewContext context){
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();

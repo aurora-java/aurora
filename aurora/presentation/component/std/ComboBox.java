@@ -15,9 +15,9 @@ import aurora.presentation.ViewContext;
  */
 public class ComboBox extends TextField {
 
-	private static final String PROPERTITY_POPWIDTH = "popWidth";
-	private static final String PROPERTITY_VALUE_FIELD = "valueField";
-	private static final String PROPERTITY_DISPLAY_FIELD = "displayField";
+	private static final String PROPERTITY_POPWIDTH = "popwidth";
+	private static final String PROPERTITY_VALUE_FIELD = "valuefield";
+	private static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
 	private static final String PROPERTITY_OPTIONS = "options";
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
@@ -27,7 +27,7 @@ public class ComboBox extends TextField {
 		addJavaScript(session, context, "combobox/ComboBox.js");
 	}
 
-	public void onCreateViewContent(BuildSession session, ViewContext view_context) {
+	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();
 		CompositeMap view = view_context.getView();	

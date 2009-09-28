@@ -15,17 +15,18 @@ import aurora.presentation.markup.HtmlPageContext;
 
 public class Component {
 		
-	protected static final String PROPERTITY_ID = "id";
-	protected static final String PROPERTITY_NAME = "name";
-	protected static final String PROPERTITY_STYLE = "style";
-	protected static final String PROPERTITY_VALUE = "value";
-	protected static final String PROPERTITY_CONFIG = "config";
-	protected static final String PROPERTITY_EVENTS = "events";
-	protected static final String PROPERTITY_BINDING = "binding";
-	protected static final String PROPERTITY_CLASSNAME = "className";
-	protected static final String PROPERTITY_WIDTH = "width";
-	protected static final String PROPERTITY_BINDTARGET = "bindTarget";
-	protected static final String PROPERTITY_BINDNAME = "bindName";
+	public static final String PROPERTITY_ID = "id";
+	public static final String PROPERTITY_LABEL = "label";
+	public static final String PROPERTITY_NAME = "name";
+	public static final String PROPERTITY_STYLE = "style";
+	public static final String PROPERTITY_VALUE = "value";
+	public static final String PROPERTITY_CONFIG = "config";
+	public static final String PROPERTITY_EVENTS = "events";
+	public static final String PROPERTITY_BINDING = "binding";
+	public static final String PROPERTITY_CLASSNAME = "classname";
+	public static final String PROPERTITY_WIDTH = "width";
+	public static final String PROPERTITY_BINDTARGET = "bindtarget";
+	public static final String PROPERTITY_BINDNAME = "bindname";
 	
 	protected static final String WRAP_CSS = "wrapClass";
 	
@@ -43,7 +44,7 @@ public class Component {
 		addJavaScript(session, context, "core/Component.js");
 	}
 	
-	public void onCreateViewContent(BuildSession session, ViewContext context){
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
@@ -107,7 +108,6 @@ public class Component {
 			if(bindName.equals("")){
 				bindName = name;				
 			}
-//			bsb.append(id+".bind(" + bindTarget + ",'" + bindName + "');\n");
 			bsb.append("$('"+id+"').bind(" + bindTarget + ",'" + bindName + "');\n");
 			map.put(PROPERTITY_BINDING, bsb.toString());
 		}

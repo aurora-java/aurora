@@ -26,7 +26,7 @@ public class TextField extends InputField {
 		addJavaScript(session, context, "textfield/TextField.js");
 	}
 
-	public void onCreateViewContent(BuildSession session, ViewContext context)  {
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();		
 		map.put(PROPERTITY_CONFIG, getConfigString());

@@ -27,10 +27,11 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected static final String COLUMNS = "column";
 	protected static final int UNLIMITED = -1;
 	
-	private static final String PROPERTITY_CLASS="className";
+	private static final String PROPERTITY_CLASS="classname";
 	private static final String PROPERTITY_STYLE="style";
-	private static final String PROPERTITY_CELLPADDING = "cellPadding";
-	private static final String PROPERTITY_CELLSPACING = "cellSpacing";
+	private static final String PROPERTITY_CELLPADDING = "cellpadding";
+	private static final String PROPERTITY_CELLSPACING = "cellspacing";
+	private static final String PROPERTITY_VALIDALIGN = "validalign";
 	
 	private static final String DEFAULT_TABLE_CLASS = "layout-table";
 	private static final String DEFAULT_TD_CELL = "layout-td-cell";
@@ -63,9 +64,8 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 			out.write("<td class='"+DEFAULT_TD_CELL +"'>");
 		}
 		session.buildView(model, field);
-		if(builder instanceof GridLayout){}else{
-			String cid = field.getString(Component.PROPERTITY_ID);
-			addInvalidMsg(cid, out);
+		if(builder instanceof GridLayout){}else{			
+			addInvalidMsg(field, out);
 		}
 		out.write("</td>");	
 	}
@@ -194,9 +194,15 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		addBoxScript(id, session, view);
 	}
 	
-	private void addInvalidMsg(String id, Writer out) throws IOException {
-		//<div class='item-clear'></div>
-		out.write("<div class='item-clear'></div><span class='item-invalid-msg' id='"+ id +"_vmsg'></span>");		
+	private void addInvalidMsg(CompositeMap field, Writer out) throws IOException {
+		String id = field.getString(Component.PROPERTITY_ID);
+		String align = field.getString(PROPERTITY_VALIDALIGN, "");
+		if("bottom".equals(align)){
+			out.write("<div class='item-clear'></div>");	
+			out.write("<span class='item-invalid-msg-bottom' id='"+ id +"_vmsg'></span>");		
+		}else{
+			out.write("<span class='item-invalid-msg-right' id='"+ id +"_vmsg'></span>");	
+		}
 	}
 	
 	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {

@@ -5,6 +5,7 @@
 package aurora.application.config;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.CompositeUtil;
 import uncertain.composite.DynamicObject;
 
 public class ScreenConfig extends DynamicObject {
@@ -35,7 +36,7 @@ public class ScreenConfig extends DynamicObject {
     }
     
     public CompositeMap getDataSetsConfig(){
-        return object_context.getChild("datasets");
+        return CompositeUtil.findChild(object_context, "dataSets");
     }
 
 }

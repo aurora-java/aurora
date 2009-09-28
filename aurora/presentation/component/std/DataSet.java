@@ -9,30 +9,45 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
+import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
+import aurora.presentation.ViewCreationException;
 
-public class DataSet extends Component{
+public class DataSet extends Component {
 	
-	private static final String PROPERTITY_FIELDS = "fields";
-	private static final String PROPERTITY_DATAS = "datas";
-	private static final String PROPERTITY_DATASOURCE = "dataSource";
-	private static final String PROPERTITY_CREATERECORD = "autoCreate";
+	public static final String PROPERTITY_HREF = "href";
+	public static final String PROPERTITY_FIELDS = "fields";
+	public static final String PROPERTITY_DATAS = "datas";
+	public static final String PROPERTITY_DATASOURCE = "datasource";
+	public static final String PROPERTITY_CREATERECORD = "autocreate";
+	public static final String PROPERTITY_QUERYURL = "queryurl";
+	public static final String PROPERTITY_SUBMITURL = "submiturl";
+	public static final String PROPERTITY_QUERYDATASET = "querydataset";
+	public static final String PROPERTITY_FETCHALL = "fecthall";
+	public static final String PROPERTITY_PAGESIZE = "pagesize";
+	public static final String PROPERTITY_AUTOCOUNT = "autocount";
 	
+	
+    public DataSet() {
+    }
+    
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);	
 		addJavaScript(session, context, "core/DataSet.js");
 	}
 
-	public void onCreateViewContent(BuildSession session, ViewContext context)  {
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
-		Map map = context.getMap();
 		
+		Map map = context.getMap();
 		List fieldList = new ArrayList(); 
+		
 		CompositeMap fields = view.getChild(PROPERTITY_FIELDS);
 		if(fields != null) {
-			Iterator it = fields.getChildIterator();			
+			Iterator it = fields.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
 				field.putBoolean("required", field.getBoolean("required", false));
@@ -72,6 +87,15 @@ public class DataSet extends Component{
 			dataList.add(json);
 			
 		}
-		map.put(PROPERTITY_DATAS, dataList.toString());		
+		map.put(PROPERTITY_DATAS, dataList.toString());	
+		map.put(PROPERTITY_QUERYURL, view.getString(PROPERTITY_QUERYURL, ""));	
+		map.put(PROPERTITY_SUBMITURL, view.getString(PROPERTITY_SUBMITURL, ""));	
+		map.put(PROPERTITY_QUERYDATASET, view.getString(PROPERTITY_QUERYDATASET, ""));
+		map.put(PROPERTITY_FETCHALL, view.getString(PROPERTITY_FETCHALL, "false"));
+		map.put(PROPERTITY_PAGESIZE, view.getString(PROPERTITY_PAGESIZE, "10"));
+		map.put(PROPERTITY_AUTOCOUNT, view.getString(PROPERTITY_AUTOCOUNT, "true"));
+		
+		
+		
 	}
 }
