@@ -4,8 +4,10 @@
 
 package aurora.presentation;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -143,6 +145,31 @@ public class BuildSession {
         if(from_begin){
             endSession();
             logger.config("End build session");
+        }
+    }
+    
+    /**
+     * Build view content into a string buffer, without affecting current output
+     * @param model Data model in CompositeMap
+     * @param view View configuration in CompositeMap
+     * @return Generated view content
+     * @throws Exception
+     */
+    public String buildViewAsString( CompositeMap model, CompositeMap view ) 
+    throws Exception{
+        Writer old_writer = mWriter;
+        try{
+            ByteArrayOutputStream  bos = new ByteArrayOutputStream();
+            PrintWriter out = new PrintWriter(bos);
+            setWriter(out);
+            buildView(model,view);
+            out.flush();
+            String str = bos.toString();
+            out.close();
+            bos.close();
+            return str;
+        }finally{
+            mWriter = old_writer;
         }
     }
     
