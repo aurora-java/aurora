@@ -22,6 +22,7 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_DATABASE_TYPE = "databasetype";
     public static final String KEY_PHYSICAL_NAME = "physicalname";
     public static final String KEY_UPDATE_EXPRESSION = "updateexpression";
+    public static final String KEY_INSERT_EXPRESSION = "insertexpression";    
     public static final String KEY_QUERY_EXPRESSION = "queryexpression";
     public static final String KEY_IS_PRIMARYKEY = "isprimarykey";
     public static final String KEY_REQUIRED = "required";
@@ -140,6 +141,16 @@ public class Field extends DynamicObject implements IParameter {
     public void setUpdateExpression(String source){
         putString(KEY_UPDATE_EXPRESSION, source);
     }
+
+    public String getInsertExpression(){
+        String exp = getString(KEY_INSERT_EXPRESSION);
+        if(exp==null) exp = defaultParamExpression(getInputPath());
+        return exp;
+    }
+    
+    public void setInsertExpression(String source){
+        putString(KEY_INSERT_EXPRESSION, source);
+    }
     
     public String getQueryExpression(){
         return getString(KEY_QUERY_EXPRESSION);
@@ -162,6 +173,8 @@ public class Field extends DynamicObject implements IParameter {
     }
     
     public boolean isForInsert(){
+        if( isReferenceField() )
+            return false;
         return getBoolean(KEY_FOR_INSERT, true);
     }
     

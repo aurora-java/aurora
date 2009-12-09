@@ -60,7 +60,7 @@ public class ModelQuery extends AbstractQueryAction {
         if(model==null)
             throw new IllegalArgumentException("Must set 'model' property");
         service = svcFactory.getModelService(model, context);
-        service.setTrace(getTrace());
+        //service.setTrace(getTrace());
         serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
     }
     

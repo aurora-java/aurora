@@ -19,7 +19,7 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     
     String                  model;
 
-    boolean                 trace;
+    //boolean                 trace;
     
     DatabaseServiceFactory  svcFactory;
     
@@ -36,7 +36,7 @@ public abstract class AbstractModelAction extends AbstractEntry  {
             throw new IllegalArgumentException("Must set 'model' property");
         CompositeMap context = runner.getContext();
         service = svcFactory.getModelService(model, context);
-        service.setTrace(getTrace());
+        //service.setTrace(getTrace());
     }
     
     public BusinessModelService getService(){
@@ -62,19 +62,14 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     public void setModel(String model) {
         this.model = model;
     }
-
-    /**
-     * @return the trace
-     */
+/*
+    
     public boolean getTrace() {
         return trace;
     }
 
-    /**
-     * @param trace the trace to set
-     */
     public void setTrace(boolean trace) {
         this.trace = trace;
     }
-
+*/
 }

@@ -15,7 +15,7 @@ import uncertain.core.UncertainEngine;
 import uncertain.event.IContextListener;
 import uncertain.event.RuntimeContext;
 import uncertain.logging.BasicFileHandler;
-import uncertain.logging.ConfigurableLoggerProvider;
+import uncertain.logging.LoggerProvider;
 import uncertain.logging.ILoggerProvider;
 import uncertain.logging.ILoggerProviderGroup;
 import uncertain.logging.LoggerProviderGroup;
@@ -23,7 +23,7 @@ import uncertain.ocm.IConfigurable;
 import uncertain.ocm.OCManager;
 import aurora.service.ServiceInstance;
 
-public class ServiceLogging extends ConfigurableLoggerProvider implements 
+public class ServiceLogging extends LoggerProvider implements 
     IGlobalInstance, IContextListener, IConfigurable 
 {
     
@@ -81,13 +81,13 @@ public class ServiceLogging extends ConfigurableLoggerProvider implements
         if(svc==null)
             throw new IllegalStateException("No ServiceInstance set in context");
         if( !svc.isTraceOn()) return;
-        ConfigurableLoggerProvider provider = new ConfigurableLoggerProvider(getTopicManager());
-        String file_name = getLogFilePath(svc);
+        LoggerProvider provider = new LoggerProvider(getTopicManager());
+        provider.setDefaultLogLevel(getDefaultLogLevel());
         
+        String file_name = getLogFilePath(svc);        
         BasicFileHandler handler = getLogHandler(file_name);
         provider.addHandles( new Handler[]{handler});        
         context.setInstanceOfType(BasicFileHandler.class, handler);
-        
         ILoggerProvider lp = (ILoggerProvider)context.getInstanceOfType(ILoggerProvider.class);
         if(lp==null){
             context.setInstanceOfType(ILoggerProvider.class, provider);

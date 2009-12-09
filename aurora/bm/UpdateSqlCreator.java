@@ -68,17 +68,7 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
     public void onExecuteUpdate( StringBuffer sql, BusinessModelServiceContext bmsc)
         throws Exception
     {
-        ParsedSql s = new ParsedSql(sql.toString());
-        SqlServiceContext context = null;
-        CompositeMap root =  bmsc.getObjectContext().getParent();
-        if(root!=null)
-            context = SqlServiceContext.createSqlServiceContext(root);
-        else
-            context = bmsc;
-        SqlRunner runner = new SqlRunner(context, s);
-        runner.setTrace(bmsc.isTrace());        
-        bmsc.setSqlRunner(runner);
-        runner.update(bmsc.getCurrentParameter());        
+        super.executeUpdateSql(sql, bmsc);        
     }
    
 

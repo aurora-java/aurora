@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ComplexExpression extends RawSqlExpression {
     
-    class FieldDefine {
+    static class FieldDefine {
         
         String  name;   
         

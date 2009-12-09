@@ -1,0 +1,84 @@
+<a:screen xmlns:a="http://www.aurora-framework.org/application" trace="true" xmlns:p="uncertain.proc">
+	<a:view template="default" package="aurora.testcase.ui">
+<script language="javascript" src="jquery.js" > </script>
+<form method="post" name="MAIN_FORM" >
+ 
+<table border="0" width="100%"><tr><td>
+ 
+ 
+ 
+<table  width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#8FB4DE" >
+ 
+     <tr bgcolor="#FFFFFF"> 
+        <td height="20" colspan="2">
+          <table width="100%" height="20" border="0" cellpadding="0" 
+        		cellspacing="0" class="form-section-line">
+             <tr> 
+             <td><div align="right" class="form-section-title">Invoke JSON service</div></td>
+             </tr>
+          </table>
+        </td>
+     </tr>
+  
+ 
+ 
+ <tr bgcolor="#FFFFFF"> 
+    <td  height="20"  width="30%"  class="form-prompt-body" 
+         align="left"  valign="Middle" >  
+    Service URL </td>
+    <td   height="20" class="form-body"  width="70%"   align="left"    valign="Middle"  > 
+    <input Prompt="Service URL" name="url" value="emp_update_batch.svc"/></td>
+ </tr>
+ 
+ <tr bgcolor="#FFFFFF"> 
+    <td  height="20"  width="30%"  class="form-prompt-body" 
+         align="left"  valign="Middle" >  
+     </td>
+    <td   height="20" class="form-body"  width="70%"   align="left"    valign="Middle"  > 
+    <textarea cols="80" rows="15" name="_request_data">	{
+			"parameter":		{ pagesize: 5; pagenum:1}
+			}
+			</textarea></td>
+ </tr>
+ 
+</table>
+ </td></tr><tr><td>
+ 
+<input type="button" name=""  value="Invoke" onClick="doSend();" class="default" /> 
+ 
+</td></tr><tr><td><div id="status"/></td></tr></table>
+</form>
+<span  class="default" >Response:</span><div id="response"/><script>
+		
+		function deserialize(s){  
+    			if(s){    				
+        				return eval( '(' + s + ')' );
+    			}
+		}
+		
+		function onsuccess(msg){
+			document.all('status').innerHTML = "Done.";
+			document.all('response').innerHTML = msg;
+		}
+		
+		function onerror(request,msg){	
+			document.all('status').innerHTML = "Fail:"+msg;
+			document.all('response').innerHTML = request.responseText;
+		}		
+		
+		function doSend(){
+			document.all('status').innerHTML = "Sending...";
+			 $$.ajax({
+	  			url: 	MAIN_FORM.url.value,
+	  			type: 'POST',
+	  			data: {'_request_data':MAIN_FORM._request_data.value},	
+	  			success: onsuccess,
+	  			error: onerror
+				});			
+		}
+ 
+		
+		</script>
+	
+	</a:view>
+</a:screen>

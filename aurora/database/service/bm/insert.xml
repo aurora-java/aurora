@@ -1,0 +1,11 @@
+<procedure xmlns="uncertain.proc">
+	<fields>
+		<field name="BusinessModel" type="aurora.bm.BusinessModel" usage="input"/>
+		<field name="SqlStatement" type="aurora.database.sql.ISqlStatement" />
+		<field name="SqlString" type="StringBuffer" />
+	</fields>
+	<action name="CreateInsertStatement" input="BusinessModel" output="SqlStatement"/>
+	<action name="PopulateStatement" input="SqlStatement,BusinessModel"/>
+	<action name="CreateInsertSql" input="SqlStatement,BusinessModel" output="SqlString" />
+	<action name="ExecuteInsert" input="SqlString,BusinessModel" />
+</procedure>

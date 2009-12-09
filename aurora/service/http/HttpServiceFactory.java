@@ -17,6 +17,8 @@ import org.xml.sax.SAXException;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
+import uncertain.event.Configuration;
+import uncertain.event.IParticipantManager;
 import aurora.application.features.HttpRequestTransfer;
 import aurora.service.controller.ControllerProcedures;
 
@@ -37,8 +39,6 @@ public class HttpServiceFactory {
         BUILTIN_MAPPING.put("svc", ControllerProcedures.INVOKE_SERVICE);
     }
     
-    Map     mProcedureMapping = BUILTIN_MAPPING;
-    
     /**
      * @param uncertainEngine
      */
@@ -47,11 +47,18 @@ public class HttpServiceFactory {
         mUncertainEngine = uncertainEngine;
         mCompositeLoader = new CompositeLoader();
         mCompositeLoader.ignoreAttributeCase();
+        mParticipantManager = (IParticipantManager)mUncertainEngine.getObjectRegistry().getInstanceOfType(IParticipantManager.class);
+        if(mParticipantManager!=null){
+            mServiceParentConfig = mParticipantManager.getParticipantsAsConfig(IParticipantManager.SERVICE_SCOPE);
+        }
         //mCompositeLoader.setCacheEnabled(true);
     }
 
-    UncertainEngine     mUncertainEngine;
+    UncertainEngine      mUncertainEngine;
     CompositeLoader      mCompositeLoader;
+    IParticipantManager  mParticipantManager;
+    Map                  mProcedureMapping = BUILTIN_MAPPING;
+    Configuration        mServiceParentConfig;
     
     public CompositeLoader getCompositeLoader(){
         return mCompositeLoader;
@@ -70,6 +77,7 @@ public class HttpServiceFactory {
         svc.setRequest(request);
         svc.setResponse(response);
         svc.setServlet(servlet);   
+        svc.setRootConfig(mServiceParentConfig);
         HttpRequestTransfer.copyRequest(svc);
         return svc;
     }

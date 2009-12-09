@@ -8,7 +8,6 @@
 	</parameters>
 	<update>
 	begin
-			raise_application_error(-20001, 'test error');
 			insert into emp ( empno, deptno, ename, creation_date )
 			values ( emp_s.nextval, ${@deptno}, ${@name} || emp_s.currval,  sysdate )
 			returning  empno, creation_date, ename  into  ${@empno}, ${@creation_date}, ${@name};

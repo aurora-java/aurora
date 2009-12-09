@@ -43,7 +43,7 @@ public class BusinessModelService {
     CompositeMap                        context_map;
     ProcedureRunner                     runner;    
     String                              action = null;
-    boolean                             trace;
+    //boolean                             trace;
     
     protected BusinessModelService(DatabaseServiceFactory factory, Configuration config, BusinessModel model, CompositeMap context_map ) {
         this.config = config;
@@ -124,6 +124,13 @@ public class BusinessModelService {
         return map_creator.getCompositeMap();
     }
     
+    public CompositeMap queryAsMap( Map parameters )
+        throws Exception
+    {
+        FetchDescriptor desc = FetchDescriptor.fetchAll();
+        return queryAsMap( parameters, desc );
+    }
+    
     public CompositeMap queryIntoMap( Map parameters, FetchDescriptor desc, CompositeMap root)
         throws Exception
     {
@@ -144,19 +151,31 @@ public class BusinessModelService {
         query(param,consumer,desc);
     }
     
-    public void updateByPK( Map parameters )
+    protected void runProcedure( Map parameters, String proc_name )
         throws Exception
     {
         pushConfig();
         try{
-            prepareForRun(PROC_UPDATE);
+            prepareForRun(proc_name);
             if(parameters!=null) context.setCurrentParameter(parameters);
             runner.run();
             runner.checkAndThrow();
         }finally{
             popConfig();
             printTraceInfo();             
-        }
+        }        
+    }
+    
+    public void updateByPK( Map parameters )
+        throws Exception
+    {
+        runProcedure(parameters, PROC_UPDATE);
+    }
+    
+    public void insert( Map parameters )
+        throws Exception    
+    {
+        runProcedure(parameters, PROC_INSERT);
     }
     
     public void parseParameter( ServiceContext context )
@@ -196,25 +215,16 @@ public class BusinessModelService {
     void printTraceInfo(){
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
         SqlRunner runner = context.getSqlRunner();
-        /*
-        SqlRunner runner = context.getSqlRunner();
-        if(!getTrace()||runner==null) return;
-        DBUtil.printTraceInfo( action, new PrintWriter(System.out), runner);
-        */
         DBUtil.printTraceInfo(action, logger, runner);
     }    
-    /**
-     * @return the trace
-     */
+/*
+    
     public boolean getTrace() {
         return trace;
     }
 
-    /**
-     * @param trace the trace to set
-     */
     public void setTrace(boolean trace) {
         this.trace = trace;
     } 
-
+*/
 }

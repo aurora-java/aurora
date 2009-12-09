@@ -10,7 +10,7 @@ public abstract class AbstractCompsiteStatement extends AbstractStatement {
     
     public static final int MAX_PARTS = 20;
 
-    List[]          parts ;
+    private List[]          parts ;
     
     public AbstractCompsiteStatement(String type){
         super(type);

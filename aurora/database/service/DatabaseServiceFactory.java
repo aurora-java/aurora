@@ -20,6 +20,7 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.IModelFactory;
+import aurora.bm.InsertSqlCreator;
 import aurora.bm.ModelFactory;
 import aurora.bm.QuerySqlCreator;
 import aurora.bm.UpdateSqlCreator;
@@ -41,7 +42,7 @@ public class DatabaseServiceFactory {
     
     // Class -> Default participant instance
     Map                     defaultParticipantsMap = new HashMap();
-    
+    Configuration           globalConfig;
     /*
     // name -> CompositeMap of config
     Map                     modelCompositeCache = new HashMap();
@@ -63,6 +64,9 @@ public class DatabaseServiceFactory {
         
         UpdateSqlCreator update_creator = new UpdateSqlCreator( getModelFactory(), getSqlBuilderRegistry() );
         setGlobalParticipant(UpdateSqlCreator.class, update_creator);
+        
+        InsertSqlCreator insert_creator = new InsertSqlCreator( getModelFactory(), getSqlBuilderRegistry() );
+        setGlobalParticipant(InsertSqlCreator.class, insert_creator);
         
         WhereClauseCreator where_creator = new WhereClauseCreator(getSqlBuilderRegistry());
         setGlobalParticipant(WhereClauseCreator.class, where_creator);
@@ -98,6 +102,8 @@ public class DatabaseServiceFactory {
         }
         
         dataSource = (DataSource)os.getInstanceOfType(DataSource.class);
+        
+        globalConfig = uncertainEngine.createConfig();
         addDefaultParticipants();
     }
     
@@ -107,6 +113,7 @@ public class DatabaseServiceFactory {
     
     public void setGlobalParticipant( Class type, Object instance ){
         defaultParticipantsMap.put(type, instance);
+        globalConfig.addParticipant(instance);
     }
     
     public SqlServiceContext createContext(){
@@ -205,12 +212,15 @@ public class DatabaseServiceFactory {
     }
     
     protected void prepareConfig( Configuration config ){
-        
+/*
+        System.out.println(globalConfig.getParticipantList());
+        config.setParent(globalConfig);
+*/
         Iterator it = defaultParticipantsMap.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry entry = (Map.Entry)it.next();
             config.addParticipant(entry.getValue());
-        }        
+        } 
     }
     
     

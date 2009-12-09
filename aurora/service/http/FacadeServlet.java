@@ -18,9 +18,14 @@ import aurora.service.IService;
 import aurora.service.ServiceInstance;
 
 public class FacadeServlet extends AbstractFacadeServlet {
-    
-    //public static final String DEFAULT_RUNSCREEN_PROCEDURE = "aurora.service.controller.RunScreen";    
 
+    // public static final String DEFAULT_RUNSCREEN_PROCEDURE =
+    // "aurora.service.controller.RunScreen";
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -175392627883779860L;
     HttpServiceFactory mServiceFactory;
 
     public static String getServiceName(HttpServletRequest request) {
@@ -32,23 +37,23 @@ public class FacadeServlet extends AbstractFacadeServlet {
 
     protected IService createServiceInstance(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        String name = getServiceName(request);
-        HttpServiceInstance svc = mServiceFactory.createHttpService(name,
+        final String name = getServiceName(request);
+        final HttpServiceInstance svc = mServiceFactory.createHttpService(name,
                 request, response, this);
         return svc;
     }
 
     protected void populateService(HttpServletRequest request,
             HttpServletResponse response, IService service) throws Exception {
-        ServiceInstance svc = (ServiceInstance) service;
-        
+        final ServiceInstance svc = (ServiceInstance) service;
+
         // load configure map
-        String name = svc.getName();
-        CompositeMap config = mServiceFactory.loadServiceConfig(name);
+        final String name = svc.getName();
+        final CompositeMap config = mServiceFactory.loadServiceConfig(name);
         svc.setServiceConfigData(config);
         // set procedure name
-        String extension = name.substring(name.lastIndexOf('.')+1);
-        String proc = mServiceFactory.getProcedureName(extension);        
+        final String extension = name.substring(name.lastIndexOf('.') + 1);
+        final String proc = mServiceFactory.getProcedureName(extension);
         svc.getController().setProcedureName(proc);
     }
 
@@ -74,7 +79,8 @@ public class FacadeServlet extends AbstractFacadeServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         mServiceFactory = (HttpServiceFactory) mUncertainEngine
-                .getObjectRegistry().getInstanceOfType(HttpServiceFactory.class);
+                .getObjectRegistry()
+                .getInstanceOfType(HttpServiceFactory.class);
         if (mServiceFactory == null)
             throw new ServletException(
                     "No ServiceFactory instance registered in UncertainEngine");

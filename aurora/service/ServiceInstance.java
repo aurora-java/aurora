@@ -23,6 +23,7 @@ public class ServiceInstance implements IService {
     protected ServiceContext      mServiceContext;
     protected ServiceController   mController;    
 
+    protected Configuration       mRootConfig;
     protected Configuration       mConfig;
     protected CompositeMap        mConfigMap;
     protected ProcedureRunner     mRunner;  
@@ -49,6 +50,8 @@ public class ServiceInstance implements IService {
         mConfig = mProcManager.createConfig();
         mConfig.addParticipant(this);
         mConfig.loadConfig(mConfigMap);
+        if(mRootConfig!=null)
+            mConfig.setParent(mRootConfig);
     }
 
     public ServiceContext getServiceContext() {
@@ -64,11 +67,6 @@ public class ServiceInstance implements IService {
         mRunner.setProcedure(proc);
         mRunner.setContext(mContextMap);
         mRunner.setConfiguration(mConfig);
-/*
-        ILogger logger = LoggingContext.getLogger(mContextMap, LOGGING_TOPIC);
-        mServiceContext.setInstanceOfType(ILogger.class, logger);
-*/        
-
     }
 
     public void invoke() 
@@ -146,6 +144,23 @@ public class ServiceInstance implements IService {
 
     public ServiceController getController() {
         return mController;
+    }
+    
+    public ServiceOutputConfig getServiceOutputConfig(){
+        CompositeMap child = mConfigMap == null? null:mConfigMap.getChild(ServiceOutputConfig.KEY_SERVICE_OUTPUT);
+        if(child==null)
+            return null;
+        else
+            return ServiceOutputConfig.getInstance(child);
+    }
+
+    /** Get/Set root Configuration instance that contains global participants */
+    public Configuration getRootConfig() {
+        return mRootConfig;
+    }
+
+    public void setRootConfig(Configuration rootConfig) {
+        mRootConfig = rootConfig;
     }
 
 }

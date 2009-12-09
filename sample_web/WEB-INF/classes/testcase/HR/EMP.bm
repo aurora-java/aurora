@@ -14,7 +14,7 @@
 		<ref-field name="mgr_name" sourceField="ename" relationName="MGR"/>
 	</fields>
 	<primary-key>
-		<field name="empno"/>
+		<field name="empno" />			
 	</primary-key>
 	<relations>
 		<relation joinType="INNER" refModel="testcase.HR.DEPT">
@@ -44,4 +44,7 @@
 		<field name="DNAME"/>
 		<field name="hiredate" order="desc"/>
 	</order-by>
+	<validators>
+		
+	</validators>
 </model>

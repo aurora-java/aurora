@@ -3,28 +3,29 @@
  */
 package aurora.database.sql;
 
-public class UpdateField extends BaseField {
+public class UpdateField extends FieldWithSource {
     
+    /**
+     * @param parent
+     * @param name
+     * @param source_expression
+     */
+    public UpdateField(ISqlStatement parent, String name,
+            String source_expression) {
+        super(parent, name, source_expression);
+        setType(UPDATE_FIELD);
+    }
+
+    /**
+     * @param parent
+     * @param name
+     */
+    public UpdateField(ISqlStatement parent, String name) {
+        super(parent, name);
+        setType(UPDATE_FIELD);
+    }
+
     public static final String UPDATE_FIELD = "UPDATE_FIELD";
-    ISqlStatement   updateSource;
-    
-    public UpdateField( ISqlStatement parent, String name ){
-        super(UPDATE_FIELD);
-        setParent(parent);
-        setFieldName(name);
-    }
-    
-    public UpdateField( ISqlStatement parent, String name, String source_expression ){
-        this(parent,name);
-        setUpdateSource( new RawSqlExpression(source_expression));
-    }
-    
-    public ISqlStatement getUpdateSource(){
-        return updateSource;
-    }
-    
-    public void setUpdateSource(ISqlStatement update_source){
-        this.updateSource = update_source;
-    }
+
 
 }

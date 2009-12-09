@@ -5,6 +5,9 @@ package aurora.database;
 
 public final class Constant {
 
+    /** schema namespace */
+    public static final String AURORA_SCHEMA_NAMESPACE = "http://www.aurora-framework.org/schema/businessmodel";
+    
     /** Statement type constants */
     public static final String TYPE_INSERT = "insert";
     public static final String TYPE_UPDATE = "update";
@@ -26,6 +29,7 @@ public final class Constant {
     /** Order by */
     public static final String ASCENT = "ASC";
     public static final String DESCENT = "DESC";
+    /** logging */
     public static final String AURORA_DATABASE_LOGGING_TOPIC = "aurora.database";
 
 }
