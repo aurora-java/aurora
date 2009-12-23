@@ -4,6 +4,8 @@
 package aurora.database.service;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,14 +45,6 @@ public class DatabaseServiceFactory {
     // Class -> Default participant instance
     Map                     defaultParticipantsMap = new HashMap();
     Configuration           globalConfig;
-    /*
-    // name -> CompositeMap of config
-    Map                     modelCompositeCache = new HashMap();
-    // name -> Configuration
-    Map                     modelConfigCache = new HashMap();
-    
-    boolean                 cacheEnabled = false;
-    */
     
     public DatabaseServiceFactory( UncertainEngine  engine)
     {
@@ -114,6 +108,16 @@ public class DatabaseServiceFactory {
     public void setGlobalParticipant( Class type, Object instance ){
         defaultParticipantsMap.put(type, instance);
         globalConfig.addParticipant(instance);
+    }
+    
+    public SqlServiceContext createContextWithConnection()
+        throws SQLException
+    {
+        SqlServiceContext context = createContext();
+        Connection conn = null;
+        conn = dataSource.getConnection();
+        context.setConnection(conn);
+        return context;
     }
     
     public SqlServiceContext createContext(){
@@ -212,10 +216,6 @@ public class DatabaseServiceFactory {
     }
     
     protected void prepareConfig( Configuration config ){
-/*
-        System.out.println(globalConfig.getParticipantList());
-        config.setParent(globalConfig);
-*/
         Iterator it = defaultParticipantsMap.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry entry = (Map.Entry)it.next();

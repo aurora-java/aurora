@@ -43,10 +43,17 @@ public class ServiceInstance implements IService {
     }
     
     
-    
-    void parseConfig(){
+    /** Global participants can do service config population before it is parsed */
+    void parseConfig()
+    {
         if(mConfig!=null)
             mConfig.clear();
+        if(mRootConfig!=null)
+            try{
+                mRootConfig.fireEvent("PrepareServiceConfig", mEventArgs);
+            }catch(Exception ex){
+                throw new RuntimeException("Error in event PopulateServiceConfig", ex);
+            }
         mConfig = mProcManager.createConfig();
         mConfig.addParticipant(this);
         mConfig.loadConfig(mConfigMap);

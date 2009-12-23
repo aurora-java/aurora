@@ -8,9 +8,6 @@
 		<package-mapping packageName="aurora.database.actions"/>
 		<package-mapping packageName="aurora.service.exception"/>
 		<package-mapping packageName="aurora.plugin.c3p0"/>
-<!--
-		<feature-attach elementName="datasets" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.DataSetInit"/>
--->		
 		<feature-attach elementName="view" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.ScreenRenderer"/>
 		<feature-attach elementName="init-procedure" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.InitProcedureInvoker"/>
 <!--		<feature-attach elementName="service" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.service.json.JSONDispatcher"/> -->

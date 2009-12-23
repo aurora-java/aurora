@@ -4,7 +4,7 @@
 package aurora.database.service;
 
 import java.sql.Connection;
-import java.util.Map;
+import java.sql.SQLException;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
@@ -109,7 +109,16 @@ public class SqlServiceContext extends ServiceContext {
     
     public void setSqlString( StringBuffer sql){
         put(KEY_SQL_STRING, sql);
-    }    
+    }
+    
+    public void freeConnection()
+        throws SQLException
+    {
+        Connection conn = getConnection();
+        if(conn!=null)
+            conn.close();
+        setConnection(null);
+    }
     
 
 }

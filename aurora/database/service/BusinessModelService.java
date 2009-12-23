@@ -3,7 +3,6 @@
  */
 package aurora.database.service;
 
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +44,8 @@ public class BusinessModelService {
     String                              action = null;
     //boolean                             trace;
     
+    Configuration                       mOldConfig = null;
+    
     protected BusinessModelService(DatabaseServiceFactory factory, Configuration config, BusinessModel model, CompositeMap context_map ) {
         this.config = config;
         this.model = model;
@@ -60,6 +61,10 @@ public class BusinessModelService {
         context.setAction(action);
         runner = serviceFactory.loadProcedure(proc_name, context_map);
         parseParameter(context);
+    }
+    
+    public void setServiceContext( ServiceContext context ){
+        setContextMap(context.getObjectContext());
     }
     
     public void  setContextMap( CompositeMap map ){
@@ -83,19 +88,27 @@ public class BusinessModelService {
     }
     
     private void pushConfig(){
+/*
         Configuration old_config = context.getConfig();
-        if(old_config!=null){
-            config.setParent(old_config);
-            context.setConfig(config);
+        if(old_config!=null && old_config!=config){
+            config.setParent(old_config);            
         }
+        context.setConfig(config);
+*/
+        mOldConfig = context.getConfig();
+        context.setConfig(config);
     }
     
     private void popConfig(){
+        /*
         Configuration old_config = config.getParent();
         if(old_config!=null){
             context.setConfig(old_config);
             config.setParent(null);
         }
+        */
+        context.setConfig(mOldConfig);
+        mOldConfig = null;
     }
     
     public void query( Map parameters,  IResultSetConsumer consumer, FetchDescriptor desc )
@@ -217,6 +230,10 @@ public class BusinessModelService {
         SqlRunner runner = context.getSqlRunner();
         DBUtil.printTraceInfo(action, logger, runner);
     }    
+    
+    public Configuration getConfiguration(){
+        return config;
+    }
 /*
     
     public boolean getTrace() {
