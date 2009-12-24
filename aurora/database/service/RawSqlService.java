@@ -207,7 +207,6 @@ public class RawSqlService implements IConfigurable
         mConfiguration.fireEvent("PopulateQuerySql", context.getObjectContext(), new Object[]{ this, mSql} );
         SqlRunner runner = createRunner(mSql, context);
         context.setSqlString( mSql );
-
         ResultSet rs = null;
         long exec_time = 0;
         try{
@@ -280,6 +279,14 @@ public class RawSqlService implements IConfigurable
     
     public BusinessModel asBusinessModel(){
         return mModel;
+    }
+
+    public ResultSetLoader getResultSetLoader() {
+        return mRsLoader;
+    }
+
+    public void setResultSetLoader(ResultSetLoader rsLoader) {
+        mRsLoader = rsLoader;
     }
 
 }
