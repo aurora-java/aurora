@@ -37,6 +37,7 @@ public class SqlQuery extends AbstractQueryAction {
         if (service == null)
             throw new ConfigurationError("Must set 'service' property");
         sqlService = svcFactory.getSqlService(service, context);
+        sqlService.getResultSetLoader().setFieldNameCase(super.getFieldNameCaseValue());
     }
 
     protected void doQuery(CompositeMap param, IResultSetConsumer consumer,

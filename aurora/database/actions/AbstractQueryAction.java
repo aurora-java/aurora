@@ -26,6 +26,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     boolean     trace = false;
     boolean     autoCount = false;
     Integer     pageSize;
+    String      fieldNameCase = "unassigned";
+    byte        fieldNameCaseValue = Character.UNASSIGNED;
 
     String      rootPath;
     String      recordName;
@@ -210,6 +212,24 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
      */
     public void setAutoCount(boolean autoCount) {
         this.autoCount = autoCount;
+    }
+
+    public String getFieldNameCase() {
+        return fieldNameCase;
+    }
+
+    public void setFieldNameCase(String fieldNameCase) {
+        this.fieldNameCase = fieldNameCase;
+        if("upper".equalsIgnoreCase(fieldNameCase))
+            fieldNameCaseValue = Character.UPPERCASE_LETTER;
+        else if("lower".equalsIgnoreCase(fieldNameCase))
+            fieldNameCaseValue = Character.LOWERCASE_LETTER;
+        else if("unassigned".equalsIgnoreCase(fieldNameCase))
+            fieldNameCaseValue = Character.UNASSIGNED;            
+    }
+    
+    protected byte getFieldNameCaseValue(){
+        return fieldNameCaseValue;
     }
 
 }
