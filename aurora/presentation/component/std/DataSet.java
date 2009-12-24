@@ -28,20 +28,17 @@ public class DataSet extends Component {
 	public static final String PROPERTITY_FETCHALL = "fecthall";
 	public static final String PROPERTITY_PAGESIZE = "pagesize";
 	public static final String PROPERTITY_AUTOCOUNT = "autocount";
-	
+	public static final String PROPERTITY_PAGEID = "pageid";
 	
     public DataSet() {
     }
     
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);	
-		addJavaScript(session, context, "core/DataSet.js");
-	}
 
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
-		
+		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		List fieldList = new ArrayList(); 
 		
@@ -50,6 +47,9 @@ public class DataSet extends Component {
 			Iterator it = fields.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
+				String validator = field.getString("validator", "");
+				if(!"".equals(validator))
+				field.putString("validator", validator);
 				field.putBoolean("required", field.getBoolean("required", false));
 				field.putBoolean("readonly", field.getBoolean("readonly", false));
 				JSONObject json = new JSONObject(field);
@@ -66,7 +66,7 @@ public class DataSet extends Component {
 			if(ds.equals("")){
 				list = datas.getChilds();				
 			}else{
-				CompositeMap model = context.getModel();
+				
 				CompositeMap data = (CompositeMap)model.getObject(ds);
 				if(data!= null){
 					list = data.getChilds();
@@ -76,6 +76,12 @@ public class DataSet extends Component {
 				Iterator dit = list.iterator();
 				while(dit.hasNext()){
 					CompositeMap item = (CompositeMap)dit.next();
+					Iterator it = item.keySet().iterator();
+					while(it.hasNext()){
+						String key = (String)it.next();
+						String value = uncertain.composite.TextParser.parse(item.getString(key), model);
+						item.put(key, value);
+					}
 					JSONObject json = new JSONObject(item);
 					dataList.add(json);
 				}						
@@ -87,6 +93,8 @@ public class DataSet extends Component {
 			dataList.add(json);
 			
 		}
+		
+		map.put(PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		map.put(PROPERTITY_DATAS, dataList.toString());	
 		map.put(PROPERTITY_QUERYURL, view.getString(PROPERTITY_QUERYURL, ""));	
 		map.put(PROPERTITY_SUBMITURL, view.getString(PROPERTITY_SUBMITURL, ""));	

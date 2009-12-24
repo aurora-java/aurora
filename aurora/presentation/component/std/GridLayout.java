@@ -36,12 +36,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	private static final String DEFAULT_TABLE_CLASS = "layout-table";
 	private static final String DEFAULT_TD_CELL = "layout-td-cell";
 	private static final String DEFAULT_TD_CONTAINER = "layout-td-con";
-		
 	
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);		
-		addJavaScript(session, context, "core/Box.js");
-	}
 		
 	protected int getRows(CompositeMap view){
 		int rows = view.getInt(ROWS, UNLIMITED);
@@ -86,6 +81,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void buildRows(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
 		Writer out = session.getWriter();
 		while(it.hasNext()){
@@ -96,7 +92,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	private void buildColumns(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
 		Writer out = session.getWriter();
 		out.write("<tr>");
@@ -109,7 +105,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 
 	
-	private void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns) throws Exception{
+	private void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
 		
 		Writer out = session.getWriter();
 		String cls = view.getString(PROPERTITY_CLASS, "");
@@ -122,7 +118,8 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		if(!"".equals(className)){
 			className += " " + cls;			
 		}
-		out.write("<table border=0 class='"+className+"'");
+		
+		out.write("<table border=0 class='"+className+"' id='"+id+"'");
 		if(width != 0) out.write(" width=" + width);
 		if(!"".equals(style)) {
 			out.write(" style='"+style+"'");
@@ -140,16 +137,15 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		out.write("</table>");	
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
-		Map map = view_context.getMap();
 		
+		/** ID属性 **/
 		String id = view.getString(PROPERTITY_ID, "");
 		if("".equals(id)) {
-			int idIndex = ((Integer)session.getSessionContext().get(ID_INDEX)).intValue();
-			id= "aid_"+(idIndex++);
-			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
+			id= IDGenerator.getInstance().generate();
 		}
 		
 		Writer out = session.getWriter();
@@ -167,7 +163,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 		if (it != null) {
 			try {
-				buildTop(session, model, view ,rows, columns);
+				buildTop(session, model, view ,rows, columns,id);
 				if(rows == UNLIMITED){
 					buildRows(session, model, view, it);
 				}else if(columns == UNLIMITED){
@@ -205,6 +201,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {
 		List cmps = new ArrayList();
 		Iterator cit = view.getChildIterator();
@@ -221,7 +218,6 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		Writer out = session.getWriter();
 		out.write("<script>");
 		StringBuffer sb = new StringBuffer();
-		sb.append("var ").append(id).append("=");
 		sb.append("new Aurora.Box({id:'").append(id).append("',");
 		sb.append("cmps:[");
 		Iterator it = cmps.iterator();

@@ -16,7 +16,7 @@ import aurora.presentation.markup.HtmlPageContext;
 public class Component {
 		
 	public static final String PROPERTITY_ID = "id";
-	public static final String PROPERTITY_LABEL = "label";
+	public static final String PROPERTITY_LABEL = "prompt";
 	public static final String PROPERTITY_NAME = "name";
 	public static final String PROPERTITY_STYLE = "style";
 	public static final String PROPERTITY_VALUE = "value";
@@ -25,50 +25,60 @@ public class Component {
 	public static final String PROPERTITY_BINDING = "binding";
 	public static final String PROPERTITY_CLASSNAME = "classname";
 	public static final String PROPERTITY_WIDTH = "width";
+	public static final String PROPERTITY_HEIGHT = "height";
 	public static final String PROPERTITY_BINDTARGET = "bindtarget";
 	public static final String PROPERTITY_BINDNAME = "bindname";
+	public static final String PROPERTITY_HIDDEN = "hidden";
 	
 	protected static final String WRAP_CSS = "wrapClass";
 	
-	public static final String ID_INDEX = "cid_index";
+//	public static final String ID_INDEX = "cid_index";
 	
-	private StringBuffer esb = new StringBuffer();
+	protected String id;
+	protected StringBuffer esb = new StringBuffer();
 	private StringBuffer bsb = new StringBuffer();
 	private JSONObject config = new JSONObject();
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		session.getSessionContext().put(ID_INDEX, new Integer(1));
-		addStyleSheet(session, context, "core/Aurora.css");
-		addJavaScript(session, context, "core/ext-core.js");
-		addJavaScript(session, context, "core/Aurora.js");
-		addJavaScript(session, context, "core/Component.js");
+		addStyleSheet(session, context, "core/Aurora-all.css");
+		addJavaScript(session, context, "core/ext-core-min.js");
+		addJavaScript(session, context, "core/Aurora-all.js");
 	}
 	
+	protected int getDefaultWidth(){
+		return 150;
+	}
+	
+	protected int getDefaultHeight(){
+		return 20;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
-		int idIndex = ((Integer)session.getSessionContext().get(ID_INDEX)).intValue();
-		
 		/** ID属性 **/
-		String id = view.getString(PROPERTITY_ID, "");
+		id = view.getString(PROPERTITY_ID, "");
 		if("".equals(id)) {
-			id= "aid_"+(idIndex++);
-			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
+			id = IDGenerator.getInstance().generate();
 		}
 		view.put(PROPERTITY_ID, id);
 		map.put(PROPERTITY_ID, id);
 		addConfig(PROPERTITY_ID, id);
 		
 		/** Width属性**/
-		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, "150"));//TODO:默认值??
+		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, ""+getDefaultWidth()));
 		map.put(PROPERTITY_WIDTH, width);
+		
+		/** Height属性**/
+		Integer height = Integer.valueOf(view.getString(PROPERTITY_HEIGHT, ""+getDefaultHeight()));
+		if(height.intValue() !=0) map.put(PROPERTITY_HEIGHT, height);
 		
 		/** NAME属性 **/
 		String name = view.getString(PROPERTITY_NAME, "");
 		if("".equals(name)) {
-			name= "aname-"+(idIndex++);
-			session.getSessionContext().put(ID_INDEX, new Integer(idIndex));
+			name= IDGenerator.getInstance().generate();
 		}
 		map.put(PROPERTITY_NAME, name);
 		
@@ -90,7 +100,7 @@ public class Component {
 				Iterator it = list.iterator();
 				while(it.hasNext()){
 					CompositeMap event = (CompositeMap)it.next();
-					String eventName = event.getString("type", "");
+					String eventName = event.getString("name", "");
 					String handler = event.getString("handler", "");
 					if(!"".equals(eventName) && !"".equals(handler));
 					addEvent(id, eventName,handler);
@@ -108,7 +118,7 @@ public class Component {
 			if(bindName.equals("")){
 				bindName = name;				
 			}
-			bsb.append("$('"+id+"').bind(" + bindTarget + ",'" + bindName + "');\n");
+			bsb.append("$('"+id+"').bind('" + bindTarget + "','" + bindName + "');\n");
 			map.put(PROPERTITY_BINDING, bsb.toString());
 		}
 	}
@@ -146,6 +156,7 @@ public class Component {
 	/**
 	 * 增加ClassName
 	 */
+	@SuppressWarnings("unchecked")
 	protected void addClassName(CompositeMap view, Map map){
 		String className = view.getString(PROPERTITY_CLASSNAME, "");
 		if(!"".equals(className)) {

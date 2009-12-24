@@ -10,31 +10,17 @@ import aurora.presentation.ViewContext;
 
 public class InputField extends Field {
 	
-	
-	
 	protected static final String PROPERTITY_EMPTYTEXT = "emptytext";
 	protected static final String PROPERTITY_INPUTWIDTH = "inputwidth";	
 
 	protected static final String CLASSNAME_EMPTYTEXT = "item-emptyText";
 	
-	/**
-	 * 加载Aurora组件库以及样式文件
-	 * 
-	 * @param session
-	 * @param context
-	 * @throws IOException
-	 */
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);
-		addJavaScript(session, context, "core/Field.js");
-	}
 	
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context)throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
-		
-		
 		
 		/** 输入框宽度**/
 		Integer width = (Integer)map.get(PROPERTITY_WIDTH);

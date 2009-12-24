@@ -20,13 +20,7 @@ public class ComboBox extends TextField {
 	private static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
 	private static final String PROPERTITY_OPTIONS = "options";
 
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "combobox/ComboBox.css");
-		addJavaScript(session, context, "core/TriggerField.js");
-		addJavaScript(session, context, "combobox/ComboBox.js");
-	}
-
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();

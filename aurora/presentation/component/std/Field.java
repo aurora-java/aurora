@@ -3,13 +3,9 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.markup.HtmlPageContext;
-import uncertain.composite.CompositeMap;
 
 /**
  * 带Input类型的组件基类.
@@ -29,27 +25,13 @@ public class Field extends Component {
 	
 	protected static final String PROPERTITY_REQUIRED = "required";
 	protected static final String PROPERTITY_READONLY = "readonly";
-	
+
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
 	protected static final String CLASSNAME_READONLY = "item-readOnly";
 
-	
-	
-	/**
-	 * 加载Aurora组件库以及样式文件
-	 * 
-	 * @param session
-	 * @param context
-	 * @throws IOException
-	 */
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "core/Aurora.css");
-		addJavaScript(session, context, "core/ext-core.js");
-		addJavaScript(session, context, "core/Aurora.js");
-		addJavaScript(session, context, "core/Component.js");
-	}
 
+
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -68,6 +50,12 @@ public class Field extends Component {
 			addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		}
 		addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
+		
+		/** 是否隐藏 **/
+		boolean hidden = view.getBoolean(PROPERTITY_HIDDEN, false);
+		if(hidden != false)
+//		map.put(PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
+		addConfig(PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		
 		/** 是否只读 **/
 		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);

@@ -61,15 +61,20 @@ public class Box extends GridLayout {
 		if(!"".equals(dataset)){
 			String name = field.getString(PROPERTITY_BINDNAME, "");
 			if("".equals(name)) name = field.getString(PROPERTITY_NAME, "");
-			CompositeMap ds = getDataSet(session, dataset).getChild(DataSet.PROPERTITY_FIELDS);
-			List fields = ds.getChilds();
-			Iterator it = fields.iterator();
-			while(it.hasNext()){
-				CompositeMap fieldMap = (CompositeMap)it.next();
-				String fn = fieldMap.getString(PROPERTITY_NAME,"");
-				if(name.equals(fn)){
-					label = fieldMap.getString(PROPERTITY_LABEL);
-					break;
+			CompositeMap ds = getDataSet(session, dataset);
+			if(ds!=null){
+				CompositeMap fieldcm = ds.getChild(DataSet.PROPERTITY_FIELDS);
+				if(fieldcm !=null){
+					List fields = fieldcm.getChilds();
+					Iterator it = fields.iterator();
+					while(it.hasNext()){
+						CompositeMap fieldMap = (CompositeMap)it.next();
+						String fn = fieldMap.getString(PROPERTITY_NAME,"");
+						if(name.equals(fn)){
+							label = fieldMap.getString(PROPERTITY_LABEL);
+							break;
+						}
+					}
 				}
 			}
 		}

@@ -16,6 +16,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.IDGenerator;
 
 public class HtmlPage implements IViewBuilder, ISingleton {
     
@@ -88,6 +89,9 @@ public class HtmlPage implements IViewBuilder, ISingleton {
             throws IOException, ViewCreationException 
     {
         try{
+        	String pageid = IDGenerator.getInstance().generate();
+        	view_context.getContextMap().put("pageid", pageid);
+        	session.getSessionContext().put("pageid", pageid);
             session.fireBuildEvent(EVENT_PREPARE_PAGE_CONTENT, view_context, true);
         }catch(Exception ex){
             throw new ViewCreationException("Error when fire 'PreparePageContent' event",ex);

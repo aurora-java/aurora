@@ -44,8 +44,8 @@ public class DataSetInit implements IViewBuilder {
         }
     }
     
-    private void processDataSet(CompositeMap view) throws Exception{
-    	
+    @SuppressWarnings("unchecked")
+	private void processDataSet(CompositeMap view) throws Exception{
 		String href = view.getString(PROPERTITY_HREF, "");
 		if(!"".equals(href)){
 			CompositeMap bm = mFactory.getModelConfig(href);
@@ -60,18 +60,34 @@ public class DataSetInit implements IViewBuilder {
 				List list = fields.getChildsNotNull();
 				List bmlist = bmfields.getChilds();
 				
-				Iterator bit = bmlist.iterator();
-				while(bit.hasNext()){
-					CompositeMap field = (CompositeMap)bit.next();
-					Iterator lit = list.iterator();
+				Iterator lit = list.iterator();
+				while(lit.hasNext()){
+					CompositeMap lfield = (CompositeMap)lit.next();
+					Iterator bit = bmlist.iterator();
 					while(lit.hasNext()){
-						CompositeMap lfield = (CompositeMap)lit.next();
+						CompositeMap field = (CompositeMap)bit.next();
 						if(field.getString("name").equals(lfield.getString("name"))){
 							field.putAll(lfield);
+							lfield = field;
+							break;
 						}
 					}
-					childs.add(field);
+					childs.add(lfield);
 				}
+				
+//				Iterator bit = bmlist.iterator();
+//				while(bit.hasNext()){
+//					CompositeMap field = (CompositeMap)bit.next();
+//					Iterator lit = list.iterator();
+//					while(lit.hasNext()){
+//						CompositeMap lfield = (CompositeMap)lit.next();
+//						if(field.getString("name").equals(lfield.getString("name"))){
+//							field.putAll(lfield);
+//						}
+//					}
+//					childs.add(field);
+//				}
+				
 				fields.getChilds().clear();
 				fields.getChilds().addAll(childs);
 			}

@@ -16,13 +16,7 @@ public class DatePicker extends TextField {
 	
 	private static final String PROPERTITY_POPWIDTH = "popwidth";
 	
-	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		super.onPreparePageContent(session, context);		
-		addStyleSheet(session, context, "datefield/DateField.css");
-		addJavaScript(session, context, "core/TriggerField.js");
-		addJavaScript(session, context, "datefield/DateField.js");
-		addJavaScript(session, context, "datefield/DatePicker.js");
-	}
+
 
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
