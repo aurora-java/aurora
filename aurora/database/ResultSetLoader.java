@@ -120,4 +120,12 @@ public class ResultSetLoader {
         
     }
 
+    public byte getFieldNameCase() {
+        return fieldNameCase;
+    }
+
+    public void setFieldNameCase(byte fieldNameCase) {
+        this.fieldNameCase = fieldNameCase;
+    }
+
 }
