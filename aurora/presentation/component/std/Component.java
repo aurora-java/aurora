@@ -76,7 +76,7 @@ public class Component {
 		if(height.intValue() !=0) map.put(PROPERTITY_HEIGHT, height);
 		
 		/** NAME属性 **/
-		String name = view.getString(PROPERTITY_NAME, "");
+		String name = view.getString(PROPERTITY_NAME, "").toLowerCase();
 		if("".equals(name)) {
 			name= IDGenerator.getInstance().generate();
 		}
@@ -114,7 +114,7 @@ public class Component {
 		String bindTarget = view.getString(PROPERTITY_BINDTARGET, "");
 		String bindName = "";
 		if(!bindTarget.equals("")){			
-			bindName = view.getString(PROPERTITY_BINDNAME, "");
+			bindName = view.getString(PROPERTITY_BINDNAME, "").toLowerCase();
 			if(bindName.equals("")){
 				bindName = name;				
 			}

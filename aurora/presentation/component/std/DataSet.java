@@ -50,6 +50,7 @@ public class DataSet extends Component {
 				String validator = field.getString("validator", "");
 				if(!"".equals(validator))
 				field.putString("validator", validator);
+				field.putString(PROPERTITY_NAME, field.getString(PROPERTITY_NAME,"").toLowerCase());
 				field.putBoolean("required", field.getBoolean("required", false));
 				field.putBoolean("readonly", field.getBoolean("readonly", false));
 				JSONObject json = new JSONObject(field);

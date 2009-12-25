@@ -131,6 +131,7 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap column = (CompositeMap)it.next();
 				if(column.getChilds() == null){
+					column.putString(COLUMN_DATAINDEX, column.getString(COLUMN_DATAINDEX,"").toLowerCase());
 					column.putBoolean(COLUMN_LOCK, column.getBoolean(COLUMN_LOCK, false));
 					column.putBoolean(COLUMN_HIDDEN, column.getBoolean(COLUMN_HIDDEN, false));
 					column.putInt(PROPERTITY_WIDTH, column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH));
@@ -290,7 +291,7 @@ public class Grid extends Component {
 				hasLockColumn = true;
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX)+"'></TH>");
+					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'></TH>");
 					lockWidth +=column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
@@ -310,7 +311,7 @@ public class Grid extends Component {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
 						CompositeMap column = (CompositeMap)lit.next();
-						hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX)+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+						hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 					}
 				}
 				hsb.append("</TR>");
@@ -344,7 +345,7 @@ public class Grid extends Component {
 			if(!column.getBoolean(COLUMN_LOCK, false)){
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX)+"'></TH>");
+					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'></TH>");
 					unlockWidth +=column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
@@ -363,7 +364,8 @@ public class Grid extends Component {
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
-					hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX)+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+					System.out.println(column);
+					hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 				}
 			}
 			hsb.append("</TR>");
