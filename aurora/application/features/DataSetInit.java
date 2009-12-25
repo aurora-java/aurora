@@ -60,34 +60,48 @@ public class DataSetInit implements IViewBuilder {
 				List list = fields.getChildsNotNull();
 				List bmlist = bmfields.getChilds();
 				
+//				Iterator lit = list.iterator();
+//				while(lit.hasNext()){
+//					CompositeMap lfield = (CompositeMap)lit.next();
+//					Iterator bit = bmlist.iterator();
+//					while(lit.hasNext()){
+//						CompositeMap field = (CompositeMap)bit.next();
+//						if(field.getString("name").equals(lfield.getString("name"))){
+//							field.putAll(lfield);
+//							lfield = field;
+//							break;
+//						}
+//					}
+//					childs.add(lfield);
+//				}
+				
+				Iterator bit = bmlist.iterator();
+				while(bit.hasNext()){
+					CompositeMap field = (CompositeMap)bit.next();
+					Iterator lit = list.iterator();
+					while(lit.hasNext()){
+						CompositeMap lfield = (CompositeMap)lit.next();
+						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
+							field.putAll(lfield);
+						}
+					}
+					childs.add(field);
+				}
+				
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){
 					CompositeMap lfield = (CompositeMap)lit.next();
-					Iterator bit = bmlist.iterator();
-					while(lit.hasNext()){
-						CompositeMap field = (CompositeMap)bit.next();
-						if(field.getString("name").equals(lfield.getString("name"))){
-							field.putAll(lfield);
-							lfield = field;
+					Iterator bmit = bmlist.iterator();
+					boolean has = false;
+					while(bmit.hasNext()){
+						CompositeMap field = (CompositeMap)bmit.next();
+						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
+							has = true;
 							break;
 						}
 					}
-					childs.add(lfield);
+					if(!has) childs.add(lfield);
 				}
-				
-//				Iterator bit = bmlist.iterator();
-//				while(bit.hasNext()){
-//					CompositeMap field = (CompositeMap)bit.next();
-//					Iterator lit = list.iterator();
-//					while(lit.hasNext()){
-//						CompositeMap lfield = (CompositeMap)lit.next();
-//						if(field.getString("name").equals(lfield.getString("name"))){
-//							field.putAll(lfield);
-//						}
-//					}
-//					childs.add(field);
-//				}
-				
 				fields.getChilds().clear();
 				fields.getChilds().addAll(childs);
 			}
