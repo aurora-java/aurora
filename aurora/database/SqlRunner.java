@@ -29,7 +29,7 @@ import aurora.service.ServiceContext;
  */
 public class SqlRunner {
     
-    boolean                 trace = false;
+    boolean                 trace = true;
     boolean                 use_batch_update = true;  
     ParsedSql               statement;
     //ISQLExceptionHandle     exception_handle; 
@@ -142,7 +142,7 @@ public class SqlRunner {
     public void bindParameters( PreparedStatement ps, CompositeMap param )
         throws SQLException
     {
-        if(trace && bind_param_list!=null )
+        if(isTrace() && bind_param_list!=null )
             bind_param_list.clear();
         
         int index = 1;
@@ -151,13 +151,13 @@ public class SqlRunner {
         while(it.hasNext()){
             BindParameter p = (BindParameter)it.next();
             if(!p.is_sql_statement ){
-                if(trace){
+                if(isTrace()){
                     bdesc = new BindDescriptor(p.input_path, null, index );
                 }
                 if(p.is_input){
                     Object value = parameter_accessor.get(param, p.input_path);
                     p.setStatement(index, ps, value);
-                    if(trace){
+                    if(isTrace()){
                         bdesc.setValue(value);
                     }
                 }
@@ -169,13 +169,13 @@ public class SqlRunner {
                     }
                     else
                         cs.registerOutParameter(index, p.data_type.getSqlType(), p.database_type_name);
-                    if( trace ){
+                    if( isTrace() ){
                         bdesc.setOutput(true);
                         bdesc.setDatabaseType(p.database_type_name);
                     }
                 }
                 index++;
-                if( trace ){
+                if( isTrace() ){
                     addBindDescriptor(bdesc);
                 }
             }
