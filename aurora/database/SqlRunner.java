@@ -355,7 +355,8 @@ public class SqlRunner {
      * @return the trace
      */
     public boolean isTrace() {
-        return trace;
+        //return trace;
+        return true;
     }
 
     /**
