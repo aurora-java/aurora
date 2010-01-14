@@ -190,7 +190,9 @@ public class ServiceContext extends RuntimeContext {
             p.putAll(param);
             p.setParent(getObjectContext());
         }
+        CompositeMap parent = p.getParent();
         put(KEY_CURRENT_PARAMETER, p);
+        p.setParent(parent);
     }
     
     /*
