@@ -16,7 +16,7 @@ public class InputField extends Field {
 	protected static final String CLASSNAME_EMPTYTEXT = "item-emptyText";
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context)throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();

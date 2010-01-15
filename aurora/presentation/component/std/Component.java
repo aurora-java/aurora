@@ -53,7 +53,7 @@ public class Component {
 		return 20;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -156,7 +156,7 @@ public class Component {
 	/**
 	 * 增加ClassName
 	 */
-	@SuppressWarnings("unchecked")
+	
 	protected void addClassName(CompositeMap view, Map map){
 		String className = view.getString(PROPERTITY_CLASSNAME, "");
 		if(!"".equals(className)) {

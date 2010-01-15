@@ -16,7 +16,7 @@ import aurora.presentation.ViewContext;
 public class TextField extends InputField {	
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();		

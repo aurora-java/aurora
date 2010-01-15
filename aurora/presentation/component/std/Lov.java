@@ -18,7 +18,7 @@ public class Lov extends TextField {
 	private static final String PROPERTITY_WIN_HEIGHT = "winheight";
 
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();

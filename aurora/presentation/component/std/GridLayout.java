@@ -81,7 +81,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void buildRows(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
 		Writer out = session.getWriter();
 		while(it.hasNext()){
@@ -92,7 +92,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void buildColumns(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
 		Writer out = session.getWriter();
 		out.write("<tr>");
@@ -137,7 +137,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		out.write("</table>");	
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
@@ -201,7 +201,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {
 		List cmps = new ArrayList();
 		Iterator cit = view.getChildIterator();

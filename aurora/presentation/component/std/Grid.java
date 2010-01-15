@@ -44,7 +44,7 @@ public class Grid extends Component {
 		addJavaScript(session, context, "grid/Grid.js");
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -54,7 +54,7 @@ public class Grid extends Component {
 		createGridEditors(session,context);
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void createGridColumns(Map map, CompositeMap view){
 		List jsons = new ArrayList(); 
 		List cols = new ArrayList();
@@ -154,7 +154,7 @@ public class Grid extends Component {
 		map.put("bodyHeight", height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	private void createGridEvents(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -175,7 +175,7 @@ public class Grid extends Component {
 		map.put("events", sb.toString());
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void createGridEditors(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -199,7 +199,7 @@ public class Grid extends Component {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	private void processColumns(CompositeMap parent, List children, List cols, Map pro){
 		Iterator it = children.iterator();
 		while(it.hasNext()){
@@ -230,7 +230,7 @@ public class Grid extends Component {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void addRowSpan(CompositeMap column){
 		List children = column.getChilds();
 		Integer psp = column.getInt(ROW_SPAN);
@@ -277,7 +277,7 @@ public class Grid extends Component {
 	}
 
 	
-	@SuppressWarnings("unchecked")
+	
 	private String generateLockArea(Map map, List columns, Map pro){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
@@ -333,7 +333,7 @@ public class Grid extends Component {
 		return sb.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private String generateUnlockArea(Map map, List columns, Map pro){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();

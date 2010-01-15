@@ -24,7 +24,7 @@ public class Tab extends Component {
 		addJavaScript(session, context, "tab/Tab.js");
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -39,7 +39,7 @@ public class Tab extends Component {
 		map.put("bodys", createTabBodys(session,context));
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private String createTabBodys(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
