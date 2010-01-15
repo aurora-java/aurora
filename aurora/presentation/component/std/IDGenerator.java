@@ -90,12 +90,12 @@ public class IDGenerator {
 		return buf.toString();
 	}
 
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private static String toString(int value) {
 		return new String(BytesHelper.toBytes(value));
 	}
 
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private static String toString(short value) {
 		return new String(BytesHelper.toBytes(value));
 	}
