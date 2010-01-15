@@ -44,7 +44,7 @@ public class DataSetInit implements IViewBuilder {
         }
     }
     
-    @SuppressWarnings("unchecked")
+    
 	private void processDataSet(CompositeMap view) throws Exception{
 		String href = view.getString(PROPERTITY_HREF, "");
 		if(!"".equals(href)){
