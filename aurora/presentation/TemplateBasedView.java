@@ -18,9 +18,13 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
     public void buildView(BuildSession session, ViewContext view_context) 
         throws IOException, ViewCreationException
     {
-        TextTemplate template = view_context.getTemplate();
+        TextTemplate template = view_context.getTemplate();        
         if(template==null){
-            String template_name = view_context.getView().getName() + TEMPLATE_EXT;
+            ViewComponentPackage pkg = session.getCurrentPackage();
+            ViewComponent cpnt = pkg.getComponent(view_context.getView());
+            String template_name = cpnt==null?null:cpnt.getDefaultTemplate();
+            if(template_name==null)
+                template_name = view_context.getView().getName() + TEMPLATE_EXT;
             template = session.getTemplate(template_name);
         }
         if(template==null) throw new ViewCreationException("No template defined during view content creation process");        
