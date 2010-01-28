@@ -24,7 +24,7 @@ public class DatePicker extends TextField {
 		
 		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
 		map.put(PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
-		map.put(PROPERTITY_POPWIDTH, new Integer(width.intValue()-2));
+		map.put(PROPERTITY_POPWIDTH,new Integer(width.intValue()-2));
 			
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}

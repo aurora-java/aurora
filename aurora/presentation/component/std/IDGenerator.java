@@ -90,15 +90,15 @@ public class IDGenerator {
 		return buf.toString();
 	}
 
-	//@SuppressWarnings("unused")
-	private static String toString(int value) {
-		return new String(BytesHelper.toBytes(value));
-	}
-
-	//@SuppressWarnings("unused")
-	private static String toString(short value) {
-		return new String(BytesHelper.toBytes(value));
-	}
+//	//@SuppressWarnings("unused")
+//	private static String toString(int value) {
+//		return new String(BytesHelper.toBytes(value));
+//	}
+//
+//	//@SuppressWarnings("unused")
+//	private static String toString(short value) {
+//		return new String(BytesHelper.toBytes(value));
+//	}
 
 	public String generate() {
 		return new StringBuffer(36).append(format(getIP())).append(sep).append(format(getJVM())).append(sep).append(format(getHiTime())).append(sep).append(format(getLoTime())).append(sep).append(format(getCount())).toString();

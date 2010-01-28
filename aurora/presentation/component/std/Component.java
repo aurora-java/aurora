@@ -83,9 +83,9 @@ public class Component {
 		map.put(PROPERTITY_NAME, name);
 		
 		String style = view.getString(PROPERTITY_STYLE, "");
-		if(!"".equals(style)) {
+//		if(!"".equals(style)) {
 			map.put(PROPERTITY_STYLE, style);
-		}
+//		}
 
 		
 		/** 值 **/

@@ -31,8 +31,8 @@ public class Lov extends TextField {
 		addConfig(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE,""));
 		addConfig(PROPERTITY_VALUE_FIELD, view.getString(PROPERTITY_VALUE_FIELD,""));
 		addConfig(PROPERTITY_DISPLAY_FIELD, view.getString(PROPERTITY_DISPLAY_FIELD,""));
-		addConfig(PROPERTITY_WIN_WIDTH, view.getInt(PROPERTITY_WIN_WIDTH,400));
-		addConfig(PROPERTITY_WIN_HEIGHT, view.getInt(PROPERTITY_WIN_HEIGHT,400));
+		addConfig(PROPERTITY_WIN_WIDTH, new Integer(view.getInt(PROPERTITY_WIN_WIDTH,400)));
+		addConfig(PROPERTITY_WIN_HEIGHT, new Integer(view.getInt(PROPERTITY_WIN_HEIGHT,400)));
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}
 }

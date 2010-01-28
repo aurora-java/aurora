@@ -10,17 +10,22 @@ import aurora.presentation.ViewContext;
 
 public class Button extends Field {
 	
-	private static final String CLASSNAME_WRAP = "item-btn";
-	private static final String PROPERTITY_TEXT = "text";
-	
-	private static final String PROPERTITY_CLICK = "click";
+	public static final String CLASSNAME_WRAP = "item-btn";
+	public static final String PROPERTITY_TEXT = "text";
+	public static final String PROPERTITY_ICON = "icon";
+	public static final String BUTTON_STYLE = "btnstyle";
+	public static final String BUTTON_CLASS = "btnclass";
+	public static final String PROPERTITY_CLICK = "click";
+	public static final String PROPERTITY_TITLE = "title";
+	private static final int DEFAULT_HEIGHT = 19;
+	private static final int DEFAULT_WIDTH = 60;
 	
 	protected int getDefaultWidth(){
-		return 60;
+		return DEFAULT_WIDTH;
 	}
 	
 	protected int getDefaultHeight(){
-		return 15;
+		return DEFAULT_HEIGHT;
 	}
 	
 	
@@ -32,11 +37,23 @@ public class Button extends Field {
 		if(!"".equals(clickEvent)){
 			addEvent(id, "click", clickEvent);
 		}
+		String text = view.getString(PROPERTITY_TEXT, "");
+		String icon = view.getString(PROPERTITY_ICON, "");
+		String wrapClass = view.getString(PROPERTITY_CLASSNAME, "");
+		wrapClass += CLASSNAME_WRAP;
+		if(!"".equals(icon)){
+			if(!"".equals(text)){
+				wrapClass += " item-btn-icon-text";
+			}else{
+				wrapClass += " item-btn-icon";
+			}
+			if(!"null".equalsIgnoreCase(icon))map.put(BUTTON_STYLE, "background-image:url("+icon+");");
+		}
 		map.put(PROPERTITY_EVENTS, esb.toString());
-		
-		/** 包装样式 **/
-		map.put(WRAP_CSS, CLASSNAME_WRAP);
-		map.put(PROPERTITY_TEXT, view.getString(PROPERTITY_TEXT, "button"));
+		map.put(WRAP_CSS, wrapClass);
+		map.put(PROPERTITY_TEXT, text);
+		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
+		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));
 		
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}

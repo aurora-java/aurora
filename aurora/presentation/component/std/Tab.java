@@ -27,14 +27,14 @@ public class Tab extends Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
-		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
-		Integer bodyWidth = (Integer)map.get(PROPERTITY_WIDTH) - 2;
-		Integer bodyHeight = (Integer)map.get(PROPERTITY_HEIGHT) - 25;
+		//SHIT!!! the jdk 1.4
+		Integer bodyWidth = new Integer(((Integer)map.get(PROPERTITY_WIDTH)).intValue() - 2);
+		Integer bodyHeight = new Integer(((Integer)map.get(PROPERTITY_HEIGHT)).intValue() - 25);
 		map.put("bodywidth", bodyWidth);
 		map.put("bodyheight", bodyHeight);
-		map.put("selected", 0);
+		map.put("selected", new Integer(0));
 		map.put("strips", createTabStrips(session,context));
 		map.put("bodys", createTabBodys(session,context));
 	}
@@ -79,7 +79,6 @@ public class Tab extends Component {
 	
 	private String createTabStrips(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
-		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		
 		List jsons = new ArrayList(); 
@@ -95,7 +94,7 @@ public class Tab extends Component {
 				int width = tab.getInt(PROPERTITY_WIDTH, 60);
 				String selected = tab.getString(PROPERTITY_SELECTED, "");
 				if("true".equals(selected)){
-					map.put("selected", i);
+					map.put("selected", new Integer(i));
 				}
 				sb.append("<div class='strip' unselectable='on' onselectstart='return false;'>");
 				sb.append("<div class='strip-left'></div>");

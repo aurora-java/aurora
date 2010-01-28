@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
@@ -13,7 +12,6 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.markup.HtmlPageContext;
 
 /**
  * GridLayout.
@@ -50,13 +48,14 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		Writer out = session.getWriter();
+		int padding = view.getInt("padding", 3);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		if(builder instanceof GridLayout){
 			beforeBuildCell(session, model, view, field);
-			out.write("<td class='"+DEFAULT_TD_CONTAINER+"'>");
+			out.write("<td class='"+DEFAULT_TD_CONTAINER+"' style='padding:"+padding+"px'>");
 		} else{
 			beforeBuildCell(session, model, view, field);
-			out.write("<td class='"+DEFAULT_TD_CELL +"'>");
+			out.write("<td class='"+DEFAULT_TD_CELL +"' style='padding:"+padding+"px'>");
 		}
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			

@@ -6,14 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
-import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
-import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
-import aurora.presentation.ViewCreationException;
 
 public class DataSet extends Component {
 	
@@ -28,7 +26,9 @@ public class DataSet extends Component {
 	public static final String PROPERTITY_FETCHALL = "fecthall";
 	public static final String PROPERTITY_PAGESIZE = "pagesize";
 	public static final String PROPERTITY_AUTOCOUNT = "autocount";
-	public static final String PROPERTITY_PAGEID = "pageid";
+	public static final String PROPERTITY_PAGEID = "pageid";	
+	public static final String PROPERTITY_MAPPING = "mapping";
+	public static final String PROPERTITY_MAP = "map";
 	
     public DataSet() {
     }
@@ -53,7 +53,23 @@ public class DataSet extends Component {
 				field.putString(PROPERTITY_NAME, field.getString(PROPERTITY_NAME,"").toLowerCase());
 				field.putBoolean("required", field.getBoolean("required", false));
 				field.putBoolean("readonly", field.getBoolean("readonly", false));
+				
 				JSONObject json = new JSONObject(field);
+				CompositeMap mapping = field.getChild(PROPERTITY_MAPPING);
+				if(mapping != null){
+					Iterator mit = mapping.getChildIterator();
+					List maplist = new ArrayList();
+					while(mit.hasNext()){
+						CompositeMap mapfield = (CompositeMap)mit.next();
+						JSONObject mj = new JSONObject(mapfield);
+						maplist.add(mj);
+					}
+					try {
+						json.put(PROPERTITY_MAPPING, maplist);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
 				fieldList.add(json);
 			}
 		}

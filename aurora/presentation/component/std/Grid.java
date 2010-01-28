@@ -13,12 +13,19 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
+/**
+ * 
+ * @version $Id: Grid.java v 1.0 2010-1-25 下午01:30:09 znjqolf Exp $
+ * @author <a href="mailto:znjqolf@126.com">vincent</a>
+ */
 public class Grid extends Component {
 	
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITORS = "editors";
+	public static final String PROPERTITY_TOOLBAR = "toolBar";
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_AUTOQUERY = "autoquery";
+	public static final String PROPERTITY_NAVBAR = "navbar";
 	
 	public static final String COLUMN_DATAINDEX = "dataindex";
 	public static final String COLUMN_LOCK = "lock";
@@ -45,12 +52,21 @@ public class Grid extends Component {
 	}
 
 	
-	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
+		boolean hasToolBar = creatToolBar(session,context);
+		boolean hasNavBar = createNavgationToolBar(session,context);
+		String style = "";
+		if(hasToolBar){
+			style += "border-top:none;";
+		}
+		if(hasNavBar){
+			style += "border-bottom:none;";
+		}
+		map.put("gridstyle", style);
 		createGridColumns(map,view);
-//		createGridEvents(session,context);
 		createGridEditors(session,context);
 	}
 	
@@ -59,10 +75,10 @@ public class Grid extends Component {
 		List jsons = new ArrayList(); 
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
-		lkpro.put(LOCK_WIDTH, 0);
-		lkpro.put(ROW_SPAN, 1);
+		lkpro.put(LOCK_WIDTH, new Integer(0));
+		lkpro.put(ROW_SPAN, new Integer(1));
 		Map ukpro = new HashMap();
-		ukpro.put(ROW_SPAN, 1);
+		ukpro.put(ROW_SPAN, new Integer(1));
 		
 		CompositeMap columns = view.getChild(PROPERTITY_COLUMNS);
 		
@@ -92,16 +108,16 @@ public class Grid extends Component {
 			
 			if(ur >= lr){			
 				maxRow = ur;
-				ukpro.put(MAX_ROWS, maxRow);
-				ukpro.put(ROW_HEIGHT, DEFALUT_HEAD_HEIGHT);
-				lkpro.put(MAX_ROWS, maxRow);
-				lkpro.put(ROW_HEIGHT, lr == 0 ? DEFALUT_HEAD_HEIGHT : ur*DEFALUT_HEAD_HEIGHT/lr);
+				ukpro.put(MAX_ROWS, new Integer(maxRow));
+				ukpro.put(ROW_HEIGHT, new Integer(DEFALUT_HEAD_HEIGHT));
+				lkpro.put(MAX_ROWS, new Integer(maxRow));
+				lkpro.put(ROW_HEIGHT, lr == 0 ? new Integer(DEFALUT_HEAD_HEIGHT) : new Integer(ur*DEFALUT_HEAD_HEIGHT/lr));
 			} else{
 				maxRow = lr;
-				lkpro.put(MAX_ROWS, maxRow);
-				ukpro.put(MAX_ROWS, maxRow);
-				lkpro.put(ROW_HEIGHT, DEFALUT_HEAD_HEIGHT);
-				ukpro.put(ROW_HEIGHT, ur == 0 ? DEFALUT_HEAD_HEIGHT : lr*DEFALUT_HEAD_HEIGHT/ur);
+				lkpro.put(MAX_ROWS, new Integer(maxRow));
+				ukpro.put(MAX_ROWS, new Integer(maxRow));
+				lkpro.put(ROW_HEIGHT, new Integer(DEFALUT_HEAD_HEIGHT));
+				ukpro.put(ROW_HEIGHT, ur == 0 ? new Integer(DEFALUT_HEAD_HEIGHT) : new Integer(lr*DEFALUT_HEAD_HEIGHT/ur));
 			}
 			
 			
@@ -143,38 +159,16 @@ public class Grid extends Component {
 		
 		map.put(PROPERTITY_DATASET, view.getString(PROPERTITY_DATASET));
 		map.put(PROPERTITY_AUTOQUERY, view.getString(PROPERTITY_AUTOQUERY,"false"));
-		map.put(HEAD_HEIGHT, maxRow*DEFALUT_HEAD_HEIGHT);
+		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro));
 		map.put(PROPERTITY_COLUMNS, jsons.toString());
 		
 		Integer height = (Integer)map.get(PROPERTITY_HEIGHT);
 		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
-		map.put("unlockwidth", width.intValue()-(Integer)lkpro.get(LOCK_WIDTH));
-		map.put("bodyHeight", height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT);
+		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
+		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
 	}
-
-	
-	private void createGridEvents(BuildSession session, ViewContext context) throws IOException{
-		CompositeMap view = context.getView();
-		Map map = context.getMap();
-		CompositeMap events = view.getChild(PROPERTITY_EVENTS);
-		StringBuffer sb = new StringBuffer();
-		if(events != null && events.getChilds() != null) {
-			Iterator it = events.getChildIterator();
-			while(it.hasNext()){
-				CompositeMap event = (CompositeMap)it.next();
-				String name = event.getString("name","");
-				String handler = event.getString("handler","");
-				String id = (String)map.get(PROPERTITY_ID);
-				if(!"".equals(name) && !"".equals(handler)){
-					sb.append("$('"+id+"').on('"+name+"',"+handler+");");
-				}
-			}
-		}
-		map.put("events", sb.toString());
-	}
-	
 	
 	private void createGridEditors(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
@@ -186,7 +180,6 @@ public class Grid extends Component {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
-//				editor.put(PROPERTITY_HIDDEN, true);
 				editor.put(PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
 				try {
 					sb.append(session.buildViewAsString(model, editor));
@@ -196,6 +189,86 @@ public class Grid extends Component {
 			}
 		}
 		map.put("editors", sb.toString());
+	}
+	
+	private boolean creatToolBar(BuildSession session, ViewContext context) throws IOException{
+		CompositeMap view = context.getView();
+		Map map = context.getMap();
+		CompositeMap model = context.getModel();
+		
+		CompositeMap toolbar = view.getChild(PROPERTITY_TOOLBAR);
+		String dataset = view.getString(PROPERTITY_DATASET);
+		
+		StringBuffer sb = new StringBuffer();
+		boolean hasToolBar = false;
+		if(toolbar != null && toolbar.getChilds() != null) {
+			hasToolBar = true;
+			CompositeMap tb = new CompositeMap(PROPERTITY_TOOLBAR);
+			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
+			tb.put(PROPERTITY_WIDTH, new Integer(width.intValue()+2));
+			Iterator it = toolbar.getChildIterator();
+			while(it.hasNext()){
+				CompositeMap item = (CompositeMap)it.next();
+				if("button".equals(item.getName())){
+					String type = item.getString("type");
+					if(!"".equals(type)){
+						//TODO:多语言
+						if("add".equalsIgnoreCase(type)){
+							item = createButton(item,"新增","grid-add","function(){$('"+dataset+"').create()}");
+						}else if("delete".equalsIgnoreCase(type)){
+							item = createButton(item,"删除","grid-delete","function(){$('"+dataset+"').remove()}");
+						}else if("save".equalsIgnoreCase(type)){
+							item = createButton(item,"保存","grid-save","function(){$('"+dataset+"').submit()}");
+						}
+					}
+				}
+				tb.addChild(item);
+			}
+			try {
+				sb.append(session.buildViewAsString(model, tb));
+			} catch (Exception e) {
+				throw new IOException(e.getMessage());
+			}
+		}
+		map.put(PROPERTITY_TOOLBAR, sb.toString());
+		return hasToolBar;
+	}
+	
+	private CompositeMap createButton(CompositeMap button, String text, String clz,String function){
+		if("".equals(button.getString(Button.PROPERTITY_ICON,""))){
+			button.put(Button.PROPERTITY_ICON, "null");
+			button.put(Button.BUTTON_CLASS, clz);
+		}
+		button.put(Button.PROPERTITY_TEXT,button.getString(Button.PROPERTITY_TEXT, text));
+		if(!"".equals(function))button.put(Button.PROPERTITY_CLICK, function);
+		return button;
+	}
+	
+	
+	
+	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
+		boolean hasNavBar = false;
+		CompositeMap view = context.getView();
+		Map map = context.getMap();
+		CompositeMap model = context.getModel();
+		StringBuffer sb = new StringBuffer();
+		String dataset = view.getString(PROPERTITY_DATASET);
+		
+		String nav = view.getString(PROPERTITY_NAVBAR,"");
+		if("true".equalsIgnoreCase(nav)){
+			hasNavBar = true;
+			CompositeMap navbar = new CompositeMap("navBar");			
+			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
+			navbar.put(PROPERTITY_WIDTH, new Integer(width.intValue()+2));
+			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
+			try {
+				sb.append(session.buildViewAsString(model, navbar));
+			} catch (Exception e) {
+				throw new IOException(e.getMessage());
+			}
+			map.put("navbar", sb.toString());
+		}
+		return hasNavBar;
 	}
 	
 	
@@ -208,12 +281,12 @@ public class Grid extends Component {
 			if(parent == null){
 				level = 1;				
 			}else{
-				level = parent.getInt("_level") + 1;
+				level = parent.getInt("_level").intValue() + 1;
 			}
 			int rows = ((Integer)pro.get(ROW_SPAN)).intValue();
-			if(level>rows)pro.put(ROW_SPAN, level);
+			if(level>rows)pro.put(ROW_SPAN, new Integer(level));
 			
-			column.put("_level", level);
+			column.put("_level", new Integer(level));
 			column.put("_parent", parent);
 			List hlist = (List)pro.get("l"+level);
 			if(hlist == null){
@@ -239,7 +312,7 @@ public class Grid extends Component {
 			Iterator it = children.iterator();
 			while(it.hasNext()){
 				CompositeMap child = (CompositeMap)it.next();
-				child.put(ROW_SPAN, psp-1);
+				child.put(ROW_SPAN, new Integer(psp.intValue()-1));
 				addRowSpan(child);
 			}
 		}
@@ -251,7 +324,7 @@ public class Grid extends Component {
 		Integer rowspan = column.getInt(ROW_SPAN);
 		if(rowspan != null){
 			int cs = rowspan.intValue() -1;
-			column.put(ROW_SPAN, cs);
+			column.put(ROW_SPAN, new Integer(cs));
 		}
 		CompositeMap parent = (CompositeMap)column.get("_parent");
 		if(parent != null){			
@@ -267,10 +340,10 @@ public class Grid extends Component {
 		if(parent != null){
 			Integer colspan = parent.getInt(COL_SPAN);
 			if(colspan == null){
-				parent.put(COL_SPAN, 1);
+				parent.put(COL_SPAN, new Integer(1));
 			}else{
 				int cs = colspan.intValue() +1;
-				parent.put(COL_SPAN, cs);
+				parent.put(COL_SPAN, new Integer(cs));
 			}
 		}
 		addColSpan(parent);
@@ -297,21 +370,21 @@ public class Grid extends Component {
 			}
 		}
 		
-		pro.put(LOCK_WIDTH, lockWidth);
+		pro.put(LOCK_WIDTH, new Integer(lockWidth));
 		
 		if(hasLockColumn){
 			sb.append("<DIV class='grid-la' atype='grid.lc' style='width:"+(lockWidth-1)+"px;'>");
-			sb.append("<DIV class='grid-lh' atype='grid.lh' unselectable='on' onselectstart='return false;' style='height:"+rows*(Integer)pro.get(ROW_HEIGHT)+"px;'>");
+			sb.append("<DIV class='grid-lh' atype='grid.lh' unselectable='on' onselectstart='return false;' style='height:"+rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue()+"px;'>");
 			
 			StringBuffer hsb = new StringBuffer();
-			for(int i=1;i<=rows;i++){
+			for(int i=1;i<=rows.intValue();i++){
 				List list = (List)pro.get("l"+i);
 				hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
 				if(list!=null) {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
 						CompositeMap column = (CompositeMap)lit.next();
-						Boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
+						boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
 						if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 					}
 				}
@@ -326,7 +399,7 @@ public class Grid extends Component {
 			sb.append("</TBODY></TABLE>");
 			
 			Integer height = (Integer)map.get(PROPERTITY_HEIGHT);
-			sb.append("</DIV><DIV class='grid-lb' atype='grid.lb' style='width:100%;height:"+(height.intValue()-rows*(Integer)pro.get(ROW_HEIGHT))+"px'>");
+			sb.append("</DIV><DIV class='grid-lb' atype='grid.lb' style='width:100%;height:"+(height.intValue()-rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue())+"px'>");
 			sb.append("</DIV></DIV>");
 		}
 		
@@ -358,14 +431,14 @@ public class Grid extends Component {
 		sb.append("</TR>");
 		
 		StringBuffer hsb = new StringBuffer();
-		for(int i=1;i<=rows;i++){
+		for(int i=1;i<=rows.intValue();i++){
 			List list = (List)pro.get("l"+i);
 			hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
 			if(list!=null) {
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
-					Boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
+					boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
 					if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 				}
 			}
