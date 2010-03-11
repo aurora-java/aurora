@@ -60,21 +60,6 @@ public class DataSetInit implements IViewBuilder {
 				List list = fields.getChildsNotNull();
 				List bmlist = bmfields.getChilds();
 				
-//				Iterator lit = list.iterator();
-//				while(lit.hasNext()){
-//					CompositeMap lfield = (CompositeMap)lit.next();
-//					Iterator bit = bmlist.iterator();
-//					while(lit.hasNext()){
-//						CompositeMap field = (CompositeMap)bit.next();
-//						if(field.getString("name").equals(lfield.getString("name"))){
-//							field.putAll(lfield);
-//							lfield = field;
-//							break;
-//						}
-//					}
-//					childs.add(lfield);
-//				}
-				
 				Iterator bit = bmlist.iterator();
 				while(bit.hasNext()){
 					CompositeMap field = (CompositeMap)bit.next();
@@ -82,7 +67,8 @@ public class DataSetInit implements IViewBuilder {
 					while(lit.hasNext()){
 						CompositeMap lfield = (CompositeMap)lit.next();
 						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
-							field.putAll(lfield);
+//							field.putAll(lfield);
+							field.copy(lfield);
 						}
 					}
 					childs.add(field);
