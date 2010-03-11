@@ -8,7 +8,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
 /**
- * 带Input类型的组件基类.
+ * 组件基类.
  * 
  * @version $Id: Field.java v 1.0 2009-7-20 上午11:29:55 znjqolf Exp $
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
@@ -30,23 +30,29 @@ public class Field extends Component {
 	protected static final String CLASSNAME_READONLY = "item-readOnly";
 
 
-
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		CompositeMap view = context.getView();
+		boolean notBlank = view.getBoolean(PROPERTITY_REQUIRED, false);
+		String wrapClass = CLASSNAME_WRAP;
+		if(notBlank) {
+			wrapClass += " " + CLASSNAME_NOTBLANK;
+		}
+		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
+		if(readOnly) {
+			wrapClass += " "+CLASSNAME_READONLY;
+		}
+		return wrapClass;
+	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		
-		/** 包装样式 **/
-		map.put(WRAP_CSS, CLASSNAME_WRAP);
-		
 		/** 是否为空 **/
 		boolean notBlank = view.getBoolean(PROPERTITY_REQUIRED, false);
 		map.put(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		if(notBlank) {
-			String wrapClass = (String)map.get(WRAP_CSS);
-			wrapClass += " " + CLASSNAME_NOTBLANK;
-			map.put(WRAP_CSS, wrapClass);
 			addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		}
 		addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
@@ -54,15 +60,11 @@ public class Field extends Component {
 		/** 是否隐藏 **/
 		boolean hidden = view.getBoolean(PROPERTITY_HIDDEN, false);
 		if(hidden != false)
-//		map.put(PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		addConfig(PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		
 		/** 是否只读 **/
 		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
 		if(readOnly) {
-			String wrapClass = (String)map.get(WRAP_CSS);
-			wrapClass += " "+CLASSNAME_READONLY;
-			map.put(WRAP_CSS, wrapClass);
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
 		addConfig(PROPERTITY_READONLY, Boolean.valueOf(readOnly));

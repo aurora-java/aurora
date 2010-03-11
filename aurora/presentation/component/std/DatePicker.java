@@ -15,8 +15,6 @@ import aurora.presentation.ViewContext;
 public class DatePicker extends TextField {
 	
 	private static final String PROPERTITY_POPWIDTH = "popwidth";
-	
-
 
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);

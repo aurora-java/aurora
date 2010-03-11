@@ -23,7 +23,7 @@ public class Box extends GridLayout {
 	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		Writer out = session.getWriter();
-		String title = view.getString("title", "");
+		String title = view.getString(PROPERTITY_TITLE, "");
 		if(!"".equals(title)) {
 			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
 			out.write(title);
@@ -70,7 +70,7 @@ public class Box extends GridLayout {
 						CompositeMap fieldMap = (CompositeMap)it.next();
 						String fn = fieldMap.getString(PROPERTITY_NAME,"");
 						if(name.equals(fn)){
-							label = fieldMap.getString(PROPERTITY_LABEL);
+							label = fieldMap.getString(PROPERTITY_LABEL,"");
 							break;
 						}
 					}
@@ -85,15 +85,17 @@ public class Box extends GridLayout {
 		ServiceInstance svc = (ServiceInstance)session.getInstanceOfType(IService.class);
         ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
         CompositeMap datasets = screen.getDataSetsConfig();
-        List list = datasets.getChilds();
-        Iterator it =list.iterator();
-        while(it.hasNext()){
-        	CompositeMap ds = (CompositeMap)it.next();
-        	String dsname = ds.getString("name", "");
-        	if(dataSetName.equals(dsname)){
-        		dataset = ds;
-        		break;
-        	}
+        if(datasets!=null){
+	        List list = datasets.getChilds();
+	        Iterator it =list.iterator();
+	        while(it.hasNext()){
+	        	CompositeMap ds = (CompositeMap)it.next();
+	        	String dsname = ds.getString("id", "");
+	        	if(dataSetName.equals(dsname)){
+	        		dataset = ds;
+	        		break;
+	        	}
+	        }
         }
         return dataset;
 	}

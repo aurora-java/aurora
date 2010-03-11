@@ -16,10 +16,12 @@ import aurora.presentation.ViewContext;
 public class DataSet extends Component {
 	
 	public static final String PROPERTITY_HREF = "href";
+	public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";
 	public static final String PROPERTITY_FIELDS = "fields";
 	public static final String PROPERTITY_DATAS = "datas";
 	public static final String PROPERTITY_DATASOURCE = "datasource";
 	public static final String PROPERTITY_CREATERECORD = "autocreate";
+	public static final String PROPERTITY_AUTOQUERY = "autoquery";
 	public static final String PROPERTITY_QUERYURL = "queryurl";
 	public static final String PROPERTITY_SUBMITURL = "submiturl";
 	public static final String PROPERTITY_QUERYDATASET = "querydataset";
@@ -29,6 +31,8 @@ public class DataSet extends Component {
 	public static final String PROPERTITY_PAGEID = "pageid";	
 	public static final String PROPERTITY_MAPPING = "mapping";
 	public static final String PROPERTITY_MAP = "map";
+	public static final String PROPERTITY_SELECTABLE = "selectable";
+	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	
     public DataSet() {
     }
@@ -53,6 +57,8 @@ public class DataSet extends Component {
 				field.putString(PROPERTITY_NAME, field.getString(PROPERTITY_NAME,"").toLowerCase());
 				field.putBoolean("required", field.getBoolean("required", false));
 				field.putBoolean("readonly", field.getBoolean("readonly", false));
+				String dv = field.getString(PROPERTITY_DEFAULTVALUE, "");
+				if(!"".equals(dv))field.putString(PROPERTITY_DEFAULTVALUE, dv);
 				
 				JSONObject json = new JSONObject(field);
 				CompositeMap mapping = field.getChild(PROPERTITY_MAPPING);
@@ -73,6 +79,8 @@ public class DataSet extends Component {
 				fieldList.add(json);
 			}
 		}
+		map.put(PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(PROPERTITY_SELECTABLE, true)));
+		map.put(PROPERTITY_SELECTIONMODEL, view.getString(PROPERTITY_SELECTIONMODEL, "multiple"));
 		map.put(PROPERTITY_FIELDS, fieldList.toString());
 		
 		CompositeMap datas = view.getChild(PROPERTITY_DATAS);
@@ -113,6 +121,7 @@ public class DataSet extends Component {
 		
 		map.put(PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		map.put(PROPERTITY_DATAS, dataList.toString());	
+		map.put(PROPERTITY_AUTOQUERY, view.getString(PROPERTITY_AUTOQUERY, "false"));	
 		map.put(PROPERTITY_QUERYURL, view.getString(PROPERTITY_QUERYURL, ""));	
 		map.put(PROPERTITY_SUBMITURL, view.getString(PROPERTITY_SUBMITURL, ""));	
 		map.put(PROPERTITY_QUERYDATASET, view.getString(PROPERTITY_QUERYDATASET, ""));

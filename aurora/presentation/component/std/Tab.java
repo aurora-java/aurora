@@ -14,6 +14,7 @@ import aurora.presentation.ViewContext;
 
 public class Tab extends Component {
 	
+	private static final String DEFAULT_CLASS = "item-tab";
 	protected static final String PROPERTITY_TAB = "tab";
 	protected static final String PROPERTITY_REF = "ref";
 	protected static final String PROPERTITY_SELECTED = "selected";
@@ -24,6 +25,9 @@ public class Tab extends Component {
 		addJavaScript(session, context, "tab/Tab.js");
 	}
 	
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		return DEFAULT_CLASS;
+	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);

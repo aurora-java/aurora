@@ -30,9 +30,7 @@ public class Component {
 	public static final String PROPERTITY_BINDNAME = "bindname";
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	
-	protected static final String WRAP_CSS = "wrapClass";
-	
-//	public static final String ID_INDEX = "cid_index";
+	private static final String WRAP_CSS = "wrapClass";
 	
 	protected String id;
 	protected StringBuffer esb = new StringBuffer();
@@ -40,9 +38,13 @@ public class Component {
 	private JSONObject config = new JSONObject();
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		addStyleSheet(session, context, "core/Aurora-all.css");
+		addStyleSheet(session, context, "core/Aurora-all-min.css");
 		addJavaScript(session, context, "core/ext-core-min.js");
-		addJavaScript(session, context, "core/Aurora-all.js");
+		addJavaScript(session, context, "core/Aurora-all-min.js");
+	}
+	
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		return "";
 	}
 	
 	protected int getDefaultWidth(){
@@ -66,6 +68,13 @@ public class Component {
 		view.put(PROPERTITY_ID, id);
 		map.put(PROPERTITY_ID, id);
 		addConfig(PROPERTITY_ID, id);
+		
+		String clazz = getDefaultClass(session, context);
+		String className = view.getString(PROPERTITY_CLASSNAME, "");
+		if(!"".equals(className)) {
+			clazz += " " + className;
+		}
+		map.put(WRAP_CSS, clazz);
 		
 		/** Width属性**/
 		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, ""+getDefaultWidth()));
@@ -152,17 +161,6 @@ public class Component {
         page.addStyleSheet(styleSheet);
 	}
 	
-	
-	/**
-	 * 增加ClassName
-	 */
-	
-	protected void addClassName(CompositeMap view, Map map){
-		String className = view.getString(PROPERTITY_CLASSNAME, "");
-		if(!"".equals(className)) {
-			map.put(PROPERTITY_CLASSNAME, className);
-		}		
-	}
 	
 	/**
 	 * 增加事件

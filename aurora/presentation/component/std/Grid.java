@@ -10,6 +10,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.CompositeUtil;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
@@ -22,14 +23,17 @@ public class Grid extends Component {
 	
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITORS = "editors";
+	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_TOOLBAR = "toolBar";
 	public static final String PROPERTITY_DATASET = "dataset";
-	public static final String PROPERTITY_AUTOQUERY = "autoquery";
 	public static final String PROPERTITY_NAVBAR = "navbar";
+	public static final String PROPERTITY_SELECTABLE = "selectable";
+	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	
 	public static final String COLUMN_DATAINDEX = "dataindex";
 	public static final String COLUMN_LOCK = "lock";
 	public static final String COLUMN_HIDDEN = "hidden";
+	public static final String COLUMN_RESIZABLE = "resizable";
 	public static final String COLUMN_PROMPT = "prompt";
 	
 	public static final String HTML_LOCKAREA = "lockarea";
@@ -38,6 +42,7 @@ public class Grid extends Component {
 	private static final int DEFALUT_HEAD_HEIGHT = 25;
 	private static final int COLUMN_WIDTH = 100;
 	
+	private static final String DEFAULT_CLASS = "item-grid-wrap";
 	private static final String MAX_ROWS = "maxRow";
 	private static final String ROW_SPAN = "rowspan";
 	private static final String COL_SPAN = "colspan";
@@ -45,12 +50,23 @@ public class Grid extends Component {
 	private static final String HEAD_HEIGHT = "headHeight";
 	private static final String LOCK_WIDTH = "lockwidth";
 	
+	private static final String COLUMN_TYPE = "type";
+	private static final String TYPE_CELL_CHECKBOX = "cellcheck";
+	private static final String TYPE_CELL_RADIO = "cellradio";
+	private static final String TYPE_ROW_CHECKBOX = "rowcheck";
+	private static final String TYPE_ROW_RADIO = "rowradio";
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "grid/Grid.css");
-		addJavaScript(session, context, "grid/Grid.js");
+		
+		addStyleSheet(session, context, "grid/Grid-min.css");
+		addJavaScript(session, context, "grid/Grid-min.js");
 	}
-
+	
+	
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		return DEFAULT_CLASS;
+	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
@@ -66,10 +82,33 @@ public class Grid extends Component {
 			style += "border-bottom:none;";
 		}
 		map.put("gridstyle", style);
+		processSelectable(map,view);
 		createGridColumns(map,view);
 		createGridEditors(session,context);
 	}
 	
+	private void processSelectable(Map map,CompositeMap view){
+		Boolean selectable = new Boolean(false);
+		String selectionmodel = "multiple";
+		CompositeMap root = view.getRoot();
+		List list = CompositeUtil.findChilds(root, "dataSet");
+		if(list!=null){
+			String dds = view.getString(PROPERTITY_DATASET);
+			Iterator it = list.iterator();
+			while(it.hasNext()){
+				CompositeMap ds = (CompositeMap)it.next();
+				String id = ds.getString(PROPERTITY_ID, "");
+				if(id.equals(dds)){
+					selectable = new Boolean(ds.getBoolean(PROPERTITY_SELECTABLE, false));
+					selectionmodel = ds.getString(PROPERTITY_SELECTIONMODEL, "multiple");
+					break;
+				}
+			}
+			
+		}
+		map.put(PROPERTITY_SELECTABLE, selectable);
+		map.put(PROPERTITY_SELECTIONMODEL, selectionmodel);
+	}
 	
 	private void createGridColumns(Map map, CompositeMap view){
 		List jsons = new ArrayList(); 
@@ -90,6 +129,21 @@ public class Grid extends Component {
 		int maxRow =1;
 		
 		if(columns != null) {
+			boolean selectable = ((Boolean)map.get(PROPERTITY_SELECTABLE)).booleanValue();
+			String selectmodel = (String)map.get(PROPERTITY_SELECTIONMODEL);
+			if(selectable) {
+				CompositeMap column = new CompositeMap("column");
+				column.putBoolean(COLUMN_LOCK,true);
+				column.putInt(PROPERTITY_WIDTH,25);
+				column.putBoolean(COLUMN_RESIZABLE,false);
+				if("multiple".equals(selectmodel)) {
+					column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
+				}else{
+					column.putString(COLUMN_TYPE,TYPE_ROW_RADIO);
+				}
+				lks.add(column);
+			}
+			
 			Iterator cit = columns.getChildIterator();
 			while(cit.hasNext()){
 				CompositeMap column = (CompositeMap)cit.next();
@@ -147,10 +201,16 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap column = (CompositeMap)it.next();
 				if(column.getChilds() == null){
-					column.putString(COLUMN_DATAINDEX, column.getString(COLUMN_DATAINDEX,"").toLowerCase());
+					String dataindex = column.getString(COLUMN_DATAINDEX,"");
+					if(!"".equals(dataindex)) column.putString(COLUMN_DATAINDEX, dataindex.toLowerCase());
 					column.putBoolean(COLUMN_LOCK, column.getBoolean(COLUMN_LOCK, false));
 					column.putBoolean(COLUMN_HIDDEN, column.getBoolean(COLUMN_HIDDEN, false));
+					column.putBoolean(COLUMN_RESIZABLE, column.getBoolean(COLUMN_RESIZABLE, true));
 					column.putInt(PROPERTITY_WIDTH, column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH));
+					String editor = column.getString(PROPERTITY_EDITOR, "");
+					if(isCheckBoxEditor(editor, view)){
+						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
+					}
 					JSONObject json = new JSONObject(column);
 					jsons.add(json);
 				}
@@ -158,7 +218,6 @@ public class Grid extends Component {
 		}
 		
 		map.put(PROPERTITY_DATASET, view.getString(PROPERTITY_DATASET));
-		map.put(PROPERTITY_AUTOQUERY, view.getString(PROPERTITY_AUTOQUERY,"false"));
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro));
@@ -191,6 +250,23 @@ public class Grid extends Component {
 		map.put("editors", sb.toString());
 	}
 	
+	private boolean isCheckBoxEditor(String id, CompositeMap view){
+		boolean isChecBox = false;
+		CompositeMap editors = view.getChild(PROPERTITY_EDITORS);
+		if(editors != null && editors.getChilds() != null) {
+			Iterator it = editors.getChildIterator();
+			while(it.hasNext()){
+				CompositeMap editor = (CompositeMap)it.next();
+				String eid = editor.getString(PROPERTITY_ID,"");
+				if(id.equals(eid)&& "checkBox".equals(editor.getName())){
+					isChecBox = true;
+					break;
+				}
+			}
+		}
+		return isChecBox;
+	}
+	
 	private boolean creatToolBar(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -205,7 +281,9 @@ public class Grid extends Component {
 			hasToolBar = true;
 			CompositeMap tb = new CompositeMap(PROPERTITY_TOOLBAR);
 			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
-			tb.put(PROPERTITY_WIDTH, new Integer(width.intValue()+2));
+			tb.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_tb");
+			tb.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
+			tb.put(PROPERTITY_STYLE, "border:none;border-bottom:1px solid #cccccc;");
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
@@ -214,30 +292,33 @@ public class Grid extends Component {
 					if(!"".equals(type)){
 						//TODO:多语言
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,"新增","grid-add","function(){$('"+dataset+"').create()}");
+							item = createButton(item,"新增","grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
-							item = createButton(item,"删除","grid-delete","function(){$('"+dataset+"').remove()}");
+							item = createButton(item,"删除","grid-delete","background-position:0px -35px;","function(){$('"+dataset+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
-							item = createButton(item,"保存","grid-save","function(){$('"+dataset+"').submit()}");
+							item = createButton(item,"保存","grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}
 					}
 				}
 				tb.addChild(item);
 			}
+			sb.append("<tr><td>");
 			try {
 				sb.append(session.buildViewAsString(model, tb));
 			} catch (Exception e) {
 				throw new IOException(e.getMessage());
 			}
+			sb.append("</td></tr>");
 		}
 		map.put(PROPERTITY_TOOLBAR, sb.toString());
 		return hasToolBar;
 	}
 	
-	private CompositeMap createButton(CompositeMap button, String text, String clz,String function){
+	private CompositeMap createButton(CompositeMap button, String text, String clz,String style,String function){
 		if("".equals(button.getString(Button.PROPERTITY_ICON,""))){
 			button.put(Button.PROPERTITY_ICON, "null");
 			button.put(Button.BUTTON_CLASS, clz);
+			button.put(Button.BUTTON_STYLE, style);
 		}
 		button.put(Button.PROPERTITY_TEXT,button.getString(Button.PROPERTITY_TEXT, text));
 		if(!"".equals(function))button.put(Button.PROPERTITY_CLICK, function);
@@ -257,15 +338,19 @@ public class Grid extends Component {
 		String nav = view.getString(PROPERTITY_NAVBAR,"");
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
-			CompositeMap navbar = new CompositeMap("navBar");			
+			CompositeMap navbar = new CompositeMap("navBar");
 			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
-			navbar.put(PROPERTITY_WIDTH, new Integer(width.intValue()+2));
+			navbar.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_navbar");
+			navbar.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
+			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
+			sb.append("<tr><td>");
 			try {
 				sb.append(session.buildViewAsString(model, navbar));
 			} catch (Exception e) {
 				throw new IOException(e.getMessage());
 			}
+			sb.append("</td></tr>");
 			map.put("navbar", sb.toString());
 		}
 		return hasNavBar;
@@ -384,8 +469,15 @@ public class Grid extends Component {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
 						CompositeMap column = (CompositeMap)lit.next();
-						boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
-						if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+						String ct =  column.getString(COLUMN_TYPE);
+						if(TYPE_ROW_CHECKBOX.equals(ct)){
+							hsb.append("<TD class='grid-hc' atype='grid.rowcheck'><center><div atype='grid.headcheck' class='grid-ckb item-ckb-u'></div></center></TD>");
+						}else if(TYPE_ROW_RADIO.equals(ct)) {
+							hsb.append("<TD class='grid-hc' atype='grid.rowradio'><div>&nbsp;</div></TD>");
+						}else{
+							boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
+							if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+						}
 					}
 				}
 				hsb.append("</TR>");

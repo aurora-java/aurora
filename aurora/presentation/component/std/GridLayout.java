@@ -23,17 +23,17 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	protected static final String ROWS = "row";
 	protected static final String COLUMNS = "column";
+	
 	protected static final int UNLIMITED = -1;
+	protected static final String PROPERTITY_TITLE="title";	
+	protected static final String PROPERTITY_CELLPADDING = "cellpadding";
+	protected static final String PROPERTITY_CELLSPACING = "cellspacing";
+	protected static final String PROPERTITY_VALIDALIGN = "validalign";
 	
-	private static final String PROPERTITY_CLASS="classname";
-	private static final String PROPERTITY_STYLE="style";
-	private static final String PROPERTITY_CELLPADDING = "cellpadding";
-	private static final String PROPERTITY_CELLSPACING = "cellspacing";
-	private static final String PROPERTITY_VALIDALIGN = "validalign";
-	
-	private static final String DEFAULT_TABLE_CLASS = "layout-table";
-	private static final String DEFAULT_TD_CELL = "layout-td-cell";
-	private static final String DEFAULT_TD_CONTAINER = "layout-td-con";
+	protected static final String TITLE_CLASS = "layout-title";
+	protected static final String DEFAULT_TABLE_CLASS = "layout-table";
+	protected static final String DEFAULT_TD_CELL = "layout-td-cell";
+	protected static final String DEFAULT_TD_CONTAINER = "layout-td-con";
 	
 		
 	protected int getRows(CompositeMap view){
@@ -59,7 +59,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			
-			addInvalidMsg(field, out);
+//			addInvalidMsg(field, out);
 		}
 		out.write("</td>");	
 	}
@@ -107,31 +107,37 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	private void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
 		
 		Writer out = session.getWriter();
-		String cls = view.getString(PROPERTITY_CLASS, "");
+		String cls = view.getString(PROPERTITY_CLASSNAME, "");
 		String style = view.getString(PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
 		int width = view.getInt(PROPERTITY_WIDTH, 0);
+		int height = view.getInt(PROPERTITY_HEIGHT, 0);
 		
 		String className = DEFAULT_TABLE_CLASS;
-		if(!"".equals(className)){
-			className += " " + cls;			
-		}
+		String title = view.getString(PROPERTITY_TITLE, "");
+		if(!"".equals(title)) className += " " + TITLE_CLASS;
+		className += " " + cls;			
+		
 		
 		out.write("<table border=0 class='"+className+"' id='"+id+"'");
 		if(width != 0) out.write(" width=" + width);
+		if(height != 0) out.write(" height=" + height);
 		if(!"".equals(style)) {
 			out.write(" style='"+style+"'");
 		}
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);
 		out.write("<tbody>");
+		if(!"".equals(title))out.write("<tr height='3'></tr>");
 		afterBuildTop(session,model,view);
 	}
 	
 	private void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 		Writer out = session.getWriter();
 		buildFoot(session,model,view);
+		String title = view.getString(PROPERTITY_TITLE, "");
+		if(!"".equals(title))out.write("<tr height='3'></tr>");
 		out.write("</tbody>");
 		out.write("</table>");	
 	}
@@ -156,49 +162,54 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 			rows = UNLIMITED;
 			columns = 1;
 		}else if(rows == UNLIMITED && columns != UNLIMITED) {
-			rows = (int)Math.ceil((double)view.getChilds().size()/columns);
+			List children = view.getChilds();
+			if(children!=null){
+				rows = (int)Math.ceil((double)view.getChilds().size()/columns);
+			}else{
+				rows = 1;				
+			}
 		} else if(rows != UNLIMITED && columns == UNLIMITED) {
 			columns = (int)Math.ceil((double)view.getChilds().size()/rows);
 		}
-		if (it != null) {
 			try {
 				buildTop(session, model, view ,rows, columns,id);
-				if(rows == UNLIMITED){
-					buildRows(session, model, view, it);
-				}else if(columns == UNLIMITED){
-					buildColumns(session, model, view, it);
-				}else{
-					for( int n=0; n<rows; n++){
-						out.write("<tr>");
-						for( int k=0; k<columns; k++){
-							if(it.hasNext()){
-								CompositeMap field = (CompositeMap)it.next();
-								buildCell(session,model,view, field);	
-							}else{
-								break;
+				if (it != null) {
+					if(rows == UNLIMITED){
+						buildRows(session, model, view, it);
+					}else if(columns == UNLIMITED){
+						buildColumns(session, model, view, it);
+					}else{
+						for( int n=0; n<rows; n++){
+							out.write("<tr>");
+							for( int k=0; k<columns; k++){
+								if(it.hasNext()){
+									CompositeMap field = (CompositeMap)it.next();
+									buildCell(session,model,view, field);	
+								}else{
+									break;
+								}
 							}
+							out.write("</tr>");
 						}
-						out.write("</tr>");
 					}
 				}
 				buildBottom(session, model, view);
 			} catch (Exception e) {
 				throw new ViewCreationException(e);
 			}
-		}
 		addBoxScript(id, session, view);
 	}
 	
-	private void addInvalidMsg(CompositeMap field, Writer out) throws IOException {
-		String id = field.getString(Component.PROPERTITY_ID);
-		String align = field.getString(PROPERTITY_VALIDALIGN, "");
-		if("bottom".equals(align)){
-			out.write("<div class='item-clear'></div>");	
-			out.write("<span class='item-invalid-msg-bottom' id='"+ id +"_vmsg'></span>");		
-		}else{
-			out.write("<span class='item-invalid-msg-right' id='"+ id +"_vmsg'></span>");	
-		}
-	}
+//	private void addInvalidMsg(CompositeMap field, Writer out) throws IOException {
+//		String id = field.getString(Component.PROPERTITY_ID);
+//		String align = field.getString(PROPERTITY_VALIDALIGN, "");
+//		if("bottom".equals(align)){
+//			out.write("<div class='item-clear'></div>");	
+//			out.write("<span class='item-invalid-msg-bottom' id='"+ id +"_vmsg'></span>");		
+//		}else{
+//			out.write("<span class='item-invalid-msg-right' id='"+ id +"_vmsg'></span>");	
+//		}
+//	}
 	
 	
 	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {

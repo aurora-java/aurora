@@ -17,7 +17,7 @@ public class Button extends Field {
 	public static final String BUTTON_CLASS = "btnclass";
 	public static final String PROPERTITY_CLICK = "click";
 	public static final String PROPERTITY_TITLE = "title";
-	private static final int DEFAULT_HEIGHT = 19;
+	private static final int DEFAULT_HEIGHT = 17;
 	private static final int DEFAULT_WIDTH = 60;
 	
 	protected int getDefaultWidth(){
@@ -28,6 +28,20 @@ public class Button extends Field {
 		return DEFAULT_HEIGHT;
 	}
 	
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		CompositeMap view = context.getView();
+		String text = view.getString(PROPERTITY_TEXT, "");
+		String icon = view.getString(PROPERTITY_ICON, "");
+		String wrapClass = CLASSNAME_WRAP;
+		if(!"".equals(icon)){
+			if(!"".equals(text)){
+				wrapClass += " item-btn-icon-text";
+			}else{
+				wrapClass += " item-btn-icon";
+			}
+		}
+		return wrapClass;
+	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
@@ -39,22 +53,15 @@ public class Button extends Field {
 		}
 		String text = view.getString(PROPERTITY_TEXT, "");
 		String icon = view.getString(PROPERTITY_ICON, "");
-		String wrapClass = view.getString(PROPERTITY_CLASSNAME, "");
-		wrapClass += CLASSNAME_WRAP;
+		String btnstyle = view.getString(BUTTON_STYLE, "");
 		if(!"".equals(icon)){
-			if(!"".equals(text)){
-				wrapClass += " item-btn-icon-text";
-			}else{
-				wrapClass += " item-btn-icon";
-			}
-			if(!"null".equalsIgnoreCase(icon))map.put(BUTTON_STYLE, "background-image:url("+icon+");");
+			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+icon+");";
 		}
 		map.put(PROPERTITY_EVENTS, esb.toString());
-		map.put(WRAP_CSS, wrapClass);
 		map.put(PROPERTITY_TEXT, text);
 		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
 		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));
-		
+		map.put(BUTTON_STYLE, btnstyle);
 		map.put(PROPERTITY_CONFIG, getConfigString());
 	}
 }
