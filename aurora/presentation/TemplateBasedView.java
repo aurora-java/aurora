@@ -6,6 +6,7 @@ package aurora.presentation;
 import java.io.IOException;
 import java.util.Map;
 
+import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
 import uncertain.util.template.TextTemplate;
 
@@ -27,7 +28,10 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
                 template_name = view_context.getView().getName() + TEMPLATE_EXT;
             template = session.getTemplate(template_name);
         }
-        if(template==null) throw new ViewCreationException("No template defined during view content creation process");        
+        if(template==null){
+            CompositeMap view = view_context.getView();
+            throw new ViewCreationException("No template defined during view content creation process:"+view==null?"":view.toXML());        
+        }
         template.createOutput(session.getWriter(), view_context.getContextMap());
     }
     
