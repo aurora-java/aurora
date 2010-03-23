@@ -18,26 +18,7 @@ import aurora.service.ServiceInstance;
 public class Box extends GridLayout {
 	
 	private static final String DEFAULT_TH_CLASS = "layout-th";
-	private static final String DEFAULT_HEAD_CLASS = "layout-head";
 	private static final String PROPERTITY_LABEL_WIDTH = "labelwidth";
-	
-	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
-		Writer out = session.getWriter();
-		String title = view.getString(PROPERTITY_TITLE, "");
-		if(!"".equals(title)) {
-			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
-			out.write(title);
-			out.write("</th></tr></thead>");
-		}
-	}
-	
-	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
-//		Writer out = session.getWriter();
-//		String title = view.getString("title", "");
-//		if(!"".equals(title)) {
-//			out.write("<tr height=5><td><td></tr>");
-//		}
-	}
 	
 	protected int getLabelWidth(CompositeMap view){
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);

@@ -38,9 +38,9 @@ public class Component {
 	private JSONObject config = new JSONObject();
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		addStyleSheet(session, context, "core/Aurora-all-min.css");
+		addStyleSheet(session, context, "core/Aurora-all.css");
 		addJavaScript(session, context, "core/ext-core-min.js");
-		addJavaScript(session, context, "core/Aurora-all-min.js");
+		addJavaScript(session, context, "core/Aurora-all.js");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){

@@ -58,9 +58,8 @@ public class Grid extends Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
-		
-		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid-min.js");
+		addStyleSheet(session, context, "grid/Grid.css");
+		addJavaScript(session, context, "grid/Grid.js");
 	}
 	
 	
@@ -283,7 +282,8 @@ public class Grid extends Component {
 			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
 			tb.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_tb");
 			tb.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
-			tb.put(PROPERTITY_STYLE, "border:none;border-bottom:1px solid #cccccc;");
+			tb.put(PROPERTITY_CLASSNAME, "grid-toolbar");
+//			tb.put(PROPERTITY_STYLE, "border:none;border-bottom:1px solid #cccccc;");
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
@@ -342,7 +342,8 @@ public class Grid extends Component {
 			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
 			navbar.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_navbar");
 			navbar.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
-			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
+			navbar.put(PROPERTITY_CLASSNAME, "grid-navbar");
+//			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
 			sb.append("<tr><td>");
 			try {

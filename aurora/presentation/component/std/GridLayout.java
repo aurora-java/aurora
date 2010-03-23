@@ -2,7 +2,6 @@ package aurora.presentation.component.std;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,10 +24,10 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected static final String COLUMNS = "column";
 	
 	protected static final int UNLIMITED = -1;
-	protected static final String PROPERTITY_TITLE="title";	
 	protected static final String PROPERTITY_CELLPADDING = "cellpadding";
 	protected static final String PROPERTITY_CELLSPACING = "cellspacing";
 	protected static final String PROPERTITY_VALIDALIGN = "validalign";
+	protected static final String PROPERTITY_PADDING = "padding";
 	
 	protected static final String TITLE_CLASS = "layout-title";
 	protected static final String DEFAULT_TABLE_CLASS = "layout-table";
@@ -48,7 +47,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		Writer out = session.getWriter();
-		int padding = view.getInt("padding", 3);
+		int padding = view.getInt(PROPERTITY_PADDING, 3);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		if(builder instanceof GridLayout){
 			beforeBuildCell(session, model, view, field);
@@ -104,8 +103,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 
 	
-	private void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
-		
+	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
 		Writer out = session.getWriter();
 		String cls = view.getString(PROPERTITY_CLASSNAME, "");
 		String style = view.getString(PROPERTITY_STYLE, "");
@@ -115,10 +113,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		int height = view.getInt(PROPERTITY_HEIGHT, 0);
 		
 		String className = DEFAULT_TABLE_CLASS;
-		String title = view.getString(PROPERTITY_TITLE, "");
-		if(!"".equals(title)) className += " " + TITLE_CLASS;
-		className += " " + cls;			
-		
+		className += " " + cls;
 		
 		out.write("<table border=0 class='"+className+"' id='"+id+"'");
 		if(width != 0) out.write(" width=" + width);
@@ -128,16 +123,12 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);
-		out.write("<tbody>");
-		if(!"".equals(title))out.write("<tr height='3'></tr>");
 		afterBuildTop(session,model,view);
 	}
 	
 	private void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
-		Writer out = session.getWriter();
 		buildFoot(session,model,view);
-		String title = view.getString(PROPERTITY_TITLE, "");
-		if(!"".equals(title))out.write("<tr height='3'></tr>");
+		Writer out = session.getWriter();
 		out.write("</tbody>");
 		out.write("</table>");	
 	}
@@ -171,33 +162,33 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		} else if(rows != UNLIMITED && columns == UNLIMITED) {
 			columns = (int)Math.ceil((double)view.getChilds().size()/rows);
 		}
-			try {
-				buildTop(session, model, view ,rows, columns,id);
-				if (it != null) {
-					if(rows == UNLIMITED){
-						buildRows(session, model, view, it);
-					}else if(columns == UNLIMITED){
-						buildColumns(session, model, view, it);
-					}else{
-						for( int n=0; n<rows; n++){
-							out.write("<tr>");
-							for( int k=0; k<columns; k++){
-								if(it.hasNext()){
-									CompositeMap field = (CompositeMap)it.next();
-									buildCell(session,model,view, field);	
-								}else{
-									break;
-								}
+		try {
+			buildTop(session, model, view ,rows, columns,id);
+			if (it != null) {
+				if(rows == UNLIMITED){
+					buildRows(session, model, view, it);
+				}else if(columns == UNLIMITED){
+					buildColumns(session, model, view, it);
+				}else{
+					for( int n=0; n<rows; n++){
+						out.write("<tr>");
+						for( int k=0; k<columns; k++){
+							if(it.hasNext()){
+								CompositeMap field = (CompositeMap)it.next();
+								buildCell(session,model,view, field);	
+							}else{
+								break;
 							}
-							out.write("</tr>");
 						}
+						out.write("</tr>");
 					}
 				}
-				buildBottom(session, model, view);
-			} catch (Exception e) {
-				throw new ViewCreationException(e);
 			}
-		addBoxScript(id, session, view);
+			buildBottom(session, model, view);
+		} catch (Exception e) {
+			throw new ViewCreationException(e);
+		}
+//		addBoxScript(id, session, view);
 	}
 	
 //	private void addInvalidMsg(CompositeMap field, Writer out) throws IOException {
@@ -212,34 +203,34 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 //	}
 	
 	
-	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {
-		List cmps = new ArrayList();
-		Iterator cit = view.getChildIterator();
-		if(cit != null){
-			while(cit.hasNext()){
-				CompositeMap field = (CompositeMap)cit.next();
-				IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
-				if(builder instanceof GridLayout){}else{
-					String cid = field.getString(Component.PROPERTITY_ID);
-					cmps.add(cid);
-				}
-			}			
-		}
-		Writer out = session.getWriter();
-		out.write("<script>");
-		StringBuffer sb = new StringBuffer();
-		sb.append("new Aurora.Box({id:'").append(id).append("',");
-		sb.append("cmps:[");
-		Iterator it = cmps.iterator();
-		while(it.hasNext()){
-			sb.append("'").append(it.next()).append("'");
-			if(it.hasNext())
-			sb.append(",");
-		}
-		sb.append("]});");
-		out.write(sb.toString());
-		out.write("</script>");
-	}
+//	private void addBoxScript(String id, BuildSession session, CompositeMap view) throws IOException {
+//		List cmps = new ArrayList();
+//		Iterator cit = view.getChildIterator();
+//		if(cit != null){
+//			while(cit.hasNext()){
+//				CompositeMap field = (CompositeMap)cit.next();
+//				IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
+//				if(builder instanceof GridLayout){}else{
+//					String cid = field.getString(Component.PROPERTITY_ID);
+//					cmps.add(cid);
+//				}
+//			}			
+//		}
+//		Writer out = session.getWriter();
+//		out.write("<script>");
+//		StringBuffer sb = new StringBuffer();
+//		sb.append("new Aurora.Box({id:'").append(id).append("',");
+//		sb.append("cmps:[");
+//		Iterator it = cmps.iterator();
+//		while(it.hasNext()){
+//			sb.append("'").append(it.next()).append("'");
+//			if(it.hasNext())
+//			sb.append(",");
+//		}
+//		sb.append("]});");
+//		out.write(sb.toString());
+//		out.write("</script>");
+//	}
 
 	public String[] getBuildSteps(ViewContext context) {
 		return null;

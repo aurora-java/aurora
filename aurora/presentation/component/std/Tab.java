@@ -59,7 +59,6 @@ public class Tab extends Component {
 				Integer bodywidth = (Integer)map.get("bodywidth");
 				sb.append("<div class='tab' style='width:"+bodywidth+"px'>");
 				String ref = tab.getString(PROPERTITY_REF, "");
-				
 				if("".equals(ref)){
 					List tabchilds = tab.getChilds();
 					if(tabchilds!=null){
@@ -84,6 +83,7 @@ public class Tab extends Component {
 	private String createTabStrips(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
+		CompositeMap model = context.getModel();
 		
 		List jsons = new ArrayList(); 
 		StringBuffer sb = new StringBuffer();
@@ -107,6 +107,9 @@ public class Tab extends Component {
 				sb.append("</div>");
 				
 				tab.putBoolean(PROPERTITY_SELECTED, tab.getBoolean(PROPERTITY_SELECTED, false));
+				String ref = tab.getString(PROPERTITY_REF, "");
+				ref = uncertain.composite.TextParser.parse(ref, model);
+				tab.putString(PROPERTITY_REF, ref);
 				JSONObject json = new JSONObject(tab);
 				jsons.add(json);
 				i++;
