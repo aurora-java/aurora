@@ -1,5 +1,6 @@
 /*
- * Created on 2007-8-17 обнГ06:17:33
+ * Created on 2007-8-17 О©╫О©╫О©╫О©╫06:17:33
+ * $Id$
  */
 package aurora.presentation;
 
