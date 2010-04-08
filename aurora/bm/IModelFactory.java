@@ -17,12 +17,16 @@ public interface IModelFactory {
      */
     public CompositeMap getModelConfig( String name ) throws IOException;
     
+    public CompositeMap getModelConfig( String name, String ext ) throws IOException;
+    
     /**
      * Get a new model instance, the returned instance can be modified
      * @param name Name of model
      * @return Created BusinessModel instance
      */
     public BusinessModel getModel( String name ) throws IOException;
+    
+    public BusinessModel getModel( String name, String ext ) throws IOException;
     
     /**
      * Get a model instance. The returned model is for read only.
@@ -31,7 +35,9 @@ public interface IModelFactory {
      * @return A read-only BusinessModel instance
      * @throws IOException
      */
-    public BusinessModel getModelForRead( String name ) throws IOException;   
+    public BusinessModel getModelForRead( String name ) throws IOException;
+    
+    public BusinessModel getModelForRead( String name, String ext ) throws IOException;    
     
     /**
      * Create a BusinessModel instance from previously loaded CompositeMap
