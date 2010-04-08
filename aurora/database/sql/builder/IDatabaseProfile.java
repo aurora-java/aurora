@@ -21,6 +21,7 @@ public interface IDatabaseProfile {
     public static final String KEY_DELETE =         "DELETE";
     public static final String KEY_VALUES =         "VALUES";
     public static final String KEY_SET =            "SET";
+    public static final String KEY_FROM =            "FROM";    
     
     public static final String  KEY_USE_JOIN_KEYWORD = "use_join_keyword";
     
