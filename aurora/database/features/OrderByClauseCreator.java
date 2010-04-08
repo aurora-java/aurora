@@ -53,7 +53,7 @@ public class OrderByClauseCreator  implements ISingleton {
     }
     
     // for raw sql
-    public void onPopulateStatement( BusinessModelServiceContext bmsc){        
+    public void onPopulateQueryStatement( BusinessModelServiceContext bmsc){        
         ISqlStatement s = bmsc.getStatement();
         CompositeMap param = bmsc.getCurrentParameter();
         if( s instanceof SelectStatement ){

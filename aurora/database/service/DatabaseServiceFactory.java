@@ -21,6 +21,7 @@ import uncertain.event.RuntimeContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
+import aurora.bm.DeleteSqlCreator;
 import aurora.bm.IModelFactory;
 import aurora.bm.InsertSqlCreator;
 import aurora.bm.ModelFactory;
@@ -67,6 +68,9 @@ public class DatabaseServiceFactory {
         
         AutoQueryCounter auto_query_counter = new AutoQueryCounter();
         setGlobalParticipant(AutoQueryCounter.class, auto_query_counter);
+        
+        DeleteSqlCreator delete_creator = new DeleteSqlCreator( getModelFactory(), getSqlBuilderRegistry());
+        setGlobalParticipant(DeleteSqlCreator.class, delete_creator);
         
         setGlobalParticipant(OrderByClauseCreator.class, new OrderByClauseCreator());
     }

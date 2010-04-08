@@ -7,7 +7,7 @@
 		<field name="SqlString" type="StringBuffer" />
 	</fields>
 	<action name="CreateQueryStatement" input="BusinessModel" output="SqlStatement"/>
-	<action name="PopulateStatement" input="SqlStatement,BusinessModel" />
+	<action name="PopulateQueryStatement" input="SqlStatement,BusinessModel" />
 	<action name="CreateQuerySql" input="SqlStatement,BusinessModel" output="SqlString" />
 	<action name="ExecuteQuery" input="SqlString,BusinessModel"/>
 	<action name="QueryFinish" />

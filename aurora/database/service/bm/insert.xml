@@ -5,7 +5,7 @@
 		<field name="SqlString" type="StringBuffer" />
 	</fields>
 	<action name="CreateInsertStatement" input="BusinessModel" output="SqlStatement"/>
-	<action name="PopulateInsertStatement" input="SqlStatement,BusinessModel"/>
+	<action name="PopulateInsertInsertStatement" input="SqlStatement,BusinessModel"/>
 	<action name="CreateInsertSql" input="SqlStatement,BusinessModel" output="SqlString" />
 	<action name="ExecuteInsert" input="SqlString,BusinessModel" />
 </procedure>

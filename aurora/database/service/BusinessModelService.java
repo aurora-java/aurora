@@ -191,6 +191,12 @@ public class BusinessModelService {
         runProcedure(parameters, PROC_INSERT);
     }
     
+    public void deleteByPK( Map parameters )
+        throws Exception
+    {
+        runProcedure(parameters, PROC_DELETE);
+    }
+    
     public void parseParameter( ServiceContext context )
         throws ValidationException
     {

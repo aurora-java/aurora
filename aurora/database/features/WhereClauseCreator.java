@@ -98,7 +98,7 @@ public class WhereClauseCreator {
         }
     }
 
-    public void onPopulateStatement( BusinessModelServiceContext bmsc){
+    public void doPopulateStatement( BusinessModelServiceContext bmsc){
         ISqlStatement s = bmsc.getStatement();
         if( s instanceof IWithWhereClause){
             // Add data filter
@@ -114,6 +114,18 @@ public class WhereClauseCreator {
             }
         }
     }
+    
+    public void onPopulateUpdateStatement( BusinessModelServiceContext bmsc){
+        doPopulateStatement(bmsc);
+    }
+    
+    public void onPopulateDeleteStatement( BusinessModelServiceContext bmsc){
+        doPopulateStatement(bmsc);
+    }
+    
+    public void onPopulateQueryStatement( BusinessModelServiceContext bmsc){
+        doPopulateStatement(bmsc);
+    }        
     
     public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
         //ServiceOption option = bmsc.getServiceOption();
