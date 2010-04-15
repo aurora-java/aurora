@@ -25,7 +25,7 @@ implements IFeature
 
     public void run(ProcedureRunner runner) throws Exception {
         prepareRun(runner);
-        service.updateByPK(null);
+        mService.updateByPK(null);
     }
 
 }

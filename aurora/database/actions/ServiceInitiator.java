@@ -35,13 +35,12 @@ public class ServiceInitiator {
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
         reg.addClassMapping( "model-query", ModelQuery.class );
         reg.addClassMapping( "model-update", ModelUpdate.class );
+        reg.addClassMapping( "model-insert", ModelInsert.class );
+        reg.addClassMapping( "model-delete", ModelDelete.class );
+        reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
         reg.addClassMapping( "sql-execute", SqlExecute.class);
         reg.addClassMapping( "sql-query", SqlQuery.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
-        /* ======= pending ============== */
-        reg.addClassMapping( "model-insert", ModelInsert.class );
-        reg.addClassMapping( "model-delete", ModelDelete.class );
-        reg.addClassMapping( "model-invoke", ModelUpdate.class );
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
     }

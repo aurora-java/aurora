@@ -4,7 +4,7 @@
  */
 package aurora.database.actions.config;
 
-import uncertain.composite.CompositeMap;
+import java.util.Map;
 
 public class ModelQueryConfig extends AbstractQueryActionConfig {
 
@@ -16,7 +16,7 @@ public class ModelQueryConfig extends AbstractQueryActionConfig {
         putString("model", model);
     }
 
-    public void setParameters(CompositeMap params) {
+    public void setParameters(Map params) {
         super.setParameters(params);
         if (getRootPath() == null)
             setRootPath(getModel());

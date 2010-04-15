@@ -13,6 +13,28 @@ public class ActionConfigManager {
         return new CompositeMap(null, Version.AURORA_FRAMEWORK_NAMESPACE, name);
     }
     
+    public static CompositeMap createModelAction( String type, String model ){
+        CompositeMap conf = new CompositeMap(type);
+        conf.put("model", model);
+        return conf;
+    }
+    
+    public static CompositeMap createModelUpdate(String model){
+        return createModelAction("model-update", model);
+    }
+    
+    public static CompositeMap createModelInsert(String model){
+        return createModelAction("model-insert", model);
+    }    
+    
+    public static CompositeMap createModelDelete(String model){
+        return createModelAction("model-delete", model);
+    }
+    
+    public static CompositeMap createModelBatchUpdate(String model){
+        return createModelAction("model-batch-update", model);
+    }    
+    
     public static ModelQueryConfig createModelQuery(){
         CompositeMap map = createActionConfig("model-query");
         ModelQueryConfig config = new ModelQueryConfig();

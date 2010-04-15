@@ -15,7 +15,7 @@ public class ModelInsert extends AbstractModelAction {
 
     public void run(ProcedureRunner runner) throws Exception {
         prepareRun(runner);
-        service.insert(null);
+        mService.insert(null);
     }
 
 }

@@ -3,48 +3,45 @@
  */
 package aurora.database.actions;
 
-import java.sql.Connection;
-
-//import org.lwap.controller.MainService;
-
 import uncertain.composite.CompositeMap;
-import uncertain.composite.DynamicObject;
+import uncertain.logging.ILogger;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.database.service.BusinessModelService;
-import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.DatabaseServiceFactory;
 
 public abstract class AbstractModelAction extends AbstractEntry  {
     
-    String                  model;
+    String                  mModel;
 
     //boolean                 trace;
     
-    DatabaseServiceFactory  svcFactory;
+    DatabaseServiceFactory  mServiceFactory;
     
-    BusinessModelService    service;
+    BusinessModelService    mService;
+    ILogger                 mLogger;
 
     public AbstractModelAction( DatabaseServiceFactory  svcFactory) {
-        this.svcFactory = svcFactory;
+        this.mServiceFactory = svcFactory;
     }
     
     protected void prepareRun(ProcedureRunner runner)
         throws Exception
     {
-        if(model==null)
+        if(mModel==null)
             throw new IllegalArgumentException("Must set 'model' property");
         CompositeMap context = runner.getContext();
-        service = svcFactory.getModelService(model, context);
+        mService = mServiceFactory.getModelService(mModel, context);
+        mLogger = DatabaseServiceFactory.getLogger(context);
         //service.setTrace(getTrace());
     }
     
     public BusinessModelService getService(){
-        return service;
+        return mService;
     }
     
     public DatabaseServiceFactory getServiceFactory(){
-        return svcFactory;
+        return mServiceFactory;
     }
 
     public abstract void run(ProcedureRunner runner) throws Exception;
@@ -53,15 +50,20 @@ public abstract class AbstractModelAction extends AbstractEntry  {
      * @return the model
      */
     public String getModel() {
-        return model;
+        return mModel;
     }
 
     /**
      * @param model the model to set
      */
     public void setModel(String model) {
-        this.model = model;
+        this.mModel = model;
     }
+    
+    protected ILogger getLogger(){
+        return mLogger;
+    }    
+    
 /*
     
     public boolean getTrace() {
