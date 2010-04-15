@@ -1,6 +1,6 @@
 <model baseTable="EMP" alias="e">
 	<fields>
-		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" required="true"/>
+		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" insertExpression="EMP_S.nextval"/>
 		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>
 		<field name="job" datatype="java.lang.String" databaseType="BIGINT"/>
 		<field name="mgr" datatype="java.lang.Long" databaseType="BIGINT"/>
@@ -9,7 +9,7 @@
 		<field name="sal" datatype="java.lang.Long" databaseType="FLOAT"/>
 		<field name="comm" datatype="java.lang.Long" databaseType="FLOAT"/>
 		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE" updateExpression="sysdate"/>
-		<field name="NOW_DATE" datatype="lava.sql.Date" expression="sysdate" databaseType="DATE"/>
+		<field name="NOW_DATE" datatype="lava.sql.Date" expression="sysdate" databaseType="DATE" forInsert="false"/>
 		<ref-field name="dname" sourceField="dname" sourceModel="testcase.HR.DEPT"/>
 		<ref-field name="mgr_name" sourceField="ename" relationName="MGR"/>
 	</fields>
@@ -38,13 +38,10 @@
 	</query-fields>
 	<data-filters>
 		<data-filter name="MustInDepartment" enforceActions="query" expression="e.deptno is not null"/>
-		<data-filter expression="e.creation_date is not null"/>
+		<data-filter expression="e.creation_date is not null"  enforceActions="query" />
 	</data-filters>
 	<order-by>
 		<field name="DNAME"/>
 		<field name="hiredate" order="desc"/>
 	</order-by>
-	<validators>
-		
-	</validators>
 </model>
