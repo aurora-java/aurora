@@ -4,6 +4,7 @@
 package aurora.database.actions;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.core.ConfigurationError;
 import uncertain.ocm.OCManager;
 import uncertain.proc.ProcedureRunner;
@@ -36,7 +37,8 @@ public class SqlQuery extends AbstractQueryAction {
                 .createSqlServiceContext(context_map);
         if (service == null)
             throw new ConfigurationError("Must set 'service' property");
-        sqlService = svcFactory.getSqlService(service, context);
+        String parsed_service = TextParser.parse(service, context_map);
+        sqlService = svcFactory.getSqlService(parsed_service, context);
         sqlService.getResultSetLoader().setFieldNameCase(super.getFieldNameCaseValue());
     }
 
