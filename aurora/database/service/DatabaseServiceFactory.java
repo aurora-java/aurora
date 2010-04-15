@@ -18,6 +18,8 @@ import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
 import uncertain.event.RuntimeContext;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
@@ -27,6 +29,7 @@ import aurora.bm.InsertSqlCreator;
 import aurora.bm.ModelFactory;
 import aurora.bm.QuerySqlCreator;
 import aurora.bm.UpdateSqlCreator;
+import aurora.database.Constant;
 import aurora.database.features.AutoQueryCounter;
 import aurora.database.features.OrderByClauseCreator;
 import aurora.database.features.WhereClauseCreator;
@@ -46,6 +49,11 @@ public class DatabaseServiceFactory {
     // Class -> Default participant instance
     Map                     defaultParticipantsMap = new HashMap();
     Configuration           globalConfig;
+    
+    public static ILogger getLogger( CompositeMap context){
+        ILogger logger = LoggingContext.getLogger(context, Constant.AURORA_DATABASE_LOGGING_TOPIC);
+        return logger;
+    }
     
     public DatabaseServiceFactory( UncertainEngine  engine)
     {
