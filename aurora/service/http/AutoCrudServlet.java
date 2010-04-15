@@ -12,6 +12,7 @@ import uncertain.composite.CompositeMap;
 import aurora.application.config.ScreenConfig;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
+import aurora.database.service.BusinessModelService;
 import aurora.service.IService;
 import aurora.service.controller.ControllerProcedures;
 
@@ -29,24 +30,32 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         int start_index = args[0].length() == 0 ? 1 : 0;
         String object_name = args[start_index + 2];
         String action_name = args[start_index + 3];
+        BusinessModelService msvc = super.mDatabaseServiceFactory.getModelService(object_name);
+        if(msvc==null)
+            throw new ServletException("Can't load model:"+object_name);
         CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
         svc.setName(object_name + "_" + action_name);
         ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
+        CompositeMap action_config = null;
         if ("query".equals(action_name)) {
             ModelQueryConfig mq = ActionConfigManager
                     .createModelQuery(object_name);
             mq.setParameters(svc.getServiceContext().getParameter());
-            screen.getInitProcedureConfig().addChild(0, mq.getObjectContext());
-        }
-        /*
-         * else if("update".equals(action_name)){
-         * 
-         * }
-         */
+            action_config = mq.getObjectContext();
+            CompositeMap service_output = service_config.getChild("service-output");
+            service_output.put("output", "/model/"+object_name);
+        } else if("update".equals(action_name)){
+            action_config = ActionConfigManager.createModelUpdate(object_name);
+        } else if("insert".equals(action_name)){
+            action_config = ActionConfigManager.createModelInsert(object_name);
+        } else if("delete".equals(action_name)){
+            action_config = ActionConfigManager.createModelDelete(object_name);
+        } else if("batch_update".equals(action_name)){
+            action_config = ActionConfigManager.createModelBatchUpdate(object_name);
+        } else
+            throw new ServletException("Unknown command:"+action_name);
+        screen.getInitProcedureConfig().addChild(0, action_config);
         svc.setServiceConfigData(service_config);
-        // BusinessModelService bmsvc =
-        // mDatabaseServiceFactory.getModelService(object_name);
-
     }
 
 }
