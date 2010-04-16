@@ -109,9 +109,7 @@ public class JSONServiceInterpreter {
             } else
                 result = service_context.getModel();
             if (result != null) {
-            	Set set = new HashSet();
-            	set.add("list");
-                JSONObject o = JSONAdaptor.toJSONObject(result,set);
+                JSONObject o = JSONAdaptor.toJSONObject(result);
                 json.put("result", o);
             }
         }
