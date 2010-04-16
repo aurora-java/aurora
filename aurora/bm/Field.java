@@ -31,6 +31,9 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_FOR_INSERT = "forinsert";    
     public static final String KEY_FOR_UPDATE = "forupdate";
     public static final String REF_FIELD = "ref-field";
+    public static final String KEY_PROMPT = "prompt";
+    public static final String KEY_FORM_WIDTH = "formwidth";
+    public static final String KEY_GRID_WIDTH = "gridwidth";
     
     BusinessModel       owner;
     
@@ -62,6 +65,14 @@ public class Field extends DynamicObject implements IParameter {
     
     public void setParameterPath( String path ){
         putString( KEY_PARAMETER_PATH, path );
+    }
+    
+    public String getPrompt(){
+        return getString(KEY_PROMPT);
+    }
+    
+    public void setPrompt(String prompt){
+        putString(KEY_PROMPT, prompt);
     }
     
     public String getDataType(){
@@ -170,6 +181,20 @@ public class Field extends DynamicObject implements IParameter {
     
     public void setPrimaryKey( boolean is_pk ){
         putBoolean(KEY_IS_PRIMARYKEY, is_pk);
+    }
+    
+    public int getFormWidth(){
+    	return getInt(KEY_FORM_WIDTH, 150);
+    }
+    public void setFormWidth(int width){
+    	putInt(KEY_FORM_WIDTH, width);
+    }
+    
+    public int getGridWidth(){
+    	return getInt(KEY_GRID_WIDTH, 150);
+    }
+    public void setGridWidth(int width){
+    	putInt(KEY_GRID_WIDTH, width);
     }
     
     public boolean isForInsert(){
