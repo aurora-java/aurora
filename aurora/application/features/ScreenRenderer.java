@@ -5,6 +5,8 @@ package aurora.application.features;
 
 import java.io.Writer;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uncertain.composite.CompositeMap;
@@ -58,9 +60,22 @@ public class ScreenRenderer {
     {
         if( mScreen==null ) return EventModel.HANDLE_NORMAL;
         HttpServletResponse response = mService.getResponse();
+        HttpServletRequest request = mService.getRequest();
         response.setContentType("text/html;charset=utf-8");
         Writer out = response.getWriter();
         BuildSession session = mPrtManager.createSession(out);
+        Cookie[] cookies = request.getCookies();
+        String appTheme = "default";
+	    if(cookies!=null) {
+		    for(int i=0; i<cookies.length; i++){
+		    	Cookie cookie = cookies[i];
+		    	String cname = cookie.getName();
+		    	if("app_theme".equals(cname)){	    		
+		    		appTheme = cookie.getValue();
+		    	}
+		    }      
+    	}
+    	session.setTheme(appTheme);
         session.setBaseConfig(mService.getServiceConfig());
         session.setInstanceOfType(IService.class, mService);
         ILogger logger = LoggingContext.getLogger(runner.getContext(), BuildSession.LOGGING_TOPIC);
