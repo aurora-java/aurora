@@ -27,6 +27,6 @@ public class Label extends Component {
 		
 		String renderer = view.getString(PROPERTITY_RENDERER,"");
 		if(!"".equals(renderer)) addConfig(PROPERTITY_RENDERER, renderer);
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 }

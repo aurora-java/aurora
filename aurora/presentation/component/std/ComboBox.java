@@ -6,6 +6,8 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.InputFieldConfig;
 
 /**
  * ComboBox组件.
@@ -26,8 +28,8 @@ public class ComboBox extends TextField {
 		Map map = view_context.getMap();
 		CompositeMap view = view_context.getView();	
 		
-		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
-		map.put(PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
+		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
 		map.put(PROPERTITY_POPWIDTH, new Integer(width.intValue()-2));
 		
 		
@@ -36,7 +38,7 @@ public class ComboBox extends TextField {
 		addConfig(PROPERTITY_VALUE_FIELD, view.getString(PROPERTITY_VALUE_FIELD, "code"));
 		addConfig(PROPERTITY_DISPLAY_FIELD, view.getString(PROPERTITY_DISPLAY_FIELD, "name"));
 		
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 
 	

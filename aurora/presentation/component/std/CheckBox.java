@@ -26,7 +26,7 @@ public class CheckBox extends Component {
 			label = ":"+label;
 		}
 		map.put(PROPERTITY_LABEL, label);
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 
 }

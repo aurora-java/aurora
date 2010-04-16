@@ -11,26 +11,31 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.EventConfig;
+import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.presentation.markup.HtmlPageContext;
 
 public class Component {
-		
-	public static final String PROPERTITY_ID = "id";
-	public static final String PROPERTITY_LABEL = "prompt";
-	public static final String PROPERTITY_NAME = "name";
-	public static final String PROPERTITY_STYLE = "style";
-	public static final String PROPERTITY_VALUE = "value";
-	public static final String PROPERTITY_CONFIG = "config";
-	public static final String PROPERTITY_EVENTS = "events";
-	public static final String PROPERTITY_BINDING = "binding";
-	public static final String PROPERTITY_CLASSNAME = "classname";
-	public static final String PROPERTITY_WIDTH = "width";
-	public static final String PROPERTITY_HEIGHT = "height";
-	public static final String PROPERTITY_BINDTARGET = "bindtarget";
-	public static final String PROPERTITY_BINDNAME = "bindname";
-	public static final String PROPERTITY_HIDDEN = "hidden";
 	
-	private static final String WRAP_CSS = "wrapClass";
+	//TODO: 从componentconfig 获取
+//	public static final String PROPERTITY_ID = "id";
+//	public static final String PROPERTITY_LABEL = "prompt";
+//	public static final String PROPERTITY_NAME = "name";
+//	public static final String PROPERTITY_STYLE = "style";
+//	public static final String PROPERTITY_VALUE = "value";
+//	public static final String PROPERTITY_EVENTS = "events";
+//	public static final String PROPERTITY_CLASSNAME = "classname";
+//	public static final String PROPERTITY_WIDTH = "width";
+//	public static final String PROPERTITY_HEIGHT = "height";
+//	public static final String PROPERTITY_BINDTARGET = "bindtarget";
+//	public static final String PROPERTITY_HIDDEN = "hidden";
+//	public static final String PROPERTITY_EVENT_NAME = "name";
+//	public static final String PROPERTITY_EVENT_HANDLER = "handler";
+	
+	protected static final String CONFIG = "config";
+	protected static final String WRAP_CSS = "wrapClass";
+	protected static final String BINDING = "binding";
 	
 	protected String id;
 	protected StringBuffer esb = new StringBuffer();
@@ -58,77 +63,79 @@ public class Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		
 		/** ID属性 **/
-		id = view.getString(PROPERTITY_ID, "");
+		id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if("".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}
-		view.put(PROPERTITY_ID, id);
-		map.put(PROPERTITY_ID, id);
-		addConfig(PROPERTITY_ID, id);
+		view.put(ComponentConfig.PROPERTITY_ID, id);
+		map.put(ComponentConfig.PROPERTITY_ID, id);
+		addConfig(ComponentConfig.PROPERTITY_ID, id);
 		
 		String clazz = getDefaultClass(session, context);
-		String className = view.getString(PROPERTITY_CLASSNAME, "");
+		String className = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		if(!"".equals(className)) {
 			clazz += " " + className;
 		}
 		map.put(WRAP_CSS, clazz);
 		
 		/** Width属性**/
-		Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH, ""+getDefaultWidth()));
-		map.put(PROPERTITY_WIDTH, width);
+		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+		Integer width = Integer.valueOf(wstr);
+		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
 		
 		/** Height属性**/
-		Integer height = Integer.valueOf(view.getString(PROPERTITY_HEIGHT, ""+getDefaultHeight()));
-		if(height.intValue() !=0) map.put(PROPERTITY_HEIGHT, height);
+		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, ""+getDefaultHeight());
+		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
+		Integer height = Integer.valueOf(hstr);
+		if(height.intValue() !=0) map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 		
 		/** NAME属性 **/
-		String name = view.getString(PROPERTITY_NAME, "").toLowerCase();
+		String name = view.getString(ComponentConfig.PROPERTITY_NAME, "");
 		if("".equals(name)) {
 			name= IDGenerator.getInstance().generate();
 		}
-		map.put(PROPERTITY_NAME, name);
+		map.put(ComponentConfig.PROPERTITY_NAME, name);
 		
-		String style = view.getString(PROPERTITY_STYLE, "");
+		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 //		if(!"".equals(style)) {
-			map.put(PROPERTITY_STYLE, style);
+			map.put(ComponentConfig.PROPERTITY_STYLE, style);
 //		}
 
 		
 		/** 值 **/
-		String value = view.getString(PROPERTITY_VALUE, "");		
-		map.put(PROPERTITY_VALUE, value);
+		String value = view.getString(ComponentConfig.PROPERTITY_VALUE, "");		
+		map.put(ComponentConfig.PROPERTITY_VALUE, value);
 		
 		/** 组件注册事件 **/
-		CompositeMap events = view.getChild(PROPERTITY_EVENTS);
+		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
 		if(events != null){
 			List list = events.getChilds();
 			if(list != null){
 				Iterator it = list.iterator();
 				while(it.hasNext()){
 					CompositeMap event = (CompositeMap)it.next();
-					String eventName = event.getString("name", "");
-					String handler = event.getString("handler", "");
+					EventConfig eventConfig = EventConfig.getInstance(event);
+					String eventName = eventConfig.getEventName();//event.getString(ComponentConfig.PROPERTITY_EVENT_NAME, "");
+					String handler = eventConfig.getHandler();//event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER, "");
 					if(!"".equals(eventName) && !"".equals(handler));
 					addEvent(id, eventName,handler);
 				}
 				
 			}
 		}
-		map.put(PROPERTITY_EVENTS, esb.toString());
+		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
 		
 		/** 绑定DataSet **/
-		String bindTarget = view.getString(PROPERTITY_BINDTARGET, "");
+		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
 		String bindName = "";
-		if(!bindTarget.equals("")){			
-			bindName = view.getString(PROPERTITY_BINDNAME, "").toLowerCase();
-			if(bindName.equals("")){
-				bindName = name;				
-			}
-			bsb.append("$('"+id+"').bind('" + bindTarget + "','" + bindName + "');\n");
-			map.put(PROPERTITY_BINDING, bsb.toString());
+		if(!bindTarget.equals("")){	
+			bsb.append("$('"+id+"').bind('" + bindTarget + "','" + name + "');\n");
+			map.put(BINDING, bsb.toString());
 		}
 	}
 	

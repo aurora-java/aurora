@@ -5,6 +5,8 @@ import java.util.Map;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.InputFieldConfig;
 
 /**
  * 日历组件.
@@ -20,10 +22,10 @@ public class DatePicker extends TextField {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		
-		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
-		map.put(PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
+		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
 		map.put(PROPERTITY_POPWIDTH,new Integer(width.intValue()-2));
 			
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 }

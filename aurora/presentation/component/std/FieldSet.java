@@ -6,27 +6,24 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.FormConfig;
 
-public class Form extends Box {
-	private static final String DEFAULT_HEAD_CLASS = "form_head";
+public class FieldSet extends Box {
+	
+	protected static final String PROPERTITY_TITLE="title";
 	private static final String DEFAULT_BODY_CLASS = "form_body";
 	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		Writer out = session.getWriter();
-		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
-		if(!"".equals(title)) {
-			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
-			out.write(title);
-			out.write("</th></tr></thead>");
-		}
+		String title = view.getString(PROPERTITY_TITLE, "");
+		out.write("<LEGEND class='field_head' unselectable='on'><SPAN>");
+		out.write(title);
+		out.write("</SPAN></LEGEND>");
+		
 	}
+	
 	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 		Writer out = session.getWriter();
 		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
-		
-		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='3'></tr>");
 		super.afterBuildTop(session, model, view);
 	}
 	
@@ -35,8 +32,6 @@ public class Form extends Box {
 		Writer out = session.getWriter();
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
-		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
 		
 		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
@@ -45,27 +40,34 @@ public class Form extends Box {
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		int height = Integer.valueOf(hstr).intValue();
 		
+		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
+		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
+		
 		String className = DEFAULT_TABLE_CLASS;
-		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
+		String title = view.getString(PROPERTITY_TITLE, "");
 		if(!"".equals(title)) className += " " + TITLE_CLASS;
 		className += " " + cls;
 		
-		out.write("<table border=0 class='"+className+"' id='"+id+"'");
-		if(width != 0) out.write(" width=" + width);
-		if(height != 0) out.write(" height=" + height);
+		out.write("<FIELDSET class='item-fieldset' id='"+id+"'");
+		StringBuffer sb = new StringBuffer();
+		if(width != 0) sb.append("width:" + (width-22) + "px;");
+		if(height != 0) sb.append("height:" + height + "px;");
 		if(!"".equals(style)) {
-			out.write(" style='"+style+"'");
+			sb.append(style);
+			out.write(" style='"+sb.toString()+"'");
 		}
-		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
+		out.write(">");
 		buildHead(session,model,view, rows, columns);
+		out.write("<table border=0");
+		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		afterBuildTop(session,model,view);
 	}
 	
-	protected void buildFoot(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
-		super.afterBuildTop(session, model, view);
+	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
+		buildFoot(session,model,view);
 		Writer out = session.getWriter();
-		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='3'></tr>");
+		out.write("</tbody>");
+		out.write("</table>");
+		out.write("</FIELDSET>");	
 	}
-
 }

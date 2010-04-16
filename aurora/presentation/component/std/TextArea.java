@@ -26,6 +26,6 @@ public class TextArea extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 }

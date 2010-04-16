@@ -13,6 +13,9 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
+import aurora.presentation.component.std.config.GridConfig;
 
 /**
  * 
@@ -20,15 +23,6 @@ import aurora.presentation.ViewContext;
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class Grid extends Component {
-	
-	public static final String PROPERTITY_COLUMNS = "columns";
-	public static final String PROPERTITY_EDITORS = "editors";
-	public static final String PROPERTITY_EDITOR = "editor";
-	public static final String PROPERTITY_TOOLBAR = "toolBar";
-	public static final String PROPERTITY_DATASET = "dataset";
-	public static final String PROPERTITY_NAVBAR = "navbar";
-	public static final String PROPERTITY_SELECTABLE = "selectable";
-	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	
 	public static final String COLUMN_DATAINDEX = "dataindex";
 	public static final String COLUMN_LOCK = "lock";
@@ -92,21 +86,21 @@ public class Grid extends Component {
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
 		if(list!=null){
-			String dds = view.getString(PROPERTITY_DATASET);
+			String dds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 			Iterator it = list.iterator();
 			while(it.hasNext()){
 				CompositeMap ds = (CompositeMap)it.next();
-				String id = ds.getString(PROPERTITY_ID, "");
+				String id = ds.getString(ComponentConfig.PROPERTITY_ID, "");
 				if(id.equals(dds)){
-					selectable = new Boolean(ds.getBoolean(PROPERTITY_SELECTABLE, false));
-					selectionmodel = ds.getString(PROPERTITY_SELECTIONMODEL, "multiple");
+					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
+					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple");
 					break;
 				}
 			}
 			
 		}
-		map.put(PROPERTITY_SELECTABLE, selectable);
-		map.put(PROPERTITY_SELECTIONMODEL, selectionmodel);
+		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
+		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, selectionmodel);
 	}
 	
 	private void createGridColumns(Map map, CompositeMap view){
@@ -118,7 +112,7 @@ public class Grid extends Component {
 		Map ukpro = new HashMap();
 		ukpro.put(ROW_SPAN, new Integer(1));
 		
-		CompositeMap columns = view.getChild(PROPERTITY_COLUMNS);
+		CompositeMap columns = view.getChild(GridConfig.PROPERTITY_COLUMNS);
 		
 		List lks = new ArrayList();
 		List uks = new ArrayList();
@@ -128,12 +122,12 @@ public class Grid extends Component {
 		int maxRow =1;
 		
 		if(columns != null) {
-			boolean selectable = ((Boolean)map.get(PROPERTITY_SELECTABLE)).booleanValue();
-			String selectmodel = (String)map.get(PROPERTITY_SELECTIONMODEL);
+			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
+			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTIONMODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
 				column.putBoolean(COLUMN_LOCK,true);
-				column.putInt(PROPERTITY_WIDTH,25);
+				column.putInt(ComponentConfig.PROPERTITY_WIDTH,25);
 				column.putBoolean(COLUMN_RESIZABLE,false);
 				if("multiple".equals(selectmodel)) {
 					column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
@@ -201,12 +195,12 @@ public class Grid extends Component {
 				CompositeMap column = (CompositeMap)it.next();
 				if(column.getChilds() == null){
 					String dataindex = column.getString(COLUMN_DATAINDEX,"");
-					if(!"".equals(dataindex)) column.putString(COLUMN_DATAINDEX, dataindex.toLowerCase());
+					if(!"".equals(dataindex)) column.putString(COLUMN_DATAINDEX, dataindex);
 					column.putBoolean(COLUMN_LOCK, column.getBoolean(COLUMN_LOCK, false));
 					column.putBoolean(COLUMN_HIDDEN, column.getBoolean(COLUMN_HIDDEN, false));
 					column.putBoolean(COLUMN_RESIZABLE, column.getBoolean(COLUMN_RESIZABLE, true));
-					column.putInt(PROPERTITY_WIDTH, column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH));
-					String editor = column.getString(PROPERTITY_EDITOR, "");
+					column.putInt(ComponentConfig.PROPERTITY_WIDTH, column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH));
+					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
 					}
@@ -216,14 +210,14 @@ public class Grid extends Component {
 			}		
 		}
 		
-		map.put(PROPERTITY_DATASET, view.getString(PROPERTITY_DATASET));
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro));
-		map.put(PROPERTITY_COLUMNS, jsons.toString());
+		map.put(GridConfig.PROPERTITY_COLUMNS, jsons.toString());
 		
-		Integer height = (Integer)map.get(PROPERTITY_HEIGHT);
-		Integer width = (Integer)map.get(PROPERTITY_WIDTH);
+		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
 		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
 	}
@@ -232,13 +226,13 @@ public class Grid extends Component {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
-		CompositeMap editors = view.getChild(PROPERTITY_EDITORS);
+		CompositeMap editors = view.getChild(GridConfig.PROPERTITY_EDITORS);
 		StringBuffer sb = new StringBuffer();
 		if(editors != null && editors.getChilds() != null) {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
-				editor.put(PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
+				editor.put(ComponentConfig.PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
 				try {
 					sb.append(session.buildViewAsString(model, editor));
 				} catch (Exception e) {
@@ -251,12 +245,12 @@ public class Grid extends Component {
 	
 	private boolean isCheckBoxEditor(String id, CompositeMap view){
 		boolean isChecBox = false;
-		CompositeMap editors = view.getChild(PROPERTITY_EDITORS);
+		CompositeMap editors = view.getChild(GridConfig.PROPERTITY_EDITORS);
 		if(editors != null && editors.getChilds() != null) {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
-				String eid = editor.getString(PROPERTITY_ID,"");
+				String eid = editor.getString(ComponentConfig.PROPERTITY_ID,"");
 				if(id.equals(eid)&& "checkBox".equals(editor.getName())){
 					isChecBox = true;
 					break;
@@ -271,19 +265,18 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		
-		CompositeMap toolbar = view.getChild(PROPERTITY_TOOLBAR);
-		String dataset = view.getString(PROPERTITY_DATASET);
+		CompositeMap toolbar = view.getChild(GridConfig.PROPERTITY_TOOLBAR);
+		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		StringBuffer sb = new StringBuffer();
 		boolean hasToolBar = false;
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
-			CompositeMap tb = new CompositeMap(PROPERTITY_TOOLBAR);
-			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
-			tb.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_tb");
-			tb.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
-			tb.put(PROPERTITY_CLASSNAME, "grid-toolbar");
-//			tb.put(PROPERTITY_STYLE, "border:none;border-bottom:1px solid #cccccc;");
+			CompositeMap tb = new CompositeMap(GridConfig.PROPERTITY_TOOLBAR);
+			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
+			tb.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_tb");
+			tb.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
+			tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-toolbar");
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
@@ -294,7 +287,7 @@ public class Grid extends Component {
 						if("add".equalsIgnoreCase(type)){
 							item = createButton(item,"新增","grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
-							item = createButton(item,"删除","grid-delete","background-position:0px -35px;","function(){$('"+dataset+"').remove()}");
+							item = createButton(item,"删除","grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
 							item = createButton(item,"保存","grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}
@@ -310,7 +303,7 @@ public class Grid extends Component {
 			}
 			sb.append("</td></tr>");
 		}
-		map.put(PROPERTITY_TOOLBAR, sb.toString());
+		map.put(GridConfig.PROPERTITY_TOOLBAR, sb.toString());
 		return hasToolBar;
 	}
 	
@@ -333,16 +326,19 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
-		String dataset = view.getString(PROPERTITY_DATASET);
+		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		
-		String nav = view.getString(PROPERTITY_NAVBAR,"");
+		String nav = view.getString(GridConfig.PROPERTITY_NAVBAR,"");
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
-			Integer width = Integer.valueOf(view.getString(PROPERTITY_WIDTH));
-			navbar.put(PROPERTITY_ID, map.get(PROPERTITY_ID)+"_navbar");
-			navbar.put(PROPERTITY_WIDTH, new Integer(width.intValue()));
-			navbar.put(PROPERTITY_CLASSNAME, "grid-navbar");
+			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+			Integer width = Integer.valueOf(wstr);
+//			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
+			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
+			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
+			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
 			sb.append("<tr><td>");
@@ -450,8 +446,8 @@ public class Grid extends Component {
 				hasLockColumn = true;
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'></TH>");
-					lockWidth +=column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH);				
+					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'></TH>");
+					lockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
 		}
@@ -477,7 +473,7 @@ public class Grid extends Component {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
-							if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+							if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 						}
 					}
 				}
@@ -491,7 +487,7 @@ public class Grid extends Component {
 			sb.append(hsb);
 			sb.append("</TBODY></TABLE>");
 			
-			Integer height = (Integer)map.get(PROPERTITY_HEIGHT);
+			Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
 			sb.append("</DIV><DIV class='grid-lb' atype='grid.lb' style='width:100%;height:"+(height.intValue()-rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue())+"px'>");
 			sb.append("</DIV></DIV>");
 		}
@@ -512,8 +508,8 @@ public class Grid extends Component {
 			if(!column.getBoolean(COLUMN_LOCK, false)){
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'></TH>");
-					unlockWidth +=column.getInt(PROPERTITY_WIDTH, COLUMN_WIDTH);				
+					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'></TH>");
+					unlockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
 		}
@@ -532,7 +528,7 @@ public class Grid extends Component {
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
-					if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"").toLowerCase()+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+					if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
 				}
 			}
 			hsb.append("</TR>");

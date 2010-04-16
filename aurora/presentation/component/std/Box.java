@@ -7,6 +7,8 @@ import java.util.List;
 import uncertain.composite.CompositeMap;
 import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.service.IService;
 import aurora.service.ServiceInstance;
 
@@ -27,7 +29,7 @@ public class Box extends GridLayout {
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		Writer out = session.getWriter();
-		String vlabel = field.getString(PROPERTITY_LABEL);
+		String vlabel = field.getString(ComponentConfig.PROPERTITY_LABEL);
 		String label = vlabel==null ? getComponentLabel(session, field) : vlabel;
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
 		if(!"".equals(label))
@@ -35,23 +37,22 @@ public class Box extends GridLayout {
 	}
 	
 	private String getComponentLabel(BuildSession session, CompositeMap field){
-		String label = field.getString(PROPERTITY_LABEL, "");
+		String label = field.getString(ComponentConfig.PROPERTITY_LABEL, "");
 		
-		String dataset = field.getString(PROPERTITY_BINDTARGET, "");
+		String dataset = field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
 		if(!"".equals(dataset)){
-			String name = field.getString(PROPERTITY_BINDNAME, "");
-			if("".equals(name)) name = field.getString(PROPERTITY_NAME, "");
+			String name = field.getString(ComponentConfig.PROPERTITY_NAME, "");
 			CompositeMap ds = getDataSet(session, dataset);
 			if(ds!=null){
-				CompositeMap fieldcm = ds.getChild(DataSet.PROPERTITY_FIELDS);
+				CompositeMap fieldcm = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
 				if(fieldcm !=null){
 					List fields = fieldcm.getChilds();
 					Iterator it = fields.iterator();
 					while(it.hasNext()){
 						CompositeMap fieldMap = (CompositeMap)it.next();
-						String fn = fieldMap.getString(PROPERTITY_NAME,"");
+						String fn = fieldMap.getString(ComponentConfig.PROPERTITY_NAME,"");
 						if(name.equals(fn)){
-							label = fieldMap.getString(PROPERTITY_LABEL,"");
+							label = fieldMap.getString(ComponentConfig.PROPERTITY_LABEL,"");
 							break;
 						}
 					}

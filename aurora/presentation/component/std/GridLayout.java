@@ -2,8 +2,10 @@ package aurora.presentation.component.std;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
@@ -11,6 +13,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 /**
  * GridLayout.
@@ -20,8 +23,8 @@ import aurora.presentation.ViewCreationException;
  */
 public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
-	protected static final String ROWS = "row";
-	protected static final String COLUMNS = "column";
+	public static final String ROWS = "row";
+	public static final String COLUMNS = "column";
 	
 	protected static final int UNLIMITED = -1;
 	protected static final String PROPERTITY_CELLPADDING = "cellpadding";
@@ -105,12 +108,17 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
 		Writer out = session.getWriter();
-		String cls = view.getString(PROPERTITY_CLASSNAME, "");
-		String style = view.getString(PROPERTITY_STYLE, "");
+		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
+		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
-		int width = view.getInt(PROPERTITY_WIDTH, 0);
-		int height = view.getInt(PROPERTITY_HEIGHT, 0);
+		
+		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+		int width = Integer.valueOf(wstr).intValue();
+		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, ""+getDefaultHeight());
+		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
+		int height = Integer.valueOf(hstr).intValue();
 		
 		String className = DEFAULT_TABLE_CLASS;
 		className += " " + cls;
@@ -126,7 +134,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		afterBuildTop(session,model,view);
 	}
 	
-	private void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
+	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 		buildFoot(session,model,view);
 		Writer out = session.getWriter();
 		out.write("</tbody>");
@@ -137,9 +145,10 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
+		Map map = view_context.getMap();
 		
 		/** ID属性 **/
-		String id = view.getString(PROPERTITY_ID, "");
+		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if("".equals(id)) {
 			id= IDGenerator.getInstance().generate();
 		}
@@ -163,7 +172,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 			columns = (int)Math.ceil((double)view.getChilds().size()/rows);
 		}
 		try {
-			buildTop(session, model, view ,rows, columns,id);
+			buildTop(session, model, view , rows, columns,id);
 			if (it != null) {
 				if(rows == UNLIMITED){
 					buildRows(session, model, view, it);

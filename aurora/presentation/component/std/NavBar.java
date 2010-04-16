@@ -10,6 +10,7 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class NavBar extends ToolBar {
 	
@@ -24,11 +25,11 @@ public class NavBar extends ToolBar {
 			String dataset = view.getString(PROPERTITY_DATASET);
 			map.put(PROPERTITY_DATASET, dataset);
 			
-			String id = view.getString(PROPERTITY_ID, "");
+			String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 			if("".equals(id)) {
 				id = IDGenerator.getInstance().generate();
 			}
-			view.putString(PROPERTITY_ID, id);
+			view.putString(ComponentConfig.PROPERTITY_ID, id);
 			
 			view.addChild(createButton("nav-firstpage","background-position:0px 1px;","function(){$('"+dataset+"').firstPage()}","第一页"));
 			view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}","上一页"));
@@ -43,8 +44,8 @@ public class NavBar extends ToolBar {
 			String inputId = IDGenerator.getInstance().generate();
 			map.put("inputid", inputId);
 			CompositeMap button = new CompositeMap("textField");
-			button.putString(PROPERTITY_ID, inputId);
-			button.put(PROPERTITY_WIDTH, new Integer(30));
+			button.putString(ComponentConfig.PROPERTITY_ID, inputId);
+			button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 			view.addChild(button);
 			
 			String pageId = IDGenerator.getInstance().generate();

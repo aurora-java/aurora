@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Tab extends Component {
 	
@@ -34,8 +35,8 @@ public class Tab extends Component {
 		Map map = context.getMap();
 		
 		//SHIT!!! the jdk 1.4
-		Integer bodyWidth = new Integer(((Integer)map.get(PROPERTITY_WIDTH)).intValue() - 2);
-		Integer bodyHeight = new Integer(((Integer)map.get(PROPERTITY_HEIGHT)).intValue() - 25);
+		Integer bodyWidth = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_WIDTH)).intValue() - 2);
+		Integer bodyHeight = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - 25);
 		map.put("bodywidth", bodyWidth);
 		map.put("bodyheight", bodyHeight);
 		map.put("selected", new Integer(0));
@@ -94,8 +95,8 @@ public class Tab extends Component {
 			while(it.hasNext()){
 				CompositeMap tab = (CompositeMap)it.next();
 				
-				String prompt = tab.getString(PROPERTITY_LABEL, "");
-				int width = tab.getInt(PROPERTITY_WIDTH, 60);
+				String prompt = tab.getString(ComponentConfig.PROPERTITY_LABEL, "");
+				int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);
 				String selected = tab.getString(PROPERTITY_SELECTED, "");
 				if("true".equals(selected)){
 					map.put("selected", new Integer(i));

@@ -12,33 +12,13 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 
 public class DataSet extends Component {
 	
-	public static final String PROPERTITY_HREF = "href";
-	public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";
-	public static final String PROPERTITY_FIELDS = "fields";
-	public static final String PROPERTITY_DATAS = "datas";
-	public static final String PROPERTITY_DATASOURCE = "datasource";
-	public static final String PROPERTITY_CREATERECORD = "autocreate";
-	public static final String PROPERTITY_AUTOQUERY = "autoquery";
-	public static final String PROPERTITY_QUERYURL = "queryurl";
-	public static final String PROPERTITY_SUBMITURL = "submiturl";
-	public static final String PROPERTITY_QUERYDATASET = "querydataset";
-	public static final String PROPERTITY_FETCHALL = "fecthall";
-	public static final String PROPERTITY_PAGESIZE = "pagesize";
-	public static final String PROPERTITY_AUTOCOUNT = "autocount";
-	public static final String PROPERTITY_PAGEID = "pageid";	
-	public static final String PROPERTITY_MAPPING = "mapping";
-	public static final String PROPERTITY_MAP = "map";
-	public static final String PROPERTITY_SELECTABLE = "selectable";
-	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
-	
     public DataSet() {
     }
-    
-
-	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -46,7 +26,7 @@ public class DataSet extends Component {
 		Map map = context.getMap();
 		List fieldList = new ArrayList(); 
 		
-		CompositeMap fields = view.getChild(PROPERTITY_FIELDS);
+		CompositeMap fields = view.getChild(DataSetConfig.PROPERTITY_FIELDS);
 		if(fields != null) {
 			Iterator it = fields.getChildIterator();
 			while(it.hasNext()){
@@ -54,14 +34,14 @@ public class DataSet extends Component {
 				String validator = field.getString("validator", "");
 				if(!"".equals(validator))
 				field.putString("validator", validator);
-				field.putString(PROPERTITY_NAME, field.getString(PROPERTITY_NAME,"").toLowerCase());
+				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
 				field.putBoolean("required", field.getBoolean("required", false));
 				field.putBoolean("readonly", field.getBoolean("readonly", false));
-				String dv = field.getString(PROPERTITY_DEFAULTVALUE, "");
-				if(!"".equals(dv))field.putString(PROPERTITY_DEFAULTVALUE, dv);
+				String dv = field.getString(DataSetConfig.PROPERTITY_DEFAULTVALUE, "");
+				if(!"".equals(dv))field.putString(DataSetConfig.PROPERTITY_DEFAULTVALUE, dv);
 				
 				JSONObject json = new JSONObject(field);
-				CompositeMap mapping = field.getChild(PROPERTITY_MAPPING);
+				CompositeMap mapping = field.getChild(DataSetConfig.PROPERTITY_MAPPING);
 				if(mapping != null){
 					Iterator mit = mapping.getChildIterator();
 					List maplist = new ArrayList();
@@ -71,7 +51,7 @@ public class DataSet extends Component {
 						maplist.add(mj);
 					}
 					try {
-						json.put(PROPERTITY_MAPPING, maplist);
+						json.put(DataSetConfig.PROPERTITY_MAPPING, maplist);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -79,15 +59,15 @@ public class DataSet extends Component {
 				fieldList.add(json);
 			}
 		}
-		map.put(PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(PROPERTITY_SELECTABLE, true)));
-		map.put(PROPERTITY_SELECTIONMODEL, view.getString(PROPERTITY_SELECTIONMODEL, "multiple"));
-		map.put(PROPERTITY_FIELDS, fieldList.toString());
+		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, true)));
+		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, view.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple"));
+		map.put(DataSetConfig.PROPERTITY_FIELDS, fieldList.toString());
 		
-		CompositeMap datas = view.getChild(PROPERTITY_DATAS);
+		CompositeMap datas = view.getChild(DataSetConfig.PROPERTITY_DATAS);
 		List dataList = new ArrayList(); 
 		List list = null;
 		if(datas != null){
-			String ds = datas.getString(PROPERTITY_DATASOURCE, "");
+			String ds = datas.getString(DataSetConfig.PROPERTITY_DATASOURCE, "");
 			if(ds.equals("")){
 				list = datas.getChilds();				
 			}else{
@@ -112,22 +92,22 @@ public class DataSet extends Component {
 				}						
 			}
 		}
-		boolean create = view.getBoolean(PROPERTITY_CREATERECORD, false);
+		boolean create = view.getBoolean(DataSetConfig.PROPERTITY_CREATERECORD, false);
 		if(dataList.size() == 0 && create) {
 			JSONObject json = new JSONObject();
 			dataList.add(json);
 			
 		}
 		
-		map.put(PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
-		map.put(PROPERTITY_DATAS, dataList.toString());	
-		map.put(PROPERTITY_AUTOQUERY, view.getString(PROPERTITY_AUTOQUERY, "false"));	
-		map.put(PROPERTITY_QUERYURL, view.getString(PROPERTITY_QUERYURL, ""));	
-		map.put(PROPERTITY_SUBMITURL, view.getString(PROPERTITY_SUBMITURL, ""));	
-		map.put(PROPERTITY_QUERYDATASET, view.getString(PROPERTITY_QUERYDATASET, ""));
-		map.put(PROPERTITY_FETCHALL, view.getString(PROPERTITY_FETCHALL, "false"));
-		map.put(PROPERTITY_PAGESIZE, view.getString(PROPERTITY_PAGESIZE, "10"));
-		map.put(PROPERTITY_AUTOCOUNT, view.getString(PROPERTITY_AUTOCOUNT, "true"));
+		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
+		map.put(DataSetConfig.PROPERTITY_DATAS, dataList.toString());	
+		map.put(DataSetConfig.PROPERTITY_AUTOQUERY, view.getString(DataSetConfig.PROPERTITY_AUTOQUERY, "false"));	
+		map.put(DataSetConfig.PROPERTITY_QUERYURL, view.getString(DataSetConfig.PROPERTITY_QUERYURL, ""));	
+		map.put(DataSetConfig.PROPERTITY_SUBMITURL, view.getString(DataSetConfig.PROPERTITY_SUBMITURL, ""));	
+		map.put(DataSetConfig.PROPERTITY_QUERYDATASET, view.getString(DataSetConfig.PROPERTITY_QUERYDATASET, ""));
+		map.put(DataSetConfig.PROPERTITY_FETCHALL, view.getString(DataSetConfig.PROPERTITY_FETCHALL, "false"));
+		map.put(DataSetConfig.PROPERTITY_PAGESIZE, view.getString(DataSetConfig.PROPERTITY_PAGESIZE, "10"));
+		map.put(DataSetConfig.PROPERTITY_AUTOCOUNT, view.getString(DataSetConfig.PROPERTITY_AUTOCOUNT, "true"));
 		
 		
 		

@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Button extends Field {
 	
@@ -57,11 +58,11 @@ public class Button extends Field {
 		if(!"".equals(icon)){
 			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+icon+");";
 		}
-		map.put(PROPERTITY_EVENTS, esb.toString());
+		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
 		map.put(PROPERTITY_TEXT, text);
 		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
 		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));
 		map.put(BUTTON_STYLE, btnstyle);
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 }

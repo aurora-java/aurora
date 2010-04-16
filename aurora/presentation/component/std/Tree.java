@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Tree extends Component {
 	
@@ -35,16 +36,16 @@ public class Tree extends Component {
 
 		String size = "";
 		/** Width属性**/
-		String width = view.getString(PROPERTITY_WIDTH, "");
+		String width = view.getString(ComponentConfig.PROPERTITY_WIDTH, "");
 		if(!"".endsWith(width)) {
 			size += "width:"+width+"px;";
-			addConfig(PROPERTITY_WIDTH, width);
+			addConfig(ComponentConfig.PROPERTITY_WIDTH, width);
 		}
 		/** Height属性**/
-		String height = view.getString(PROPERTITY_HEIGHT, "");
+		String height = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "");
 		if(!"".endsWith(height)) {
 			size += "height:"+height+"px;";
-			addConfig(PROPERTITY_HEIGHT, height);
+			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);
 		}
 		
 		map.put("size", size);
@@ -54,7 +55,7 @@ public class Tree extends Component {
 		addConfig(PROPERTITY_FIELD_ID, view.getString(PROPERTITY_FIELD_ID,"id"));
 		addConfig(PROPERTITY_FIELD_PARENT, view.getString(PROPERTITY_FIELD_PARENT,"pid"));
 		addConfig(PROPERTITY_SHOWCHECKBOX, new Boolean(view.getBoolean(PROPERTITY_SHOWCHECKBOX, false)));
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 	
 	

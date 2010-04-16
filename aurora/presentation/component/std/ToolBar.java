@@ -7,6 +7,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ToolBar extends Component {
 	
@@ -29,16 +30,16 @@ public class ToolBar extends Component {
 			Iterator it = view.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
-				String style = editor.getString(PROPERTITY_STYLE,"");
+				String style = editor.getString(ComponentConfig.PROPERTITY_STYLE,"");
 				if(editor.getName().equalsIgnoreCase("button")){
-					editor.put(PROPERTITY_WIDTH, new Integer(1));
+					editor.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(1));
 					style = "float:left;margin-right:1px;margin-top:1px;" + style;
 				} else if(editor.getName().equalsIgnoreCase("separator")){
 					style = "float:left;margin-right:1px;" + style;	
 				}else{
 					style = "float:left;margin-right:1px;margin-top:2px;" + style;					
 				}
-				editor.put(PROPERTITY_STYLE, style);
+				editor.put(ComponentConfig.PROPERTITY_STYLE, style);
 				try {
 					sb.append(session.buildViewAsString(model, editor));
 				} catch (Exception e) {

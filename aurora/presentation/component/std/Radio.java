@@ -37,7 +37,7 @@ public class Radio extends Component {
 		}
 		
 		
-		map.put(PROPERTITY_CONFIG, getConfigString());
+		map.put(CONFIG, getConfigString());
 	}
 	
 	

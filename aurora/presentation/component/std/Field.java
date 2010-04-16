@@ -6,6 +6,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 /**
  * 组件基类.
@@ -58,9 +59,9 @@ public class Field extends Component {
 		addConfig(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		
 		/** 是否隐藏 **/
-		boolean hidden = view.getBoolean(PROPERTITY_HIDDEN, false);
+		boolean hidden = view.getBoolean(ComponentConfig.PROPERTITY_HIDDEN, false);
 		if(hidden != false)
-		addConfig(PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
+		addConfig(ComponentConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		
 		/** 是否只读 **/
 		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
