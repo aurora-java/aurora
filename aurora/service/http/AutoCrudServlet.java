@@ -43,7 +43,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
             mq.setParameters(svc.getServiceContext().getParameter());
             action_config = mq.getObjectContext();
             CompositeMap service_output = service_config.getChild("service-output");
-            service_output.put("output", "/model/"+object_name);
+            service_output.put("output", "/model/"+mq.getRootPath());
         } else if("update".equals(action_name)){
             action_config = ActionConfigManager.createModelUpdate(object_name);
         } else if("insert".equals(action_name)){
