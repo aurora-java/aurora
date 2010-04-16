@@ -33,10 +33,10 @@ public class FieldSet extends Box {
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		
-		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		int width = Integer.valueOf(wstr).intValue();
-		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, ""+getDefaultHeight());
+		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		int height = Integer.valueOf(hstr).intValue();
 		
