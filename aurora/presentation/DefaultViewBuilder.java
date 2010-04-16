@@ -23,7 +23,10 @@ import uncertain.ocm.ISingleton;
 public class DefaultViewBuilder implements IViewBuilder, ISingleton {
 
     String getParsedContent(String text, CompositeMap model) {
-        if (text.indexOf('$') >= 0)
+    	if(text.indexOf("$(") !=-1){
+    		text = text.replaceAll("\\$\\(", "\\$\\$\\(");
+    	}
+        if (text.indexOf("$") >= 0)
             return TextParser.parse(text, model);
         else
             return text;
