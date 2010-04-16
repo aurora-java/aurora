@@ -5,6 +5,7 @@ package aurora.service.json;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -108,7 +109,9 @@ public class JSONServiceInterpreter {
             } else
                 result = service_context.getModel();
             if (result != null) {
-                JSONObject o = JSONAdaptor.toJSONObject(result);
+            	Set set = new HashSet();
+            	set.add("list");
+                JSONObject o = JSONAdaptor.toJSONObject(result,set);
                 json.put("result", o);
             }
         }
