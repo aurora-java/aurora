@@ -30,10 +30,11 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_FOR_QUERY = "forquery";
     public static final String KEY_FOR_INSERT = "forinsert";    
     public static final String KEY_FOR_UPDATE = "forupdate";
+    public static final String KEY_FOR_DISPLAY = "fordisplay";
     public static final String REF_FIELD = "ref-field";
     public static final String KEY_PROMPT = "prompt";
-    public static final String KEY_FORM_WIDTH = "formwidth";
-    public static final String KEY_GRID_WIDTH = "gridwidth";
+    public static final String KEY_QUERY_WIDTH = "querywidth";
+    public static final String KEY_DISPLAY_WIDTH = "displaywidth";
     
     BusinessModel       owner;
     
@@ -183,18 +184,18 @@ public class Field extends DynamicObject implements IParameter {
         putBoolean(KEY_IS_PRIMARYKEY, is_pk);
     }
     
-    public int getFormWidth(){
-    	return getInt(KEY_FORM_WIDTH, 150);
+    public int getQueryWidth(){
+    	return getInt(KEY_QUERY_WIDTH, 150);
     }
-    public void setFormWidth(int width){
-    	putInt(KEY_FORM_WIDTH, width);
+    public void setQueryWidth(int width){
+    	putInt(KEY_QUERY_WIDTH, width);
     }
     
-    public int getGridWidth(){
-    	return getInt(KEY_GRID_WIDTH, 150);
+    public int getDisplayWidth(){
+    	return getInt(KEY_DISPLAY_WIDTH, 150);
     }
-    public void setGridWidth(int width){
-    	putInt(KEY_GRID_WIDTH, width);
+    public void setDisplayWidth(int width){
+    	putInt(KEY_DISPLAY_WIDTH, width);
     }
     
     public boolean isForInsert(){
@@ -215,8 +216,16 @@ public class Field extends DynamicObject implements IParameter {
     public boolean isForQuery(){
         Boolean b = getBoolean(KEY_FOR_QUERY);
         if(b==null){
-            return !isExpression();
+            return false;
         }
+        else
+            return b.booleanValue();
+    }
+    
+    public boolean isForDisplay(){
+        Boolean b = getBoolean(KEY_FOR_DISPLAY);
+        if(b==null)
+            return false;
         else
             return b.booleanValue();
     }

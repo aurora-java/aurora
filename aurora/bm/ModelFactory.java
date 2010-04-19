@@ -44,7 +44,7 @@ public class ModelFactory implements IModelFactory {
      * @throws IOException
      */
     public BusinessModel getModelForRead(String name, String ext ) throws IOException {
-        assert name!=null;
+//        assert name!=null;
         String full_name = name + '.' + ext;
         BusinessModel model = (BusinessModel) mModelCache.get(full_name);
         if (model == null) {
