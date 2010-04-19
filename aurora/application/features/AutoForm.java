@@ -37,25 +37,31 @@ public class AutoForm implements IFeature{
 		String href = view.getString(PROPERTITY_HREF, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
-			BusinessModel bm = mFactory.getModelForRead(href, "xml");
+			BusinessModel bm = null;
+			try {
+				bm = mFactory.getModelForRead(href);
+			}catch(Exception e){
+				bm = mFactory.getModelForRead(href,"xml");
+			}
+//			BusinessModel bm = mFactory.getModelForRead(href, "xml");
 			aurora.bm.Field[] fields = bm.getFields();
-			aurora.bm.QueryField[] querys = bm.getQueryFieldsArray();
-			int ql = querys.length;
+//			aurora.bm.QueryField[] querys = bm.getQueryFieldsArray();
+//			int ql = querys.length;
 			int fl = fields.length;
-			for(int i=0;i<ql;i++){
-				aurora.bm.QueryField query = querys[i];
+//			for(int i=0;i<ql;i++){
+//				aurora.bm.QueryField query = querys[i];
 				for(int n=0;n<fl;n++){
 					aurora.bm.Field field = fields[n];
-					if(field.getName().equals(query.getName())){
+					if(field.isForQuery()){
 						TextFieldConfig textField = TextFieldConfig.getInstance(field.getObjectContext());
-						textField.setWidth(field.getFormWidth());
+						textField.setWidth(field.getQueryWidth());
 						if(!"".equals(target))textField.setBindTarget(target);
 						formConfig.addChild(textField.getObjectContext());
 						break;
 					}
 				}
 				
-			}
+//			}
 		}
 		view.getParent().replaceChild(view, formConfig.getObjectContext());
     	return EventModel.HANDLE_NORMAL;
