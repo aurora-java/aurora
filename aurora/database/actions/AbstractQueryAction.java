@@ -33,6 +33,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     String      recordName;
     List        transform_list;
     
+    String      connection;
+    
     protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
     
     protected abstract void prepare( CompositeMap context_map ) throws Exception ;
@@ -230,6 +232,14 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     
     protected byte getFieldNameCaseValue(){
         return fieldNameCaseValue;
+    }
+
+    public String getConnection() {
+        return connection;
+    }
+
+    public void setConnection(String connection) {
+        this.connection = connection;
     }
 
 }
