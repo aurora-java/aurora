@@ -16,8 +16,8 @@ import java.util.List;
 import uncertain.composite.CompositeAccessor;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.ICompositeAccessor;
+import uncertain.event.RuntimeContext;
 import aurora.database.service.SqlServiceContext;
-import aurora.service.ServiceContext;
 
 /**
  * Execute query or update on ParsedSql
@@ -41,8 +41,10 @@ public class SqlRunner {
     List                    bind_param_list;
     long                    exec_time;
     
+    String                  connectionName;
     
-    static void setException(ServiceContext context, Throwable ex){
+    
+    static void setException(RuntimeContext context, Throwable ex){
         context.setException(ex);
         context.setSuccess(false);
     }    
@@ -90,6 +92,12 @@ public class SqlRunner {
     }
     
     void  prepareConnection(){
+        /*
+         * if(connectionName!=null)
+         *  conn = context.getNamedConnection(connectionName);
+         * else
+         *  conn = context.getConnection();
+         */
         conn = context.getConnection();
         if(conn==null) throw new IllegalStateException("No java.sql.Connection set in service context");
     }
@@ -375,6 +383,14 @@ public class SqlRunner {
     
     public long getLastExecutionTime(){
         return exec_time;   
+    }
+
+    public String getConnectionName() {
+        return connectionName;
+    }
+
+    public void setConnectionName(String connectionName) {
+        this.connectionName = connectionName;
     }
     
 
