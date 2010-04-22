@@ -3,8 +3,6 @@
  */
 package aurora.service;
 
-import java.util.List;
-import java.util.Map;
 
 /**
  * Defines general behavior that a service must have
@@ -17,6 +15,6 @@ public interface IService {
     
     public ServiceContext getServiceContext();
     
-    public void invoke() throws Exception;
+    public boolean invoke() throws Exception;
 
 }
