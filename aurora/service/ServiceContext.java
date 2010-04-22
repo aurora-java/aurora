@@ -40,14 +40,12 @@ public class ServiceContext extends RuntimeContext {
     
     public static final String KEY_PARAMETER_PARSED = "__parameter_parsed__";
     
-    public static final String KEY_SERVICE_SUCCESS = "__service_success__";    
-    
     public static final String KEY_SERVICE_NAME = "__service_name__";
     
     public static final String KEY_ERROR_DESCRIPTION = "__error_description__";
     
-    public static ServiceContext createServiceContext( CompositeMap map ){
-        ServiceContext context = new ServiceContext();
+    public static RuntimeContext createServiceContext( CompositeMap map ){
+        RuntimeContext context = new ServiceContext();
         context.initialize(map);
         return context;
     }
@@ -114,14 +112,6 @@ public class ServiceContext extends RuntimeContext {
         return desc;
     }
     */
-    
-    public boolean isSuccess(){
-        return getBoolean(KEY_SERVICE_SUCCESS, true);
-    }
-    
-    public void setSuccess(boolean success){
-        putBoolean(KEY_SERVICE_SUCCESS, success);
-    }
     
     /**
      * @return the record that caused failure in a batch update
