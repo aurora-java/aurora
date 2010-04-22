@@ -5,6 +5,9 @@ package aurora.database.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
+
+import javax.sql.DataSource;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
@@ -41,7 +44,9 @@ public class SqlServiceContext extends ServiceContext {
         return context;
     }
     
-    //ICompositeAccessor      CompositeAccessor;
+    public DataSource getContextDataSource(){
+        return (DataSource)getInstanceOfType(DataSource.class);
+    }
 
     public Connection getConnection(){
         //return (Connection)getObjectContext().get(KEY_DATABASE_CONNECTION);
@@ -51,6 +56,15 @@ public class SqlServiceContext extends ServiceContext {
     public void setConnection(Connection conn){
         //getObjectContext().put(KEY_DATABASE_CONNECTION, conn);
         setInstanceOfType(Connection.class, conn);
+    }
+    
+    public Connection getNamedConnection( String name ){
+        //String key = super.getTypeKey(Connection.class) + "." + name;
+        return null;
+    }
+    
+    public Collection getAllConnections(){
+        return null;
     }
 
 
