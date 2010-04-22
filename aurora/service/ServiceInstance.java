@@ -7,8 +7,6 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
 import uncertain.event.RuntimeContext;
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
@@ -76,7 +74,7 @@ public class ServiceInstance implements IService {
         mRunner.setConfiguration(mConfig);
     }
 
-    public void invoke() 
+    public boolean invoke() 
         throws Exception
     {
         mProcManager.initContext( mContextMap );        
@@ -94,8 +92,9 @@ public class ServiceInstance implements IService {
             mController.setContinueFlag(false);
             mRunner.run();
             if(mRunner.getException()!=null)
-                throw new RuntimeException(mRunner.getException());
+                throw new RuntimeException(mRunner.getException());            
         };
+        return mServiceContext.isSuccess();
     }
 
     public CompositeMap getContextMap() {
