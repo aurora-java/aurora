@@ -3,7 +3,6 @@
  */
 package aurora.service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +43,8 @@ public class ServiceContext extends RuntimeContext {
     
     public static final String KEY_ERROR_DESCRIPTION = "__error_description__";
     
-    public static RuntimeContext createServiceContext( CompositeMap map ){
-        RuntimeContext context = new ServiceContext();
+    public static ServiceContext createServiceContext( CompositeMap map ){
+        ServiceContext context = new ServiceContext();
         context.initialize(map);
         return context;
     }
