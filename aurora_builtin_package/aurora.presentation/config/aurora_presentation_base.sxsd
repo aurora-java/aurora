@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements/>
+    <ss:categories/>
+    <ss:types>
+        <ss:complexType name="BaseComponent"/>
+    </ss:types>
+</ss:schema>

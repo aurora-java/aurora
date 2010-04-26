@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:elements>
+        <ss:element name="bm:field">
+            <ss:attributes>
+                <ss:attribute use="required" document="字段的名称" name="name"/>
+                <ss:attribute default="string" document="数据类型" name="datatype"/>
+                <ss:attribute document="对应的数据库字段名称" name="physicalName"/>
+                <ss:attribute document="对应的数据库的数据类型" name="databaseType"/>
+                <ss:attribute document="是否必须" name="required"/>
+                <ss:attribute document="缺省值" name="defaultValue"/>
+                <ss:attribute document="执行DML时，输入参数的路径" name="parameterPath"/>
+                <ss:attribute document="如果是计算类字段，对应的表达式，" name="expression"/>
+                <ss:attribute type="ss:boolean" name="forInsert"/>
+                <ss:attribute type="ss:boolean" name="forUpdate"/>
+                <ss:attribute type="ss:boolean" name="forQuery"/>
+                <ss:attribute name="insertExpression"/>
+                <ss:attribute name="updateExpression"/>
+                <ss:attribute name="queryExpression"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="bm:reference">
+            <ss:attributes>
+                <ss:attribute document="自定义的join表达式" name="expression"/>
+                <ss:attribute document="本表的字段" name="localField"/>
+                <ss:attribute document="关联表对应的字段" name="foreignField"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="bm:relation">
+            <ss:attributes>
+                <ss:attribute document="关系的名称，用于在其他地方引用" name="name"/>
+                <ss:attribute document="join的类型" name="joinType"/>
+                <ss:attribute document="所引用的主表的业务模型全名" name="refModel"/>
+                <ss:attribute document="所引用的主表的SQL别名" name="refAlias"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="bm:field"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="bm:model">
+            <ss:attributes>
+                <ss:attribute document="对应的数据库基表" name="baseTable"/>
+                <ss:attribute document="确实的别名，用于SQL语句" name="alias"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array type="bm:field" name="fields"/>
+                <ss:array type="bm:field" name="primary-key"/>
+                <ss:array type="bm:field" name="order-by"/>
+                <ss:array type="bm:relation" name="relations"/>
+            </ss:arrays>
+        </ss:element>
+    </ss:elements>
+</ss:schema>
