@@ -1,4 +1,4 @@
-<model baseTable="EMP" alias="e">
+<model baseTable="EMP" alias="e" xmlns="http://www.aurora-framework.org/schema/bm">
 	<fields>
 		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" insertExpression="EMP_S.nextval"/>
 		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>

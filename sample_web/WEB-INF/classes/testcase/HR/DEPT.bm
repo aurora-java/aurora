@@ -1,4 +1,4 @@
-<model baseTable="DEPT">
+<model baseTable="DEPT" xmlns="http://www.aurora-framework.org/schema/bm">
 	<fields>
 		<field name="DEPTNO" datatype="java.lang.Long" databaseType="BIGINT" />
 		<field name="DNAME" datatype="java.lang.String" databaseType="VARCHAR"/>
