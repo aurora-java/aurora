@@ -35,9 +35,15 @@
          align="left"  valign="Middle" >  
      </td>
     <td   height="20" class="form-body"  width="70%"   align="left"    valign="Middle"  > 
-    <textarea cols="80" rows="15" name="_request_data">	{
-			"parameter":		{ pagesize: 5; pagenum:1}
-			}
+    <textarea cols="80" rows="15" name="_request_data">	
+{
+parameter:[
+
+{_status:"update",empno:"1715",ename:"ssssss",sal:"3400"},
+
+{_status:"insert",ename:"new emp",sal:"8888"}
+
+]}
 			</textarea></td>
  </tr>
  
