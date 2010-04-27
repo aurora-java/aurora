@@ -77,4 +77,19 @@ public class GridConfig extends ComponentConfig {
 		CompositeMap columns = getColumns();
 		columns.addChild(column.getObjectContext());
 	}
+	
+	public CompositeMap getEditors(){
+		CompositeMap context = getObjectContext();
+    	CompositeMap editors = context.getChild(PROPERTITY_EDITORS);
+    	if(editors == null){
+    		editors = new CompositeMap(PROPERTITY_EDITORS);
+    		context.addChild(editors);
+    	}
+    	return editors;  
+	}
+	
+	public void addEditor(ComponentConfig editor){
+		CompositeMap editors = getEditors();
+		editors.addChild(editor.getObjectContext());
+	}
 }

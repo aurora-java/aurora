@@ -273,7 +273,9 @@ public class Grid extends Component {
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
 			CompositeMap tb = new CompositeMap(GridConfig.PROPERTITY_TOOLBAR);
-			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
+			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
 			tb.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_tb");
 			tb.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-toolbar");
@@ -334,7 +336,7 @@ public class Grid extends Component {
 			CompositeMap navbar = new CompositeMap("navBar");
 			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-			Integer width = Integer.valueOf(wstr);
+			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
 //			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
 			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
 			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));

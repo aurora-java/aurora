@@ -85,13 +85,13 @@ public class Component {
 		/** Width属性**/
 		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-		Integer width = Integer.valueOf(wstr);
+		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
 		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
 		
 		/** Height属性**/
 		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, ""+getDefaultHeight());
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-		Integer height = Integer.valueOf(hstr);
+		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) :  Integer.valueOf(hstr);
 		if(height.intValue() !=0) map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 		
 		/** NAME属性 **/

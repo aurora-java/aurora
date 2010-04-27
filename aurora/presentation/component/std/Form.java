@@ -40,10 +40,10 @@ public class Form extends Box {
 		
 		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-		int width = Integer.valueOf(wstr).intValue();
+		int width = Integer.valueOf("".equals(wstr) ?  "300" : wstr).intValue();
 		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-		int height = Integer.valueOf(hstr).intValue();
+		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
 		
 		String className = DEFAULT_TABLE_CLASS;
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");

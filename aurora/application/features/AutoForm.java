@@ -9,7 +9,6 @@ import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.IModelFactory;
-import aurora.presentation.component.std.GridLayout;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FormConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
@@ -43,25 +42,18 @@ public class AutoForm implements IFeature{
 			}catch(Exception e){
 				bm = mFactory.getModelForRead(href,"xml");
 			}
-//			BusinessModel bm = mFactory.getModelForRead(href, "xml");
 			aurora.bm.Field[] fields = bm.getFields();
-//			aurora.bm.QueryField[] querys = bm.getQueryFieldsArray();
-//			int ql = querys.length;
 			int fl = fields.length;
-//			for(int i=0;i<ql;i++){
-//				aurora.bm.QueryField query = querys[i];
-				for(int n=0;n<fl;n++){
-					aurora.bm.Field field = fields[n];
-					if(field.isForQuery()){
-						TextFieldConfig textField = TextFieldConfig.getInstance(field.getObjectContext());
-						textField.setWidth(field.getQueryWidth());
-						if(!"".equals(target))textField.setBindTarget(target);
-						formConfig.addChild(textField.getObjectContext());
-						break;
-					}
+			for(int n=0;n<fl;n++){
+				aurora.bm.Field field = fields[n];
+				if(field.isForQuery()){
+					TextFieldConfig textField = TextFieldConfig.getInstance(field.getObjectContext());
+					textField.setWidth(field.getQueryWidth());
+					if(!"".equals(target))textField.setBindTarget(target);
+					formConfig.addChild(textField.getObjectContext());
+					break;
 				}
-				
-//			}
+			}
 		}
 		view.getParent().replaceChild(view, formConfig.getObjectContext());
     	return EventModel.HANDLE_NORMAL;

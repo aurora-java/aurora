@@ -60,4 +60,11 @@ public class GridColumnConfig extends ComponentConfig {
 	public void setPrompt(String prompt){
 		putString(PROPERTITY_PROMPT, prompt);
 	}
+	
+	public String getEditor(){
+		return getString(PROPERTITY_EDITOR);		
+	}
+	public void setEditor(String editor){
+		putString(PROPERTITY_EDITOR, editor);
+	}
 }
