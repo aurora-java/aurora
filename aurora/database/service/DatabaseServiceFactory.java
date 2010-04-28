@@ -121,7 +121,7 @@ public class DatabaseServiceFactory {
         defaultParticipantsMap.put(type, instance);
         globalConfig.addParticipant(instance);
     }
-    
+  
     public SqlServiceContext createContextWithConnection()
         throws SQLException
     {
