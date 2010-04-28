@@ -112,8 +112,10 @@ public class ServiceInstance implements IService {
         initProcedureRunner(proc);
         mController.setContinueFlag(false);
         mRunner.run();
-            if (mRunner.getException() != null)
+            if (mRunner.getException() != null){
+                mServiceContext.setSuccess(false);
                 throw new RuntimeException(mRunner.getException());
+            }
         return mServiceContext.isSuccess();
     }
 
