@@ -13,7 +13,7 @@ import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
 import aurora.service.ServiceInstance;
 
-public class InitProcedureInvoker extends AbstractProcedureInvoker implements ISingleton, IFeature {
+public class InitProcedureInvoker extends AbstractProcedureInvoker implements IFeature {
     
     String proc_element_name;
 
