@@ -3,6 +3,9 @@
  */
 package aurora.service;
 
+import uncertain.event.Configuration;
+import uncertain.proc.Procedure;
+
 
 /**
  * Defines general behavior that a service must have
@@ -11,10 +14,12 @@ package aurora.service;
  */
 public interface IService {
     
+    public Configuration getConfig();
+    
     public void setServiceContext( ServiceContext context );
     
     public ServiceContext getServiceContext();
     
-    public boolean invoke() throws Exception;
+    public boolean invoke( Procedure proc ) throws Exception;
 
 }
