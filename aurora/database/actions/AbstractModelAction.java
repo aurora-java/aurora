@@ -4,6 +4,7 @@
 package aurora.database.actions;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.logging.ILogger;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
@@ -31,7 +32,8 @@ public abstract class AbstractModelAction extends AbstractEntry  {
         if(mModel==null)
             throw new IllegalArgumentException("Must set 'model' property");
         CompositeMap context = runner.getContext();
-        mService = mServiceFactory.getModelService(mModel, context);
+        
+        mService = mServiceFactory.getModelService(TextParser.parse(mModel, runner.getContext()), context);
         mLogger = DatabaseServiceFactory.getLogger(context);
         //service.setTrace(getTrace());
     }
