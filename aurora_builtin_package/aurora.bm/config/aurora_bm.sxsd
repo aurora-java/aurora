@@ -5,12 +5,17 @@
             <ss:attributes>
                 <ss:attribute use="required" document="字段的名称" name="name"/>
                 <ss:attribute default="string" document="数据类型" name="datatype"/>
+                <ss:attribute document="字段描述" name="prompt"/>
                 <ss:attribute document="对应的数据库字段名称" name="physicalName"/>
                 <ss:attribute document="对应的数据库的数据类型" name="databaseType"/>
                 <ss:attribute document="是否必须" name="required"/>
                 <ss:attribute document="缺省值" name="defaultValue"/>
                 <ss:attribute document="执行DML时，输入参数的路径" name="parameterPath"/>
                 <ss:attribute document="如果是计算类字段，对应的表达式，" name="expression"/>
+                <ss:attribute type="ss:boolean" document="是否作为Grid组件的显示字段" name="forDisplay"/>
+                <ss:attribute document="显示字段的宽度" name="displayWidth"/> 
+                <ss:attribute type="ss:boolean" document="是否查询Form字段" name="forQuery"/>
+                <ss:attribute document="查询字段的宽度" name="queryWidth"/> 
                 <ss:attribute type="ss:boolean" name="forInsert"/>
                 <ss:attribute type="ss:boolean" name="forUpdate"/>
                 <ss:attribute type="ss:boolean" name="forQuery"/>

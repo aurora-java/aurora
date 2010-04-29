@@ -37,6 +37,7 @@ public class AutoForm implements IFeature{
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
 			BusinessModel bm = null;
+			//TODO:.....
 			try {
 				bm = mFactory.getModelForRead(href);
 			}catch(Exception e){
@@ -51,7 +52,6 @@ public class AutoForm implements IFeature{
 					textField.setWidth(field.getQueryWidth());
 					if(!"".equals(target))textField.setBindTarget(target);
 					formConfig.addChild(textField.getObjectContext());
-					break;
 				}
 			}
 		}

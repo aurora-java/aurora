@@ -13,11 +13,13 @@ import uncertain.composite.CompositeMap;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
+import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.IDGenerator;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
@@ -39,19 +41,21 @@ public class DataSetInit implements IViewBuilder {
         ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
         CompositeMap datasets = screen.getDataSetsConfig();
         List list = datasets.getChildsNotNull();
+        List dslist = new ArrayList();
         Iterator it = list.iterator();
         while(it.hasNext()){
         	CompositeMap dataset = (CompositeMap)it.next();
-        	processDataSet(dataset,model);
+        	processDataSet(dataset,model,dslist);
         }
+        datasets.getChilds().addAll(dslist);
     }
     
-    private void processDataSet(CompositeMap view,CompositeMap model) throws Exception{
-		String href = view.getString(DataSetConfig.PROPERTITY_HREF, "");
-		String queryUrl = view.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
+    private void processDataSet(CompositeMap ds,CompositeMap model,List dslist) throws Exception{
+		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
+		String queryUrl = ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
 		if(!"".equals(queryUrl)){
 			queryUrl = uncertain.composite.TextParser.parse(queryUrl, model);
-			view.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
+			ds.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
 		}
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
@@ -61,19 +65,20 @@ public class DataSetInit implements IViewBuilder {
 			}catch(Exception e){
 				bm = mFactory.getModelForRead(href,"xml");
 			}
-			aurora.bm.Field[] bmfields = bm.getFields();
+			Field[] bmfields = bm.getFields();
 			if(bmfields != null){
-				CompositeMap fields = view.getChild(DataSetConfig.PROPERTITY_FIELDS);
+				CompositeMap fields = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
 				if(fields == null){
 					fields = new CompositeMap(DataSetConfig.PROPERTITY_FIELDS);
-					view.addChild(fields);
+					ds.addChild(fields);
 				}
 				List childs = new ArrayList();
 				List list = fields.getChildsNotNull();
 				
 				int fl = bmfields.length;
 				for(int n=0;n<fl;n++){
-					aurora.bm.Field field = bmfields[n];
+					Field field = bmfields[n];
+					processField(field,dslist);
 					DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(field.getObjectContext());
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
@@ -90,8 +95,8 @@ public class DataSetInit implements IViewBuilder {
 					CompositeMap lfield = (CompositeMap)lit.next();
 					boolean has = false;
 					for(int n=0;n<fl;n++){
-						aurora.bm.Field field = bmfields[n];
-						DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(field.getObjectContext());
+						Field field = bmfields[n];
+//						DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(field.getObjectContext());
 						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
 							has = true;
 							break;
@@ -103,6 +108,24 @@ public class DataSetInit implements IViewBuilder {
 				fields.getChilds().addAll(childs);
 			}
 		}
+    }
+    
+    private void processField(Field field,List list) {
+    	String type = field.getEditorType();
+    	if("combobox".equalsIgnoreCase(type)){
+    		String model = field.getObjectContext().getString("sourcemodel", "");
+    		if(!"".equals(model)){
+    			String id = IDGenerator.getInstance().generate();
+    			DataSetConfig ds = DataSetConfig.getInstance();    			
+    			ds.setHref(model);
+    			ds.setFetchAll(true);
+    			ds.setQueryUrl("autocrud/"+model+"/query");
+    			ds.setAutoQuery(true);
+    			ds.setId(id);
+    			list.add(ds.getObjectContext());
+    			field.setOptions(id);
+    		}
+    	}
     }
     
 //	private void processDataSet(CompositeMap view) throws Exception{

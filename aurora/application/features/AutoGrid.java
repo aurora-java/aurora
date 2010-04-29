@@ -14,9 +14,14 @@ import aurora.bm.BusinessModel;
 import aurora.bm.IModelFactory;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.presentation.component.std.config.CheckBoxConfig;
+import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DatePickerConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.GridConfig;
+import aurora.presentation.component.std.config.LovConfig;
+import aurora.presentation.component.std.config.NumberFieldConfig;
+import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.service.ServiceContext;
 
 public class AutoGrid implements IFeature{
@@ -36,7 +41,6 @@ public class AutoGrid implements IFeature{
         CompositeMap gridView = processColumns(model);
         gridView = processEditors(gridView);
         view.getParent().replaceChild(view,gridView);
-        System.out.println(gridView.toXML());
     	return EventModel.HANDLE_NORMAL;
     }
     
@@ -60,20 +64,39 @@ public class AutoGrid implements IFeature{
 					}
 				}
 			}
-//			view = grid.getObjectContext();
-//			view.getParent().replaceChild(view,grid.getObjectContext());
     	}
     	CompositeMap gridView = grid.getObjectContext();
     	return gridView;
     }
     
-    //TODO:改进???
+    //TODO:
     private ComponentConfig getEditor(CompositeMap column) {
-    	String checkedvalue = column.getString(CheckBoxConfig.PROPERTITY_CHECKEDVALUE,"");
-    	if(!"".equals(checkedvalue)){
+    	String type = column.getString(aurora.bm.Field.KEY_EDITOR_TYPE,"");
+    	if("".equals(type))return null;
+    	if("checkbox".equalsIgnoreCase(type)){
     		CheckBoxConfig checkbox = CheckBoxConfig.getInstance();
     		checkbox.setId(IDGenerator.getInstance().generate());
     		return checkbox;
+    	}else if("textfield".equalsIgnoreCase(type)){
+    		TextFieldConfig textfield = TextFieldConfig.getInstance();
+    		textfield.setId(IDGenerator.getInstance().generate());
+    		return textfield;
+    	}else if("datepicker".equalsIgnoreCase(type)){
+    		DatePickerConfig datepicker = DatePickerConfig.getInstance();
+    		datepicker.setId(IDGenerator.getInstance().generate());
+    		return datepicker;
+    	}else if("numberfield".equalsIgnoreCase(type)){
+    		NumberFieldConfig numberfield = NumberFieldConfig.getInstance();
+    		numberfield.setId(IDGenerator.getInstance().generate());
+    		return numberfield;
+    	}else if("lov".equalsIgnoreCase(type)){
+    		LovConfig lov = LovConfig.getInstance();
+    		lov.setId(IDGenerator.getInstance().generate());
+    		return lov;
+    	}else if("combobox".equalsIgnoreCase(type)){
+    		ComboBoxConfig combo = ComboBoxConfig.getInstance();
+    		combo.setId(IDGenerator.getInstance().generate());
+    		return combo;
     	}
     	return null;
     }
@@ -99,8 +122,10 @@ public class AutoGrid implements IFeature{
 					GridColumnConfig column = GridColumnConfig.getInstance(field.getObjectContext());
 					column.setWidth(field.getDisplayWidth());
 					column.setDataIndex(column.getName());
+					if(field.isDateType() && "".equals(column.getRenderer())){
+						column.setRenderer("Aurora.formateDate");
+					}
 					bmColumns.add(column);
-//						grid.addColumn(column);
 				}
 			}
 		}

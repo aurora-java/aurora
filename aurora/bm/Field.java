@@ -35,6 +35,8 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_PROMPT = "prompt";
     public static final String KEY_QUERY_WIDTH = "querywidth";
     public static final String KEY_DISPLAY_WIDTH = "displaywidth";
+    public static final String KEY_EDITOR_TYPE = "editortype";
+    public static final String KEY_OPTIONS = "options";
     
     BusinessModel       owner;
     
@@ -196,6 +198,26 @@ public class Field extends DynamicObject implements IParameter {
     }
     public void setDisplayWidth(int width){
     	putInt(KEY_DISPLAY_WIDTH, width);
+    }
+    
+    public String getOptions(){
+    	return getString(KEY_OPTIONS,"");
+    }
+    public void setOptions(String options){
+    	putString(KEY_OPTIONS,options);
+    }
+    
+    public String getEditorType(){
+    	return getString(KEY_EDITOR_TYPE,"");    	
+    }
+    
+    public void setEditorType(String editorType){
+    	putString(KEY_EDITOR_TYPE, editorType);
+    }
+    
+    public boolean isDateType() {
+    	String type = getDataType();
+    	return "date".equals(type) || "java.util.Date".equals(type) || "java.sql.Date".equals(type);
     }
     
     public boolean isForInsert(){
