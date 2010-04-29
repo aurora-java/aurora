@@ -47,7 +47,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
         StringBuffer    result = new StringBuffer();
         result.append(getKeyword(IDatabaseProfile.KEYWORD_FROM)).append(" ");
         if(useJoinKeyword){
-            
+            /** @todo implement join */
         }else{
             StringConcatenater list = new StringConcatenater();
             Iterator it = stmt.getFromListForRead().iterator();
