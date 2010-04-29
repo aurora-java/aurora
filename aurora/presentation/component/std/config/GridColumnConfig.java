@@ -1,5 +1,8 @@
 package aurora.presentation.component.std.config;
 
+import java.util.Iterator;
+import java.util.List;
+
 import uncertain.composite.CompositeMap;
 
 public class GridColumnConfig extends ComponentConfig {
@@ -12,19 +15,33 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	public static final String PROPERTITY_RESIZABLE = "resizable";
 	public static final String PROPERTITY_PROMPT = "prompt";
+	public static final String PROPERTITY_RENDERER = "renderer";
 	
 	
 	public static GridColumnConfig getInstance(){
 		GridColumnConfig model = new GridColumnConfig();
         model.initialize(GridColumnConfig.createContext(null,TAG_NAME));
+        model.removeMapping();
         return model;
     }
 	
 	public static GridColumnConfig getInstance(CompositeMap context){
 		GridColumnConfig model = new GridColumnConfig();
         model.initialize(GridColumnConfig.createContext(context,TAG_NAME));
+        model.removeMapping();
         return model;
     }
+	
+	private void removeMapping(){
+		List childs = object_context.getChilds();
+		if(childs!=null){
+			Object[] array = childs.toArray();
+			for(int i=0;i<array.length;i++){
+				CompositeMap map = (CompositeMap)array[i];
+				object_context.removeChild(map);
+			}
+		}
+	}
 	
 	public String getDataIndex(){
 		return getString(PROPERTITY_DATAINDEX);
@@ -59,6 +76,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setPrompt(String prompt){
 		putString(PROPERTITY_PROMPT, prompt);
+	}
+	
+	public String getRenderer(){
+		return getString(PROPERTITY_RENDERER, "");		
+	}
+	public void setRenderer(String renderer){
+		putString(PROPERTITY_RENDERER, renderer);
 	}
 	
 	public String getEditor(){
