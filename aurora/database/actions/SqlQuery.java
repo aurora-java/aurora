@@ -22,9 +22,9 @@ public class SqlQuery extends AbstractQueryAction {
     DatabaseServiceFactory svcFactory;
 
     String service;
-    String sourcePath;
+    String sourcePath;    
 
-    SqlServiceContext context;
+	SqlServiceContext context;
     RawSqlService sqlService;
 
     public SqlQuery(DatabaseServiceFactory svcFactory, OCManager manager) {
@@ -38,7 +38,9 @@ public class SqlQuery extends AbstractQueryAction {
         if (service == null)
             throw new ConfigurationError("Must set 'service' property");
         String parsed_service = TextParser.parse(service, context_map);
-        sqlService = svcFactory.getSqlService(parsed_service, context);
+        sqlService = svcFactory.getSqlService(parsed_service, context);        
+        setConnectionName(sqlService.getDataSourceName());
+        context.initConnection(svcFactory.getUncertainEngine(), connectionName);     
         sqlService.getResultSetLoader().setFieldNameCase(super.getFieldNameCaseValue());
     }
 
