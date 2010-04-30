@@ -10,6 +10,7 @@ import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.SqlServiceContext;
 
 public abstract class AbstractModelAction extends AbstractEntry  {
     
@@ -20,7 +21,7 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     DatabaseServiceFactory  mServiceFactory;
     
     BusinessModelService    mService;
-    ILogger                 mLogger;
+    ILogger                 mLogger;  
 
     public AbstractModelAction( DatabaseServiceFactory  svcFactory) {
         this.mServiceFactory = svcFactory;
@@ -35,6 +36,8 @@ public abstract class AbstractModelAction extends AbstractEntry  {
         
         mService = mServiceFactory.getModelService(TextParser.parse(mModel, runner.getContext()), context);
         mLogger = DatabaseServiceFactory.getLogger(context);
+        SqlServiceContext sqlContext=SqlServiceContext.createSqlServiceContext(context);
+        sqlContext.initConnection(mServiceFactory.getUncertainEngine(), mService.getBusinessModel().getDataSourceName());        
         //service.setTrace(getTrace());
     }
     
