@@ -5,7 +5,7 @@ public class DataBase {
 	String url;
 	String userName;
 	String password;	
-	String pool="true";
+	boolean pool=true;
 	Long expirationTime;
 	Long sleepTime;
 	Integer maxConn;
@@ -45,10 +45,10 @@ public class DataBase {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getPool() {
+	public boolean getPool() {
 		return pool;
 	}
-	public void setPool(String pool) {
+	public void setPool(boolean pool) {
 		this.pool = pool;
 	}
 	public Long getExpirationTime() {

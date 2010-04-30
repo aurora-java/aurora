@@ -58,7 +58,7 @@ public class DataSourceConfig {
 			// set the isolation level (default is READ_COMITTED)
 			xads.setTransactionIsolation(2);
 			xads.setTransactionManager(tm);
-			if (Boolean.parseBoolean(dbConfig.getPool())) {
+			if (dbConfig.getPool()) {
 				pool = new StandardXAPoolDataSource();
 				pool.setTransactionManager(tm);
 				pool.setDataSource(xads);
