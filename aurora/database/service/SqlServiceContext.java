@@ -5,16 +5,21 @@ package aurora.database.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.sql.DataSource;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.ICompositeAccessor;
+import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
+import aurora.database.datasource.INamedDataSourceProvider;
+import aurora.database.datasource.NamedDataSourceProvider;
 import aurora.service.ServiceContext;
 
 public class SqlServiceContext extends ServiceContext {
@@ -28,9 +33,10 @@ public class SqlServiceContext extends ServiceContext {
     
     //public static final String KEY_COMPOSITE_ACCESSOR = "composite_accessor";
 
-    // public static final String KEY_DATABASE_CONNECTION = "database_connection";
+    public static final String KEY_DATABASE_CONNECTION = "__database_connection";
+    public static final String KEY_DATABASE_ALL_CONNECTION = "__database_all_connection";
     public static final String KEY_SERVICE_OPTION = "__database_service_option";
-    
+    HashSet databaseAllConnection;    
     public static SqlServiceContext createSqlServiceContext( CompositeMap context_map ){
         SqlServiceContext context = new SqlServiceContext();
         context.initialize(context_map);
@@ -47,27 +53,33 @@ public class SqlServiceContext extends ServiceContext {
     public DataSource getContextDataSource(){
         return (DataSource)getInstanceOfType(DataSource.class);
     }
-
-    public Connection getConnection(){
-        //return (Connection)getObjectContext().get(KEY_DATABASE_CONNECTION);
-        return (Connection)getInstanceOfType(Connection.class);
-    }
-    
     public void setConnection(Connection conn){
-        //getObjectContext().put(KEY_DATABASE_CONNECTION, conn);
-        setInstanceOfType(Connection.class, conn);
+    	setInstanceOfType(Connection.class, conn);
+    	databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);   
+    	if(databaseAllConnection==null)
+    		databaseAllConnection=new HashSet();
+    	databaseAllConnection.add(conn);    	  
+    	super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
+    }
+   
+    public Connection getConnection() throws SQLException{ 
+    	return (Connection)getInstanceOfType(Connection.class);
+    }     
+    public void setNamedConnection(String name,Connection conn){
+    	 String key = KEY_DATABASE_CONNECTION + "." + name;
+    	 super.put(key, conn);
+    	 databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);    	
+    	 if(databaseAllConnection==null)
+     		databaseAllConnection=new HashSet();
+    	 databaseAllConnection.add(conn);     	    
+     	 super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);  	
     }
     
-    public Connection getNamedConnection( String name ){
-        //String key = super.getTypeKey(Connection.class) + "." + name;
-        return null;
-    }
-    
-    public Collection getAllConnections(){
-        return null;
-    }
-
-
+    public Connection getNamedConnection(String name) throws SQLException{
+        String key = KEY_DATABASE_CONNECTION + "." + name;      
+    	return (Connection)super.get(key);
+    }    
+ 
     public ICompositeAccessor getCompositeAccessor() {
         return (ICompositeAccessor)getInstanceOfType(ICompositeAccessor.class);
     }
@@ -124,15 +136,43 @@ public class SqlServiceContext extends ServiceContext {
     public void setSqlString( StringBuffer sql){
         put(KEY_SQL_STRING, sql);
     }
-    
+    public void initConnection(UncertainEngine uncertainEngine,String datasourceName) throws SQLException{
+    	Connection conn;
+    	DataSource ds;
+    	if(datasourceName==null){
+	    	conn=getConnection();
+	    	if(conn==null){
+	    		ds=(DataSource)uncertainEngine.getObjectRegistry().getInstanceOfType(DataSource.class);
+	    		if(ds==null)
+	    			throw new IllegalStateException("No DataSource instance configured in engine");
+	    		conn=ds.getConnection();
+	    		setConnection(conn);
+	    	}
+    	}else{
+    		conn=getNamedConnection(datasourceName);
+    		if(conn==null){
+    			NamedDataSourceProvider dsProvider=(NamedDataSourceProvider)uncertainEngine.getObjectRegistry().getInstanceOfType(INamedDataSourceProvider.class);
+    			if(dsProvider==null)
+    				throw new IllegalStateException("No NamedDataSourceProvider instance not configured in engine");
+    			ds=dsProvider.getDataSource(datasourceName);
+    			if(ds==null)
+	    			throw new IllegalStateException(datasourceName+" DataSource instance not configured in engine");
+    			conn=ds.getConnection();
+    			setNamedConnection(datasourceName, conn);
+    		}
+    	}
+    }
     public void freeConnection()
         throws SQLException
     {
-        Connection conn = getConnection();
-        if(conn!=null)
-            conn.close();
-        setConnection(null);
+    	Connection conn;
+    	databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);
+    	if(databaseAllConnection!=null){
+    		Iterator it=databaseAllConnection.iterator();
+    		while(it.hasNext()){
+    			conn=(Connection)it.next();
+    			DBUtil.closeConnection(conn);
+    		}
+    	}        
     }
-    
-
 }
