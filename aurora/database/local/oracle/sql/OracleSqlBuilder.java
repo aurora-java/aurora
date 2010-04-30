@@ -6,15 +6,18 @@ package aurora.database.local.oracle.sql;
 
 import java.util.Iterator;
 
+import aurora.database.profile.ISqlBuilder;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.sql.FieldWithSource;
 import aurora.database.sql.ISqlStatement;
-import aurora.database.sql.builder.ISqlBuilder;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
+import aurora.database.sql.InsertStatement;
+import aurora.database.sql.builder.DefaultInsertBuilder;
 
 /** Build oracle specific sql */
 public class OracleSqlBuilder implements ISqlBuilder {
     
-    ISqlBuilderRegistry         mRegistry;
+    ISqlBuilderRegistry                     mRegistry;
+    DefaultInsertBuilder           mInsertBuilder = new DefaultInsertBuilder();
     
     public String createSql( ReturningIntoStatement stmt ){
         StringBuffer sql = new StringBuffer();
@@ -39,6 +42,16 @@ public class OracleSqlBuilder implements ISqlBuilder {
         sql.append(into_target.toString());
         return sql.toString();
     }
+    
+    public String createSql( OracleInsertStatement stmt ){        
+        StringBuffer sql = new StringBuffer(mInsertBuilder.createSql((InsertStatement)stmt));
+        ReturningIntoStatement rt_into = stmt.getReturningInto();
+        if(rt_into!=null){
+            sql.append(" ");
+            sql.append(createSql(rt_into));
+        }
+        return sql.toString();
+    }
 
     public String createSql(ISqlStatement sqlStatement) {
         if(sqlStatement instanceof ReturningIntoStatement)
@@ -53,6 +66,7 @@ public class OracleSqlBuilder implements ISqlBuilder {
     
     void registerOracleSql(){
         mRegistry.registerSqlBuilder( ReturningIntoStatement.class, this);
+        mRegistry.registerSqlBuilder( OracleInsertStatement.class, this);
     }
 
 }
