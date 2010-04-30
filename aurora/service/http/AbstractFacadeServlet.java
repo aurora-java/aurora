@@ -12,16 +12,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
-import uncertain.proc.ProcedureRegistry;
 import aurora.application.Events;
 import aurora.service.IService;
 import aurora.service.ServiceController;
+import aurora.transaction.ITransactionService;
 
 public abstract class AbstractFacadeServlet extends HttpServlet {
 
@@ -80,7 +82,9 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
             if(!is_success)
                 return false;
             Procedure proc = getProcedureToRun(svc);
-            svc.invoke(proc);
+            is_success=is_success&svc.invoke(proc);
+            if(!is_success)
+                return false;
             if(mPostServiceProc!=null)
                 is_success = is_success & svc.invoke(mPostServiceProc);
         } catch (Exception ex) {
@@ -94,7 +98,21 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
     protected void service(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-        invokeService(request, response);
+    	IObjectRegistry or=mUncertainEngine.getObjectRegistry();
+        ITransactionService ts=(ITransactionService)or.getInstanceOfType(ITransactionService.class);
+     	UserTransaction trans=ts.getUserTransaction();
+     	try {
+			trans.begin();		
+			if(invokeService(request, response)){        	
+				trans.commit();			 
+			}else{
+				trans.rollback();
+			}
+     	}catch(Exception e){
+     		mUncertainEngine.logException("Error when executing " + request.getRequestURI(), e);
+     	}finally{
+     		ts.stop();
+     	}            	
     }
 
     public void init(ServletConfig config) throws ServletException {
