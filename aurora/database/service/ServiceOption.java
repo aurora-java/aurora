@@ -12,9 +12,18 @@ public class ServiceOption extends DynamicObject {
 
     public static final String MODE_FREE_QUERY = "freequery";
     
-    public static final String MODE_BY_PK = "pkquery";    
+    public static final String MODE_BY_PK = "pkquery"; 
     
-    public static ServiceOption createInstance(){
+    String connectionName;
+    public String getConnectionName() {
+		return connectionName;
+	}
+
+	public void setConnectionName(String connectionName) {
+		this.connectionName = connectionName;
+	}
+
+	public static ServiceOption createInstance(){
         CompositeMap map = new CompositeMap(20);
         map.setName("query-option");
         ServiceOption option = new ServiceOption();
@@ -48,6 +57,5 @@ public class ServiceOption extends DynamicObject {
     
     public void setAutoCount( boolean b){
         putBoolean(KEY_AUTO_COUNT, b);
-    }
-
+    }   
 }
