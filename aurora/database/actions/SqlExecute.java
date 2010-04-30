@@ -4,7 +4,6 @@
 package aurora.database.actions;
 
 import java.util.Collection;
-
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.core.ConfigurationError;
@@ -31,14 +30,14 @@ public class SqlExecute extends AbstractEntry {
 
     public SqlExecute( DatabaseServiceFactory svcFactory ) {
         this.svcFactory = svcFactory;
-    }
-
+    }  
     public void run(ProcedureRunner runner) throws Exception {
         if( service==null ) throw new ConfigurationError("Must set 'service' property");
         SqlServiceContext context = SqlServiceContext.createSqlServiceContext(runner.getContext());
         String parsed_service = TextParser.parse(service, runner.getContext());        
-        RawSqlService svc = svcFactory.getSqlService(parsed_service, context);
-        svc.setTrace(getTrace());
+        RawSqlService svc = svcFactory.getSqlService(parsed_service, context);       
+        svc.setTrace(getTrace());  
+        context.initConnection(svcFactory.getUncertainEngine(), svc.getDataSourceName());     
         if(MODE_BATCH.equalsIgnoreCase(mode)){
             CompositeMap map = context.getCurrentParameter();
             Collection params = SqlRunner.getSourceParameter(map, sourcePath);
@@ -103,5 +102,4 @@ public class SqlExecute extends AbstractEntry {
     public void setTrace(boolean trace) {
         this.trace = trace;
     }
-
 }
