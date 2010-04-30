@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql-service dataSourceName="oracle" trace="false">
+	<!--
+	<parameters>
+		<parameter name="deptno" dataType="java.lang.Long"/>
+		<parameter name="ename" dataType="java.lang.String"/>
+		<parameter name="hiredate_from" dataType="java.sql.Date"/>
+	</parameters>
+-->
+	<query>
+		select *
+		from fnd_import_status e 
+		#WHERE_CLAUSE#
+		#ORDER_BY_CLAUSE#
+	</query>
+	<!--
+	<query-fields>		
+		<query-field name="ename" queryOperator="like"/>
+		<query-field name="deptno" queryOperator="="/>
+		<query-field name="mgr" queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)"/>
+		<query-field name="hiredate_from" dataType="java.sql.Date" queryExpression="e.hiredate >= ${@hiredate_from}"/>		
+	</query-fields>
+	-->
+	<data-filters>
+		<!--
+		<data-filter name="MustInDepartment" enforceActions="query" expression="e.deptno is not null"/>
+		-->
+		<data-filter expression="e.creation_date > trunc(sysdate)"/>
+	</data-filters>
+	<!--
+	<fields>
+		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" required="true"/>
+		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>
+		<field name="job" datatype="java.lang.String" databaseType="BIGINT"/>
+		<field name="mgr" datatype="java.lang.Long" databaseType="BIGINT"/>
+		<field name="hiredate" datatype="java.sql.Date" databaseType="DATE"/>
+		<field name="deptno" datatype="java.lang.Long" databaseType="BIGINT"/>
+		<field name="sal" datatype="java.lang.Long" databaseType="FLOAT"/>
+		<field name="comm" datatype="java.lang.Long" databaseType="FLOAT"/>
+		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE"/>
+	</fields>
+	-->
+</sql-service>

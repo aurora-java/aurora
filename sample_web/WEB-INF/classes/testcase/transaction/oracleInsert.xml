@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql-service dataSourceName="oracle">
+	<update>
+		begin
+			insert into fnd_import_status values(2,1,1,'N',sysdate);	
+		end;
+	</update>
+</sql-service>

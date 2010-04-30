@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql-service dataSourceName="mysql">
+	<update>
+		
+		insert into employees values('Jenny','F',now());	
+		
+	</update>
+</sql-service>
