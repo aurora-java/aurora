@@ -33,9 +33,17 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     String      recordName;
     List        transform_list;
     
-    String      connection;
+    String      connectionName;  
     
-    protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
+    public String getConnectionName() {
+		return connectionName;
+	}
+
+	public void setConnectionName(String connectionName) {
+		this.connectionName = connectionName;
+	}
+
+	protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
     
     protected abstract void prepare( CompositeMap context_map ) throws Exception ;
     
@@ -50,11 +58,11 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         super.doPopulate();
         prepare( context_map );
         SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);
-        //context.setTrace(trace);
-        
+        //context.setTrace(trace);      
         ServiceOption option = ServiceOption.createInstance();
         option.setQueryMode(mode);
         option.setAutoCount(autoCount);
+        option.setConnectionName(connectionName);
         context.setServiceOption(option);
         
         IResultSetConsumer consumer = null;
@@ -233,13 +241,4 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     protected byte getFieldNameCaseValue(){
         return fieldNameCaseValue;
     }
-
-    public String getConnection() {
-        return connection;
-    }
-
-    public void setConnection(String connection) {
-        this.connection = connection;
-    }
-
 }
