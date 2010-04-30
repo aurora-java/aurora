@@ -33,8 +33,16 @@ public class BusinessModel extends DynamicObject {
     public static final String KEY_BASE_TABLE = "basetable";
     
     public static final String KEY_NAME = "name";
-    
-    static final Field[] EMPTY_FIELDS = new Field[0];
+
+	static final Field[] EMPTY_FIELDS = new Field[0];
+	static 	String KEY_DATA_SOURCE_NAME="datasourcename";
+    public String getDataSourceName() {
+		return getString(KEY_DATA_SOURCE_NAME);
+	}
+
+	public void setDataSourceName(String dataSourceName) {
+		putString(KEY_DATA_SOURCE_NAME, dataSourceName);
+	}
     
     public static BusinessModel getInstance( CompositeMap context ){
         BusinessModel model = new BusinessModel();
