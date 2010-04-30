@@ -32,6 +32,7 @@ public abstract class AbstractSqlCreator {
         else
             context = bmsc;
         SqlRunner runner = new SqlRunner(context, s);
+        runner.setConnectionName(bmsc.getBusinessModel().getDataSourceName());
         runner.setTrace(bmsc.isTrace());        
         bmsc.setSqlRunner(runner);
         runner.update(bmsc.getCurrentParameter());        
