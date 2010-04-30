@@ -17,6 +17,7 @@ import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.ServiceOption;
+import aurora.database.service.SqlServiceContext;
 
 public class ModelQuery extends AbstractQueryAction {
  
@@ -60,7 +61,10 @@ public class ModelQuery extends AbstractQueryAction {
         if(model==null)
             throw new IllegalArgumentException("Must set 'model' property");
         service = svcFactory.getModelService(model, context);
-        //service.setTrace(getTrace());
+        setConnectionName(service.getBusinessModel().getDataSourceName());
+        SqlServiceContext
+        .createSqlServiceContext(context).initConnection(svcFactory.getUncertainEngine(), connectionName); 
+        //service.setTrace(getTrace());    
         serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
     }
     
