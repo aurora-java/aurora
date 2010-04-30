@@ -28,9 +28,10 @@ public class AutoQueryCounter implements ISingleton {
             if(oldsql==null) return;
             StringBuffer sql = new StringBuffer(oldsql.toString());            
             sql.insert(0, "select count(1) from ( ");
-            sql.append(" )");
+            sql.append(" ) s");
             ParsedSql s = new ParsedSql(sql.toString());
-            SqlRunner runner = new SqlRunner(context, s);
+            SqlRunner runner = new SqlRunner(context, s);  
+            runner.setConnectionName(option.getConnectionName());
             runner.setTrace(context.isTrace());
             ResultSet rs = null;
             try{
