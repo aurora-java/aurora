@@ -6,6 +6,7 @@ package aurora.bm;
 import uncertain.composite.CompositeMap;
 import aurora.database.ParsedSql;
 import aurora.database.SqlRunner;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.SqlServiceContext;
 import aurora.database.sql.ConditionList;
@@ -13,7 +14,6 @@ import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class UpdateSqlCreator extends AbstractSqlCreator {
     

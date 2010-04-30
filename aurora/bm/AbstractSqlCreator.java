@@ -6,9 +6,9 @@ package aurora.bm;
 import uncertain.composite.CompositeMap;
 import aurora.database.ParsedSql;
 import aurora.database.SqlRunner;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.SqlServiceContext;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public abstract class AbstractSqlCreator {
     

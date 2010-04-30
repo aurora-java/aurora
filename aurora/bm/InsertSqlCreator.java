@@ -5,10 +5,10 @@ package aurora.bm;
 
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.InsertStatement;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class InsertSqlCreator extends AbstractSqlCreator {
     

@@ -6,6 +6,7 @@ package aurora.bm;
 
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.DeleteStatement;
@@ -14,7 +15,6 @@ import aurora.database.sql.InsertStatement;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class DeleteSqlCreator extends AbstractSqlCreator {
     

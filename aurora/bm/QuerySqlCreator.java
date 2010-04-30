@@ -15,6 +15,7 @@ import aurora.database.IResultSetConsumer;
 import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.ServiceOption;
 import aurora.database.sql.ISqlStatement;
@@ -22,7 +23,6 @@ import aurora.database.sql.Join;
 import aurora.database.sql.SelectField;
 import aurora.database.sql.SelectSource;
 import aurora.database.sql.SelectStatement;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class QuerySqlCreator extends AbstractSqlCreator {
     
