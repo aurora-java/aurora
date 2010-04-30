@@ -9,6 +9,7 @@ import aurora.bm.BusinessModel;
 import aurora.bm.DataFilter;
 import aurora.bm.Field;
 import aurora.bm.QueryField;
+import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.RawSqlService;
 import aurora.database.service.ServiceOption;
@@ -18,7 +19,6 @@ import aurora.database.sql.IWithWhereClause;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.SelectField;
 import aurora.database.sql.SelectStatement;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
 
 public class WhereClauseCreator {
     

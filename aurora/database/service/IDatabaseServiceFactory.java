@@ -4,8 +4,8 @@
  */
 package aurora.database.service;
 
-import aurora.database.sql.builder.IDatabaseProfile;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseProfile;
+import aurora.database.profile.ISqlBuilderRegistry;
 
 public interface IDatabaseServiceFactory {
     

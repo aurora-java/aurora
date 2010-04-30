@@ -33,10 +33,10 @@ import aurora.database.Constant;
 import aurora.database.features.AutoQueryCounter;
 import aurora.database.features.OrderByClauseCreator;
 import aurora.database.features.WhereClauseCreator;
-import aurora.database.sql.builder.DefaultDatabaseProfile;
-import aurora.database.sql.builder.IDatabaseProfile;
-import aurora.database.sql.builder.ISqlBuilderRegistry;
-import aurora.database.sql.builder.SqlBuilderRegistry;
+import aurora.database.profile.DefaultDatabaseProfile;
+import aurora.database.profile.IDatabaseProfile;
+import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.SqlBuilderRegistry;
 
 public class DatabaseServiceFactory {
     
