@@ -128,6 +128,7 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         StringBuffer sql = bmsc.getSqlString();
         ParsedSql s = new ParsedSql(sql.toString());
         SqlRunner runner = new SqlRunner(bmsc, s);
+        runner.setConnectionName(bmsc.getBusinessModel().getDataSourceName());
         runner.setTrace(bmsc.isTrace());
         bmsc.setSqlRunner(runner);
         ResultSet rs = null;
