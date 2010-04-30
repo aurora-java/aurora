@@ -50,14 +50,22 @@ public class RawSqlService implements IConfigurable
     // Configuration to hold default feature instances
     Configuration       mConfiguration;
     // trace flag
-    boolean             mTrace;    
-
+    boolean             mTrace;        
     ResultSetLoader     mRsLoader = new ResultSetLoader();
     BusinessModel       mModel;
     OCManager           mOcManager;
+    String 				dataSourceName;
     //CompositeMap        mConfigMap;
     
-    protected RawSqlService( OCManager ocManager ){
+    public String getDataSourceName() {
+		return dataSourceName;
+	}
+
+	public void setDataSourceName(String dataSourceName) {
+		this.dataSourceName = dataSourceName;
+	}
+
+	protected RawSqlService( OCManager ocManager ){
         this.mOcManager = ocManager;
     }
 
@@ -174,6 +182,7 @@ public class RawSqlService implements IConfigurable
     SqlRunner createRunner( StringBuffer sql, SqlServiceContext context ){
         ParsedSql stmt = createStatement(sql.toString()); 
         SqlRunner runner = new SqlRunner(context, stmt);
+        runner.setConnectionName(dataSourceName);
         runner.setTrace(getTrace());
         return runner;        
     }
@@ -205,7 +214,7 @@ public class RawSqlService implements IConfigurable
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
         parseParameter(context);
         mConfiguration.fireEvent("PopulateQuerySql", context.getObjectContext(), new Object[]{ this, mSql} );
-        SqlRunner runner = createRunner(mSql, context);
+        SqlRunner runner = createRunner(mSql, context);       
         context.setSqlString( mSql );
         ResultSet rs = null;
         long exec_time = 0;
@@ -233,7 +242,7 @@ public class RawSqlService implements IConfigurable
     {        
         parseParameter(context);
         mConfiguration.fireEvent("PopulateQuerySql", context.getObjectContext(), new Object[]{ this, mSql} );
-        SqlRunner runner = createRunner(context);
+        SqlRunner runner = createRunner(context);        
         try{
             runner.update(context.getCurrentParameter());
         } finally{
@@ -288,5 +297,4 @@ public class RawSqlService implements IConfigurable
     public void setResultSetLoader(ResultSetLoader rsLoader) {
         mRsLoader = rsLoader;
     }
-
 }
