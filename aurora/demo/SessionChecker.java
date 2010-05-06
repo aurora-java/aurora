@@ -7,33 +7,47 @@ package aurora.demo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.ISingleton;
+import uncertain.proc.CheckCookie;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class SessionChecker implements ISingleton {
-    
-    static int sequence = 1000;
-    
-    static synchronized int getId(){
-        return sequence++;
-    }
-    
-    public void onCheckSession( ServiceContext context)
-        throws Exception
-    {
-        HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());
-        HttpServletRequest request = svc.getRequest();
-        HttpSession session = request.getSession(true);
-        Integer sid = (Integer)session.getAttribute("sid");
-        if(sid==null){
-            sid = new Integer(getId());
-            session.setAttribute("sid", sid);
-            System.out.println("creating new session:"+sid);
-        }else{
-            System.out.println("existing session id:"+sid);
-        }
-    }
+
+	private String url;
+	private String value;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public void onCheckSession(CheckCookie checkcookie, CompositeMap context)
+			throws Exception {
+		// String s =
+		// context.getObjectContext().getObject(checkcookie.getField()).toString();
+		// checkcookie.setField(context.getObjectContext().getObject(checkcookie.getField()).toString());
+		if (context.getObject(checkcookie.getField()).toString().equals(
+				checkcookie.getValue().toString())) {
+			HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
+					.getInstance(context);
+			svc.getResponse().sendRedirect(checkcookie.getUrl());
+		}
+		
+	}
 
 }
