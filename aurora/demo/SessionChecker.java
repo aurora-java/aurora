@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.ocm.ISingleton;
-import uncertain.proc.CheckCookie;
+import uncertain.proc.CheckDispatch;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
@@ -36,7 +36,7 @@ public class SessionChecker implements ISingleton {
 		this.value = value;
 	}
 
-	public void onCheckSession(CheckCookie checkcookie, CompositeMap context)
+	public void onCheckSession(CheckDispatch checkcookie, CompositeMap context)
 			throws Exception {
 		// String s =
 		// context.getObjectContext().getObject(checkcookie.getField()).toString();
@@ -45,7 +45,7 @@ public class SessionChecker implements ISingleton {
 				checkcookie.getValue().toString())) {
 			HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 					.getInstance(context);
-			svc.getResponse().sendRedirect(checkcookie.getUrl());
+			svc.getResponse().sendRedirect(checkcookie.getDispatchUrl());
 		}
 		
 	}
