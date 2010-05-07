@@ -61,8 +61,12 @@ public class Radio extends Component {
 					label = ":"+label;
 				}
 				
-				sb.append("<div class='item-radio-option'");
-				if("horizontal".equalsIgnoreCase(layout)) sb.append(" style='float:left'");
+				sb.append("<div class='item-radio-option'  style='text-align:left;");
+				if("horizontal".equalsIgnoreCase(layout)) {
+					sb.append("float:left'");
+				}else{
+					sb.append("'");				
+				}
 				sb.append(" itemvalue='"+value+"'>"); 
 				sb.append("<div class='item-radio-img'></div>");
 				sb.append("<label class='item-radio-lb'>"+label+"</label>");

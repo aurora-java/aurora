@@ -24,11 +24,11 @@ import aurora.presentation.component.std.config.GridConfig;
  */
 public class Grid extends Component {
 	
-	public static final String COLUMN_DATAINDEX = "dataindex";
-	public static final String COLUMN_LOCK = "lock";
-	public static final String COLUMN_HIDDEN = "hidden";
-	public static final String COLUMN_RESIZABLE = "resizable";
-	public static final String COLUMN_PROMPT = "prompt";
+//	public static final String COLUMN_DATAINDEX = "dataindex";
+//	public static final String COLUMN_LOCK = "lock";
+//	public static final String COLUMN_HIDDEN = "hidden";
+//	public static final String COLUMN_RESIZABLE = "resizable";
+//	public static final String COLUMN_PROMPT = "prompt";
 	
 	public static final String HTML_LOCKAREA = "lockarea";
 	public static final String HTML_UNLOCKAREA = "unlockarea";
@@ -52,8 +52,8 @@ public class Grid extends Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "grid/Grid.css");
-		addJavaScript(session, context, "grid/Grid.js");
+		addStyleSheet(session, context, "grid/Grid-min.css");
+		addJavaScript(session, context, "grid/Grid-min.js");
 	}
 	
 	
@@ -126,9 +126,9 @@ public class Grid extends Component {
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTIONMODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
-				column.putBoolean(COLUMN_LOCK,true);
+				column.putBoolean(GridConfig.COLUMN_LOCK,true);
 				column.putInt(ComponentConfig.PROPERTITY_WIDTH,25);
-				column.putBoolean(COLUMN_RESIZABLE,false);
+				column.putBoolean(GridConfig.COLUMN_RESIZABLE,false);
 				if("multiple".equals(selectmodel)) {
 					column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
 				}else{
@@ -140,7 +140,7 @@ public class Grid extends Component {
 			Iterator cit = columns.getChildIterator();
 			while(cit.hasNext()){
 				CompositeMap column = (CompositeMap)cit.next();
-				boolean isLock = column.getBoolean(COLUMN_LOCK, false);
+				boolean isLock = column.getBoolean(GridConfig.COLUMN_LOCK, false);
 				if(isLock){
 					lks.add(column);
 				}else{
@@ -194,11 +194,11 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap column = (CompositeMap)it.next();
 				if(column.getChilds() == null){
-					String dataindex = column.getString(COLUMN_DATAINDEX,"");
-					if(!"".equals(dataindex)) column.putString(COLUMN_DATAINDEX, dataindex);
-					column.putBoolean(COLUMN_LOCK, column.getBoolean(COLUMN_LOCK, false));
-					column.putBoolean(COLUMN_HIDDEN, column.getBoolean(COLUMN_HIDDEN, false));
-					column.putBoolean(COLUMN_RESIZABLE, column.getBoolean(COLUMN_RESIZABLE, true));
+					String dataindex = column.getString(GridConfig.COLUMN_DATAINDEX,"");
+					if(!"".equals(dataindex)) column.putString(GridConfig.COLUMN_DATAINDEX, dataindex);
+					column.putBoolean(GridConfig.COLUMN_LOCK, column.getBoolean(GridConfig.COLUMN_LOCK, false));
+					column.putBoolean(GridConfig.COLUMN_HIDDEN, column.getBoolean(GridConfig.COLUMN_HIDDEN, false));
+					column.putBoolean(GridConfig.COLUMN_RESIZABLE, column.getBoolean(GridConfig.COLUMN_RESIZABLE, true));
 					column.putInt(ComponentConfig.PROPERTITY_WIDTH, column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH));
 					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
@@ -444,11 +444,11 @@ public class Grid extends Component {
 		int lockWidth = 0;
 		while(it.hasNext()){
 			CompositeMap column = (CompositeMap)it.next();
-			if(column.getBoolean(COLUMN_LOCK, false)){
+			if(column.getBoolean(GridConfig.COLUMN_LOCK, false)){
 				hasLockColumn = true;
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'></TH>");
+					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(GridConfig.COLUMN_DATAINDEX,"")+"'></TH>");
 					lockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
@@ -474,8 +474,8 @@ public class Grid extends Component {
 						}else if(TYPE_ROW_RADIO.equals(ct)) {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio'><div>&nbsp;</div></TD>");
 						}else{
-							boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
-							if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+							boolean hidden =  column.getBoolean(GridConfig.COLUMN_HIDDEN, false);
+							if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridConfig.COLUMN_DATAINDEX,"")+"'><div>"+column.getString(GridConfig.COLUMN_PROMPT, "")+"</div></TD>");
 						}
 					}
 				}
@@ -507,10 +507,10 @@ public class Grid extends Component {
 		int unlockWidth = 0;
 		while(it.hasNext()){
 			CompositeMap column = (CompositeMap)it.next();
-			if(!column.getBoolean(COLUMN_LOCK, false)){
+			if(!column.getBoolean(GridConfig.COLUMN_LOCK, false)){
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'></TH>");
+					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(GridConfig.COLUMN_DATAINDEX,"")+"'></TH>");
 					unlockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
 				}				
 			}
@@ -529,8 +529,8 @@ public class Grid extends Component {
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
-					boolean hidden =  column.getBoolean(COLUMN_HIDDEN, false);
-					if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(COLUMN_DATAINDEX,"")+"'><div>"+column.getString(COLUMN_PROMPT, "")+"</div></TD>");
+					boolean hidden =  column.getBoolean(GridConfig.COLUMN_HIDDEN, false);
+					if(!hidden)hsb.append("<TD class='grid-hc' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridConfig.COLUMN_DATAINDEX,"")+"'><div>"+column.getString(GridConfig.COLUMN_PROMPT, "")+"</div></TD>");
 				}
 			}
 			hsb.append("</TR>");

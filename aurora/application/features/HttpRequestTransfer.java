@@ -63,7 +63,7 @@ public class HttpRequestTransfer implements ISingleton {
 		CompositeMap r = svc.getContextMap().createChild(KEY_REQUEST);
 
 		r.put(KEY_ADDRESS, request.getRemoteAddr());
-//		r.put("url", svc.);
+		r.put("url", svc.getName());
 		if (dm.length() != 0) {
 			r.put("params", dm);
 		}
@@ -71,8 +71,8 @@ public class HttpRequestTransfer implements ISingleton {
 		r.put("server_port", new Integer(request.getServerPort()));
 		CompositeMap cookie = svc.getContextMap().createChild("cookie");
 		populateCookieMap(request, cookie);
-//		copyParameter(svc.getRequest(), svc);
-//		copyHeader(svc.getRequest(), svc);
+		copyParameter(svc.getRequest(), svc);
+		copyHeader(svc.getRequest(), svc);
 	}
 
 	public static JSONObject getParameterString(HttpServletRequest request) {

@@ -41,7 +41,7 @@ public class ServiceInitiator {
         reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
         reg.addClassMapping( "sql-execute", SqlExecute.class);
         reg.addClassMapping( "sql-query", SqlQuery.class);
-        reg.addClassMapping( "set-cookie", AuroraCookie.class);
+        reg.addClassMapping( "put-cookie", AuroraCookie.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");

@@ -31,7 +31,7 @@ public class AuroraCookie extends AbstractEntry {
 		this.value = value;
 	}
 
-	@Override
+	
 	public void run(ProcedureRunner runner) throws Exception {
 
 		CompositeMap mContext = runner.getContext();
@@ -40,7 +40,6 @@ public class AuroraCookie extends AbstractEntry {
 		HttpServletResponse response = mService.getResponse();
 		this.setValue  (TextParser.parse(this.getValue(), mContext));
 		Cookie cookie = new Cookie(name, value);
-
 		response.addCookie(cookie);
 
 	}
