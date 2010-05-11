@@ -1,7 +1,6 @@
 package aurora.presentation.component.std.config;
 
 import uncertain.composite.CompositeMap;
-import uncertain.composite.DynamicObject;
 
 public class DataSetConfig extends ComponentConfig {
 	

@@ -1,6 +1,5 @@
 package aurora.presentation.component.std.config;
 
-import java.util.Iterator;
 import java.util.List;
 
 import uncertain.composite.CompositeMap;
