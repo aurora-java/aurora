@@ -15,6 +15,8 @@ public interface ISqlBuilder {
     
     public void setRegistry(ISqlBuilderRegistry registry);
     
+    public ISqlBuilderRegistry getRegistry();
+    
     public String createSql(ISqlStatement sqlStatement);
 
 }

@@ -7,22 +7,31 @@ package aurora.database.profile;
 /**
  * The facade interface to get a ISqlBuilderRegistry instance under specified database profile
  * ISqlFactory
+ * The overall structure of database profile object model:
+ * 
+ * IDatabaseFactory
+ *       (contains) -> IDatabaseProfile
+ *                          (contains)  -> ISqlBuilderRegistry
+ *                                              (contains)   ->  ISqlBuilder
+ *                                              
+ * The client usually uses API like this:
+ * get IDatabaseFactory instance;
+ * get IDatabaseProfile from IDatabaseFactory with specified database name;
+ * get ISqlBuilderRegistry associated with this IDatabaseProfile instance;
+ * get actual sql statement from ISqlBuilderRegistry;
  */
 public interface IDatabaseFactory {
-    
-    /** get/set ISqlBuilderRegistry by database name */
-    public ISqlBuilderRegistry getSqlBuilderRegistry( String database_name );
-    
-    public void setSqlBuilderRegistry( String database_name, ISqlBuilderRegistry reg );
     
     /** get/set IDatabaseProfile by database name */
     public IDatabaseProfile getDatabaseProfile( String database_name );
     
     public void addDatabaseProfile( IDatabaseProfile profile );
     
-    /** get all supported database names, in String array */
-    public String[] getSuppportedDatabases();
+    /** get all registered database profiles  */
+    public IDatabaseProfile[]   getDatabases();
     
-    public String getDefaultDatabase();
+    //public String getDefaultDatabase();
+    
+    public IDatabaseProfile getDefaultDatabaseProfile();
 
 }

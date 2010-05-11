@@ -15,6 +15,8 @@ public interface ISqlBuilderRegistry {
     
     public void registerSqlBuilder( Class statement_type, ISqlBuilder sql_builder );
     
+    public void setParent( ISqlBuilderRegistry parent );
+    
     public String getSql( ISqlStatement statement );
 
 }

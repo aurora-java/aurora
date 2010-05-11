@@ -30,7 +30,11 @@ import aurora.database.sql.builder.DefaultUpdateBuilder;
 public class SqlBuilderRegistry implements ISqlBuilderRegistry {
     
     IDatabaseProfile    databaseProfile;
+    // Class of statement  -> ISqlBuilder
     Map                 sqlBuilderMap = new HashMap();
+    // Class of ISqlBuilder -> ISqlBuilder instance
+    Map                 sqlBuilderTypeMap = new HashMap();
+    ISqlBuilderRegistry parent;
     
     protected void loadDefaultBuilders(){
         
@@ -60,7 +64,7 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
     }
     
     public SqlBuilderRegistry(){
-        databaseProfile = new DefaultDatabaseProfile("GeneralSQL92");
+        databaseProfile = new DatabaseProfile("GeneralSQL92");
         loadDefaultBuilders();
     }
     
@@ -78,12 +82,21 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
     }
     
     public ISqlBuilder  getBuilder( ISqlStatement   statement ){
-        return (ISqlBuilder)sqlBuilderMap.get(statement.getClass());
+        ISqlBuilder builder =  (ISqlBuilder)sqlBuilderMap.get(statement.getClass());
+        if(builder==null&&parent!=null)
+            builder = parent.getBuilder(statement);
+        return builder;
     }
     
     public void registerSqlBuilder( Class statement_type, ISqlBuilder sql_builder ){
-        sql_builder.setRegistry(this);
+        if(sql_builder.getRegistry()!=this)
+            sql_builder.setRegistry(this);
         sqlBuilderMap.put(statement_type, sql_builder);
+        sqlBuilderTypeMap.put(sql_builder.getClass(), sql_builder);
+    }
+    
+    public ISqlBuilder getSqlBuilderByType( Class builder_type ){
+        return (ISqlBuilder)sqlBuilderTypeMap.get(builder_type);
     }
     
     public String getSql( ISqlStatement statement ){
@@ -92,6 +105,15 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
             return builder.createSql(statement);
         else
             return null;
+    }
+
+    public ISqlBuilderRegistry getParent() {
+        return parent;
+    }
+
+    public void setParent(ISqlBuilderRegistry parent) {
+        assert parent!=this;
+        this.parent = parent;
     }
 
 }

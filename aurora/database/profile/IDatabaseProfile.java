@@ -3,6 +3,8 @@
  */
 package aurora.database.profile;
 
+import uncertain.composite.CompositeMap;
+
 public interface IDatabaseProfile {
     
     public static final String KEYWORD_SELECT =     "SELECT";
@@ -25,12 +27,16 @@ public interface IDatabaseProfile {
     
     public static final String  KEY_USE_JOIN_KEYWORD = "use_join_keyword";
     
-    public void setProperty( String name, String value);
+    //public void setProperty( String name, String value);
+    
+    public CompositeMap getProperties();
     
     public String   getProperty( String name );
     
     public String   getDatabaseName();
     
     public String   getKeyword( String keyword_code );
+    
+    public ISqlBuilderRegistry getSqlBuilderRegistry();
 
 }
