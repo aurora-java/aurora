@@ -3,15 +3,14 @@
  */
 package aurora.service;
 
-import aurora.application.Events;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
 import uncertain.event.RuntimeContext;
-import uncertain.proc.EntryList;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
+import aurora.events.E_PrepareServiceConfig;
 
 public class ServiceInstance implements IService {
 
@@ -50,7 +49,7 @@ public class ServiceInstance implements IService {
             mConfig.clear();
         if (mRootConfig != null)
             try {
-                mRootConfig.fireEvent(Events.EVT_PREPARE_SERVICE_CONFIG, mEventArgs);
+                mRootConfig.fireEvent(E_PrepareServiceConfig.EVT_PREPARE_SERVICE_CONFIG, mEventArgs);
             } catch (Exception ex) {
                 throw new RuntimeException(
                         "Error in event PopulateServiceConfig", ex);
