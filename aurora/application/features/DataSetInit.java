@@ -22,7 +22,6 @@ import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
-import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 
