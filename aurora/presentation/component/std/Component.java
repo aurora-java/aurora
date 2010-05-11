@@ -13,25 +13,14 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
-import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.presentation.markup.HtmlPageContext;
 
+/**
+ * 
+ * @version $Id: Component.java v 1.0 2010-5-11 下午04:43:07 znjqolf Exp $
+ * @author <a href="mailto:znjqolf@126.com">vincent</a>
+ */
 public class Component {
-	
-	//TODO: 从componentconfig 获取
-//	public static final String PROPERTITY_ID = "id";
-//	public static final String PROPERTITY_LABEL = "prompt";
-//	public static final String PROPERTITY_NAME = "name";
-//	public static final String PROPERTITY_STYLE = "style";
-//	public static final String PROPERTITY_VALUE = "value";
-//	public static final String PROPERTITY_EVENTS = "events";
-//	public static final String PROPERTITY_CLASSNAME = "classname";
-//	public static final String PROPERTITY_WIDTH = "width";
-//	public static final String PROPERTITY_HEIGHT = "height";
-//	public static final String PROPERTITY_BINDTARGET = "bindtarget";
-//	public static final String PROPERTITY_HIDDEN = "hidden";
-//	public static final String PROPERTITY_EVENT_NAME = "name";
-//	public static final String PROPERTITY_EVENT_HANDLER = "handler";
 	
 	protected static final String CONFIG = "config";
 	protected static final String WRAP_CSS = "wrapClass";
@@ -132,7 +121,6 @@ public class Component {
 		
 		/** 绑定DataSet **/
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
-		String bindName = "";
 		if(!bindTarget.equals("")){	
 			bsb.append("$('"+id+"').bind('" + bindTarget + "','" + name + "');\n");
 			map.put(BINDING, bsb.toString());

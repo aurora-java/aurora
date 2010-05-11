@@ -20,10 +20,12 @@ public class Radio extends Component {
 	private static final String PROPERTITY_LABEL = "label";
 	private static final String PROPERTITY_VALUE = "value";
 	private static final String PROPERTITY_LAYOUT = "layout";
+	private static final String PROPERTITY_OPTIONS = "options";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();
+		CompositeMap model = view_context.getModel();
 		CompositeMap view = view_context.getView();	
 		
 		String layout = view.getString(PROPERTITY_LAYOUT, "horizontal");
@@ -32,8 +34,20 @@ public class Radio extends Component {
 			try {
 				createOptions(map,items,layout);
 			} catch (JSONException e) {
-				e.printStackTrace();
+				throw new IOException(e.getMessage());
 			}
+		}else {
+			String ds = view.getString(PROPERTITY_OPTIONS, "");
+			if(!"".equals(ds)){
+				CompositeMap options = (CompositeMap)model.getObject(ds);
+				if(options!=null)
+				try {
+					createOptions(map,options,layout);
+				} catch (JSONException e) {
+					throw new IOException(e.getMessage());
+				}
+			}
+			
 		}
 		
 		
@@ -52,9 +66,9 @@ public class Radio extends Component {
 				String label = item.getString(PROPERTITY_LABEL, "");
 				String value = item.getString(PROPERTITY_VALUE, "");
 				
-				JSONObject option = new JSONObject();
-				option.put(PROPERTITY_LABEL, label);
-				option.put(PROPERTITY_VALUE, value);
+				JSONObject option = new JSONObject(item);
+//				option.put(PROPERTITY_LABEL, label);
+//				option.put(PROPERTITY_VALUE, value);
 				options.add(option);
 				
 				if(!"".equals(label)){

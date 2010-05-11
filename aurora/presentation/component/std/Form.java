@@ -1,7 +1,6 @@
 package aurora.presentation.component.std;
 
 import java.io.Writer;
-import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
@@ -45,7 +44,7 @@ public class Form extends Box {
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
 		
-		String className = DEFAULT_TABLE_CLASS;
+		String className = DEFAULT_TABLE_CLASS + " layout-form";
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
 		if(!"".equals(title)) className += " " + TITLE_CLASS;
 		className += " " + cls;

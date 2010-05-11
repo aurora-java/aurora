@@ -2,10 +2,8 @@ package aurora.presentation.component.std;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
@@ -145,7 +143,6 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
-		Map map = view_context.getMap();
 		
 		/** ID属性 **/
 		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");

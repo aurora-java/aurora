@@ -24,12 +24,6 @@ import aurora.presentation.component.std.config.GridConfig;
  */
 public class Grid extends Component {
 	
-//	public static final String COLUMN_DATAINDEX = "dataindex";
-//	public static final String COLUMN_LOCK = "lock";
-//	public static final String COLUMN_HIDDEN = "hidden";
-//	public static final String COLUMN_RESIZABLE = "resizable";
-//	public static final String COLUMN_PROMPT = "prompt";
-	
 	public static final String HTML_LOCKAREA = "lockarea";
 	public static final String HTML_UNLOCKAREA = "unlockarea";
 	
@@ -46,7 +40,7 @@ public class Grid extends Component {
 	
 	private static final String COLUMN_TYPE = "type";
 	private static final String TYPE_CELL_CHECKBOX = "cellcheck";
-	private static final String TYPE_CELL_RADIO = "cellradio";
+//	private static final String TYPE_CELL_RADIO = "cellradio";
 	private static final String TYPE_ROW_CHECKBOX = "rowcheck";
 	private static final String TYPE_ROW_RADIO = "rowradio";
 	
