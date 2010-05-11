@@ -37,7 +37,7 @@ public class DefaultUpdateBuilder extends AbstractSqlBuilder {
             StringBuffer exp = new StringBuffer();
             exp.append(field.getNameForOperate());
             exp.append("=");
-            exp.append(registry.getSql(field.getUpdateSource()));
+            exp.append(mRegistry.getSql(field.getUpdateSource()));
             sc.append(exp.toString());
         }
         return sc.getContent();
@@ -49,7 +49,7 @@ public class DefaultUpdateBuilder extends AbstractSqlBuilder {
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEYWORD_WHERE));
         sql.append(" ");
-        sql.append(registry.getSql(where));
+        sql.append(mRegistry.getSql(where));
         return sql.toString();
     }
     
@@ -62,7 +62,7 @@ public class DefaultUpdateBuilder extends AbstractSqlBuilder {
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEY_UPDATE));
         sql.append(" ");
-        sql.append(registry.getSql(statement.getUpdateTarget()));
+        sql.append(mRegistry.getSql(statement.getUpdateTarget()));
         sql.append("\r\n");
         sql.append(getKeyword(IDatabaseProfile.KEY_SET)).append(" ");
         sql.append(createUpdateList(statement.getUpdateFields()));

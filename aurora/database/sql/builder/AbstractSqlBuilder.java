@@ -10,20 +10,24 @@ import aurora.database.sql.ISqlStatement;
 
 public abstract class AbstractSqlBuilder implements ISqlBuilder {
     
-    ISqlBuilderRegistry     registry;    
+    protected ISqlBuilderRegistry     mRegistry;    
 
     public abstract String createSql(ISqlStatement sqlStatement);
 
     public void setRegistry(ISqlBuilderRegistry registry){
-        this.registry = registry;
+        this.mRegistry = registry;
+    }
+    
+    public ISqlBuilderRegistry getRegistry(){
+        return this.mRegistry;
     }
     
     public IDatabaseProfile getDatabaseProfile(){        
-        return registry==null?null:registry.getDatabaseProflie();
+        return mRegistry==null?null:mRegistry.getDatabaseProflie();
     }
     
     public String getKeyword(String key){
-        return registry==null?null:registry.getDatabaseProflie().getKeyword(key);
+        return mRegistry==null?null:mRegistry.getDatabaseProflie().getKeyword(key);
     }
 
 }

@@ -55,7 +55,7 @@ public class DefaultInsertBuilder extends AbstractSqlBuilder {
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEY_INSERT));
         sql.append(" into ");
-        sql.append(registry.getSql(statement.getInsertTable()));
+        sql.append(mRegistry.getSql(statement.getInsertTable()));
         sql.append(" ( ");
         
         StringBuffer fields = new StringBuffer(), values = new StringBuffer();
@@ -67,7 +67,7 @@ public class DefaultInsertBuilder extends AbstractSqlBuilder {
                values.append(",");
             }
             fields.append(f.getFieldName());
-            values.append(registry.getSql(f.getUpdateSource()));
+            values.append(mRegistry.getSql(f.getUpdateSource()));
             i++;
         }
         

@@ -35,7 +35,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
         else if( sqlStatement instanceof SelectField )
             return createSql((SelectField)sqlStatement);
         else if( sqlStatement instanceof OrderByField )
-            return ((OrderByField)sqlStatement).toSql(registry);
+            return ((OrderByField)sqlStatement).toSql(mRegistry);
         else
             return null;
     }
@@ -54,7 +54,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
             Iterator it = stmt.getFromListForRead().iterator();
             while(it.hasNext()){
                 SelectSource source = (SelectSource)it.next();
-                list.append(registry.getSql(source));
+                list.append(mRegistry.getSql(source));
             }
             result.append(list.getContent());
         }
@@ -69,7 +69,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
                 return EMPTY_WHERE;
             else{
                 buf.append(getKeyword(IDatabaseProfile.KEYWORD_WHERE)).append(" ");
-                buf.append(registry.getSql(where));
+                buf.append(mRegistry.getSql(where));
                 return buf.toString();
             }
         }else{
@@ -81,7 +81,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
                 if(where.size()>0) all.addCondition(where);
                 if(join_conditions.size()>0) all.addCondition(join_conditions);
                 buf.append(getKeyword(IDatabaseProfile.KEYWORD_WHERE)).append(" ");
-                buf.append(registry.getSql(all));
+                buf.append(mRegistry.getSql(all));
                 return buf.toString();
             }
         }
@@ -95,7 +95,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
         StringConcatenater flds = new StringConcatenater();
         while(it.hasNext()){
             ISqlStatement field = (ISqlStatement)it.next();
-            String field_name = registry.getSql(field);
+            String field_name = mRegistry.getSql(field);
             if(field instanceof IAliasSettable){
                 String alias = ((IAliasSettable)field).getAlias(); 
                 if(alias!=null)
@@ -130,7 +130,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
             Iterator it = order_by.iterator();
             while(it.hasNext()){
                 OrderByField field = (OrderByField)it.next();
-                list.append(field.toSql(registry));
+                list.append(field.toSql(mRegistry));
             }
             String content = list.getContent();
             if(content.length()==0)

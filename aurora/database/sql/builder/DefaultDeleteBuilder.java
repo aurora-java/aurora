@@ -20,7 +20,7 @@ public class DefaultDeleteBuilder extends AbstractSqlBuilder {
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEYWORD_WHERE));
         sql.append(" ");
-        sql.append(registry.getSql(where));
+        sql.append(mRegistry.getSql(where));
         return sql.toString();
     }
     
@@ -30,7 +30,7 @@ public class DefaultDeleteBuilder extends AbstractSqlBuilder {
             target.setAlias("t");
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEY_DELETE)).append(" ").append(IDatabaseProfile.KEY_FROM).append(" ");
-        sql.append(registry.getSql(statement.getUpdateTarget())).append(" ");
+        sql.append(mRegistry.getSql(statement.getUpdateTarget())).append(" ");
         sql.append("\r\n");
         sql.append(createWherePart(statement));
         return sql.toString();

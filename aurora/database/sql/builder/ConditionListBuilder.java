@@ -28,7 +28,7 @@ public class ConditionListBuilder extends AbstractSqlBuilder {
         if(use_parentheses) use_parentheses = ((ConditionList)exp).size()>1;
         if(use_parentheses)
             result.append(" (");
-        result.append(registry.getSql(exp));
+        result.append(mRegistry.getSql(exp));
         if(use_parentheses)
             result.append(") ");
         return result.toString();
@@ -46,7 +46,7 @@ public class ConditionListBuilder extends AbstractSqlBuilder {
         StringBuffer result = new StringBuffer();
         result.append(clause.getType());
         result.append(" (");
-        result.append(registry.getSql(clause.getQuery()));
+        result.append(mRegistry.getSql(clause.getQuery()));
         result.append(") ");
         return result.toString();
     }
@@ -54,12 +54,12 @@ public class ConditionListBuilder extends AbstractSqlBuilder {
     public String createSql(CompareExpression exp){
             if(exp.getLeftField()==null) return "";
             StringBuffer result = new StringBuffer();
-            result.append(registry.getSql(exp.getLeftField()));
+            result.append(mRegistry.getSql(exp.getLeftField()));
             result.append(' ');
             result.append(CompareExpression.getOperatorText( exp.getOperator() ));
             if(!CompareExpression.isSingleOperator(exp.getOperator())){
                 result.append(' ');
-                result.append(registry.getSql(exp.getRightField()));
+                result.append(mRegistry.getSql(exp.getRightField()));
             }        
             return result.toString();
     }
