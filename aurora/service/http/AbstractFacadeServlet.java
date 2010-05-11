@@ -20,7 +20,7 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
-import aurora.application.Events;
+import aurora.events.E_DetectProcedure;
 import aurora.service.IService;
 import aurora.service.ServiceController;
 import aurora.transaction.ITransactionService;
@@ -54,7 +54,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
     {
         String procedure_name = null;
         Configuration config = service.getConfig();
-        config.fireEvent(Events.EVT_DETECT_PROCEDURE, new Object[]{ service } );
+        config.fireEvent(E_DetectProcedure.EVT_DETECT_PROCEDURE, new Object[]{ service } );
         ServiceController controller = ServiceController.createServiceController(service.getServiceContext().getObjectContext());
         procedure_name = controller.getProcedureName();
         if(procedure_name==null);
