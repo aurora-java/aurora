@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
@@ -49,6 +50,8 @@ public class RawSqlService implements IConfigurable
     String              mType;
     // Configuration to hold default feature instances
     Configuration       mConfiguration;
+    // type of database
+    String              mDatabaseType;
     // trace flag
     boolean             mTrace;        
     ResultSetLoader     mRsLoader = new ResultSetLoader();
@@ -176,7 +179,7 @@ public class RawSqlService implements IConfigurable
         //if(!getTrace()) return;
         ILogger logger = LoggingContext.getLogger(runner.getSqlServiceContext().getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
         DBUtil.printTraceInfo( type, logger, runner);
-        logger.log("Execution time:{0}", new Object[]{new Long(exec_time)} );
+        logger.log(Level.CONFIG, "Execution time:{0}", new Object[]{new Long(exec_time)} );
     }
     
     SqlRunner createRunner( StringBuffer sql, SqlServiceContext context ){
@@ -296,5 +299,13 @@ public class RawSqlService implements IConfigurable
 
     public void setResultSetLoader(ResultSetLoader rsLoader) {
         mRsLoader = rsLoader;
+    }
+
+    public String getDatabaseType() {
+        return mDatabaseType;
+    }
+
+    public void setDatabaseType(String databaseType) {
+        this.mDatabaseType = databaseType;
     }
 }

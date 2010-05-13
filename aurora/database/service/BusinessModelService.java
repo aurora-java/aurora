@@ -18,6 +18,7 @@ import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
 import aurora.database.SqlRunner;
+import aurora.events.E_PrepareBusinessModel;
 import aurora.service.ServiceContext;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.ParameterParser;
@@ -46,11 +47,14 @@ public class BusinessModelService {
     
     Configuration                       mOldConfig = null;
     
-    protected BusinessModelService(DatabaseServiceFactory factory, Configuration config, BusinessModel model, CompositeMap context_map ) {
+    protected BusinessModelService(DatabaseServiceFactory factory, Configuration config, BusinessModel model, CompositeMap context_map ) 
+        throws Exception
+    {
         this.config = config;
         this.model = model;
         this.serviceFactory = factory;
         setContextMap(context_map);
+        config.fireEvent(E_PrepareBusinessModel.EVENT_NAME, new Object[]{model} );
     }
  
     protected void prepareForRun( String proc_name )
