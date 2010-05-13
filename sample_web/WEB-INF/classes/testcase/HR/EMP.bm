@@ -1,6 +1,6 @@
 <model baseTable="EMP" alias="e" xmlns="http://www.aurora-framework.org/schema/bm">
 	<fields>
-		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" insertExpression="EMP_S.nextval"/>
+		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" />
 		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>
 		<field name="job" datatype="java.lang.String" databaseType="BIGINT"/>
 		<field name="mgr" datatype="java.lang.Long" databaseType="BIGINT"/>
@@ -8,8 +8,10 @@
 		<field name="deptno" datatype="java.lang.Long" databaseType="BIGINT"/>
 		<field name="sal" datatype="java.lang.Long" databaseType="FLOAT"/>
 		<field name="comm" datatype="java.lang.Long" databaseType="FLOAT"/>
-		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE" updateExpression="sysdate"/>
-		<field name="NOW_DATE" datatype="lava.sql.Date" expression="sysdate" databaseType="DATE" forInsert="false"/>
+<!--
+		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE" insertExpression="sysdate" updateExpression="sysdate"/>
+-->		
+		<field name="NOW_DATE" datatype="java.sql.Date" expression="sysdate" databaseType="DATE" forInsert="false"/>
 		<ref-field name="dname" sourceField="dname" sourceModel="testcase.HR.DEPT"/>
 		<ref-field name="mgr_name" sourceField="ename" relationName="MGR"/>
 	</fields>
@@ -30,11 +32,8 @@
 		<query-field field="ename" queryOperator="like" matchMode="full"/>
 		<query-field field="deptno" queryOperator="="/>
 		<query-field field="mgr" queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)"/>
-		<query-field field="creation_date" queryOperator=">="/>
-
 		<query-field name="hiredate_from" dataType="java.sql.Date" queryExpression="e.hiredate >= ${@hiredate_from}" />
 		<query-field name="hiredate_to" dataType="java.sql.Date" queryExpression="e.hiredate &lt;= ${@hiredate_to}" />		
-		
 	</query-fields>
 	<data-filters>
 		<data-filter name="MustInDepartment" enforceActions="query" expression="e.deptno is not null"/>
@@ -44,4 +43,8 @@
 		<field name="DNAME"/>
 		<field name="hiredate" order="desc"/>
 	</order-by>
+	<features>
+		<sequence-pk xmlns="aurora.database.local.oracle" />
+		<standard-who xmlns="aurora.database.features" />
+	</features>
 </model>
