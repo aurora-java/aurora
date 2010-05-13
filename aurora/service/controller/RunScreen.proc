@@ -13,4 +13,5 @@
 			<action Name="DoDispatch" />
 		</case>
 	</switch>
+	<action Name="ServiceEnd" />
 </procedure>

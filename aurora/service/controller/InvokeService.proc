@@ -7,6 +7,7 @@
 	<action name="ValidateInput"  input="service" />
 	<action name="InvokeService" input="service" />
 	<action name="CreateSuccessResponse" input="service"/>
+	<action Name="ServiceEnd" />
 	<exception-handles>
 		<catch Exception="*">
 			<action name="HandleException" />		
