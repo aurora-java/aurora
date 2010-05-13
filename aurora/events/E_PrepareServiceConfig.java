@@ -12,7 +12,7 @@ import aurora.service.IService;
  */
 public interface E_PrepareServiceConfig {
     
-    public static final String EVT_PREPARE_SERVICE_CONFIG = "PrepareServiceConfig";
+    public static final String EVENT_NAME = "PrepareServiceConfig";
     
-    public int onPrepareServiceConfig( IService service );
+    public int onPrepareServiceConfig( IService service ) throws Exception;
 }

@@ -12,8 +12,8 @@ import aurora.service.IService;
 
 public interface E_DetectProcedure {
     
-    public static final String EVT_DETECT_PROCEDURE = "DetectProcedure";
+    public static final String EVENT_NAME = "DetectProcedure";
     
-    public int onDetectProcedure( IService service );
+    public int onDetectProcedure( IService service ) throws Exception;
 
 }
