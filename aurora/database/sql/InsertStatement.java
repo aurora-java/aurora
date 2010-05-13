@@ -15,6 +15,11 @@ public class InsertStatement extends AbstractCompsiteStatement {
     ISqlStatement       insertTable;
     SelectStatement     selectStatement;    
     
+    public InsertStatement( InsertStatement another ){
+        super(Constant.TYPE_INSERT);
+        copy(another);
+    }
+    
     public InsertStatement(  String table_name ){
         super(Constant.TYPE_INSERT);
         insertFields = new LinkedList();
@@ -41,6 +46,13 @@ public class InsertStatement extends AbstractCompsiteStatement {
 
     public void setInsertTable(ISqlStatement insertTable) {
         this.insertTable = insertTable;
+    }
+    
+    public void copy(InsertStatement another){
+        insertFields = new LinkedList();
+        insertFields.addAll(another.insertFields);
+        insertTable = another.insertTable;
+        selectStatement = another.selectStatement;
     }
     
 
