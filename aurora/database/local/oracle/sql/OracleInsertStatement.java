@@ -4,11 +4,16 @@
  */
 package aurora.database.local.oracle.sql;
 
+import aurora.database.Constant;
 import aurora.database.sql.InsertStatement;
 
 public class OracleInsertStatement extends InsertStatement {
     
     ReturningIntoStatement      mReturningInto;
+    
+    public OracleInsertStatement( InsertStatement another ){
+        super(another);
+    }
 
     public OracleInsertStatement(String table_name) {
         super(table_name);
@@ -19,7 +24,7 @@ public class OracleInsertStatement extends InsertStatement {
     }
     
     public void setReturningInto( ReturningIntoStatement stmt ){
-        mReturningInto = stmt;
+        mReturningInto = stmt;        
     }
 
 }

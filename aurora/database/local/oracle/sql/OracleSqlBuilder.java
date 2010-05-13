@@ -45,10 +45,13 @@ public class OracleSqlBuilder extends AbstractSqlBuilder {
     public String createSql( OracleInsertStatement stmt ){        
         StringBuffer sql = new StringBuffer(mInsertBuilder.createSql((InsertStatement)stmt));
         ReturningIntoStatement rt_into = stmt.getReturningInto();
-        if(rt_into!=null){
-            sql.append(" ");
-            sql.append(createSql(rt_into));
-        }
+        if(rt_into!=null)
+            if(rt_into.getFields().size()>0)
+                {
+                    sql.append(" ");
+                    sql.append(createSql(rt_into)).append("; END;");
+                    sql.insert(0, "BEGIN ");
+                }
         return sql.toString();
     }
 
