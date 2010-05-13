@@ -49,7 +49,7 @@ public class ServiceInstance implements IService {
             mConfig.clear();
         if (mRootConfig != null)
             try {
-                mRootConfig.fireEvent(E_PrepareServiceConfig.EVT_PREPARE_SERVICE_CONFIG, mEventArgs);
+                mRootConfig.fireEvent(E_PrepareServiceConfig.EVENT_NAME, mEventArgs);
             } catch (Exception ex) {
                 throw new RuntimeException(
                         "Error in event PopulateServiceConfig", ex);
