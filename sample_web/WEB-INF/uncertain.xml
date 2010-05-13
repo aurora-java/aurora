@@ -1,19 +1,26 @@
 <?xml version="1.0"?>
-<uncertain-engine logPath="d:/logs" defaultLogLevel="FINEST" name="aurora">
+<uncertain-engine logPath="d:/logs" defaultLogLevel="FINE" name="aurora">
 	<class-registry>
 		<package-mapping packageName="aurora.application.features"/>
 		<package-mapping packageName="aurora.service"/>
 		<package-mapping packageName="aurora.presentation"/>
 		<package-mapping packageName="aurora.database.service"/>
 		<package-mapping packageName="aurora.database.actions"/>
+		<package-mapping packageName="aurora.database.datasource"/>
+		<package-mapping packageName="aurora.database.features"/>
 		<package-mapping packageName="aurora.service.exception"/>
 		<package-mapping packageName="aurora.plugin.xapool"/>
-		<package-mapping packageName="aurora.database.datasource"/>
 		<package-mapping packageName="aurora.transaction"/>
 	<!--
 		<package-mapping packageName="aurora.plugin.c3p0"/>
 	-->
 		<feature-attach elementName="view" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.ScreenRenderer"/>
 		<feature-attach elementName="init-procedure" nameSpace="http://www.aurora-framework.org/application" featureClass="aurora.application.features.InitProcedureInvoker"/>
+
+		<package-mapping packageName="aurora.database.local.oracle" />
+		<class-mapping elementName="database-factory" className="aurora.database.profile.DatabaseFactory" nameSpace="http://www.aurora-framework.org/schema/database"  />
+		<class-mapping elementName="database-profile" className="aurora.database.profile.DatabaseProfile" nameSpace="http://www.aurora-framework.org/schema/database"  />
+		<class-mapping elementName="sql-builder-mapping" className="aurora.database.profile.SqlBuilderMapping" nameSpace="http://www.aurora-framework.org/schema/database"  />
+		<class-mapping elementName="statement-mapping" className="aurora.database.profile.StatementMapping" nameSpace="http://www.aurora-framework.org/schema/database"  />		
 	</class-registry>	
 </uncertain-engine>
