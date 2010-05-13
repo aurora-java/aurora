@@ -9,10 +9,10 @@ import aurora.bm.BusinessModel;
 import aurora.bm.DataFilter;
 import aurora.bm.Field;
 import aurora.bm.QueryField;
-import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseFactory;
+import aurora.database.profile.IDatabaseProfile;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.RawSqlService;
-import aurora.database.service.ServiceOption;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IWithWhereClause;
@@ -24,10 +24,10 @@ public class WhereClauseCreator {
     
     public static final String WHERE_CLAUSE = "#WHERE_CLAUSE#";
     
-    ISqlBuilderRegistry mRegistry;
+    IDatabaseFactory mFactory;
     
-    public WhereClauseCreator(ISqlBuilderRegistry r){
-        mRegistry = r;
+    public WhereClauseCreator(IDatabaseFactory  fact){
+        mFactory = fact;
     }
 
     static boolean isInAction(String action, String[] actions){
@@ -136,7 +136,11 @@ public class WhereClauseCreator {
         ConditionList where = select.getWhereClause();
         addDataFilterConditions(bmsc.getAction(), where, service.asBusinessModel().getDataFilters());
         addQueryConditions( bmsc.getCurrentParameter(), select, service.asBusinessModel()  );
-        String where_clause = mRegistry.getSql(where);
+        String db_type = service.getDatabaseType();
+        IDatabaseProfile profile = db_type==null?mFactory.getDefaultDatabaseProfile():mFactory.getDatabaseProfile(db_type);
+        if(profile==null)
+            throw new IllegalArgumentException("Unkown database type:"+db_type);
+        String where_clause = profile.getSqlBuilderRegistry().getSql(where);
         if(where_clause==null)
             where_clause = "";
         else{
