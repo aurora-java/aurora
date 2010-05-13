@@ -26,12 +26,16 @@ public interface IDatabaseProfile {
     public static final String KEY_FROM =            "FROM";    
     
     public static final String  KEY_USE_JOIN_KEYWORD = "use_join_keyword";
+    public static final String KEY_CURRENT_TIME = "current_time";
+    public static final String KEY_CURRENT_DATE = "current_date";
     
     //public void setProperty( String name, String value);
     
     public CompositeMap getProperties();
     
-    public String   getProperty( String name );
+    public Object   getProperty( String name );
+    
+    public void setProperty( String name, Object value );
     
     public String   getDatabaseName();
     

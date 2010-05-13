@@ -30,8 +30,12 @@ public interface IDatabaseFactory {
     /** get all registered database profiles  */
     public IDatabaseProfile[]   getDatabases();
     
-    //public String getDefaultDatabase();
-    
+    /** get default database profile */
     public IDatabaseProfile getDefaultDatabaseProfile();
+    
+    /** get/set global property */
+    public Object getProperty( String key );
+    
+    public void setProperty( String key, Object value );
 
 }

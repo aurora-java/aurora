@@ -13,7 +13,8 @@ import uncertain.ocm.IObjectCreator;
 public class DatabaseProfile implements IDatabaseProfile {
     
     String                  mDatabaseName;
-    CompositeMap            mProperties = new CompositeMap();
+    CompositeMap            mProperties = new CompositeMap("properties");
+    CompositeMap            mKeywords = new CompositeMap("keywords");
     SqlBuilderRegistry      mSqlBuilderRegistry;
     IObjectCreator          mObjectCreator;
     
@@ -44,15 +45,19 @@ public class DatabaseProfile implements IDatabaseProfile {
     
 
     public String getKeyword(String keyword_code) {
-        return keyword_code;
+        String keyword = mKeywords.getString(keyword_code);
+        if(keyword!=null)
+            return keyword;
+        else
+            return keyword_code;
     }
 
-    public String getProperty(String name) {        
+    public Object getProperty(String name) {        
         Object value = mProperties.get(name);
         return value==null?null:value.toString();
     }
 
-    public void setProperty(String name, String value) {
+    public void setProperty(String name, Object value) {
         mProperties.put(name, value);
     }
 
@@ -101,6 +106,10 @@ public class DatabaseProfile implements IDatabaseProfile {
     public void addProperties( CompositeMap props ){
         mProperties.putAll(props);
     }
+    
+    public void addKeywords( CompositeMap words ){
+        mKeywords.putAll(words);
+    }    
     
     public CompositeMap getProperties(){
         return mProperties;

@@ -9,14 +9,29 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
+import uncertain.event.ParticipantManager;
+import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
+import uncertain.ocm.IObjectRegistry;
+import aurora.database.service.DatabaseServiceFactory;
 
 public class DatabaseFactory implements IDatabaseFactory {
     SqlBuilderRegistry  mDefaultSqlBuilderRegistry;
     String              mDefaultDatabaseName;
     // name -> IDatabaseProfile
     Map                 mDatabaseProfileMap = new HashMap();
-    ClassRegistry       mClassRegistry;    
+    ClassRegistry       mClassRegistry;
+    ParticipantManager  mParticipantManager;
+    CompositeMap        mProperties = new CompositeMap("properties");
+    
+    UncertainEngine     mEngine;
+    ILogger             mLogger;
+    
+    public DatabaseFactory( UncertainEngine engine ){
+        mEngine = engine;
+    }
     
     public DatabaseFactory(){
         mDefaultSqlBuilderRegistry = new SqlBuilderRegistry();
@@ -50,7 +65,10 @@ public class DatabaseFactory implements IDatabaseFactory {
         if(reg!=null)
             reg.setParent(mDefaultSqlBuilderRegistry);
     }
-
+    
+    public void addProperties( CompositeMap propers ){
+        mProperties.putAll(propers);
+    }
     
     public String getDefaultDatabase(){
         return mDefaultDatabaseName;
@@ -68,6 +86,14 @@ public class DatabaseFactory implements IDatabaseFactory {
         return mClassRegistry;
     }
     
+    public void addParticipantManager( ParticipantManager pm ){
+        mParticipantManager = pm;
+    }
+    
+    public ParticipantManager getParticipantManager(){
+        return mParticipantManager;
+    }
+    
     public IDatabaseProfile getDefaultDatabaseProfile(){
         if(mDefaultDatabaseName==null)
             throw new IllegalArgumentException("default database name not set");
@@ -75,6 +101,28 @@ public class DatabaseFactory implements IDatabaseFactory {
         if(prof==null)
             throw new IllegalArgumentException("specified default database name "+mDefaultDatabaseName+" not found");
         return prof;
+    }
+    
+    public Object getProperty( String key ){
+        return mProperties.get(key);
+    }
+    
+    public void setProperty( String key, Object value ){
+        mProperties.put(key, value);    
+    }
+    
+    public void onInitialize(){
+        mLogger = mEngine.getLogger("aurora.database");
+        mLogger.info("Constructing database factory");
+        IObjectRegistry reg = mEngine.getObjectRegistry();
+        reg.registerInstanceOnce(IDatabaseFactory.class, this);
+        
+        DatabaseServiceFactory dbsf = (DatabaseServiceFactory)reg.getInstanceOfType(DatabaseServiceFactory.class);
+        if(dbsf==null){
+            mLogger.warning("No DatabaseServiceFactory instance created");
+        }else{
+            dbsf.setDatabaseFactory(this);
+        }
     }
 
 }
