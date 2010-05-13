@@ -54,7 +54,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
     {
         String procedure_name = null;
         Configuration config = service.getConfig();
-        config.fireEvent(E_DetectProcedure.EVT_DETECT_PROCEDURE, new Object[]{ service } );
+        config.fireEvent(E_DetectProcedure.EVENT_NAME, new Object[]{ service } );
         ServiceController controller = ServiceController.createServiceController(service.getServiceContext().getObjectContext());
         procedure_name = controller.getProcedureName();
         if(procedure_name==null);
