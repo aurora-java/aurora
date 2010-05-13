@@ -31,8 +31,8 @@ public class AutoSqlInvokeServlet extends AbstractAutoServiceServlet {
         svc.getController().setProcedureName(
                 ControllerProcedures.INVOKE_SERVICE);
         // Get ServiceConfig
-        CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
-        BaseServiceConfig svcConfig = BaseServiceConfig.createServiceConfig(service_config);
+        //CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
+        //BaseServiceConfig svcConfig = BaseServiceConfig.createServiceConfig(service_config);
                 
         // load sql service
         RawSqlService sqlSvc = super.mDatabaseServiceFactory.getSqlService(object_name);
