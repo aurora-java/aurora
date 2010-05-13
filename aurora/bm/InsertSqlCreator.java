@@ -3,19 +3,15 @@
  */
 package aurora.bm;
 
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
-import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.InsertStatement;
 
 public class InsertSqlCreator extends AbstractSqlCreator {
     
-    InsertStatement statement;
-    
-    public InsertSqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
-        super(fact,reg);
+    public InsertSqlCreator(IModelFactory model_fact, IDatabaseFactory db_fact){
+        super(model_fact, db_fact);
     }    
     
     public InsertStatement createInsertStatement(BusinessModel model){
@@ -30,15 +26,18 @@ public class InsertSqlCreator extends AbstractSqlCreator {
     }
     
     public void onCreateInsertStatement(BusinessModel model, BusinessModelServiceContext context){
-        statement = createInsertStatement(model);
+        InsertStatement statement = createInsertStatement(model);
         context.setStatement(statement);
     }
     
-    public void onCreateInsertSql(ISqlStatement s, BusinessModelServiceContext context){  
-        StringBuffer sql = new StringBuffer(registry.getSql(s));
+    public void onCreateInsertSql(ISqlStatement s, BusinessModelServiceContext context){
+        doCreateSql("insert", s, context);
+        /*
+        StringBuffer sql = createSql(s,context);
         context.setSqlString(sql);
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), "aurora.bm");
         logger.config("insert sql: "+sql);
+        */
     }   
     
     public void onExecuteInsert( StringBuffer sql, BusinessModelServiceContext bmsc)

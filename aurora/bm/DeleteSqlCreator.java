@@ -4,21 +4,17 @@
  */
 package aurora.bm;
 
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
-import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.DeleteStatement;
 import aurora.database.sql.ISqlStatement;
-import aurora.database.sql.InsertStatement;
 import aurora.database.sql.RawSqlExpression;
-import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
 
 public class DeleteSqlCreator extends AbstractSqlCreator {
     
-    DeleteStatement     statement;
+    //DeleteStatement     statement;
     
     public void addPrimaryKeyQuery( BusinessModel model, DeleteStatement stmt){
         ConditionList where = stmt.getWhereClause();
@@ -29,9 +25,9 @@ public class DeleteSqlCreator extends AbstractSqlCreator {
         }
     }
 
-    public DeleteSqlCreator(IModelFactory fact, ISqlBuilderRegistry reg) {
-        super(fact, reg);
-    }
+    public DeleteSqlCreator(IModelFactory model_fact, IDatabaseFactory db_fact){
+        super(model_fact, db_fact);
+    }    
 
     public DeleteStatement createDeleteStatement(BusinessModel model){
         DeleteStatement stmt = new DeleteStatement(model.getBaseTable());
@@ -39,7 +35,7 @@ public class DeleteSqlCreator extends AbstractSqlCreator {
     }
     
     public void onCreateDeleteStatement(BusinessModel model, BusinessModelServiceContext context){
-        statement = createDeleteStatement(model);
+        DeleteStatement     statement = createDeleteStatement(model);
         String type = context.getObjectContext().getString("DeleteType", "PK");
         if("PK".equals(type)){
             addPrimaryKeyQuery( model, statement );
@@ -47,12 +43,17 @@ public class DeleteSqlCreator extends AbstractSqlCreator {
         context.setStatement(statement);
     }
     
-    public void onCreateDeleteSql(ISqlStatement s, BusinessModelServiceContext context){  
-        StringBuffer sql = new StringBuffer(registry.getSql(s));
+    
+    public void onCreateDeleteSql(ISqlStatement s, BusinessModelServiceContext context){
+        doCreateSql("delete", s, context);
+        /*
+        StringBuffer sql = createSql(s,context);
         context.setSqlString(sql);
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), "aurora.bm");
         logger.config("delete sql: "+sql);
+        */
     }   
+    
     
     public void onExecuteDelete( StringBuffer sql, BusinessModelServiceContext bmsc)
         throws Exception

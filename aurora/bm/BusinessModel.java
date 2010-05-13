@@ -5,18 +5,19 @@ package aurora.bm;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import aurora.service.validation.IParameter;
-import aurora.service.validation.IParameterIterator;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.datatype.DataType;
 import uncertain.datatype.DataTypeRegistry;
+import aurora.application.Namespace;
+import aurora.database.profile.IDatabaseFactory;
+import aurora.database.profile.IDatabaseProfile;
+import aurora.service.validation.IParameter;
+import aurora.service.validation.IParameterIterator;
 
 public class BusinessModel extends DynamicObject {
 
@@ -33,16 +34,13 @@ public class BusinessModel extends DynamicObject {
     public static final String KEY_BASE_TABLE = "basetable";
     
     public static final String KEY_NAME = "name";
+    
+    public static final String KEY_DATABASE_TYPE = "databasetype";
 
+    static  String KEY_DATA_SOURCE_NAME="datasourcename";
+    
 	static final Field[] EMPTY_FIELDS = new Field[0];
-	static 	String KEY_DATA_SOURCE_NAME="datasourcename";
-    public String getDataSourceName() {
-		return getString(KEY_DATA_SOURCE_NAME);
-	}
 
-	public void setDataSourceName(String dataSourceName) {
-		putString(KEY_DATA_SOURCE_NAME, dataSourceName);
-	}
     
     public static BusinessModel getInstance( CompositeMap context ){
         BusinessModel model = new BusinessModel();
@@ -187,6 +185,21 @@ public class BusinessModel extends DynamicObject {
         putString(KEY_ALIAS, alias);
     }
     
+    public String getDatabaseType(){
+        return getString(KEY_DATABASE_TYPE);
+    }
+    
+    public void setDatabaseType(String type){
+        putString(KEY_DATABASE_TYPE, type);
+    }    
+
+    public String getDataSourceName() {
+        return getString(KEY_DATA_SOURCE_NAME);
+    }
+
+    public void setDataSourceName(String dataSourceName) {
+        putString(KEY_DATA_SOURCE_NAME, dataSourceName);
+    }    
     /**
      * Get all query fields
      * @return query field items as CompositeMap 
@@ -214,7 +227,24 @@ public class BusinessModel extends DynamicObject {
     public Field getField( String name ){
         if(fieldMap==null) makeReady();
         return (Field)fieldMap.get(name.toLowerCase());
-    }   
+    }
+    
+    protected CompositeMap getChildSectionNotNull( String section_name ){
+        CompositeMap fields = object_context.getChild(section_name);
+        if(fields==null){
+            fields = object_context.createChild(section_name);
+            fields.setNameSpaceURI(Namespace.AURORA_BUSINESS_MODEL_NAMESPACE);
+        }
+        return fields;
+    }
+    
+    /**
+     * Do remember to call makeReady() after modify model
+     * @param f
+     */
+    public void addField( Field f ){
+        getChildSectionNotNull(SECTION_FIELDS).addChild(f.getObjectContext());
+    }
     
     /**
      * Get types of each field in an array
@@ -382,6 +412,18 @@ public class BusinessModel extends DynamicObject {
      */
     public void setModelFactory(ModelFactory modelFactory) {
         this.modelFactory = modelFactory;
+    }
+    
+    public IDatabaseProfile getDatabaseProfile( IDatabaseFactory fact ){
+        String db_type = getDatabaseType();
+        if(db_type==null)
+            return fact.getDefaultDatabaseProfile();
+        else{
+            IDatabaseProfile profile = fact.getDatabaseProfile(db_type);
+            if(profile==null)
+                throw new ConfigurationError("Unknown database type:"+db_type);
+            return profile;
+        }
     }
     
     public void extendFrom( BusinessModel another ){

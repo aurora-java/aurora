@@ -8,6 +8,7 @@ import java.io.IOException;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
+import aurora.application.Namespace;
 import aurora.service.validation.IParameter;
 
 public class Field extends DynamicObject implements IParameter {
@@ -46,6 +47,16 @@ public class Field extends DynamicObject implements IParameter {
         return field;
     }
     
+    public static Field createField( String name ){
+        CompositeMap m = new CompositeMap();
+        m.setName("field");
+        m.setNameSpaceURI(Namespace.AURORA_BUSINESS_MODEL_NAMESPACE);
+        Field field = new Field();
+        field.initialize(m);
+        field.setName(name);
+        return field;
+    }
+    
     public static String defaultParamExpression( String name ){
         return "${" + name + "}";
     }
@@ -68,6 +79,10 @@ public class Field extends DynamicObject implements IParameter {
     
     public void setParameterPath( String path ){
         putString( KEY_PARAMETER_PATH, path );
+    }
+    
+    public String getParameterPath(){
+        return getString(KEY_PARAMETER_PATH, "@"+getName() );
     }
     
     public String getPrompt(){
@@ -330,6 +345,23 @@ public class Field extends DynamicObject implements IParameter {
      */
     public void setOwner(BusinessModel owner) {
         this.owner = owner;
+    }
+    
+    public void setForInsert( boolean b ){
+        putBoolean(KEY_FOR_INSERT, b);
+    }
+    
+    public void setForUpdate( boolean b){
+        putBoolean(KEY_FOR_UPDATE, b);
+    }
+    
+    public void setForQuery( boolean b){
+        putBoolean(KEY_FOR_QUERY, b);
+    }
+    
+    public Field createCopy(){
+        CompositeMap m = (CompositeMap)object_context.clone();
+        return getInstance(m);
     }
 
 }

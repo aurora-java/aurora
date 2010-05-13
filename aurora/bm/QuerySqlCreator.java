@@ -15,9 +15,8 @@ import aurora.database.IResultSetConsumer;
 import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
-import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
-import aurora.database.service.ServiceOption;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.Join;
 import aurora.database.sql.SelectField;
@@ -26,9 +25,9 @@ import aurora.database.sql.SelectStatement;
 
 public class QuerySqlCreator extends AbstractSqlCreator {
     
-    public QuerySqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
-        super(fact,reg);
-    }
+    public QuerySqlCreator(IModelFactory model_fact, IDatabaseFactory db_fact){
+        super(model_fact, db_fact);
+    }    
    
     public SelectField getSelectField( SelectSource source, String field_name, BusinessModel model ){
         Field f = model.getField(field_name);
@@ -111,10 +110,13 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         context.setStatement(statement);
     }
     
-    public void onCreateQuerySql(BusinessModelServiceContext context){
+    public void onCreateQuerySql(ISqlStatement s, BusinessModelServiceContext context){
+        /*
         ISqlStatement s = context.getStatement();
         StringBuffer sql = new StringBuffer(registry.getSql(s));
         context.setSqlString(sql);
+        */
+        doCreateSql("select", s, context);
     }
     
     public void onExecuteQuery(BusinessModelServiceContext bmsc)

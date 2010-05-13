@@ -3,12 +3,8 @@
  */
 package aurora.bm;
 
-import uncertain.composite.CompositeMap;
-import aurora.database.ParsedSql;
-import aurora.database.SqlRunner;
-import aurora.database.profile.ISqlBuilderRegistry;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
-import aurora.database.service.SqlServiceContext;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.RawSqlExpression;
@@ -16,8 +12,6 @@ import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
 
 public class UpdateSqlCreator extends AbstractSqlCreator {
-    
-    UpdateStatement statement;
     
     /*
     public static String getUpdateSource( Field f ){
@@ -27,8 +21,8 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
     }
     */
     
-    public UpdateSqlCreator(IModelFactory fact, ISqlBuilderRegistry reg){
-        super(fact,reg);
+    public UpdateSqlCreator(IModelFactory model_fact, IDatabaseFactory db_fact){
+        super(model_fact, db_fact);
     }    
     
     public UpdateStatement createUpdateStatement(BusinessModel model){
@@ -52,7 +46,7 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
     }
     
     public void onCreateUpdateStatement(BusinessModel model, BusinessModelServiceContext context){
-        statement = createUpdateStatement(model);
+        UpdateStatement statement = createUpdateStatement(model);
         String type = context.getObjectContext().getString("UpdateType", "PK");
         if("PK".equals(type)){
             addPrimaryKeyQuery( model, statement );
@@ -61,8 +55,13 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
     }
     
     public void onCreateUpdateSql(ISqlStatement s, BusinessModelServiceContext context){  
-        StringBuffer sql = new StringBuffer(registry.getSql(s));
+        doCreateSql("update", s, context);
+        /*
+        StringBuffer sql = createSql(s,context);
         context.setSqlString(sql);
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), "aurora.bm");
+        logger.config("delete sql: "+sql);
+        */        
     }   
     
     public void onExecuteUpdate( StringBuffer sql, BusinessModelServiceContext bmsc)
