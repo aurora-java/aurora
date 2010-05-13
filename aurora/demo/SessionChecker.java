@@ -7,47 +7,32 @@ package aurora.demo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import uncertain.composite.CompositeMap;
-import uncertain.composite.TextParser;
 import uncertain.ocm.ISingleton;
-import uncertain.proc.CheckDispatch;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class SessionChecker implements ISingleton {
-
-	private String url;
-	private String value;
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public void onCheckSession(CheckDispatch checkcookie, CompositeMap context)
-			throws Exception {
-		// String s =
-		// context.getObjectContext().getObject(checkcookie.getField()).toString();
-		// checkcookie.setField(context.getObjectContext().getObject(checkcookie.getField()).toString());
-		if (context.getObject(checkcookie.getField()).toString().equals(
-				checkcookie.getValue().toString())) {
-			HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
-					.getInstance(context);
-			svc.getResponse().sendRedirect(checkcookie.getDispatchUrl());
-		}
-		
-	}
+    
+    public static final String USER_ID = "user_id";
+    static int sequence = 1000;
+    
+    static synchronized int getId(){
+        return sequence++;
+    }
+    
+    public void onCheckSession( ServiceContext context)
+        throws Exception
+    {
+        HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());
+        HttpServletRequest request = svc.getRequest();
+        HttpSession session = request.getSession(true);
+        Integer sid = (Integer)session.getAttribute(USER_ID);
+        if(sid==null){
+            sid = new Integer(getId());
+            session.setAttribute(USER_ID, sid);
+        }
+        context.getObjectContext().putObject("/session/@user_id", sid,true);
+    }
 
 }
