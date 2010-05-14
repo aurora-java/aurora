@@ -17,11 +17,12 @@ import org.xml.sax.SAXException;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
-import uncertain.event.ParticipantManager;
 import uncertain.event.RuntimeContext;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.IProcedureManager;
+import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.DeleteSqlCreator;
@@ -42,6 +43,7 @@ public class DatabaseServiceFactory {
     IModelFactory modelFactory;
     DataSource dataSource;
     IDatabaseFactory databaseFactory;
+    IProcedureManager       mProcedureManager;
     // IDatabaseProfile databaseProfile;
     // ISqlBuilderRegistry sqlBuilderRegistry;
 
@@ -57,6 +59,7 @@ public class DatabaseServiceFactory {
 
     public DatabaseServiceFactory(UncertainEngine engine) {
         this.uncertainEngine = engine;
+        this.mProcedureManager = engine.getProcedureManager();
         init();
     }
 
@@ -153,10 +156,23 @@ public class DatabaseServiceFactory {
     }
 
     public ProcedureRunner loadProcedure(String class_path, CompositeMap context) {
-        ProcedureRunner runner = uncertainEngine
-                .createProcedureRunner(class_path);
-        runner.setContext(context);
-        return runner;
+        try{
+            ProcedureRunner runner = uncertainEngine.createProcedureRunner();
+            Procedure proc = mProcedureManager.loadProcedure(class_path);
+            if(proc==null)
+                throw new IllegalArgumentException("Can't load procedure "+class_path);            
+            runner.setProcedure(proc);
+            /*
+            ProcedureRunner runner = uncertainEngine
+                    .createProcedureRunner(class_path);
+                    */
+            runner.setContext(context);
+            return runner;
+        }catch(IOException ex){
+            throw new RuntimeException(ex);
+        }catch(SAXException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
