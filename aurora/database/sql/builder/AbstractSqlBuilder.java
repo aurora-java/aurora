@@ -23,11 +23,11 @@ public abstract class AbstractSqlBuilder implements ISqlBuilder {
     }
     
     public IDatabaseProfile getDatabaseProfile(){        
-        return mRegistry==null?null:mRegistry.getDatabaseProflie();
+        return mRegistry==null?null:mRegistry.getDatabaseProfile();
     }
     
     public String getKeyword(String key){
-        return mRegistry==null?null:mRegistry.getDatabaseProflie().getKeyword(key);
+        return mRegistry==null?null:mRegistry.getDatabaseProfile().getKeyword(key);
     }
 
 }

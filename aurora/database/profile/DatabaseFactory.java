@@ -18,7 +18,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class DatabaseFactory implements IDatabaseFactory {
-    SqlBuilderRegistry  mDefaultSqlBuilderRegistry;
+    ISqlBuilderRegistry  mDefaultSqlBuilderRegistry;
     String              mDefaultDatabaseName;
     // name -> IDatabaseProfile
     Map                 mDatabaseProfileMap = new HashMap();
@@ -30,6 +30,7 @@ public class DatabaseFactory implements IDatabaseFactory {
     ILogger             mLogger;
     
     public DatabaseFactory( UncertainEngine engine ){
+        this();
         mEngine = engine;
     }
     
@@ -61,9 +62,12 @@ public class DatabaseFactory implements IDatabaseFactory {
         if(name==null)
             throw new IllegalArgumentException("Must set databaseName for database profile");
         mDatabaseProfileMap.put(name, profile);
+        profile.setOwner(this);
         ISqlBuilderRegistry reg = profile.getSqlBuilderRegistry();
         if(reg!=null)
             reg.setParent(mDefaultSqlBuilderRegistry);
+        if(name.equals(mDefaultDatabaseName))
+            mDefaultSqlBuilderRegistry.setDatabaseProfile(profile);
     }
     
     public void addProperties( CompositeMap propers ){
@@ -76,6 +80,9 @@ public class DatabaseFactory implements IDatabaseFactory {
     
     public void setDefaultDatabase(String database){
         mDefaultDatabaseName = database;
+        IDatabaseProfile prof = (IDatabaseProfile)mDatabaseProfileMap.get(database);
+        if(prof != null && mDefaultSqlBuilderRegistry!=null)
+            mDefaultSqlBuilderRegistry.setDatabaseProfile(prof);
     }
     
     public void addClassRegistry( ClassRegistry reg ){
@@ -123,6 +130,14 @@ public class DatabaseFactory implements IDatabaseFactory {
         }else{
             dbsf.setDatabaseFactory(this);
         }
+    }
+    
+    public ISqlBuilderRegistry getDefaultSqlBuilderRegistry(){
+        return mDefaultSqlBuilderRegistry;
+    }
+    
+    public void setDefaultSqlBuilderRegistry(ISqlBuilderRegistry reg){
+        mDefaultSqlBuilderRegistry = reg;
     }
 
 }

@@ -42,5 +42,9 @@ public interface IDatabaseProfile {
     public String   getKeyword( String keyword_code );
     
     public ISqlBuilderRegistry getSqlBuilderRegistry();
+    
+    public IDatabaseFactory getOwner();
+    
+    public void setOwner(IDatabaseFactory fact);
 
 }

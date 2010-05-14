@@ -16,9 +16,11 @@ public class BusinessModelServiceContext extends SqlServiceContext {
 
     public static final String KEY_STATEMENT     = "SqlStatement";
 
-    public static final String KEY_ACTION = "BusinessModelAction";
+    public static final String KEY_ACTION = "_BusinessModelAction";
     
     public static final String KEY_SQL_RUNNER = "SqlRunner";
+    
+    public static final String KEY_STATEMENT_TYPE = "SqlStatementType";
     
     public static BusinessModelServiceContext getContextInstance( CompositeMap map ){
         BusinessModelServiceContext context = new BusinessModelServiceContext();
@@ -56,6 +58,14 @@ public class BusinessModelServiceContext extends SqlServiceContext {
     
     public void setAction(String action){
         putString(KEY_ACTION, action);
+    }
+    
+    public String getStatementType(){
+        return getString(KEY_STATEMENT_TYPE);
+    }
+    
+    public void setStatementType(String type){
+        putString(KEY_STATEMENT_TYPE, type);
     }
 
 }

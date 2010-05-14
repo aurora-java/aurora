@@ -35,6 +35,8 @@ public class BusinessModelService {
     public static final String PROC_QUERY = "aurora.database.service.bm.query";
 
     public static final String PROC_EXECUTE = "aurora.database.service.bm.execute";    
+    
+    public static final String PROC_CREATE_SQL = "aurora.database.service.bm.create_sql";
 
     Configuration                       config;
     BusinessModel                       model;
@@ -92,27 +94,28 @@ public class BusinessModelService {
     }
     
     private void pushConfig(){
-/*
-        Configuration old_config = context.getConfig();
-        if(old_config!=null && old_config!=config){
-            config.setParent(old_config);            
-        }
-        context.setConfig(config);
-*/
         mOldConfig = context.getConfig();
         context.setConfig(config);
     }
     
     private void popConfig(){
-        /*
-        Configuration old_config = config.getParent();
-        if(old_config!=null){
-            context.setConfig(old_config);
-            config.setParent(null);
-        }
-        */
         context.setConfig(mOldConfig);
         mOldConfig = null;
+    }
+    
+    public StringBuffer getSql( String type )
+        throws Exception
+    {
+        context.setStatementType(type);
+        pushConfig();
+        try{
+            prepareForRun(PROC_CREATE_SQL);
+            runner.run();
+            runner.checkAndThrow();            
+        }finally{
+            popConfig();            
+        }
+        return context.getSqlString();
     }
     
     public void query( Map parameters,  IResultSetConsumer consumer, FetchDescriptor desc )

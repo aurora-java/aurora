@@ -17,16 +17,19 @@ public class DatabaseProfile implements IDatabaseProfile {
     CompositeMap            mKeywords = new CompositeMap("keywords");
     SqlBuilderRegistry      mSqlBuilderRegistry;
     IObjectCreator          mObjectCreator;
+    IDatabaseFactory        owner;
     
     public DatabaseProfile(){
-        
+        mSqlBuilderRegistry = new SqlBuilderRegistry(this);
     }
     
     public DatabaseProfile( IObjectCreator creator ){
+        this();
         mObjectCreator = creator;
     }
     
     public DatabaseProfile( String name ){
+        this();
         this.mDatabaseName = name;
     }
     
@@ -80,9 +83,6 @@ public class DatabaseProfile implements IDatabaseProfile {
     
     public void addSqlBuilderMapping( SqlBuilderMapping mapping )
     {
-
-        if(mSqlBuilderRegistry==null)
-            mSqlBuilderRegistry = new SqlBuilderRegistry();
         Class builder_type = mapping.getSqlBuilder();
         if(builder_type==null)
             throw new IllegalArgumentException("Must set sqlBuilder property in SqlBuilderMapping");
@@ -113,6 +113,19 @@ public class DatabaseProfile implements IDatabaseProfile {
     
     public CompositeMap getProperties(){
         return mProperties;
+    }
+
+    public IDatabaseFactory getOwner() {
+        return owner;
+    }
+
+    public void setOwner(IDatabaseFactory owner) {
+        this.owner = owner;
+        if(owner instanceof DatabaseFactory){
+            ISqlBuilderRegistry default_reg = ((DatabaseFactory)owner).getDefaultSqlBuilderRegistry();
+            if(default_reg!=null)
+                mSqlBuilderRegistry.setParent(default_reg);
+        }
     }
 
 

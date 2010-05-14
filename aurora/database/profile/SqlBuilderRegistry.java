@@ -64,7 +64,7 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
     }
     
     public SqlBuilderRegistry(){
-        databaseProfile = new DatabaseProfile("GeneralSQL92");
+        //databaseProfile = new DatabaseProfile("GeneralSQL92");
         loadDefaultBuilders();
     }
     
@@ -77,7 +77,7 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
         this.databaseProfile = database_profile;
     }
     
-    public IDatabaseProfile getDatabaseProflie(){
+    public IDatabaseProfile getDatabaseProfile(){
         return databaseProfile;
     }
     

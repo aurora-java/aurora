@@ -7,7 +7,7 @@ import aurora.database.sql.ISqlStatement;
 
 public interface ISqlBuilderRegistry {
 
-    public IDatabaseProfile getDatabaseProflie();
+    public IDatabaseProfile getDatabaseProfile();
     
     public void setDatabaseProfile(IDatabaseProfile profile);
     
