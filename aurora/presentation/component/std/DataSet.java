@@ -72,7 +72,7 @@ public class DataSet extends Component {
 				list = datas.getChilds();				
 			}else{
 				
-				CompositeMap data = (CompositeMap)model.getObject(ds);
+				CompositeMap data= (CompositeMap)model.getObject(ds);
 				if(data!= null){
 					list = data.getChilds();
 				}				
@@ -84,8 +84,13 @@ public class DataSet extends Component {
 					Iterator it = item.keySet().iterator();
 					while(it.hasNext()){
 						String key = (String)it.next();
-						String value = uncertain.composite.TextParser.parse(item.getString(key), model);
-						item.put(key, value);
+						Object valueKey = item.get(key);
+						String value = uncertain.composite.TextParser.parse(valueKey.toString(), model);
+						if(value.equals(valueKey.toString())){
+							item.put(key, valueKey);							
+						}else{
+							item.put(key, value);
+						}
 					}
 					JSONObject json = new JSONObject(item);
 					dataList.add(json);
