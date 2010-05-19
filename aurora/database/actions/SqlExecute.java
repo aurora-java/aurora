@@ -37,7 +37,7 @@ public class SqlExecute extends AbstractEntry {
         String parsed_service = TextParser.parse(service, runner.getContext());        
         RawSqlService svc = svcFactory.getSqlService(parsed_service, context);       
         svc.setTrace(getTrace());  
-        context.initConnection(svcFactory.getUncertainEngine(), svc.getDataSourceName());     
+        context.initConnection(svcFactory.getUncertainEngine(), svc.getDataSourceName());
         if(MODE_BATCH.equalsIgnoreCase(mode)){
             CompositeMap map = context.getCurrentParameter();
             Collection params = SqlRunner.getSourceParameter(map, sourcePath);
