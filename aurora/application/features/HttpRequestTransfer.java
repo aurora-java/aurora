@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
-import uncertain.proc.ProcedureRunner;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
