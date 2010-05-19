@@ -3,8 +3,11 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 import java.util.Map;
 
+import uncertain.composite.CompositeMap;
+
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.TextFieldConfig;
 
 /**
  * 文本输入框
@@ -19,7 +22,13 @@ public class TextField extends InputField {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
-		Map map = context.getMap();		
+		Map map = context.getMap();
+		CompositeMap view = context.getView();
+		
+		String typeCase = view.getString(TextFieldConfig.PROPERTITY_TYPE_CASE, "");
+		if(!"".equals(typeCase)) {
+			addConfig(TextFieldConfig.PROPERTITY_TYPE_CASE, typeCase.toLowerCase());
+		}
 		map.put(INPUT_TYPE, "input");
 		map.put(CONFIG, getConfigString());
 	}

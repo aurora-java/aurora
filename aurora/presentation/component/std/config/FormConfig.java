@@ -5,7 +5,7 @@ import uncertain.composite.CompositeMap;
 
 public class FormConfig extends BoxConfig {
 	
-	public static final String TAG_NAME = "form";
+	public static final String TAG_NAME = "formPanel";
 	
 	public static final String PROPERTITY_TITLE="title";	
 	public static final String PROPERTITY_SHOWMARGIN = "showmargin";

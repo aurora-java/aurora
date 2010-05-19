@@ -9,6 +9,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String TAG_NAME = "column";
 	
 	public static final String PROPERTITY_EDITOR = "editor";
+	public static final String PROPERTITY_ALIGN = "align";
 	public static final String PROPERTITY_DATAINDEX = "dataindex";
 	public static final String PROPERTITY_LOCK = "lock";
 	public static final String PROPERTITY_HIDDEN = "hidden";
@@ -61,6 +62,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setHidden(boolean hidden){
 		putBoolean(PROPERTITY_HIDDEN, hidden);
+	}
+	
+	public String getAlign(){
+		return getString(PROPERTITY_ALIGN);		
+	}
+	public void setAlign(String align){
+		putString(PROPERTITY_ALIGN, align);
 	}
 	
 	public boolean isResizable(){

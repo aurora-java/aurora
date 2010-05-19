@@ -7,6 +7,7 @@ public class TextFieldConfig extends InputFieldConfig {
 	
 	public static final String TAG_NAME = "textField";
 	public static final String INPUT_TYPE = "inputtype";
+	public static final String PROPERTITY_TYPE_CASE = "typecase";
 
 	
 	public static TextFieldConfig getInstance(){

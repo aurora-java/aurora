@@ -60,7 +60,7 @@ public class Component {
 		if("".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}
-		view.put(ComponentConfig.PROPERTITY_ID, id);
+//		view.put(ComponentConfig.PROPERTITY_ID, id);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 		

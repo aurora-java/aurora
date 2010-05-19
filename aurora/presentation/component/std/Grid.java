@@ -85,6 +85,9 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap ds = (CompositeMap)it.next();
 				String id = ds.getString(ComponentConfig.PROPERTITY_ID, "");
+				if("".equals(id)) {
+					id= IDGenerator.getInstance().generate();
+				}
 				if(id.equals(dds)){
 					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
 					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple");

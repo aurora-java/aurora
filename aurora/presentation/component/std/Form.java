@@ -25,7 +25,7 @@ public class Form extends Box {
 		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
 		
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='3'></tr>");
+		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
 		super.afterBuildTop(session, model, view);
 	}
 	
@@ -64,7 +64,7 @@ public class Form extends Box {
 		super.afterBuildTop(session, model, view);
 		Writer out = session.getWriter();
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='3'></tr>");
+		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
 	}
 
 }
