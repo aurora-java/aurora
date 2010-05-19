@@ -98,21 +98,33 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
     protected void service(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+
     	IObjectRegistry or=mUncertainEngine.getObjectRegistry();
         ITransactionService ts=(ITransactionService)or.getInstanceOfType(ITransactionService.class);
      	UserTransaction trans=ts.getUserTransaction();
+     	boolean isSuccess = false;
      	try {
-			trans.begin();		
-			if(invokeService(request, response)){        	
-				trans.commit();			 
-			}else{
-				trans.rollback();
-			}
+			trans.begin();	
+			isSuccess = invokeService(request, response); 
      	}catch(Exception e){
      		mUncertainEngine.logException("Error when executing " + request.getRequestURI(), e);
+     		throw new ServletException(e);
      	}finally{
+	     	if(isSuccess){
+	     		try {
+					trans.commit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}			 
+			}else{
+				try {
+					trans.rollback();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
      		ts.stop();
-     	}            	
+     	}      
     }
 
     public void init(ServletConfig config) throws ServletException {
