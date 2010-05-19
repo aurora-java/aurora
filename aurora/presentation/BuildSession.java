@@ -176,6 +176,7 @@ public class BuildSession {
     public void buildViews( CompositeMap model, Collection view_list )
         throws Exception
     {
+    	if(view_list==null)return;
         Iterator it = view_list.iterator();
         while(it.hasNext()){
             CompositeMap view = (CompositeMap)it.next();
