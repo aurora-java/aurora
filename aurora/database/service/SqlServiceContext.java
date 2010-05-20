@@ -91,7 +91,7 @@ public class SqlServiceContext extends ServiceContext {
         setInstanceOfType(ICompositeAccessor.class, compositeAccessor);
         //getObjectContext().put(KEY_COMPOSITE_ACCESSOR, compositeAccessor);
     }
-    
+    /*
     public void commit() throws Exception {
         Configuration config = getConfig();
         if(config!=null) config.fireEvent("commit", null);
@@ -101,7 +101,7 @@ public class SqlServiceContext extends ServiceContext {
         Configuration config = getConfig();
         if(config!=null) config.fireEvent("rollback", null);     
     }
-    
+    */
     public ServiceOption getServiceOption(){
         Object obj = get(KEY_SERVICE_OPTION);
         if( obj instanceof ServiceOption )
