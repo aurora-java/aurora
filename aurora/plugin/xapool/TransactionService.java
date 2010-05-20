@@ -10,7 +10,8 @@ import aurora.transaction.UserTransactionImpl;
 public class TransactionService implements ITransactionService{
 	Jotm jotm=null;	
 	boolean useTransactionManager;	
-	UserTransaction trans;
+	//UserTransaction trans;
+	
 	public TransactionService(boolean useTransactionManager) throws NamingException{
 		this.useTransactionManager=useTransactionManager;		
 		if(useTransactionManager){
@@ -22,16 +23,14 @@ public class TransactionService implements ITransactionService{
 	}
 
 	public UserTransaction getUserTransaction() {
-		trans=useTransactionManager?jotm.getUserTransaction():new UserTransactionImpl();
-		return trans;
+		if(useTransactionManager)
+		    return jotm.getUserTransaction();
+		else
+		    return new UserTransactionImpl();
 	}
 
 	public void stop() {
 		if(jotm!=null)
-			jotm.stop();
-		if(trans instanceof UserTransactionImpl){
-			((UserTransactionImpl) trans).clear();
-			trans=null;
-		}
+			jotm.stop();		
 	}
 }

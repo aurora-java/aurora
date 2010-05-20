@@ -58,7 +58,7 @@ public class SqlServiceContext extends ServiceContext {
         return (DataSource)getInstanceOfType(DataSource.class);
     }
     
-    Set getAllConnection(){
+    public Set getAllConnection(){
         return (HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);
     }
     public void setConnection(Connection conn){
