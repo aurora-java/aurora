@@ -5,8 +5,6 @@
 package aurora.service.http;
 
 import java.io.IOException;
-import java.sql.SQLException;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,12 +19,11 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
-import aurora.database.service.SqlServiceContext;
 import aurora.events.E_DetectProcedure;
 import aurora.service.IService;
 import aurora.service.ServiceController;
 import aurora.transaction.ITransactionService;
-import aurora.transaction.UserTransactionImp;
+import aurora.transaction.UserTransactionImpl;
 
 public abstract class AbstractFacadeServlet extends HttpServlet {
 
@@ -101,8 +98,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 					+ request.getRequestURI(), ex);
 			handleException(request, response, ex);
 		} finally {			
-			if (trans instanceof UserTransactionImp) {				
-				((UserTransactionImp) trans).initialize(svc);				
+			if (trans instanceof UserTransactionImpl) {				
+				((UserTransactionImpl) trans).initialize(svc);				
 			}
 			if (is_success) {
 				try {
