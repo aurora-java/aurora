@@ -3,6 +3,8 @@
  */
 package aurora.service;
 
+import java.sql.SQLException;
+
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
@@ -10,6 +12,7 @@ import uncertain.event.RuntimeContext;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
+import aurora.database.service.SqlServiceContext;
 import aurora.events.E_PrepareServiceConfig;
 
 public class ServiceInstance implements IService {
@@ -167,11 +170,19 @@ public class ServiceInstance implements IService {
     }
 
     public void clear() {
-        mProcManager.destroyContext(mContextMap);
-        clearMap(mContextMap);
-        clearMap(mConfigMap);
-        if (mConfig != null)
-            mConfig.clear();
+    	SqlServiceContext sqlServiceContext=(SqlServiceContext)mServiceContext.castTo(SqlServiceContext.class);
+    	try {
+			sqlServiceContext.freeConnection();
+		} catch (SQLException e) {			
+			 throw new RuntimeException(
+                     "freeConnection failed", e);
+		}finally{
+	    	mProcManager.destroyContext(mContextMap);
+	        clearMap(mContextMap);
+	        clearMap(mConfigMap);
+	        if (mConfig != null)
+	            mConfig.clear();
+		}
     }
 
     public ServiceController getController() {
