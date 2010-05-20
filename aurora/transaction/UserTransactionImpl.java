@@ -13,12 +13,15 @@ import javax.transaction.UserTransaction;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.IService;
 
-public class UserTransactionImp implements UserTransaction{
+public class UserTransactionImpl implements UserTransaction{
 	Connection mConn;		
 	public void initialize(IService svc){		
 		SqlServiceContext context = (SqlServiceContext) svc
 		.getServiceContext().castTo(SqlServiceContext.class);
 		this.mConn=context.getConnection();
+	}
+	public void clear(){
+		mConn=null;
 	}
 	public void commit() throws RollbackException, HeuristicMixedException,
 			HeuristicRollbackException, SecurityException,
