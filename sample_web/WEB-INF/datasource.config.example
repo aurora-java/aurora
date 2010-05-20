@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dc:data-source-config xmlns:dc="aurora.datasource" useTransactionManager="false">
+	<dc:database-connections>			
+		<dc:database-connection driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.242:1521:hrms" userName="scott" password="tiger" pool="true"/>
+		<!--
+	    <dc:database-connection name="oracle" driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.65:1521:masdev" userName="hecdev" password="hecdev" pool="true" maxSize="100" minSize="2" lifeTime="600000" sleepTime="300000" deadlockMaxWait="300000" deadlockRetryWait="10000"/>
+	    <dc:database-connection name="mysql" driverClass="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/test" userName="root" password="handhand" pool="true"/>
+		<dc:database-connection name="sqlserver" driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://127.0.0.1:1433;databaseName=xademo" userName="sa" password="handhand" pool="true" />
+	-->
+	</dc:database-connections>	
+</dc:data-source-config>	
+
