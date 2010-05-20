@@ -28,9 +28,8 @@ public abstract class AbstractProcedureInvoker {
             throws Exception {
         CompositeMap proc_config = ProcedureConfigManager.createConfigNode("procedure");
         proc_config.copy(config);
-        Procedure proc = (Procedure)mOcManager.createObject(proc_config);        
-        ProcedureRunner runner = parent_runner.spawn(proc);
-        runner.run();           
-        runner.checkAndThrow();
+        Procedure proc = (Procedure)mOcManager.createObject(proc_config);   
+        parent_runner.call(proc);
+        parent_runner.checkAndThrow();
     }
 }
