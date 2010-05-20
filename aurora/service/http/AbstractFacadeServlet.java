@@ -49,7 +49,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			HttpServletResponse response, IService service) throws Exception;
 
 	protected abstract void handleException(HttpServletRequest request,
-			HttpServletResponse response, Exception ex) throws IOException;
+			HttpServletResponse response, Exception ex) throws IOException, ServletException;
 
 	protected abstract void cleanUp(IService service);
 

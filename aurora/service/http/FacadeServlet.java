@@ -58,7 +58,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
     }
 
     protected void handleException(HttpServletRequest request,
-            HttpServletResponse response, Exception ex) throws IOException {
+            HttpServletResponse response, Exception ex) throws IOException, ServletException {
         Throwable thr = ex.getCause();
         if (thr == null)
             thr = ex;
@@ -68,7 +68,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
             response.sendError(500, "error when parse screen file:"
                     + thr.getMessage());
         else {
-            response.sendError(500, ex.getMessage());
+            throw new ServletException(thr);
         }
     }
 
