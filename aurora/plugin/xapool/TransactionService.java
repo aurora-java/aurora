@@ -5,33 +5,32 @@ import javax.transaction.UserTransaction;
 import org.objectweb.jotm.Jotm;
 
 import aurora.transaction.ITransactionService;
-import aurora.transaction.UserTransactionImp;
+import aurora.transaction.UserTransactionImpl;
 
 public class TransactionService implements ITransactionService{
-	Jotm jotm=null;
-	UserTransaction trans=null;	
-	TransactionManager transactionManager=null;
+	Jotm jotm=null;	
+	boolean useTransactionManager;	
+	UserTransaction trans;
 	public TransactionService(boolean useTransactionManager) throws NamingException{
+		this.useTransactionManager=useTransactionManager;		
 		if(useTransactionManager){
-			jotm=new Jotm(true,false);
-			trans=jotm.getUserTransaction();
-			transactionManager=jotm.getTransactionManager();
-		}else{
-			trans=new UserTransactionImp();
+			jotm=new Jotm(true,false);		
 		}
 	}
 	public TransactionManager getTransactionManager() {
-		return transactionManager;
+		return useTransactionManager?jotm.getTransactionManager():null;
 	}
 
-	public UserTransaction getUserTransaction() {		
+	public UserTransaction getUserTransaction() {
+		trans=useTransactionManager?jotm.getUserTransaction():new UserTransactionImpl();
 		return trans;
 	}
 
 	public void stop() {
 		if(jotm!=null)
 			jotm.stop();
-		if(trans instanceof UserTransactionImp){
+		if(trans instanceof UserTransactionImpl){
+			((UserTransactionImpl) trans).clear();
 			trans=null;
 		}
 	}
