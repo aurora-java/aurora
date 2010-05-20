@@ -6,9 +6,13 @@
 		<field name="SqlStatement" type="aurora.database.sql.ISqlStatement" />
 		<field name="SqlString" type="StringBuffer" />
 	</fields>
+	<set field="@SqlStatementType" value="Query" />
+	<invoke procedure="aurora.database.service.bm.create_sql" />
+	<!--
 	<action name="CreateQueryStatement" input="BusinessModel" output="SqlStatement"/>
 	<action name="PopulateQueryStatement" input="SqlStatement,BusinessModel" />
 	<action name="CreateQuerySql" input="SqlStatement,BusinessModel" output="SqlString" />
+	-->
 	<action name="ExecuteQuery" input="SqlString,BusinessModel"/>
 	<action name="QueryFinish" />
 	<action name="FetchResultSet" />

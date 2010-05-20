@@ -1,0 +1,10 @@
+<procedure xmlns="uncertain.proc">
+	<fields>
+		<field name="SqlStatementType" type="StringBuffer" />
+		<field name="BusinessModel" type="aurora.bm.BusinessModel" usage="input"/>
+		<field name="SqlString" type="StringBuffer" />
+	</fields>
+	<action name="Decide${@SqlStatementType}Statement" input="SqlStatementType,BusinessModel"/>
+	<invoke procedure="aurora.database.service.bm.create_sql" />
+	<action name="Execute${@SqlStatementType}" input="SqlString,BusinessModel" />
+</procedure>

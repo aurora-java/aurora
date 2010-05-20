@@ -26,15 +26,17 @@ import aurora.service.validation.ValidationException;
 
 public class BusinessModelService {
     
-    public static final String PROC_UPDATE = "aurora.database.service.bm.update";
+    public static final String PROC_EXECUTE_DML = "aurora.database.service.bm.execute_dml";
+    
+    //public static final String PROC_UPDATE = "aurora.database.service.bm.update";
 
-    public static final String PROC_DELETE = "aurora.database.service.bm.delete";
+    //public static final String PROC_DELETE = "aurora.database.service.bm.delete";
 
-    public static final String PROC_INSERT = "aurora.database.service.bm.insert";
+    //public static final String PROC_INSERT = "aurora.database.service.bm.insert";
     
     public static final String PROC_QUERY = "aurora.database.service.bm.query";
 
-    public static final String PROC_EXECUTE = "aurora.database.service.bm.execute";    
+    //public static final String PROC_EXECUTE = "aurora.database.service.bm.execute";    
     
     public static final String PROC_CREATE_SQL = "aurora.database.service.bm.create_sql";
 
@@ -186,22 +188,32 @@ public class BusinessModelService {
         }        
     }
     
+    public void executeDml( Map parameters, String statement_type )
+        throws Exception
+    {
+        context.getObjectContext().put("SqlStatementType", new StringBuffer(statement_type) );
+        runProcedure(parameters, PROC_EXECUTE_DML);
+    }
+    
     public void updateByPK( Map parameters )
         throws Exception
     {
-        runProcedure(parameters, PROC_UPDATE);
+        //runProcedure(parameters, PROC_UPDATE);
+        executeDml(parameters, "Update");
     }
     
     public void insert( Map parameters )
         throws Exception    
     {
-        runProcedure(parameters, PROC_INSERT);
+        //runProcedure(parameters, PROC_INSERT);
+        executeDml(parameters, "Insert");
     }
     
     public void deleteByPK( Map parameters )
         throws Exception
     {
-        runProcedure(parameters, PROC_DELETE);
+        //runProcedure(parameters, PROC_DELETE);
+        executeDml(parameters, "Delete");
     }
     
     public void parseParameter( ServiceContext context )
