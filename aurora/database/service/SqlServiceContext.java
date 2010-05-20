@@ -7,14 +7,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.sql.DataSource;
+
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.ICompositeAccessor;
 import uncertain.core.UncertainEngine;
-import uncertain.event.Configuration;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
@@ -39,7 +40,7 @@ public class SqlServiceContext extends ServiceContext {
     public static final String KEY_DATABASE_CONNECTION = "__database_connection";
     public static final String KEY_DATABASE_ALL_CONNECTION = "__database_all_connection";
     public static final String KEY_SERVICE_OPTION = "__database_service_option";
-    HashSet databaseAllConnection;    
+    //HashSet databaseAllConnection;    
     public static SqlServiceContext createSqlServiceContext( CompositeMap context_map ){
         SqlServiceContext context = new SqlServiceContext();
         context.initialize(context_map);
@@ -56,11 +57,17 @@ public class SqlServiceContext extends ServiceContext {
     public DataSource getContextDataSource(){
         return (DataSource)getInstanceOfType(DataSource.class);
     }
+    
+    Set getAllConnection(){
+        return (HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);
+    }
     public void setConnection(Connection conn){
     	setInstanceOfType(Connection.class, conn);
-    	databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);   
-    	if(databaseAllConnection==null)
+    	Set databaseAllConnection=(getAllConnection();  
+    	if(databaseAllConnection==null){
     		databaseAllConnection=new HashSet();
+    		put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
+    	}
     	databaseAllConnection.add(conn);    	  
     	super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
     }
