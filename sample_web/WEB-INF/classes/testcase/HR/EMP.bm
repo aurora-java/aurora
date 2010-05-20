@@ -1,50 +1,53 @@
-<model baseTable="EMP" alias="e" xmlns="http://www.aurora-framework.org/schema/bm">
-	<fields>
-		<field name="empno" datatype="java.lang.Long" databaseType="BIGINT" />
-		<field name="ename" datatype="java.lang.String" databaseType="VARCHAR"/>
-		<field name="job" datatype="java.lang.String" databaseType="BIGINT"/>
-		<field name="mgr" datatype="java.lang.Long" databaseType="BIGINT"/>
-		<field name="hiredate" datatype="java.sql.Date" databaseType="DATE"/>
-		<field name="deptno" datatype="java.lang.Long" databaseType="BIGINT"/>
-		<field name="sal" datatype="java.lang.Long" databaseType="FLOAT"/>
-		<field name="comm" datatype="java.lang.Long" databaseType="FLOAT"/>
-<!--
-		<field name="creation_date" datatype="java.sql.Date" databaseType="DATE" insertExpression="sysdate" updateExpression="sysdate"/>
--->		
-		<field name="NOW_DATE" datatype="java.sql.Date" expression="sysdate" databaseType="DATE" forInsert="false"/>
-		<ref-field name="dname" sourceField="dname" sourceModel="testcase.HR.DEPT"/>
-		<ref-field name="mgr_name" sourceField="ename" relationName="MGR"/>
-	</fields>
-	<primary-key>
-		<field name="empno" />			
-	</primary-key>
-	<relations>
-		<relation joinType="INNER" refModel="testcase.HR.DEPT">
-			<reference localField="DEPTNO" foreignField="DEPTNO"/>
-		</relation>
-		<relation name="MGR" joinType="LEFT OUTER" refModel="testcase.HR.EMP" refAlias="M1">
-			<reference localField="MGR" foreignField="EMPNO"/>
-			<reference expression="M1.DEPTNO is not null"/>
-		</relation>
-	</relations>
-	<query-fields>
-		<query-field field="sal" queryOperator=">="/>
-		<query-field field="ename" queryOperator="like" matchMode="full"/>
-		<query-field field="deptno" queryOperator="="/>
-		<query-field field="mgr" queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)"/>
-		<query-field name="hiredate_from" dataType="java.sql.Date" queryExpression="e.hiredate >= ${@hiredate_from}" />
-		<query-field name="hiredate_to" dataType="java.sql.Date" queryExpression="e.hiredate &lt;= ${@hiredate_to}" />		
-	</query-fields>
-	<data-filters>
-		<data-filter name="MustInDepartment" enforceActions="query" expression="e.deptno is not null"/>
-		<data-filter expression="e.creation_date is not null"  enforceActions="query" />
-	</data-filters>
-	<order-by>
-		<field name="DNAME"/>
-		<field name="hiredate" order="desc"/>
-	</order-by>
-	<features>
-		<sequence-pk xmlns="aurora.database.local.oracle" />
-		<standard-who xmlns="aurora.database.features" />
-	</features>
-</model>
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:model xmlns:ns1="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" baseTable="EMP" alias="e">
+    <ns1:fields>
+        <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="empno"/>
+        <ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="ename"/>
+        <ns1:field databaseType="BIGINT" datatype="java.lang.String" name="job"/>
+        <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="mgr"/>
+        <ns1:field databaseType="DATE" datatype="java.sql.Date" name="hiredate"/>
+        <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="deptno"/>
+        <ns1:field databaseType="FLOAT" datatype="java.lang.Long" name="sal"/>
+        <ns1:field databaseType="FLOAT" datatype="java.lang.Long" name="comm"/>
+        <ns1:field databaseType="DATE" datatype="java.sql.Date" expression="sysdate" forInsert="false" name="NOW_DATE"/>
+        <ns1:ref-field sourceField="dname" sourceModel="testcase.HR.DEPT" name="dname"/>
+        <ns1:ref-field sourceField="ename" relationName="MGR" name="mgr_name"/>
+    </ns1:fields>
+    <ns1:primary-key>
+        <ns1:field name="empno"/>
+    </ns1:primary-key>
+    <ns1:relations>
+        <ns1:relation joinType="INNER" refModel="testcase.HR.DEPT">
+            <ns1:reference foreignField="DEPTNO" localField="DEPTNO"/>
+        </ns1:relation>
+        <ns1:relation refAlias="M1" joinType="LEFT OUTER" refModel="testcase.HR.EMP" name="MGR">
+            <ns1:reference foreignField="EMPNO" localField="MGR"/>
+            <ns1:reference expression="M1.DEPTNO is not null"/>
+        </ns1:relation>
+    </ns1:relations>
+    <ns1:query-fields>
+        <ns1:query-field queryOperator="&gt;=" field="sal"/>
+        <ns1:query-field queryOperator="like" matchMode="full" field="ename"/>
+        <ns1:query-field queryOperator="=" field="deptno"/>
+        <ns1:query-field queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)" field="mgr"/>
+        <ns1:query-field dataType="java.sql.Date" queryExpression="e.hiredate &gt;= ${@hiredate_from}" name="hiredate_from"/>
+        <ns1:query-field dataType="java.sql.Date" queryExpression="e.hiredate &lt;= ${@hiredate_to}" name="hiredate_to"/>
+    </ns1:query-fields>
+    <ns1:data-filters>
+        <ns1:data-filter enforceActions="query" expression="e.deptno is not null" name="MustInDepartment"/>
+        <ns1:data-filter enforceActions="query" expression="e.creation_date is not null"/>
+    </ns1:data-filters>
+    <ns1:order-by>
+        <ns1:field name="DNAME"/>
+        <ns1:field order="desc" name="hiredate"/>
+    </ns1:order-by>
+    <ns1:features>
+        <ns2:sequence-pk/>
+        <f:standard-who/>
+        <f:tag-delete>
+            <f:fields>
+                <f:tag-delete-field expression="&apos;N&apos;" name="enable_flag"/>
+            </f:fields>
+        </f:tag-delete>
+    </ns1:features>
+</ns1:model>
