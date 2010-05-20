@@ -40,7 +40,7 @@ public class SqlServiceContext extends ServiceContext {
     public static final String KEY_DATABASE_CONNECTION = "__database_connection";
     public static final String KEY_DATABASE_ALL_CONNECTION = "__database_all_connection";
     public static final String KEY_SERVICE_OPTION = "__database_service_option";
-    //HashSet databaseAllConnection;    
+    
     public static SqlServiceContext createSqlServiceContext( CompositeMap context_map ){
         SqlServiceContext context = new SqlServiceContext();
         context.initialize(context_map);
@@ -63,11 +63,9 @@ public class SqlServiceContext extends ServiceContext {
     }
     public void setConnection(Connection conn){
     	setInstanceOfType(Connection.class, conn);
-    	Set databaseAllConnection=(getAllConnection();  
-    	if(databaseAllConnection==null){
-    		databaseAllConnection=new HashSet();
-    		put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
-    	}
+    	Set databaseAllConnection=getAllConnection();  
+    	if(databaseAllConnection==null)
+    		databaseAllConnection=new HashSet();    	
     	databaseAllConnection.add(conn);    	  
     	super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
     }
@@ -78,7 +76,7 @@ public class SqlServiceContext extends ServiceContext {
     public void setNamedConnection(String name,Connection conn){
     	 String key = KEY_DATABASE_CONNECTION + "." + name;
     	 super.put(key, conn);
-    	 databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);    	
+    	 Set databaseAllConnection=getAllConnection();    	
     	 if(databaseAllConnection==null)
      		databaseAllConnection=new HashSet();
     	 databaseAllConnection.add(conn);     	    
@@ -188,7 +186,7 @@ public class SqlServiceContext extends ServiceContext {
         throws SQLException
     {
     	Connection conn;
-    	databaseAllConnection=(HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);
+    	Set databaseAllConnection=getAllConnection();
     	if(databaseAllConnection!=null){
     		Iterator it=databaseAllConnection.iterator();
     		while(it.hasNext()){
