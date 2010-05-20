@@ -5,10 +5,10 @@
 		<package-mapping packageName="aurora.service"/>
 		<package-mapping packageName="aurora.presentation"/>
 		<package-mapping packageName="aurora.database.service"/>
-		<package-mapping packageName="aurora.database.actions"/>
-		<package-mapping packageName="aurora.database.datasource"/>
+		<package-mapping packageName="aurora.database.actions"/>		
 		<package-mapping packageName="aurora.database.features"/>
 		<package-mapping packageName="aurora.service.exception"/>
+		<package-mapping packageName="aurora.datasource"/>
 		<package-mapping packageName="aurora.plugin.xapool"/>
 		<package-mapping packageName="aurora.transaction"/>
 	<!--
