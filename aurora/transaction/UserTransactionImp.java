@@ -26,7 +26,7 @@ public class UserTransactionImp implements UserTransaction{
 		try {
 			mConn.commit();
 		} catch (SQLException e) {			
-			throw new IllegalStateException(e);
+			throw new RuntimeException("Error when doing commit", e);
 		}
 	}
 	public void rollback() throws IllegalStateException, SecurityException,
@@ -34,7 +34,7 @@ public class UserTransactionImp implements UserTransaction{
 		try {
 			mConn.rollback();
 		} catch (SQLException e) {		
-			throw new IllegalStateException(e);
+			throw new RuntimeException("Error when doing rollback", e);
 		}
 	}
 	public int getStatus() throws SystemException {
