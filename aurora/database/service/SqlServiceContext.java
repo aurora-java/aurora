@@ -7,19 +7,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import javax.sql.DataSource;
-
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.ICompositeAccessor;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
-import aurora.database.datasource.INamedDataSourceProvider;
-import aurora.database.datasource.NamedDataSourceProvider;
+import aurora.datasource.INamedDataSourceProvider;
+import aurora.datasource.NamedDataSourceProvider;
 import aurora.service.ServiceContext;
 
 public class SqlServiceContext extends ServiceContext {
@@ -62,7 +65,7 @@ public class SqlServiceContext extends ServiceContext {
     	super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
     }
    
-    public Connection getConnection() throws SQLException{ 
+    public Connection getConnection(){ 
     	return (Connection)getInstanceOfType(Connection.class);
     }     
     public void setNamedConnection(String name,Connection conn){
@@ -139,28 +142,40 @@ public class SqlServiceContext extends ServiceContext {
     public void initConnection(UncertainEngine uncertainEngine,String datasourceName) throws SQLException{
     	Connection conn;
     	DataSource ds;
+    	IObjectRegistry reg=uncertainEngine.getObjectRegistry();
+    	ILogger mLogger =LoggingContext.getLogger("aurora.database.service", reg);    	
     	if(datasourceName==null){
 	    	conn=getConnection();
 	    	if(conn==null){
 	    		ds=(DataSource)uncertainEngine.getObjectRegistry().getInstanceOfType(DataSource.class);
-	    		if(ds==null)
+	    		if(ds==null){	    			
+	    			mLogger.log(Level.SEVERE, "No DataSource instance configured in engine");
 	    			throw new IllegalStateException("No DataSource instance configured in engine");
+	    		}
 	    		conn=ds.getConnection();
+	    		if(conn.getAutoCommit())
+    				conn.setAutoCommit(false);
 	    		setConnection(conn);
 	    	}
-    	}else{
-    		conn=getNamedConnection(datasourceName);
+    	}else{           
+            conn=getNamedConnection(datasourceName);
     		if(conn==null){
     			NamedDataSourceProvider dsProvider=(NamedDataSourceProvider)uncertainEngine.getObjectRegistry().getInstanceOfType(INamedDataSourceProvider.class);
-    			if(dsProvider==null)
+    			if(dsProvider==null){
+    				mLogger.log(Level.SEVERE, "No NamedDataSourceProvider instance not configured in engine");    			
     				throw new IllegalStateException("No NamedDataSourceProvider instance not configured in engine");
+    			}
     			ds=dsProvider.getDataSource(datasourceName);
-    			if(ds==null)
+    			if(ds==null){
+    				mLogger.log(Level.SEVERE, datasourceName+" DataSource instance not configured in engine");    			
 	    			throw new IllegalStateException(datasourceName+" DataSource instance not configured in engine");
+    			}
     			conn=ds.getConnection();
+    			if(conn.getAutoCommit())
+    				conn.setAutoCommit(false);
     			setNamedConnection(datasourceName, conn);
     		}
-    	}
+    	}    	
     }
     public void freeConnection()
         throws SQLException
