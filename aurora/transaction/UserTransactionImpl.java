@@ -27,10 +27,7 @@ public class UserTransactionImpl implements UserTransaction{
 		context = (SqlServiceContext) svc
 		.getServiceContext().castTo(SqlServiceContext.class);
 		logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
-	}
-	public void clear(){
-		//mConn=null;
-	}
+	}	
 	
 	public void commit() throws RollbackException, HeuristicMixedException,
 			HeuristicRollbackException, SecurityException,
