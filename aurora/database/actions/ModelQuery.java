@@ -63,7 +63,7 @@ public class ModelQuery extends AbstractQueryAction {
         service = svcFactory.getModelService(model, context);
         setConnectionName(service.getBusinessModel().getDataSourceName());
         SqlServiceContext
-        .createSqlServiceContext(context).initConnection(svcFactory.getUncertainEngine(), connectionName); 
+        .createSqlServiceContext(context).initConnection(svcFactory.getUncertainEngine().getObjectRegistry(), connectionName); 
         //service.setTrace(getTrace());    
         serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
     }

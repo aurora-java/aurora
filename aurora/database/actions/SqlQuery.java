@@ -40,7 +40,7 @@ public class SqlQuery extends AbstractQueryAction {
         String parsed_service = TextParser.parse(service, context_map);
         sqlService = svcFactory.getSqlService(parsed_service, context);        
         setConnectionName(sqlService.getDataSourceName());
-        context.initConnection(svcFactory.getUncertainEngine(), connectionName);     
+        context.initConnection(svcFactory.getUncertainEngine().getObjectRegistry(), connectionName);     
         sqlService.getResultSetLoader().setFieldNameCase(super.getFieldNameCaseValue());
     }
 

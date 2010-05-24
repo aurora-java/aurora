@@ -144,15 +144,14 @@ public class SqlServiceContext extends ServiceContext {
     public void setSqlString( StringBuffer sql){
         put(KEY_SQL_STRING, sql);
     }
-    public void initConnection(UncertainEngine uncertainEngine,String datasourceName) throws SQLException{
+    public void initConnection(IObjectRegistry reg,String datasourceName) throws SQLException{
     	Connection conn;
-    	DataSource ds;
-    	IObjectRegistry reg=uncertainEngine.getObjectRegistry();
+    	DataSource ds;    	
     	ILogger mLogger =LoggingContext.getLogger("aurora.database.service", reg);    	
     	if(datasourceName==null){
 	    	conn=getConnection();
 	    	if(conn==null){
-	    		ds=(DataSource)uncertainEngine.getObjectRegistry().getInstanceOfType(DataSource.class);
+	    		ds=(DataSource)reg.getInstanceOfType(DataSource.class);
 	    		if(ds==null){	    			
 	    			mLogger.log(Level.SEVERE, "No DataSource instance configured in engine");
 	    			throw new IllegalStateException("No DataSource instance configured in engine");
@@ -165,7 +164,7 @@ public class SqlServiceContext extends ServiceContext {
     	}else{           
             conn=getNamedConnection(datasourceName);
     		if(conn==null){
-    			NamedDataSourceProvider dsProvider=(NamedDataSourceProvider)uncertainEngine.getObjectRegistry().getInstanceOfType(INamedDataSourceProvider.class);
+    			NamedDataSourceProvider dsProvider=(NamedDataSourceProvider)reg.getInstanceOfType(INamedDataSourceProvider.class);
     			if(dsProvider==null){
     				mLogger.log(Level.SEVERE, "No NamedDataSourceProvider instance not configured in engine");    			
     				throw new IllegalStateException("No NamedDataSourceProvider instance not configured in engine");
