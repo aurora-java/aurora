@@ -46,7 +46,7 @@
         <f:standard-who/>
         <f:tag-delete>
             <f:fields>
-                <f:tag-delete-field expression="&apos;N&apos;" name="enable_flag"/>
+                <f:tag-delete-field expression="&apos;N&apos;" name="test1"/>
             </f:fields>
         </f:tag-delete>
     </ns1:features>
