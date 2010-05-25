@@ -16,8 +16,12 @@ import aurora.database.profile.IDatabaseProfile;
 import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.SqlServiceContext;
+import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IStatementWithParameter;
+import aurora.database.sql.RawSqlExpression;
+import aurora.database.sql.UpdateStatement;
+import aurora.database.sql.UpdateTarget;
 
 public abstract class AbstractSqlCreator {
     
@@ -89,5 +93,12 @@ public abstract class AbstractSqlCreator {
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), "aurora.bm");
         logger.log(Level.CONFIG, "{0} sql: {1}", new Object[]{type, sql} );
     }
- 
+    public static void addPrimaryKeyQuery( BusinessModel model, UpdateStatement stmt){
+        ConditionList where = stmt.getWhereClause();
+        Field[] fields = model.getPrimaryKeyFields();
+        UpdateTarget table = stmt.getUpdateTarget();
+        for(int i=0; i<fields.length; i++){
+            where.addEqualExpression(table.createField(fields[i].getPhysicalName()), new RawSqlExpression( fields[i].getUpdateExpression() ));
+        }
+    }
 }

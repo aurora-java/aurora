@@ -5,12 +5,8 @@ package aurora.bm;
 
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
-import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
-import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.UpdateStatement;
-import aurora.database.sql.UpdateTarget;
-
 public class UpdateSqlCreator extends AbstractSqlCreator {
     
     /*
@@ -34,15 +30,6 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
                 stmt.addUpdateField(field.getPhysicalName(), field.getUpdateExpression());
         }
         return stmt;
-    }
-    
-    public void addPrimaryKeyQuery( BusinessModel model, UpdateStatement stmt){
-        ConditionList where = stmt.getWhereClause();
-        Field[] fields = model.getPrimaryKeyFields();
-        UpdateTarget table = stmt.getUpdateTarget();
-        for(int i=0; i<fields.length; i++){
-            where.addEqualExpression(table.createField(fields[i].getPhysicalName()), new RawSqlExpression( fields[i].getUpdateExpression() ));
-        }
     }
     
     public void onCreateUpdateStatement(BusinessModel model, BusinessModelServiceContext context){
@@ -70,5 +57,4 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
         super.executeUpdateSql(sql, bmsc);        
     }
    
-
 }
