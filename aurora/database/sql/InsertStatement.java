@@ -54,6 +54,14 @@ public class InsertStatement extends AbstractCompsiteStatement {
         insertTable = another.insertTable;
         selectStatement = another.selectStatement;
     }
+
+    public SelectStatement getSelectStatement() {
+        return selectStatement;
+    }
+
+    public void setSelectStatement(SelectStatement selectStatement) {
+        this.selectStatement = selectStatement;
+    }
     
 
 }
