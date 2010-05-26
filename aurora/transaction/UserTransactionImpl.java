@@ -14,7 +14,7 @@ import javax.transaction.UserTransaction;
 
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.IService;
 
@@ -26,7 +26,7 @@ public class UserTransactionImpl implements UserTransaction{
 	public void initialize(IService svc){		
 		context = (SqlServiceContext) svc
 		.getServiceContext().castTo(SqlServiceContext.class);
-		logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
+		logger = LoggingContext.getLogger(context.getObjectContext(), DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
 	}	
 	
 	public void commit() throws RollbackException, HeuristicMixedException,
