@@ -4,7 +4,7 @@
  */
 package aurora.database.local.oracle.sql;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 import aurora.database.sql.InsertStatement;
 
 public class OracleInsertStatement extends InsertStatement {
