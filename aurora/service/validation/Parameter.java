@@ -18,6 +18,23 @@ public class Parameter implements IParameter {
     String      databaseTypeName;
     String      defaultValue;
     
+    public static Parameter createInputParameter( String name, String datatype ){
+        Parameter param = new Parameter();
+        param.setInput(true);
+        param.setName(name);
+        param.setDataType(datatype);
+        return param;
+    }
+    
+    public static Parameter createOutputParameter( String name, String datatype ){
+        Parameter param = new Parameter();
+        param.setOutput(true);
+        param.setInput(false);
+        param.setName(name);
+        param.setDataType(datatype);
+        return param;
+    }    
+    
     public Parameter(){
     }
     
