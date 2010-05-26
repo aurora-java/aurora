@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 
 public class SelectStatement extends AbstractStatementWithWhere {
     // List<SelectSource>
@@ -22,10 +22,10 @@ public class SelectStatement extends AbstractStatementWithWhere {
     List                joinList;
 
     public SelectStatement(){
-        super(Constant.TYPE_SELECT);
-        selectSourceList    = getPartsNotNull(Constant.PART_FROM);
-        selectFieldList   = getPartsNotNull(Constant.PART_FIELDS);
-        joinList    = getPartsNotNull(Constant.PART_JOINS);
+        super(DatabaseConstant.TYPE_SELECT);
+        selectSourceList    = getPartsNotNull(DatabaseConstant.PART_FROM);
+        selectFieldList   = getPartsNotNull(DatabaseConstant.PART_FIELDS);
+        joinList    = getPartsNotNull(DatabaseConstant.PART_JOINS);
         selectSourceMap = new HashMap();
     }
     
@@ -149,7 +149,7 @@ public class SelectStatement extends AbstractStatementWithWhere {
     }
     
     public List getGroupByFields(){
-        return super.getPartsNotNull(Constant.PART_GROUP_BY);
+        return super.getPartsNotNull(DatabaseConstant.PART_GROUP_BY);
     }
     
     public void addOrderByField( ISqlStatement field, String order){
@@ -167,7 +167,7 @@ public class SelectStatement extends AbstractStatementWithWhere {
     }
     
     public List getOrderByFields(){
-        return super.getPartsNotNull(Constant.PART_ORDER_BY);
+        return super.getPartsNotNull(DatabaseConstant.PART_ORDER_BY);
     }
     
     public void createDefaultAlias( String prefix ){

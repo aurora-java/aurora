@@ -6,7 +6,7 @@ package aurora.database.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 
 public class UpdateStatement extends AbstractStatementWithWhere implements IWithUpdateTarget {
     
@@ -14,7 +14,7 @@ public class UpdateStatement extends AbstractStatementWithWhere implements IWith
     UpdateTarget    updateTarget;
     
     public UpdateStatement( String table_name ){
-        super(Constant.TYPE_UPDATE);
+        super(DatabaseConstant.TYPE_UPDATE);
         updateFields = new LinkedList();
         updateTarget = new UpdateTarget(table_name);
     }

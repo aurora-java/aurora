@@ -7,7 +7,7 @@ package aurora.database.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 
 public class InsertStatement extends AbstractCompsiteStatement {
     
@@ -16,12 +16,12 @@ public class InsertStatement extends AbstractCompsiteStatement {
     SelectStatement     selectStatement;    
     
     public InsertStatement( InsertStatement another ){
-        super(Constant.TYPE_INSERT);
+        super(DatabaseConstant.TYPE_INSERT);
         copy(another);
     }
     
     public InsertStatement(  String table_name ){
-        super(Constant.TYPE_INSERT);
+        super(DatabaseConstant.TYPE_INSERT);
         insertFields = new LinkedList();
         setInsertTable(new RawSqlExpression(table_name));
     }
@@ -61,6 +61,10 @@ public class InsertStatement extends AbstractCompsiteStatement {
 
     public void setSelectStatement(SelectStatement selectStatement) {
         this.selectStatement = selectStatement;
+        if(selectStatement!=null)
+            super.setType(DatabaseConstant.TYPE_INSERT_SELECT);
+        else
+            super.setType(DatabaseConstant.TYPE_INSERT);
     }
     
 

@@ -3,13 +3,13 @@
  */
 package aurora.database.sql;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 import aurora.database.profile.ISqlBuilderRegistry;
 
 public class OrderByField extends AbstractStatement {
     
-    public static final String ASCENT = Constant.ASCENT;
-    public static final String DESCENT = Constant.DESCENT;
+    public static final String ASCENT = DatabaseConstant.ASCENT;
+    public static final String DESCENT = DatabaseConstant.DESCENT;
     
     ISqlStatement       field;
     String              order;

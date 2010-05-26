@@ -6,14 +6,14 @@ package aurora.database.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 
 public class DeleteStatement extends AbstractStatementWithWhere implements IWithUpdateTarget {
 
     UpdateTarget    updateTarget;
     
     public DeleteStatement( String table_name ){
-        super(Constant.TYPE_DELETE);
+        super(DatabaseConstant.TYPE_DELETE);
         updateTarget = new UpdateTarget(table_name);
     }
     
