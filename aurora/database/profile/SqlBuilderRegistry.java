@@ -8,6 +8,7 @@ import java.util.Map;
 
 import aurora.database.sql.CompareExpression;
 import aurora.database.sql.ComplexExpression;
+import aurora.database.sql.CompositeStatement;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.DeleteStatement;
 import aurora.database.sql.ExistsClause;
@@ -22,6 +23,7 @@ import aurora.database.sql.UpdateField;
 import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
 import aurora.database.sql.builder.ConditionListBuilder;
+import aurora.database.sql.builder.DefaultCompositeBuilder;
 import aurora.database.sql.builder.DefaultDeleteBuilder;
 import aurora.database.sql.builder.DefaultInsertBuilder;
 import aurora.database.sql.builder.DefaultSelectBuilder;
@@ -61,6 +63,9 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
         
         builder = new DefaultDeleteBuilder();
         registerSqlBuilder( DeleteStatement.class, builder );
+        
+        builder = new DefaultCompositeBuilder();
+        registerSqlBuilder(CompositeStatement.class, builder);
     }
     
     public SqlBuilderRegistry(){
