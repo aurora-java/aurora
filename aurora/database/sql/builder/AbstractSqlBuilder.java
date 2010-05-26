@@ -27,7 +27,19 @@ public abstract class AbstractSqlBuilder implements ISqlBuilder {
     }
     
     public String getKeyword(String key){
-        return mRegistry==null?null:mRegistry.getDatabaseProfile().getKeyword(key);
+        IDatabaseProfile profile = getDatabaseProfile();
+        return profile==null?null:profile.getKeyword(key);
+    }
+    
+    /**
+     * if specified key is not found in database profile config, return null
+     */
+    public String getKeywordWithNull( String key ){
+        String keyword = getKeyword(key);
+        if(keyword!=null)
+            if(keyword.equals(key))
+                keyword=null;
+        return keyword;
     }
 
 }

@@ -54,7 +54,7 @@ public class DefaultInsertBuilder extends AbstractSqlBuilder {
             throw new IllegalArgumentException("No field defined in insert statement");
         StringBuffer sql = new StringBuffer();
         sql.append(getKeyword(IDatabaseProfile.KEY_INSERT));
-        sql.append(" into ");
+        sql.append(" ").append(getKeyword(IDatabaseProfile.KEY_INTO)).append(" ");
         sql.append(mRegistry.getSql(statement.getInsertTable()));
         sql.append(" ( ");
         
@@ -71,12 +71,14 @@ public class DefaultInsertBuilder extends AbstractSqlBuilder {
             i++;
         }
         
-        sql.append(fields.toString());
-
-        sql.append(" ) values ( ");
-        sql.append(values.toString());
-        sql.append(")");
-
+        sql.append(fields.toString()).append(") ");
+        if(statement.getSelectStatement()==null){
+            sql.append(getKeyword(IDatabaseProfile.KEY_VALUES)).append(" ( ");
+            sql.append(values.toString());
+            sql.append(")");
+        }else{
+            sql.append(mRegistry.getSql(statement.getSelectStatement()));
+        }
         return sql.toString();
     }
     
