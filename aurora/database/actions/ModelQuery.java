@@ -3,20 +3,17 @@
  */
 package aurora.database.actions;
 
-import java.sql.Connection;
-import java.util.List;
-
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
-import uncertain.composite.transform.Transformer;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
-import uncertain.proc.ProcedureRunner;
+import aurora.database.DatabaseConstant;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.DatabaseServiceFactory;
-import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
 public class ModelQuery extends AbstractQueryAction {
@@ -60,6 +57,8 @@ public class ModelQuery extends AbstractQueryAction {
     {
         if(model==null)
             throw new IllegalArgumentException("Must set 'model' property");
+        ILogger logger = LoggingContext.getLogger(context, DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
+        logger.config("===================================== prepare to run model-query "+model+"==============================");
         service = svcFactory.getModelService(model, context);
         setConnectionName(service.getBusinessModel().getDataSourceName());
         SqlServiceContext
