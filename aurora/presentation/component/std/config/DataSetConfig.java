@@ -24,6 +24,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_MAP = "map";
 	public static final String PROPERTITY_SELECTABLE = "selectable";
 	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
+	public static final String PROPERTITY_BINDNAME = "bindname";
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -115,7 +116,12 @@ public class DataSetConfig extends ComponentConfig {
 		putString(PROPERTITY_SELECTIONMODEL, model);
 	}
 	
-	
+    public String getBindName(){
+        return getString(PROPERTITY_BINDNAME);
+    }
+    public void setBindName(String name){
+        putString(PROPERTITY_BINDNAME, name);
+    }
 	
 	public CompositeMap getFields(){
 		CompositeMap context = getObjectContext();

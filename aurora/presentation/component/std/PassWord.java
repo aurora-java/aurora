@@ -12,6 +12,7 @@ public class PassWord extends TextField {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();		
 		map.put(INPUT_TYPE, "password");
+		addConfig("detectCapsLock", new Boolean(true));
 		map.put(CONFIG, getConfigString());
 	}
 }

@@ -85,10 +85,8 @@ public class HtmlPage implements IViewBuilder, ISingleton {
         return reg;
     }
     
-    public void buildView(BuildSession session, ViewContext view_context)
-            throws IOException, ViewCreationException 
-    {
-        try{
+    public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
+    	try{
         	String pageid = IDGenerator.getInstance().generate();
         	view_context.getContextMap().put("pageid", pageid);
         	session.getSessionContext().put("pageid", pageid);
@@ -102,7 +100,7 @@ public class HtmlPage implements IViewBuilder, ISingleton {
             template.createOutput(session.getWriter(), view_context.getContextMap());
         }finally{
             template.clear();
-        }        
+        } 
     }
 
     public String[] getBuildSteps(ViewContext context) {

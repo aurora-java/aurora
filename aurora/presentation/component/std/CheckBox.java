@@ -29,5 +29,9 @@ public class CheckBox extends Component {
 		map.put(CheckBoxConfig.PROPERTITY_LABEL, label);
 		map.put(CONFIG, getConfigString());
 	}
+	
+	protected int getDefaultWidth(){
+		return 13;
+	}
 
 }

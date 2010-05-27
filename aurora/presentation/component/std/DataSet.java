@@ -85,11 +85,13 @@ public class DataSet extends Component {
 					while(it.hasNext()){
 						String key = (String)it.next();
 						Object valueKey = item.get(key);
-						String value = uncertain.composite.TextParser.parse(valueKey.toString(), model);
-						if(value.equals(valueKey.toString())){
-							item.put(key, valueKey);							
-						}else{
-							item.put(key, value);
+						if(valueKey!=null){
+							String value = uncertain.composite.TextParser.parse(valueKey.toString(), model);
+							if(value.equals(valueKey.toString())){
+								item.put(key, valueKey);							
+							}else{
+								item.put(key, value);
+							}
 						}
 					}
 					JSONObject json = new JSONObject(item);
@@ -103,7 +105,8 @@ public class DataSet extends Component {
 			dataList.add(json);
 			
 		}
-		
+		map.put(DataSetConfig.PROPERTITY_BINDTARGET, view.getString(DataSetConfig.PROPERTITY_BINDTARGET, ""));
+		map.put(DataSetConfig.PROPERTITY_BINDNAME, view.getString(DataSetConfig.PROPERTITY_BINDNAME, ""));
 		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		map.put(DataSetConfig.PROPERTITY_DATAS, dataList.toString());	
 		map.put(DataSetConfig.PROPERTITY_AUTOQUERY, view.getString(DataSetConfig.PROPERTITY_AUTOQUERY, "false"));	
@@ -113,8 +116,5 @@ public class DataSet extends Component {
 		map.put(DataSetConfig.PROPERTITY_FETCHALL, view.getString(DataSetConfig.PROPERTITY_FETCHALL, "false"));
 		map.put(DataSetConfig.PROPERTITY_PAGESIZE, view.getString(DataSetConfig.PROPERTITY_PAGESIZE, "10"));
 		map.put(DataSetConfig.PROPERTITY_AUTOCOUNT, view.getString(DataSetConfig.PROPERTITY_AUTOCOUNT, "true"));
-		
-		
-		
 	}
 }
