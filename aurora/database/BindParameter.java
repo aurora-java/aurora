@@ -95,12 +95,12 @@ public class BindParameter {
     {
         DataType dt = data_type;
         if(dt==null){
-            if(value==null){
+            if(value==null || value.equals(null)){
                 stmt.setNull(index, Types.VARCHAR);
                 return;
             }else{
                 dt = DataTypeRegistry.getInstance().getDataType(value.getClass());
-                if(dt==null) throw new IllegalArgumentException("Can't get data type for value ["+value+"] class: "+value.getClass().getName());                
+                if(dt==null) throw new IllegalArgumentException("Can't get data type for value ["+value+"] class: "+value.getClass().getName());
             }
         }
         dt.setParameter(stmt, index, value);
