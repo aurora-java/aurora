@@ -45,18 +45,25 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 			String errMsg = exception.getMessage();
 			int endIndex = errMsg.indexOf("\n");
 			int startIndex = errMsg.indexOf(": ") + 2;
-			Integer errLineId = Integer.valueOf(errMsg.substring(startIndex, endIndex));
-
-			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
-			sqlServiceContext.getParameter().put("lineId", errLineId);
-            
-			DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
-			RawSqlService sqlService = svcFactory.getSqlService(SERVICE_NAME, context);
-			CompositeMap resultMap = sqlService.queryAsMap(sqlServiceContext, FetchDescriptor.getDefaultInstance());
-
-			CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);
-			message = (String) msg.getObject("@MESSAGE");
-			error.put(ErrorMessage.KEY_MESSAGE, message);
+			Integer errLineId = new Integer(-1);
+			try{
+				errLineId = Integer.valueOf(errMsg.substring(startIndex, endIndex));
+			}catch(Exception e){}
+			
+			if(errLineId.intValue()!=-1){
+				SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
+				sqlServiceContext.getParameter().put("lineId", errLineId);
+	            
+				DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
+				RawSqlService sqlService = svcFactory.getSqlService(SERVICE_NAME, context);
+				CompositeMap resultMap = sqlService.queryAsMap(sqlServiceContext, FetchDescriptor.getDefaultInstance());
+	
+				CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);
+				message = (String) msg.getObject("@MESSAGE");
+				error.put(ErrorMessage.KEY_MESSAGE, message);
+			}else{
+				error.put(ErrorMessage.KEY_MESSAGE, errMsg);				
+			}
 			return error;
 		} catch (Exception e) {
 			e.printStackTrace();
