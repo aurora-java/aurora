@@ -53,6 +53,10 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         super(oc_manager);
     }
     
+    protected void transferServiceOption( ServiceOption option, String key ){
+        option.getObjectContext().put( key, super.mEntryConfig.get(key));        
+    }
+    
     public void query( CompositeMap context_map ) throws Exception
     {
         super.doPopulate();
@@ -63,7 +67,9 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         option.setQueryMode(mode);
         option.setAutoCount(autoCount);
         option.setConnectionName(connectionName);
-        context.setServiceOption(option);
+        transferServiceOption(option, ServiceOption.KEY_DEFAULT_WHERE_CLAUSE);
+        transferServiceOption(option, ServiceOption.KEY_QUERY_ORDER_BY);
+        context.setServiceOption(option);        
         
         IResultSetConsumer consumer = null;
         CompositeMapCreator compositeCreator = null;
