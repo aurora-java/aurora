@@ -14,6 +14,10 @@ public class ServiceOption extends DynamicObject {
     
     public static final String MODE_BY_PK = "pkquery"; 
     
+    public static final String KEY_DEFAULT_WHERE_CLAUSE = "defaultwhereclause";
+    
+    public static final String KEY_QUERY_ORDER_BY = "queryorderby";
+    
     String connectionName;
     public String getConnectionName() {
 		return connectionName;
@@ -58,4 +62,20 @@ public class ServiceOption extends DynamicObject {
     public void setAutoCount( boolean b){
         putBoolean(KEY_AUTO_COUNT, b);
     }   
+    
+    public String getQueryOrderBy(){
+        return getString(KEY_QUERY_ORDER_BY);
+    }
+    
+    public void setQueryOrderBy( String order_by ){
+        putString(KEY_QUERY_ORDER_BY, order_by);
+    }
+    
+    public String getDefaultWhereClause(){
+        return getString(KEY_DEFAULT_WHERE_CLAUSE);
+    }
+    
+    public void setDefaultWhereClause( String where ){
+        putString(KEY_DEFAULT_WHERE_CLAUSE, where);
+    }
 }
