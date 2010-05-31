@@ -13,6 +13,7 @@ import aurora.database.profile.IDatabaseFactory;
 import aurora.database.profile.IDatabaseProfile;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.RawSqlService;
+import aurora.database.service.ServiceOption;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IWithWhereClause;
@@ -108,6 +109,13 @@ public class WhereClauseCreator {
             if(model==null) return;
             String action = bmsc.getAction();
             addDataFilterConditions(action, where, model.getDataFilters());
+            // Add data filter from query action config
+            ServiceOption option = bmsc.getServiceOption();
+            if(option!=null){
+                String action_defined_where = option.getDefaultWhereClause();
+                if(action_defined_where!=null)
+                where.addCondition( new RawSqlExpression(action_defined_where) );
+            }
             // Add queriable fields
             if( s instanceof SelectStatement ){
                 addQueryConditions( bmsc.getCurrentParameter(), (SelectStatement)s, model);

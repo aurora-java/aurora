@@ -8,8 +8,10 @@ import uncertain.ocm.ISingleton;
 import aurora.bm.BusinessModel;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.RawSqlService;
+import aurora.database.service.ServiceOption;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.OrderByField;
+import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.SelectField;
 import aurora.database.sql.SelectStatement;
 
@@ -30,7 +32,7 @@ public class OrderByClauseCreator  implements ISingleton {
         return key==null?null:param.getString(key);
     }
     
-    // For model based auto-generated sql
+    // for raw sql
     public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
         int index = sql.indexOf(ORDER_BY_CLAUSE);
         if(index<0) return;
@@ -51,21 +53,29 @@ public class OrderByClauseCreator  implements ISingleton {
         }
         sql.replace(index, index+ORDER_BY_CLAUSE.length(), replace);
     }
-    
-    // for raw sql
+
+    // For model based auto-generated sql    
     public void onPopulateQueryStatement( BusinessModelServiceContext bmsc){        
         ISqlStatement s = bmsc.getStatement();
         CompositeMap param = bmsc.getCurrentParameter();
         if( s instanceof SelectStatement ){
             SelectStatement select = (SelectStatement)s;
-            String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
-            if(order_field!=null){
-                BusinessModel model = bmsc.getBusinessModel();
-                if(model.getField(order_field)!=null){
-                    String order_type = getField(ORDER_TYPE_PARAM_NAME, ORDER_TYPE, param);
-                    SelectField field = select.getField(order_field);
-                    select.addOrderByField(field, order_type);
-                }
+            String order_by = null;
+            ServiceOption option = bmsc.getServiceOption();
+            if(option!=null)
+                order_by = option.getQueryOrderBy();
+            if(order_by!=null){
+                select.addOrderByField(new RawSqlExpression(order_by));
+            }else{
+                String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
+                if(order_field!=null){
+                    BusinessModel model = bmsc.getBusinessModel();
+                    if(model.getField(order_field)!=null){
+                        String order_type = getField(ORDER_TYPE_PARAM_NAME, ORDER_TYPE, param);
+                        SelectField field = select.getField(order_field);
+                        select.addOrderByField(field, order_type);
+                    }
+                }                
             }
         }
     }
