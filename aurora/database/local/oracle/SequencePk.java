@@ -86,7 +86,7 @@ public class SequencePk {
     /**
      * Add returning into clause for insert statement
      */
-    public void postPopulateInsertInsertStatement(BusinessModelServiceContext bmsc, ISqlStatement stmt,BusinessModel bm){
+    public void postPopulateInsertStatement(BusinessModelServiceContext bmsc, ISqlStatement stmt,BusinessModel bm){
         if(!(stmt instanceof InsertStatement) )
             return;
         if(sequences==null)
