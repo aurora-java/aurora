@@ -31,7 +31,7 @@ import aurora.bm.InsertSqlCreator;
 import aurora.bm.ModelFactory;
 import aurora.bm.QuerySqlCreator;
 import aurora.bm.UpdateSqlCreator;
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 import aurora.database.features.AutoQueryCounter;
 import aurora.database.features.OrderByClauseCreator;
 import aurora.database.features.WhereClauseCreator;
@@ -53,7 +53,7 @@ public class DatabaseServiceFactory {
 
     public static ILogger getLogger(CompositeMap context) {
         ILogger logger = LoggingContext.getLogger(context,
-                Constant.AURORA_DATABASE_LOGGING_TOPIC);
+                DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
         return logger;
     }
 
@@ -222,8 +222,6 @@ public class DatabaseServiceFactory {
 
     public BusinessModelService getModelService(String name) throws IOException {
         CompositeMap map = new CompositeMap("model-service-context");
-        // RuntimeContext context =
-        // (RuntimeContext)DynamicObject.cast(map,RuntimeContext.class);
         BusinessModelService bms = getModelService(name, map);
         return bms;
     }
@@ -235,16 +233,10 @@ public class DatabaseServiceFactory {
             config.addParticipant(entry.getValue());
         }
     }
-
-    public BusinessModelService getModelService(String name,
+    
+    public BusinessModelService getModelService(BusinessModel model,
             CompositeMap context_map) throws IOException {
-        if (modelFactory == null)
-            throw new IllegalStateException("ModelFactory must be set first");
         Configuration config = uncertainEngine.createConfig();
-        BusinessModel model = modelFactory.getModel(name);
-        if (model == null)
-            throw new IllegalArgumentException("Can't load business model "
-                    + name);
         prepareConfig(config);
         config.loadConfig(model.getObjectContext());
         BusinessModelService service = null;
@@ -252,10 +244,26 @@ public class DatabaseServiceFactory {
             service = new BusinessModelService(this, config, model, context_map);
         } catch (Exception ex) {
             throw new RuntimeException(
-                    "Error when creating business model service " + name, ex);
+                    "Error when creating business model service " + model.getName(), ex);
         }
-        // BusinessModelServiceContext bmsc = service.getServiceContext();
         return service;
+    }    
+
+    public BusinessModelService getModelService(CompositeMap bm_config,
+            CompositeMap context_map) throws IOException {
+        BusinessModel model = modelFactory.getModel(bm_config);
+        return getModelService(model, context_map);
+    }
+    
+    public BusinessModelService getModelService(String name,
+            CompositeMap context_map) throws IOException {
+        if (modelFactory == null)
+            throw new IllegalStateException("ModelFactory must be set first");
+        BusinessModel model = modelFactory.getModel(name);
+        if (model == null)
+            throw new IllegalArgumentException("Can't load business model "
+                    + name);
+        return getModelService(model, context_map);
     }
 
     public RawSqlService getSqlService(String name) throws IOException,
