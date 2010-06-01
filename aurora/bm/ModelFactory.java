@@ -100,5 +100,9 @@ public class ModelFactory implements IModelFactory {
     public BusinessModel getModel(String name) throws IOException {
         return getNewModelInstance(name, mCompositeLoader.getDefaultExt());
     }
+    
+    public CompositeLoader  getCompositeLoader(){
+        return mCompositeLoader;
+    }
 
 }

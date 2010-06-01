@@ -6,6 +6,7 @@ package aurora.bm;
 
 import java.io.IOException;
 
+import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 
 public interface IModelFactory {
@@ -15,6 +16,8 @@ public interface IModelFactory {
      * @param name Name of config file in java full class name style, such as myproj.model.OrderLine
      * @return CompositeMap instance that contains config, or null if can't load by specified name
      */
+    public CompositeLoader  getCompositeLoader();
+    
     public CompositeMap getModelConfig( String name ) throws IOException;
     
     public CompositeMap getModelConfig( String name, String ext ) throws IOException;
