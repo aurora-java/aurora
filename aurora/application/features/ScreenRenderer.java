@@ -73,21 +73,25 @@ public class ScreenRenderer {
         throws Exception
     {
         if( mScreen==null ) return EventModel.HANDLE_NORMAL;
+        
+        CompositeMap context = runner.getContext();
+        ILogger logger = LoggingContext.getLogger(context, BuildSession.LOGGING_TOPIC);
         HttpServletResponse response = mService.getResponse();
         HttpServletRequest request = mService.getRequest();
+        
+        // create BuildSession
         response.setContentType("text/html;charset=utf-8");
         Writer out = response.getWriter();
         BuildSession session = mPrtManager.createSession(out);
+
+        // set localized message provider for i18n
+        String language_code = (String)context.getObject(mLangPath);
+        if(language_code!=null){
+            ILocalizedMessageProvider lp = mMessageProvider.getLocalizedMessageProvider(language_code);
+            session.setMessageProvider(lp);
+        }
         
-        ILocalizedMessageProvider lp = mMessageProvider.getLocalizedMessageProvider(mLangPath);
-        session.setMessageProvider(lp);
-        /*
-        IMessageProvider            mProvider;
-        IApplicationConfig          mConfig;
-        String lang_path = mConfig.getApplicationConfig().getString("lang_path);
-        ILocalizedMessageProvider lp = mProvider.get(lang_path);
-        session.set(lp);
-        */
+        // set theme
         Cookie[] cookies = request.getCookies();
         String appTheme = "default";
 	    if(cookies!=null) {
@@ -102,9 +106,6 @@ public class ScreenRenderer {
     	session.setTheme(appTheme);
         session.setBaseConfig(mService.getServiceConfig());
         session.setInstanceOfType(IService.class, mService);
-        ILogger logger = LoggingContext.getLogger(runner.getContext(), BuildSession.LOGGING_TOPIC);
-        //System.out.println("session "+logger);
-        //logger.info("start build session");
         session.setLogger(logger);
         session.buildView(mService.getServiceContext().getModel(), mScreen);
         out.flush();
