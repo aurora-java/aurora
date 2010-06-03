@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import aurora.i18n.DummyLocalizedMessageProvider;
 import aurora.i18n.DummyMessageProvider;
+import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
 
 import uncertain.composite.CompositeMap;
@@ -70,7 +72,7 @@ public class BuildSession {
     Configuration             mBaseConfig;
     
     // 
-    IMessageProvider          mMessageProvider = DummyMessageProvider.DEFAULT_INSTANCE;
+    ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
 
     public BuildSession( PresentationManager pm){
         this.mOwner = pm;
@@ -421,11 +423,11 @@ public class BuildSession {
         return mRuntimeContext.getInstanceOfType(type);
     }
     
-    public IMessageProvider getMessageProvider() {
+    public ILocalizedMessageProvider getMessageProvider() {
         return mMessageProvider;
     }
     
-    public void setMessageProvider(IMessageProvider messageProvider) {
+    public void setMessageProvider(ILocalizedMessageProvider messageProvider) {
         mMessageProvider = messageProvider;
     }
 }
