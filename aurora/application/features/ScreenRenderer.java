@@ -13,9 +13,12 @@ import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.config.ScreenConfig;
-import aurora.database.service.DatabaseServiceFactory;
+import aurora.i18n.DummyMessageProvider;
+import aurora.i18n.ILocalizedMessageProvider;
+import aurora.i18n.IMessageProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.PresentationManager;
 import aurora.service.IService;
@@ -29,17 +32,28 @@ public class ScreenRenderer {
     /**
      * @param prtManager
      */
-    public ScreenRenderer(PresentationManager prtManager, DatabaseServiceFactory fact ) {
+    public ScreenRenderer(PresentationManager prtManager, IObjectRegistry registry ) {
         super();
         mPrtManager = prtManager;
-        mServiceFactory = fact;
+        mRegistry = registry;
+        
+        mMessageProvider = (IMessageProvider)mRegistry.getInstanceOfType(IMessageProvider.class);
+        if(mMessageProvider==null)
+            mMessageProvider = DummyMessageProvider.DEFAULT_INSTANCE;
     }
+    
+    
 
     PresentationManager         mPrtManager;
     HttpServiceInstance         mService;
     CompositeMap                mContext;
     CompositeMap                mScreen;
-    DatabaseServiceFactory      mServiceFactory;
+    
+    IObjectRegistry             mRegistry;
+    IMessageProvider            mMessageProvider;
+    String                      mLangPath = "/session/@lang";
+
+    //DatabaseServiceFactory      mServiceFactory;
     
     public int onCreateView( ProcedureRunner runner ){
         mContext = runner.getContext(); 
@@ -64,6 +78,16 @@ public class ScreenRenderer {
         response.setContentType("text/html;charset=utf-8");
         Writer out = response.getWriter();
         BuildSession session = mPrtManager.createSession(out);
+        
+        ILocalizedMessageProvider lp = mMessageProvider.getLocalizedMessageProvider(mLangPath);
+        session.setMessageProvider(lp);
+        /*
+        IMessageProvider            mProvider;
+        IApplicationConfig          mConfig;
+        String lang_path = mConfig.getApplicationConfig().getString("lang_path);
+        ILocalizedMessageProvider lp = mProvider.get(lang_path);
+        session.set(lp);
+        */
         Cookie[] cookies = request.getCookies();
         String appTheme = "default";
 	    if(cookies!=null) {
