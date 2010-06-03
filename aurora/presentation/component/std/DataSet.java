@@ -18,6 +18,7 @@ import aurora.presentation.component.std.config.DataSetConfig;
 public class DataSet extends Component {
 	
 	private static final String VALID_SCRIPT = "validscript";
+	private static final String VALID_LISTENER = "validlistener";
 	
     
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
@@ -66,7 +67,7 @@ public class DataSet extends Component {
 		map.put(DataSetConfig.PROPERTITY_FIELDS, fieldList.toString());
 		
 		StringBuffer sb = new StringBuffer();
-		String attachTab = view.getString("attachtab", "");
+		String attachTab = view.getString(VALID_LISTENER, "");
 		if(!"".equals(attachTab)){
 			String[] ts = attachTab.split(",");
 			for(int i=0;i<ts.length;i++){
