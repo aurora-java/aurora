@@ -19,4 +19,10 @@ public class DummyMessageProvider implements IMessageProvider {
         return message_code;
     }
 
+    public ILocalizedMessageProvider getLocalizedMessageProvider(
+            String language_code) {
+        // TODO Auto-generated method stub
+        return DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
+    }
+
 }

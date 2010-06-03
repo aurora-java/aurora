@@ -20,5 +20,7 @@ public interface IMessageProvider {
     public String getMessage( String language_code, String message_code);
     
     public String getMessage( String language_code, String message_code, Object[] params );
+    
+    public ILocalizedMessageProvider getLocalizedMessageProvider( String language_code );
 
 }
