@@ -16,6 +16,8 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_RESIZABLE = "resizable";
 	public static final String PROPERTITY_PROMPT = "prompt";
 	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_SORTABLE = "sortable";
+	public static final String PROPERTITY_SORTABLE_FIELD = "sortfield";
 	
 	
 	public static GridColumnConfig getInstance(){
@@ -69,6 +71,21 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setAlign(String align){
 		putString(PROPERTITY_ALIGN, align);
+	}
+	
+	public boolean isSortable(){
+		return getBoolean(PROPERTITY_SORTABLE, true);
+	}
+	public void setSortable(boolean sortable){
+		putBoolean(PROPERTITY_SORTABLE, sortable);
+	}
+	
+	public String getSortField(){
+		return getString(PROPERTITY_SORTABLE_FIELD);		
+	}
+	
+	public void setSortField(String field){
+		putString(PROPERTITY_SORTABLE_FIELD, field);
 	}
 	
 	public boolean isResizable(){

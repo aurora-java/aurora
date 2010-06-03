@@ -16,6 +16,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
 public class Tab extends Component {
 	
 	private static final String DEFAULT_CLASS = "item-tab";
+	private static final String VALID_SCRIPT = "validscript";
+	
 	protected static final String PROPERTITY_TAB = "tab";
 	protected static final String PROPERTITY_REF = "ref";
 	protected static final String PROPERTITY_SELECTED = "selected";
@@ -33,15 +35,16 @@ public class Tab extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
+		StringBuffer sb = new StringBuffer();
 		
-		//SHIT!!! the jdk 1.4
 		Integer bodyWidth = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_WIDTH)).intValue() - 2);
 		Integer bodyHeight = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - 25);
 		map.put("bodywidth", bodyWidth);
 		map.put("bodyheight", bodyHeight);
 		map.put("selected", new Integer(0));
-		map.put("strips", createTabStrips(session,context));
+		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
+		map.put(VALID_SCRIPT, sb.toString());
 	}
 	
 	
@@ -81,7 +84,7 @@ public class Tab extends Component {
 		return sb.toString();
 	}
 	
-	private String createTabStrips(BuildSession session, ViewContext context){
+	private String createTabStrips(BuildSession session, ViewContext context,StringBuffer st){
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
@@ -97,11 +100,22 @@ public class Tab extends Component {
 				
 				String prompt = tab.getString(ComponentConfig.PROPERTITY_LABEL, "");
 				int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);
+				String id = tab.getString(ComponentConfig.PROPERTITY_ID, "");
+				String target = tab.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
+				if(!"".equals(target)){
+					if("".equals(id))id = IDGenerator.getInstance().generate();
+					String[] ts = target.split(",");
+					for(int b=0;b<ts.length;b++){
+						String tid = ts[b];
+						st.append("$('"+tid+"').on('valid',function(ds, record, name, valid){if(!valid && !Ext.get('"+id+"').hasActiveFx()) Ext.get('"+id+"').frame('ff0000', 3, { duration: 1 })});\n");
+					}
+					
+				}
 				String selected = tab.getString(PROPERTITY_SELECTED, "");
 				if("true".equals(selected)){
 					map.put("selected", new Integer(i));
 				}
-				sb.append("<div class='strip' unselectable='on' onselectstart='return false;'>");
+				sb.append("<div class='strip' unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
 				sb.append("<div class='strip-left'></div>");
 				sb.append("<div class='strip-center' style='width:"+width+"px;'>"+prompt+"</div>");
 				sb.append("<div class='strip-right'></div>");

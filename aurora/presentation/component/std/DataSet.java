@@ -17,8 +17,9 @@ import aurora.presentation.component.std.config.DataSetConfig;
 
 public class DataSet extends Component {
 	
-    public DataSet() {
-    }
+	private static final String VALID_SCRIPT = "validscript";
+	
+    
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -29,6 +30,7 @@ public class DataSet extends Component {
 		CompositeMap fields = view.getChild(DataSetConfig.PROPERTITY_FIELDS);
 		if(fields != null) {
 			Iterator it = fields.getChildIterator();
+			if(it != null)
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
 				String validator = field.getString("validator", "");
@@ -62,6 +64,17 @@ public class DataSet extends Component {
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, true)));
 		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, view.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple"));
 		map.put(DataSetConfig.PROPERTITY_FIELDS, fieldList.toString());
+		
+		StringBuffer sb = new StringBuffer();
+		String attachTab = view.getString("attachtab", "");
+		if(!"".equals(attachTab)){
+			String[] ts = attachTab.split(",");
+			for(int i=0;i<ts.length;i++){
+				String tid = ts[i];
+				sb.append("$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').on('valid',function(ds, record, name, valid){if(!valid && !Ext.get('"+tid+"').hasActiveFx()) Ext.get('"+tid+"').frame('ff0000', 3, { duration: 1 })});\n");
+			}
+		}
+		map.put(VALID_SCRIPT, sb.toString());
 		
 		CompositeMap datas = view.getChild(DataSetConfig.PROPERTITY_DATAS);
 		List dataList = new ArrayList(); 

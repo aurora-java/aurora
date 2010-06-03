@@ -13,12 +13,12 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_NAVBAR = "navbar";
 	
-	public static final String COLUMN_DATAINDEX = "dataindex";
-	public static final String COLUMN_LOCK = "lock";
-	public static final String COLUMN_HIDDEN = "hidden";
-	public static final String COLUMN_RESIZABLE = "resizable";
-	public static final String COLUMN_PROMPT = "prompt";
-	
+//	public static final String COLUMN_DATAINDEX = "dataindex";
+//	public static final String COLUMN_LOCK = "lock";
+//	public static final String COLUMN_HIDDEN = "hidden";
+//	public static final String COLUMN_RESIZABLE = "resizable";
+//	public static final String COLUMN_PROMPT = "prompt";
+//	
 //	private static final int DEFALUT_HEAD_HEIGHT = 25;
 //	private static final int COLUMN_WIDTH = 100;
 //	
