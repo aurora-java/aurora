@@ -267,9 +267,9 @@ public class Field extends DynamicObject implements IParameter {
             return b.booleanValue();
     }
     
-    public boolean isForAction( String action ){
-        if(action==null) throw new IllegalArgumentException("action name is null");
-        String key = "for" + action.toLowerCase();
+    public boolean isForOperation( String operation ){
+        if(operation==null) throw new IllegalArgumentException("operation name is null");
+        String key = "for" + operation.toLowerCase();
         Boolean b = getBoolean(key);
         return b==null?false:b.booleanValue();
     }

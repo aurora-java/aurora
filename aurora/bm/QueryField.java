@@ -77,11 +77,11 @@ public class QueryField extends DynamicObject {
         addToWhereClause( list, null, param_path);
     }
     
-    public void addToWhereClause( ConditionList list, BaseField base_field, String param_path ){
+    public void addToWhereClause( ConditionList list, ISqlStatement left_field, String param_path ){
         String op = getQueryOperator();
         ILogicalExpression stmt = null;
         if(op!=null){
-            ISqlStatement left_field = base_field==null ? new RawSqlExpression(getName()) : (ISqlStatement) base_field;
+            //ISqlStatement left_field = base_field==null ? new RawSqlExpression(getName()) : (ISqlStatement) base_field;
             int op_id = CompareExpression.getOperatorID(op);
             if(op_id<0) throw new ConfigurationError("queryOperator '"+op+"' is invalid in query field config:"+getObjectContext().toXML());
             if(CompareExpression.isSingleOperator(op_id))

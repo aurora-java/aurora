@@ -39,12 +39,12 @@ public class InsertSqlCreator extends AbstractSqlCreator {
         logger.config("insert sql: "+sql);
         */
     }   
-    
+    /*
     public void onExecuteInsert( StringBuffer sql, BusinessModelServiceContext bmsc)
         throws Exception
     {
         super.executeUpdateSql(sql, bmsc);      
     }
-   
+   */
 
 }

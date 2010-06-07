@@ -21,6 +21,8 @@ import aurora.service.validation.IParameterIterator;
 
 public class BusinessModel extends DynamicObject {
 
+    public static final String KEY_OPERATIONS = "operations";
+
     public static final String SECTION_RELATIONS = "relations";
 
     public static final String SECTION_FIELDS = "fields";
@@ -37,7 +39,7 @@ public class BusinessModel extends DynamicObject {
     
     public static final String KEY_DATABASE_TYPE = "databasetype";
 
-    static  String KEY_DATA_SOURCE_NAME="datasourcename";
+    public static  String KEY_DATA_SOURCE_NAME="datasourcename";
     
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -61,6 +63,8 @@ public class BusinessModel extends DynamicObject {
     Map         relationMap;
     // relation prepared in array
     Relation[]  relationArray;    
+    // name -> operation, name lower case
+    Map         operationMap;
 
     public class BaseQueryFieldIterator implements IParameterIterator {
         
@@ -132,17 +136,17 @@ public class BusinessModel extends DynamicObject {
     public class GeneralFieldIterator implements IParameterIterator {
         
         int id=0;
-        String action;
+        String operation;
         
         void movePointer(){
-            while( id<fieldsArray.length && !fieldsArray[id].isForAction(action))
+            while( id<fieldsArray.length && !fieldsArray[id].isForOperation(operation))
                 id++;
             if( id >= fieldsArray.length )
                 id = -1;            
         }
         
-        public GeneralFieldIterator(String action){
-            this.action = action;
+        public GeneralFieldIterator(String operation){
+            this.operation = operation;
             movePointer();
         }
         
@@ -377,27 +381,33 @@ public class BusinessModel extends DynamicObject {
         return null;
     }
     
-    public IParameterIterator getParameterForAction( String action ){
-        if("query".equalsIgnoreCase(action))
+    /** Get parameter iterator for specified operation
+     * @param operation name of operation
+     * @return If the operation is defined in <operations> part, and this operation has <parameter> config,
+     *  then operation defined parameter will be returned.
+     *  Else a BM level general parameter config will be returned. 
+
+     */
+    public IParameterIterator getParameterForOperation( String operation ){
+        if("query".equalsIgnoreCase(operation))
             return getParameterForQuery();
-        else
-            return new GeneralFieldIterator(action);
-        /*
-        else if("insert".equalsIgnoreCase(action))
-            return null;
-        else if("update".equalsIgnoreCase(action))
-            return null;
-        else if("delete".equalsIgnoreCase(action))
-            return null;
-        else
-            return null;
-            */
+        else{
+            List params = null;
+            Operation op = getOperation(operation);
+            if(op!=null)
+                params = op.getParameters();
+            if(params!=null)
+                return new PredefinedParameterIterator(params);
+            else
+                return new GeneralFieldIterator(operation);
+        }
     }
     
     public void makeReady(){
         // Build field map
         loadFields();
         loadRelations();
+        prepareOperationMap();
     }
 
     /**
@@ -426,8 +436,35 @@ public class BusinessModel extends DynamicObject {
         }
     }
     
-    public void extendFrom( BusinessModel another ){
-        
+    public Operation getOperation( String name ){
+        if(operationMap==null)
+            return null;
+        return (Operation)operationMap.get(name.toLowerCase());        
     }
+    
+    protected void prepareOperationMap(){
+        CompositeMap ops = object_context.getChild(KEY_OPERATIONS);
+        if(ops==null)
+            return;
+        Iterator it = ops.getChildIterator();
+        if(it==null)
+            return;
+        if(operationMap==null)
+            operationMap = new HashMap();
+        else
+            operationMap.clear();
+        while(it.hasNext()){
+            CompositeMap item = (CompositeMap)it.next();
+            Operation op = Operation.createOperation(item);
+            String name = op.getName();
+            if(name==null)
+                throw new ConfigurationError("Must set name property for operation:"+item.toXML());
+            name = name.toLowerCase();
+            if(operationMap.containsKey(name))
+                throw new ConfigurationError("Operation "+name+" already defined");
+            operationMap.put(name, op);
+        }
+    }
+
 
 }

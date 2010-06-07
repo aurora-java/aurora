@@ -54,11 +54,11 @@ public class DeleteSqlCreator extends AbstractSqlCreator {
         */
     }   
     
-    
+    /*
     public void onExecuteDelete( StringBuffer sql, BusinessModelServiceContext bmsc)
         throws Exception
     {
         super.executeUpdateSql(sql, bmsc);      
     }
-    
+    */
 }

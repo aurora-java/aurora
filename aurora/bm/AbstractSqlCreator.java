@@ -34,6 +34,7 @@ public abstract class AbstractSqlCreator {
     }
     
     /** Invoke by sub class to execute previously generated DML sql */
+    /*
     public void executeUpdateSql( StringBuffer sql, BusinessModelServiceContext bmsc )
         throws Exception
     {
@@ -58,6 +59,7 @@ public abstract class AbstractSqlCreator {
         bmsc.setSqlRunner(runner);
         runner.update(bmsc.getCurrentParameter());        
     }
+    */
     
     /*
     public void executeUpdateSql( StringBuffer sql, BusinessModelServiceContext bmsc )
@@ -90,8 +92,10 @@ public abstract class AbstractSqlCreator {
     protected void doCreateSql( String type, ISqlStatement stmt, BusinessModelServiceContext context){
         StringBuffer sql = createSql(stmt,context);
         context.setSqlString(sql);
+        /*
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), "aurora.bm");
         logger.log(Level.CONFIG, "{0} sql: {1}", new Object[]{type, sql} );
+        */
     }
     public static void addPrimaryKeyQuery( BusinessModel model, UpdateStatement stmt){
         ConditionList where = stmt.getWhereClause();

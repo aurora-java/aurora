@@ -51,10 +51,12 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
         */        
     }   
     
+    /*
     public void onExecuteUpdate( StringBuffer sql, BusinessModelServiceContext bmsc)
         throws Exception
     {
         super.executeUpdateSql(sql, bmsc);        
     }
+    */
    
 }
