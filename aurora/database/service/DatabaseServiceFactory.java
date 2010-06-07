@@ -36,6 +36,7 @@ import aurora.database.features.AutoQueryCounter;
 import aurora.database.features.OrderByClauseCreator;
 import aurora.database.features.WhereClauseCreator;
 import aurora.database.profile.IDatabaseFactory;
+import aurora.events.E_PrepareBusinessModel;
 
 public class DatabaseServiceFactory {
 
@@ -242,10 +243,12 @@ public class DatabaseServiceFactory {
         BusinessModelService service = null;
         try {
             service = new BusinessModelService(this, config, model, context_map);
+            config.addParticipant(service);
+            config.fireEvent(E_PrepareBusinessModel.EVENT_NAME, new Object[]{model} );            
         } catch (Exception ex) {
             throw new RuntimeException(
                     "Error when creating business model service " + model.getName(), ex);
-        }
+        }        
         return service;
     }    
 

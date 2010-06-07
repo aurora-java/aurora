@@ -78,6 +78,7 @@ public class WhereClauseCreator {
                 if(field != null)
                     if(field.isReferenceField()){
                     // ##### pending 
+                        throw new ConfigurationError("query option for reference field is not supported yet");
                     }
             // If not, the query field is defined as separate field
             }else{
@@ -87,12 +88,15 @@ public class WhereClauseCreator {
                     throw new ConfigurationError("must set either 'name' or 'field' property for query field: " + qf.getObjectContext().toXML() );
                 field = (Field)qf.castTo(Field.class);
             }
-
+            if(field==null) throw new IllegalArgumentException("Can't get query field for "+qf.getObjectContext().toXML());
             String path = field.getInputPath();
             if( parameter.getObject(path)!=null ){
                 if(has_field){
                     SelectField select_field = select.getField(field.getName());
-                    qf.addToWhereClause(where, select_field, field.getInputPath());
+                    if(select_field!=null)
+                        qf.addToWhereClause(where, select_field, field.getInputPath());
+                    else
+                        qf.addToWhereClause(where, new RawSqlExpression(field.getPhysicalName()), field.getInputPath());
                 }else
                     qf.addToWhereClause(where, "@"+qf.getName());
             }
@@ -107,7 +111,7 @@ public class WhereClauseCreator {
             ConditionList where = statement.getWhereClause();
             BusinessModel model = bmsc.getBusinessModel();
             if(model==null) return;
-            String action = bmsc.getAction();
+            String action = bmsc.getOperation();
             addDataFilterConditions(action, where, model.getDataFilters());
             // Add data filter from query action config
             ServiceOption option = bmsc.getServiceOption();
@@ -136,13 +140,12 @@ public class WhereClauseCreator {
     }        
     
     public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
-        //ServiceOption option = bmsc.getServiceOption();
-        
+/*
         int index = sql.indexOf(WHERE_CLAUSE);
         if(index<0) return;
         SelectStatement select = new SelectStatement();
         ConditionList where = select.getWhereClause();
-        addDataFilterConditions(bmsc.getAction(), where, service.asBusinessModel().getDataFilters());
+        addDataFilterConditions(bmsc.getOperation(), where, service.asBusinessModel().getDataFilters());
         addQueryConditions( bmsc.getCurrentParameter(), select, service.asBusinessModel()  );
         String db_type = service.getDatabaseType();
         IDatabaseProfile profile = db_type==null?mFactory.getDefaultDatabaseProfile():mFactory.getDatabaseProfile(db_type);
@@ -156,6 +159,34 @@ public class WhereClauseCreator {
             if(where_clause.length()>0) where_clause = " WHERE " + where_clause;
         }
         sql.replace(index, index+WHERE_CLAUSE.length(), where_clause);
+*/
+        doPopulateSql(bmsc, sql);
+    }
+    
+    public void doPopulateSql(BusinessModelServiceContext bmsc, StringBuffer sql){
+        BusinessModel model = bmsc.getBusinessModel();
+        int index = sql.indexOf(WHERE_CLAUSE);
+        if(index<0) return;
+        SelectStatement select = new SelectStatement();
+        ConditionList where = select.getWhereClause();
+        addDataFilterConditions(bmsc.getOperation(), where, model.getDataFilters());
+        addQueryConditions( bmsc.getCurrentParameter(), select, model  );
+        String db_type = model.getDatabaseType();
+        IDatabaseProfile profile = db_type==null?mFactory.getDefaultDatabaseProfile():mFactory.getDatabaseProfile(db_type);
+        if(profile==null)
+            throw new IllegalArgumentException("Unkown database type:"+db_type);
+        String where_clause = profile.getSqlBuilderRegistry().getSql(where);
+        if(where_clause==null)
+            where_clause = "";
+        else{
+            where_clause = where_clause.trim();
+            if(where_clause.length()>0) where_clause = " WHERE " + where_clause;
+        }
+        sql.replace(index, index+WHERE_CLAUSE.length(), where_clause);        
+    }
+    
+    public void onPopulateOperationSql(BusinessModelServiceContext bmsc, StringBuffer sql){
+        doPopulateSql(bmsc,sql);
     }
 
 }

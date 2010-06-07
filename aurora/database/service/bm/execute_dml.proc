@@ -3,8 +3,13 @@
 		<field name="SqlStatementType" type="StringBuffer" />
 		<field name="BusinessModel" type="aurora.bm.BusinessModel" usage="input"/>
 		<field name="SqlString" type="StringBuffer" />
+		<field name="SqlRunner" type="aurora.database.SqlRunner" />
 	</fields>
 	<action name="Decide${@SqlStatementType}Statement" input="SqlStatementType,BusinessModel"/>
 	<invoke procedure="aurora.database.service.bm.create_sql" />
+	<action name="CreateSqlRunner" input="SqlString,BusinessModel" output="SqlRunner"/>
+	<action name="ExecuteDmlStatement" input="SqlRunner,BusinessModel" />
+	<!--
 	<action name="Execute${@SqlStatementType}" input="SqlString,BusinessModel" />
+	-->
 </procedure>

@@ -1,11 +1,21 @@
 <procedure xmlns="uncertain.proc">
 	<fields>
+		<field name="BusinessModelOperation" type="String" usage="input" />
 		<field name="SqlStatementType" type="String" usage="input" />	
 		<field name="BusinessModel" type="aurora.bm.BusinessModel" usage="input"/>
 		<field name="SqlStatement" type="aurora.database.sql.ISqlStatement" />
 		<field name="SqlString" type="StringBuffer" />
 	</fields>
-	<action name="Create${@SqlStatementType}Statement" input="BusinessModel" output="SqlStatement"/>
-	<action name="Populate${@SqlStatementType}Statement" input="SqlStatement,BusinessModel"/>
-	<action name="Create${@SqlStatementType}Sql" input="SqlStatement,BusinessModel" output="SqlString" />
+	<action name="DecideSqlGenerationMode" input="BusinessModelOperation" /> 
+	<switch test="@SqlGenerationMode">
+		<case value="AutoGenerate">
+			<action name="Create${@SqlStatementType}Statement" input="BusinessModel" output="SqlStatement"/>
+			<action name="Populate${@SqlStatementType}Statement" input="SqlStatement,BusinessModel"/>
+			<action name="Create${@SqlStatementType}Sql" input="SqlStatement,BusinessModel" output="SqlString" />
+		</case>
+		<case value="Predefined">
+			<action name="CreateOperationSql" input="BusinessModel" output="SqlString" />
+			<action name="PopulateOperationSql" input="SqlString" />
+		</case>
+	</switch>
 </procedure>

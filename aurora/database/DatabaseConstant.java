@@ -5,9 +5,6 @@ package aurora.database;
 
 public final class DatabaseConstant {
 
-    /** schema namespace */
-    public static final String AURORA_SCHEMA_NAMESPACE = "http://www.aurora-framework.org/schema/businessmodel";
-    
     /** Statement type constants */
     public static final String TYPE_INSERT = "insert";
     public static final String TYPE_UPDATE = "update";

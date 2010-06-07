@@ -20,7 +20,7 @@ import uncertain.ocm.IConfigurable;
 import uncertain.ocm.OCManager;
 import aurora.bm.BusinessModel;
 import aurora.database.CompositeMapCreator;
-import aurora.database.Constant;
+import aurora.database.DatabaseConstant;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
@@ -177,7 +177,7 @@ public class RawSqlService implements IConfigurable
     
     void printTraceInfo(String type, SqlRunner runner, long exec_time ){
         //if(!getTrace()) return;
-        ILogger logger = LoggingContext.getLogger(runner.getSqlServiceContext().getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
+        ILogger logger = LoggingContext.getLogger(runner.getSqlServiceContext().getObjectContext(), DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
         DBUtil.printTraceInfo( type, logger, runner);
         logger.log(Level.CONFIG, "Execution time:{0}", new Object[]{new Long(exec_time)} );
     }
@@ -214,7 +214,7 @@ public class RawSqlService implements IConfigurable
     public void query(SqlServiceContext context, IResultSetConsumer consumer, FetchDescriptor desc )
         throws Exception
     {
-        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), Constant.AURORA_DATABASE_LOGGING_TOPIC);
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
         parseParameter(context);
         mConfiguration.fireEvent("PopulateQuerySql", context.getObjectContext(), new Object[]{ this, mSql} );
         SqlRunner runner = createRunner(mSql, context);       

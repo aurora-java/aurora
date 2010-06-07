@@ -32,8 +32,7 @@ public class OrderByClauseCreator  implements ISingleton {
         return key==null?null:param.getString(key);
     }
     
-    // for raw sql
-    public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
+    public void doPopulateQuerySql( BusinessModelServiceContext bmsc, StringBuffer sql ){
         int index = sql.indexOf(ORDER_BY_CLAUSE);
         if(index<0) return;
         CompositeMap param = bmsc.getCurrentParameter();
@@ -52,6 +51,15 @@ public class OrderByClauseCreator  implements ISingleton {
             replace = order_by_clause.toString();
         }
         sql.replace(index, index+ORDER_BY_CLAUSE.length(), replace);
+    }
+    
+    // for raw sql
+    public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
+        doPopulateQuerySql(bmsc, sql);
+    }
+    
+    public void onPopulateOperationSql(BusinessModelServiceContext bmsc, StringBuffer sql){
+        doPopulateQuerySql(bmsc, sql);
     }
 
     // For model based auto-generated sql    
