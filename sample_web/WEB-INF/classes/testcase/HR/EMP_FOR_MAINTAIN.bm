@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" baseTable="EMP" alias="e">
+	<fields>
+		<field databaseType="BIGINT" datatype="java.lang.Long" name="empno"/>
+		<field databaseType="VARCHAR" datatype="java.lang.String" name="ename"/>	
+		<field databaseType="BIGINT" datatype="java.lang.Long" name="deptno"/>
+		<field databaseType="DATE" datatype="java.sql.Date" name="hiredate"/>
+	</fields>
+	<primary-key>
+		<field name="empno"/>
+	</primary-key>
+	<relations>
+		<relation joinType="INNER" refModel="testcase.HR.DEPT">
+			<reference foreignField="DEPTNO" localField="DEPTNO"/>
+		</relation>
+		<relation refAlias="M1" joinType="LEFT OUTER" refModel="testcase.HR.EMP" name="MGR">
+			<reference foreignField="EMPNO" localField="MGR"/>
+			<reference expression="M1.DEPTNO is not null"/>
+		</relation>
+	</relations>
+	<query-fields>
+		<query-field queryOperator="&gt;=" name="sal"/>
+		<query-field queryOperator="like" matchMode="full" field="ename"/>
+		<query-field queryOperator="=" field="deptno"/>
+		<query-field queryExpression="exists (select * from emp t1 where t1.mgr=e.mgr)" name="mgr"/>
+		<query-field dataType="java.sql.Date" queryExpression="e.hiredate &gt;= ${@hiredate_from}" name="hiredate_from"/>
+		<query-field dataType="java.sql.Date" queryExpression="e.hiredate &lt;= ${@hiredate_to}" name="hiredate_to"/>
+	</query-fields>
+	<data-filters>
+		<data-filter enforceActions="query" expression="e.deptno is not null" name="MustInDepartment"/>
+		<data-filter enforceActions="query" expression="e.creation_date is not null"/>
+	</data-filters>
+	<operations>
+		<operation name="query">
+			<query-sql>
+				select empno, ename, deptno, hiredate from emp  e #WHERE_CLAUSE#
+			</query-sql>
+		</operation>
+		<operation name="update">
+			<parameters>
+				<parameter name="empno" dataType="java.lang.Long" required="true"/>
+				<parameter name="name" dataType="java.lang.String"/>
+				<parameter name="deptno" dataType="java.lang.String"/>
+				<parameter name="creation_date" dataType="java.sql.Date"/>
+			</parameters>
+			<update-sql>
+				update emp set #UPDATE_FIELDS# 
+				where empno=${@empno}
+			</update-sql>
+		</operation>
+		<operation name="insert">
+			<parameters>
+				<parameter name="ename" dataType="java.lang.String" required="true"/>
+				<parameter name="deptno" dataType="java.lang.Long"/>
+				<parameter name="empno" output="true" />
+			</parameters>
+			<update-sql>
+			begin
+				insert into  emp ( empno, ename, deptno, creation_date, created_by ) 
+				values ( emp_s.nextval, ${@ename}, ${@deptno}, sysdate, ${/session/@user_id})
+				returning empno into ${@empno};
+			end;
+			</update-sql>
+		</operation>
+	</operations>
+</model>
