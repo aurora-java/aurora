@@ -259,6 +259,8 @@ public class BusinessModelService {
         ParsedSql s = new ParsedSql();
         if (parameters != null)
             s.defineParameters(parameters);
+        List param_list = mBusinessModel.getParameterForOperationInList(mServiceContext.getOperation());
+        s.defineParameters(param_list);
         s.parse(sql.toString());
         SqlServiceContext context = null;
         CompositeMap root = bmsc.getObjectContext().getRoot();

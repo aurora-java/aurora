@@ -112,7 +112,7 @@ public class DatabaseServiceFactory {
         modelFactory = (IModelFactory) os
                 .getInstanceOfType(IModelFactory.class);
         if (modelFactory == null) {
-            modelFactory = new ModelFactory(uncertainEngine);
+            modelFactory = new ModelFactory(uncertainEngine.getOcManager());
             os.registerInstance(IModelFactory.class, modelFactory);
         }
 
