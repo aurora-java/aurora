@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:types>
+        <ss:complexType document="所有可以放置在bm的features部分的tag，必须继承此类型" name="bm:feature"/>
+    </ss:types>
     <ss:elements>
         <ss:element name="bm:field">
             <ss:attributes>
@@ -13,9 +16,9 @@
                 <ss:attribute document="执行DML时，输入参数的路径" name="parameterPath"/>
                 <ss:attribute document="如果是计算类字段，对应的表达式，" name="expression"/>
                 <ss:attribute type="ss:boolean" document="是否作为Grid组件的显示字段" name="forDisplay"/>
-                <ss:attribute document="显示字段的宽度" name="displayWidth"/> 
+                <ss:attribute document="显示字段的宽度" name="displayWidth"/>
                 <ss:attribute type="ss:boolean" document="是否查询Form字段" name="forQuery"/>
-                <ss:attribute document="查询字段的宽度" name="queryWidth"/> 
+                <ss:attribute document="查询字段的宽度" name="queryWidth"/>
                 <ss:attribute type="ss:boolean" name="forInsert"/>
                 <ss:attribute type="ss:boolean" name="forUpdate"/>
                 <ss:attribute type="ss:boolean" name="forQuery"/>
@@ -39,7 +42,7 @@
                 <ss:attribute document="所引用的主表的SQL别名" name="refAlias"/>
             </ss:attributes>
             <ss:elements>
-                <ss:element ref="bm:field"/>
+                <ss:element ref="bm:reference"/>
             </ss:elements>
         </ss:element>
         <ss:element name="bm:model">
@@ -52,6 +55,7 @@
                 <ss:array type="bm:field" name="primary-key"/>
                 <ss:array type="bm:field" name="order-by"/>
                 <ss:array type="bm:relation" name="relations"/>
+                <ss:array type="bm:feature" name="features"/>
             </ss:arrays>
         </ss:element>
     </ss:elements>
