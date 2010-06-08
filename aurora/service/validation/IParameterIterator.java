@@ -3,6 +3,9 @@
  */
 package aurora.service.validation;
 
+/**
+ * Iterates parameter for validation
+ */
 public interface IParameterIterator {
     
     public boolean hasNext();

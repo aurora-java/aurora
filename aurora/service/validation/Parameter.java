@@ -38,6 +38,13 @@ public class Parameter implements IParameter {
     public Parameter(){
     }
     
+    public Parameter( IParameter source ){
+        this.name = source.getName();
+        this.dataType = source.getDataType();
+        this.inputPath = source.getInputPath();
+        this.defaultValue =  source.getDefaultValue() ==null?null:source.getDefaultValue().toString();
+    }
+    
     /**
      * @return the accessPath
      */
