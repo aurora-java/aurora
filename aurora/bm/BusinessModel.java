@@ -5,6 +5,7 @@ package aurora.bm;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +14,13 @@ import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.datatype.DataType;
 import uncertain.datatype.DataTypeRegistry;
+import uncertain.ocm.OCManager;
 import aurora.application.Namespace;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.profile.IDatabaseProfile;
 import aurora.service.validation.IParameter;
 import aurora.service.validation.IParameterIterator;
+import aurora.service.validation.Parameter;
 
 public class BusinessModel extends DynamicObject {
 
@@ -50,9 +53,13 @@ public class BusinessModel extends DynamicObject {
         return model;
     }
 
+    // ============= Singletons =====================
     // factory owner
     ModelFactory   modelFactory;
+    // OCManager
+    OCManager   mOcManager = OCManager.getInstance();
     
+    // ============= Internal Map & Arrays ==========    
     // name -> Field
     Map         fieldMap;
     // All Fields in array
@@ -65,6 +72,9 @@ public class BusinessModel extends DynamicObject {
     Relation[]  relationArray;    
     // name -> operation, name lower case
     Map         operationMap;
+    // default operation without name
+    Operation   defaultOperation;
+
 
     public class BaseQueryFieldIterator implements IParameterIterator {
         
@@ -122,6 +132,8 @@ public class BusinessModel extends DynamicObject {
             Field f = null;
             if(name!=null){
                 f = getField(name);
+                if(f==null)
+                    throw new ConfigurationError("Cant' find field '"+name+"' in BusinessModel. Make sure the 'field' property in query-field refers to a pre-defined BusinessModel field");
                 if(f.isReferenceField()) f = f.getReferredField();
                 return new QueryFieldWrapper(f);       
             }else{
@@ -229,8 +241,10 @@ public class BusinessModel extends DynamicObject {
     }
     
     public Field getField( String name ){
+        assert name!=null;
         if(fieldMap==null) makeReady();
-        return (Field)fieldMap.get(name.toLowerCase());
+        String key = name.toLowerCase();
+        return (Field)fieldMap.get(key);
     }
     
     protected CompositeMap getChildSectionNotNull( String section_name ){
@@ -277,12 +291,12 @@ public class BusinessModel extends DynamicObject {
     }
    
     protected void loadFields(){        
-        List fields = getChildSection(SECTION_FIELDS);
-        if(fields==null) return;
         if(fieldMap==null)
             fieldMap = new HashMap();
         else
-            fieldMap.clear();        
+            fieldMap.clear();   
+        List fields = getChildSection(SECTION_FIELDS);
+        if(fields==null) return;     
         Field[] array = new Field[fields.size()];
         Iterator it = fields.iterator();
         int i=0;
@@ -403,6 +417,29 @@ public class BusinessModel extends DynamicObject {
         }
     }
     
+    /**
+     * @return a List containing aurora.service.validation.Parameter
+     */
+    public List getParameterForOperationInList( String operation ){
+        List result = new LinkedList();
+        IParameterIterator it = getParameterForOperation(operation);
+        if(it!=null)
+            while(it.hasNext()){
+                IParameter obj = it.next();
+                Parameter param = null;
+                // create parameter from CompositeMap
+                if(obj instanceof DynamicObject){
+                    param = new Parameter();
+                    CompositeMap m = ((DynamicObject)obj).getObjectContext();
+                    mOcManager.populateObject(m, param);
+                    result.add(param);
+                }else{
+                    param = new Parameter(obj);
+                }
+            }
+        return result;
+    }
+    
     public void makeReady(){
         // Build field map
         loadFields();
@@ -421,7 +458,7 @@ public class BusinessModel extends DynamicObject {
      * @param modelFactory the modelFactory to set
      */
     public void setModelFactory(ModelFactory modelFactory) {
-        this.modelFactory = modelFactory;
+        this.modelFactory = modelFactory;        
     }
     
     public IDatabaseProfile getDatabaseProfile( IDatabaseFactory fact ){
@@ -438,8 +475,12 @@ public class BusinessModel extends DynamicObject {
     
     public Operation getOperation( String name ){
         if(operationMap==null)
-            return null;
+            return defaultOperation;
         return (Operation)operationMap.get(name.toLowerCase());        
+    }
+    
+    public Operation getDefaultOperation(){
+        return defaultOperation;
     }
     
     protected void prepareOperationMap(){
@@ -457,13 +498,21 @@ public class BusinessModel extends DynamicObject {
             CompositeMap item = (CompositeMap)it.next();
             Operation op = Operation.createOperation(item);
             String name = op.getName();
-            if(name==null)
-                throw new ConfigurationError("Must set name property for operation:"+item.toXML());
-            name = name.toLowerCase();
-            if(operationMap.containsKey(name))
-                throw new ConfigurationError("Operation "+name+" already defined");
+            if(name==null){
+                if(defaultOperation!=null)
+                    throw new ConfigurationError("Can only have one default operation");
+                defaultOperation = op;
+            }else{
+                name = name.toLowerCase();
+                if(operationMap.containsKey(name))
+                    throw new ConfigurationError("Operation "+name+" already defined");
+            }   
             operationMap.put(name, op);
         }
+    }
+
+    protected void setOcManager(OCManager ocManager) {
+        mOcManager = ocManager;
     }
 
 

@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
-import uncertain.core.UncertainEngine;
+import uncertain.ocm.OCManager;
 
 public class ModelFactory implements IModelFactory {
 
@@ -20,15 +20,17 @@ public class ModelFactory implements IModelFactory {
 
     public static final String DEFAULT_MODEL_EXTENSION = "bm";
 
-    UncertainEngine mUncertainEngine;
+    //UncertainEngine mUncertainEngine;
+    OCManager       mOcManager;
 
     CompositeLoader mCompositeLoader;
 
     // name -> BusinessModel
     Map mModelCache;
 
-    public ModelFactory(UncertainEngine engine) {
-        mUncertainEngine = engine;
+    public ModelFactory(OCManager   ocm) {
+        //mUncertainEngine = engine;
+        mOcManager = ocm;
         mCompositeLoader = CompositeLoader.createInstanceForOCM();
         mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
         mModelCache = new HashMap();
@@ -61,6 +63,7 @@ public class ModelFactory implements IModelFactory {
     public BusinessModel getModel(CompositeMap config) {
         BusinessModel model = new BusinessModel();
         model.setModelFactory(this);
+        model.setOcManager(mOcManager);
         model.initialize(config);
         model.makeReady();
         mModelCache.put(model.getName(), model);
