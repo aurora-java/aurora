@@ -25,7 +25,7 @@ public class DBUtil {
 		try{
 			conn.close();
 		} catch(SQLException ex){
-			
+			ex.printStackTrace();
 		}
 	}
 	
@@ -34,7 +34,7 @@ public class DBUtil {
 		try{
 			rs.close();
 		} catch(SQLException ex){
-			
+			ex.printStackTrace();
 		}
 	}
 	
@@ -43,7 +43,7 @@ public class DBUtil {
 		try{
 			stmt.close();
 		} catch(SQLException ex){
-			
+			ex.printStackTrace();
 		}
 	}
     
@@ -67,18 +67,14 @@ public class DBUtil {
             out.println();
             out.flush();
         }
-
+  
      public static void printTraceInfo( String type, ILogger logger, SqlRunner runner){
-         logger.log(Level.CONFIG, "============= [{0}] SQL Statement execution dump ============", new Object[]{type});
-         if(runner!=null){
-             logger.config("=== Parsed SQL ===");
-             logger.config(runner.getStatement().getParsedSQL());
-             logger.config("------------------------------------------------------");
-             logger.config("=== Binding info ===");
-             logger.config(runner.getBindDescription());
-             logger.config("================== END of [" + type + "]==================");
+         if(runner==null){
+             logger.config("SqlRunner is null");
+             return;
          }
-         logger.config("");
-     }
-     
+         String trace_text = "\n============= BEGIN [{0}] SQL Statement execution dump ============\n{1}\n---------------------Binding info---------------------\n{2}\n=============== END [{0}] SQL Statement execution dump ============\n";
+         Object params[] = new Object[] {type, runner.getStatement()==null?null:runner.getStatement().getParsedSQL(), runner.getBindDescription(), type};
+         logger.log(Level.CONFIG, trace_text, params);
+     }     
 }
