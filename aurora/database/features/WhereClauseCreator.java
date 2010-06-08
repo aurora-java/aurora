@@ -31,25 +31,25 @@ public class WhereClauseCreator {
         mFactory = fact;
     }
 
-    static boolean isInAction(String action, String[] actions){
-        if(action==null) return true;
+    static boolean isInOperation(String operation, String[] operations){
+        if(operation==null) return true;
         boolean found = false;
-        for( int n=0; n<actions.length; n++)
-            if(action.equalsIgnoreCase(actions[n])){
+        for( int n=0; n<operations.length; n++)
+            if(operation.equalsIgnoreCase(operations[n])){
                found = true;
                break;
             }
         return found;
     }
     
-    public void addDataFilterConditions( String action, ConditionList conditions, DataFilter[] filters){
+    public void addDataFilterConditions( String operation, ConditionList conditions, DataFilter[] filters){
         //DataFilter[] filters = model.getDataFilters();
         if(filters==null) return ;
         for(int i=0; i<filters.length; i++){
             DataFilter filter = filters[i];
-            String[] actions = filter.getEnforceActions();
-            if(actions!=null){
-                if(!isInAction(action,actions))
+            String[] operations = filter.getEnforceOperations();
+            if(operations!=null){
+                if(!isInOperation(operation,operations))
                     continue;                
             }
             String exp = filter.getExpression();
@@ -111,14 +111,14 @@ public class WhereClauseCreator {
             ConditionList where = statement.getWhereClause();
             BusinessModel model = bmsc.getBusinessModel();
             if(model==null) return;
-            String action = bmsc.getOperation();
-            addDataFilterConditions(action, where, model.getDataFilters());
-            // Add data filter from query action config
+            String operation = bmsc.getOperation();
+            addDataFilterConditions(operation, where, model.getDataFilters());
+            // Add data filter from query operation config
             ServiceOption option = bmsc.getServiceOption();
             if(option!=null){
-                String action_defined_where = option.getDefaultWhereClause();
-                if(action_defined_where!=null)
-                where.addCondition( new RawSqlExpression(action_defined_where) );
+                String operation_defined_where = option.getDefaultWhereClause();
+                if(operation_defined_where!=null)
+                where.addCondition( new RawSqlExpression(operation_defined_where) );
             }
             // Add queriable fields
             if( s instanceof SelectStatement ){
@@ -140,26 +140,6 @@ public class WhereClauseCreator {
     }        
     
     public void onPopulateQuerySql( BusinessModelServiceContext bmsc, RawSqlService service, StringBuffer sql ){
-/*
-        int index = sql.indexOf(WHERE_CLAUSE);
-        if(index<0) return;
-        SelectStatement select = new SelectStatement();
-        ConditionList where = select.getWhereClause();
-        addDataFilterConditions(bmsc.getOperation(), where, service.asBusinessModel().getDataFilters());
-        addQueryConditions( bmsc.getCurrentParameter(), select, service.asBusinessModel()  );
-        String db_type = service.getDatabaseType();
-        IDatabaseProfile profile = db_type==null?mFactory.getDefaultDatabaseProfile():mFactory.getDatabaseProfile(db_type);
-        if(profile==null)
-            throw new IllegalArgumentException("Unkown database type:"+db_type);
-        String where_clause = profile.getSqlBuilderRegistry().getSql(where);
-        if(where_clause==null)
-            where_clause = "";
-        else{
-            where_clause = where_clause.trim();
-            if(where_clause.length()>0) where_clause = " WHERE " + where_clause;
-        }
-        sql.replace(index, index+WHERE_CLAUSE.length(), where_clause);
-*/
         doPopulateSql(bmsc, sql);
     }
     
