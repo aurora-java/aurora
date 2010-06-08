@@ -2,6 +2,7 @@
 <ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:types>
         <ss:complexType document="所有可以放置在bm的features部分的tag，必须继承此类型" name="bm:feature"/>
+        <ss:simpleType base="ss:string" name="bm:rawsql"/>
     </ss:types>
     <ss:elements>
         <ss:element name="bm:field">
@@ -45,17 +46,48 @@
                 <ss:element ref="bm:reference"/>
             </ss:elements>
         </ss:element>
+        <ss:element document="应用在BM上的限制条件，相当于where从句中的一个条件表达式" name="bm:data-filter">
+            <ss:attributes>
+                <ss:attribute document="where限制条件的名称" name="name"/>
+                <ss:attribute document="where限制条件所对应的操作，可用逗号分隔，如&apos;insert,update,delete&apos;" name="enforceOperations"/>
+                <ss:attribute document="where限制条件的SQL表达式" name="expression"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="参数定义" name="bm:parameter">
+            <ss:attributes>
+                <ss:attribute name="name"/>
+                <ss:attribute type="JavaDataType" name="dataType"/>
+                <ss:attribute type="ss:boolean" name="required"/>
+                <ss:attribute type="ss:boolean" name="input"/>
+                <ss:attribute type="ss:boolean" name="output"/>
+                <ss:attribute name="inputPath"/>
+                <ss:attribute name="outputPath"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element type="bm:rawsql" name="bm:query-sql"/>
+        <ss:element type="bm:rawsql" name="bm:update-sql"/>
+        <ss:element name="bm:operation">
+            <ss:attributes>
+                <ss:attribute name="name"/>
+            </ss:attributes>
+            <ss:array ref="bm:parameter" name="bm:parameters"/>
+            <ss:element ref="bm:query-sql"/>
+            <ss:element ref="bm:update-sql"/>
+        </ss:element>
         <ss:element name="bm:model">
             <ss:attributes>
                 <ss:attribute document="对应的数据库基表" name="baseTable"/>
                 <ss:attribute document="确实的别名，用于SQL语句" name="alias"/>
+                <ss:attribute document="对应的数据源的名称" name="dataSourceName"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array type="bm:field" name="fields"/>
                 <ss:array type="bm:field" name="primary-key"/>
                 <ss:array type="bm:field" name="order-by"/>
                 <ss:array type="bm:relation" name="relations"/>
+                <ss:array type="bm:data-filter" name="data-filters"/>
                 <ss:array type="bm:feature" name="features"/>
+                <ss:array type="bm:operation" name="operations"/>
             </ss:arrays>
         </ss:element>
     </ss:elements>

@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
-    <ss:element name="f:standard-who">
+    <ss:element document="每次创建、更改记录时，留下操作人员ID和操作日期的记录" name="f:standard-who">
         <ss:attributes>
-            <ss:attribute name="created_by_field"/>
+            <ss:attribute document="用于获取当前操作用户的的XPath路径，如/session/@user_id" name="userIdPath"/>
+            <ss:attribute document="表中记录创建人ID的字段名" name="createdByField"/>
+            <ss:attribute document="表中记录创建日期的字段名" name="creationDateField"/>
+            <ss:attribute document="表中记录最后更新人ID的字段名" name="lastUpdatedByField"/>
+            <ss:attribute document="表中记录最后更新日期的字段名" name="lastUpdatedDateField"/>
         </ss:attributes>
+        <ss:extensions>
+            <ss:extension base="bm:feature"/>
+        </ss:extensions>
+    </ss:element>
+    <ss:element document="删除标记字段" name="f:tag-delete-field">
+        <ss:attributes>
+            <ss:attribute document="删除标记的字段名" name="name"/>
+            <ss:attribute document="标记已删除的表达式" name="expression"/>
+        </ss:attributes>
+    </ss:element>
+    <ss:element document="删除操作时，不是物理删除，而是更新删除标记字段" name="f:tag-delete">
+        <ss:arrays>
+            <ss:array type="f:tag-delete-field" name="fields"/>
+        </ss:arrays>
+        <ss:extensions>
+            <ss:extension base="bm:feature"/>
+        </ss:extensions>
     </ss:element>
 </ss:schema>
