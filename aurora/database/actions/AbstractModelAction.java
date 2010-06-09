@@ -36,8 +36,8 @@ public abstract class AbstractModelAction extends AbstractEntry  {
         
         mService = mServiceFactory.getModelService(TextParser.parse(mModel, runner.getContext()), context);
         mLogger = DatabaseServiceFactory.getLogger(context);
-        SqlServiceContext sqlContext=SqlServiceContext.createSqlServiceContext(context);
-        sqlContext.initConnection(mServiceFactory.getUncertainEngine().getObjectRegistry(), mService.getBusinessModel().getDataSourceName());        
+        //SqlServiceContext sqlContext=SqlServiceContext.createSqlServiceContext(context);
+        //sqlContext.initConnection(mServiceFactory.getUncertainEngine().getObjectRegistry(), mService.getBusinessModel().getDataSourceName());        
         //service.setTrace(getTrace());
     }
     
