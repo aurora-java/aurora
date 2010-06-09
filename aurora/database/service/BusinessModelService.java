@@ -3,6 +3,7 @@
  */
 package aurora.database.service;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
@@ -32,32 +34,33 @@ public class BusinessModelService {
 
     public static final String PROC_EXECUTE_DML = "aurora.database.service.bm.execute_dml";
 
-    // public static final String PROC_UPDATE =
-    // "aurora.database.service.bm.update";
-
-    // public static final String PROC_DELETE =
-    // "aurora.database.service.bm.delete";
-
-    // public static final String PROC_INSERT =
-    // "aurora.database.service.bm.insert";
-
     public static final String PROC_QUERY = "aurora.database.service.bm.query";
 
-    // public static final String PROC_EXECUTE =
-    // "aurora.database.service.bm.execute";
-
     public static final String PROC_CREATE_SQL = "aurora.database.service.bm.create_sql";
-
-    Configuration mConfig;
+    
+    // source BM
     BusinessModel mBusinessModel;
-    DatabaseServiceFactory mServiceFactory;
-    BusinessModelServiceContext mServiceContext;
-    CompositeMap mContextMap;
-    ProcedureRunner mRunner;
-    // String mOperation = null;
-    // boolean trace;
+    
+    // Configuration associated with BusinessModel
+    Configuration mConfig;
 
+    // owner
+    DatabaseServiceFactory mServiceFactory;
+    
+    // context
+    CompositeMap mContextMap;
+    
+    // context casted as BusinessModelServiceContext
+    BusinessModelServiceContext mServiceContext;
+
+    // ProcedureRunner to run procs
+    ProcedureRunner mRunner;
+
+    // saved original config
     Configuration mOldConfig = null;
+    
+    // object registry to get instances
+    IObjectRegistry     mObjectRegistry;
 
     protected BusinessModelService(DatabaseServiceFactory factory,
             Configuration config, BusinessModel model, CompositeMap context_map)
@@ -65,10 +68,11 @@ public class BusinessModelService {
         this.mConfig = config;
         this.mBusinessModel = model;
         this.mServiceFactory = factory;
+        this.mObjectRegistry = factory.getObjectRegistry();
         setContextMap(context_map);
     }
 
-    protected void prepareForRun(String proc_name) throws ValidationException {
+    protected void prepareForRun(String proc_name) throws ValidationException, SQLException {
         /*
          * String operation = proc_name.substring(proc_name.lastIndexOf('.')+1);
          * if(operation==null) operation = proc_name;
@@ -76,6 +80,7 @@ public class BusinessModelService {
          */
         mRunner = mServiceFactory.loadProcedure(proc_name, mContextMap);
         parseParameter(mServiceContext);
+        mServiceContext.initConnection(mObjectRegistry, mBusinessModel.getDataSourceName());
     }
 
     public void setServiceContext(ServiceContext context) {

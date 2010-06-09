@@ -310,6 +310,10 @@ public class DatabaseServiceFactory {
         addDefaultParticipants();
         //ParticipantManager pm = databaseFactory.getParticipantManager();
     }
+    
+    public IObjectRegistry getObjectRegistry(){
+        return uncertainEngine==null?null:uncertainEngine.getObjectRegistry();
+    }
 
     /*
      * public boolean isCacheEnabled() { return cacheEnabled; }
