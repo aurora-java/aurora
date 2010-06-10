@@ -155,7 +155,10 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         try {
             rs = runner.query(bmsc.getCurrentParameter());
             ResultSetLoader loader = new ResultSetLoader();
-            loader.loadByConfig(rs, desc, bmsc.getBusinessModel(), consumer);
+            if( bmsc.getBusinessModel() !=null && bmsc.getBusinessModel().getFields()!=null )
+                loader.loadByConfig(rs, desc, bmsc.getBusinessModel(), consumer);
+            else
+                loader.loadByResultSet( rs, desc, consumer ); 
         } finally {
             DBUtil.closeResultSet(rs);
         }
