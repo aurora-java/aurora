@@ -17,6 +17,7 @@ import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
+import aurora.database.service.ServiceOption;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.Join;
 import aurora.database.sql.SelectField;
@@ -144,7 +145,7 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         FetchDescriptor desc = bmsc.getFetchDescriptor();
         if (desc == null)
             desc = new FetchDescriptor();
-
+        ServiceOption option = bmsc.getServiceOption();
         StringBuffer sql = bmsc.getSqlString();
         ParsedSql s = new ParsedSql(sql.toString());
         SqlRunner runner = new SqlRunner(bmsc, s);
@@ -155,6 +156,8 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         try {
             rs = runner.query(bmsc.getCurrentParameter());
             ResultSetLoader loader = new ResultSetLoader();
+            if(option!=null)
+                loader.setFieldNameCase(option.getFieldCase());
             if( bmsc.getBusinessModel() !=null && bmsc.getBusinessModel().getFields()!=null )
                 loader.loadByConfig(rs, desc, bmsc.getBusinessModel(), consumer);
             else
