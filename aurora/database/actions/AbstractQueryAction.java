@@ -67,6 +67,7 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         option.setQueryMode(mode);
         option.setAutoCount(autoCount);
         option.setConnectionName(connectionName);
+        option.setFieldCase(fieldNameCaseValue);
         transferServiceOption(option, ServiceOption.KEY_DEFAULT_WHERE_CLAUSE);
         transferServiceOption(option, ServiceOption.KEY_QUERY_ORDER_BY);
         context.setServiceOption(option);        
