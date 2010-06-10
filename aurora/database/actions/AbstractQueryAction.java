@@ -26,8 +26,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     boolean     trace = false;
     boolean     autoCount = false;
     Integer     pageSize;
-    String      fieldNameCase = "unassigned";
-    byte        fieldNameCaseValue = Character.UNASSIGNED;
+    String      fieldNameCase = "lower";
+    byte        fieldNameCaseValue = Character.LOWERCASE_LETTER;
 
     String      rootPath;
     String      recordName;
