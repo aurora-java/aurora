@@ -18,13 +18,16 @@ public class ServiceOption extends DynamicObject {
     
     public static final String KEY_QUERY_ORDER_BY = "queryorderby";
     
-    String connectionName;
+    public static final String KEY_CONNECTION_NAME = "connectionname";
+    
+    public static final String KEY_FIELD_CASE = "fieldcase";    
+    
     public String getConnectionName() {
-		return connectionName;
+		return getString(KEY_CONNECTION_NAME);
 	}
 
 	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
+		putString(KEY_CONNECTION_NAME, connectionName);
 	}
 
 	public static ServiceOption createInstance(){
@@ -77,5 +80,13 @@ public class ServiceOption extends DynamicObject {
     
     public void setDefaultWhereClause( String where ){
         putString(KEY_DEFAULT_WHERE_CLAUSE, where);
+    }
+    
+    public byte getFieldCase(){
+        return (byte)getInt(KEY_FIELD_CASE, Character.UNASSIGNED);
+    }
+    
+    public void setFieldCase( byte field_case ){
+        putInt(KEY_FIELD_CASE, field_case);
     }
 }
