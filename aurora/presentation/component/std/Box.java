@@ -31,6 +31,7 @@ public class Box extends GridLayout {
 		Writer out = session.getWriter();
 		String vlabel = field.getString(ComponentConfig.PROPERTITY_LABEL);
 		String label = vlabel==null ? getComponentLabel(session, field) : vlabel;
+		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
 		if(!"".equals(label))
 		out.write("<th class='"+DEFAULT_TH_CLASS+"' width="+labelWidth+"><div>"+label+":</div></th>");

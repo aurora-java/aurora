@@ -71,7 +71,7 @@ public class Grid extends Component {
 		}
 		map.put("gridstyle", style);
 		processSelectable(map,view);
-		createGridColumns(map,view);
+		createGridColumns(map,view,session);
 		createGridEditors(session,context);
 	}
 	
@@ -101,7 +101,7 @@ public class Grid extends Component {
 		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, selectionmodel);
 	}
 	
-	private void createGridColumns(Map map, CompositeMap view){
+	private void createGridColumns(Map map, CompositeMap view,BuildSession session){
 		List jsons = new ArrayList(); 
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
@@ -212,8 +212,8 @@ public class Grid extends Component {
 		
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
-		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro));
-		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro));
+		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session));
+		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session));
 		map.put(GridConfig.PROPERTITY_COLUMNS, jsons.toString());
 		
 		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
@@ -285,13 +285,12 @@ public class Grid extends Component {
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					if(!"".equals(type)){
-						//TODO:多语言
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,"新增","grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+							item = createButton(item,session.getLocalizedPrompt("AURORA_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
-							item = createButton(item,"删除","grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
+							item = createButton(item,session.getLocalizedPrompt("AURORA_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
-							item = createButton(item,"保存","grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
+							item = createButton(item,session.getLocalizedPrompt("AURORA_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}
 					}
 				}
@@ -435,7 +434,7 @@ public class Grid extends Component {
 
 	
 	
-	private String generateLockArea(Map map, List columns, Map pro){
+	private String generateLockArea(Map map, List columns, Map pro,BuildSession session){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		boolean hasLockColumn = false;
@@ -475,7 +474,11 @@ public class Grid extends Component {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-							if(!hidden)hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+column.getString(GridColumnConfig.PROPERTITY_PROMPT, "")+"</div></TD>");
+							if(!hidden){
+								String headTitle = column.getString(GridColumnConfig.PROPERTITY_PROMPT, "");
+								headTitle = session.getLocalizedPrompt(headTitle);
+								hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+headTitle+"</div></TD>");
+							}
 						}
 					}
 				}
@@ -498,7 +501,7 @@ public class Grid extends Component {
 	}
 	
 	
-	private String generateUnlockArea(Map map, List columns, Map pro){
+	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		
@@ -530,7 +533,11 @@ public class Grid extends Component {
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-					if(!hidden)hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+column.getString(GridColumnConfig.PROPERTITY_PROMPT, "")+"</div></TD>");
+					if(!hidden){
+						String headTitle = column.getString(GridColumnConfig.PROPERTITY_PROMPT, "");
+						headTitle = session.getLocalizedPrompt(headTitle);
+						hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+headTitle+"</div></TD>");
+					}
 				}
 			}
 			hsb.append("</TR>");

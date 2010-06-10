@@ -11,10 +11,6 @@ import aurora.presentation.component.std.config.CheckBoxConfig;
 
 public class CheckBox extends Component {
 	
-//	private static final String PROPERTITY_CHECKEDVALUE = "checkedvalue";
-//	private static final String PROPERTITY_UNCHECKEDVALUE = "uncheckedvalue";
-//	private static final String PROPERTITY_LABEL = "label";
-	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();
@@ -23,6 +19,7 @@ public class CheckBox extends Component {
 //		addConfig(PROPERTITY_CHECKEDVALUE, view.getString(PROPERTITY_CHECKEDVALUE,"Y"));
 //		addConfig(PROPERTITY_UNCHECKEDVALUE, view.getString(PROPERTITY_UNCHECKEDVALUE,"N"));
 		String label = view.getString(CheckBoxConfig.PROPERTITY_LABEL, "");
+		label = session.getLocalizedPrompt(label);
 		if(!"".equals(label)){
 			label = ":"+label;
 		}
@@ -30,8 +27,8 @@ public class CheckBox extends Component {
 		map.put(CONFIG, getConfigString());
 	}
 	
-	protected int getDefaultWidth(){
-		return 13;
-	}
+//	protected int getDefaultWidth(){
+//		return 13;
+//	}
 
 }

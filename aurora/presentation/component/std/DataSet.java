@@ -43,23 +43,37 @@ public class DataSet extends Component {
 				String dv = field.getString(DataSetConfig.PROPERTITY_DEFAULTVALUE, "");
 				if(!"".equals(dv))field.putString(DataSetConfig.PROPERTITY_DEFAULTVALUE, dv);
 				
+				String returnField = field.getString("returnfield", "");
+				boolean addReturn = !"".equals(returnField);
 				JSONObject json = new JSONObject(field);
 				CompositeMap mapping = field.getChild(DataSetConfig.PROPERTITY_MAPPING);
+				List maplist = new ArrayList();
 				if(mapping != null){
 					Iterator mit = mapping.getChildIterator();
-					List maplist = new ArrayList();
 					while(mit.hasNext()){
 						CompositeMap mapfield = (CompositeMap)mit.next();
+						if(returnField.equals(mapfield.getString("to"))){
+							addReturn = false;
+						}
 						JSONObject mj = new JSONObject(mapfield);
 						maplist.add(mj);
 					}
+				}
+				if(addReturn) {
+					CompositeMap returnmap = new CompositeMap("map");
+					returnmap.putString("from", field.getString("valuefield"));
+					returnmap.putString("to", returnField);
+					JSONObject jo = new JSONObject(returnmap);
+					maplist.add(jo);
+				}
+				if(maplist.size() > 0){
 					try {
 						json.put(DataSetConfig.PROPERTITY_MAPPING, maplist);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+					fieldList.add(json);
 				}
-				fieldList.add(json);
 			}
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, true)));

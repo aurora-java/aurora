@@ -32,7 +32,7 @@ public class Radio extends Component {
 		CompositeMap items = view.getChild(RROPERTITY_ITEMS);
 		if(items!=null){
 			try {
-				createOptions(map,items,layout);
+				createOptions(session,map,items,layout);
 			} catch (JSONException e) {
 				throw new IOException(e.getMessage());
 			}
@@ -42,7 +42,7 @@ public class Radio extends Component {
 				CompositeMap options = (CompositeMap)model.getObject(ds);
 				if(options!=null)
 				try {
-					createOptions(map,options,layout);
+					createOptions(session,map,options,layout);
 				} catch (JSONException e) {
 					throw new IOException(e.getMessage());
 				}
@@ -55,7 +55,7 @@ public class Radio extends Component {
 	}
 	
 	
-	private void createOptions(Map map, CompositeMap items,String layout) throws JSONException {
+	private void createOptions(BuildSession session,Map map, CompositeMap items,String layout) throws JSONException {
 		StringBuffer sb = new StringBuffer();
 		List children = items.getChilds();
 		List options = new ArrayList();
@@ -64,6 +64,7 @@ public class Radio extends Component {
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
 				String label = item.getString(PROPERTITY_LABEL, "");
+				label = session.getLocalizedPrompt(label);
 				String value = item.getString(PROPERTITY_VALUE, "");
 				
 				JSONObject option = new JSONObject(item);

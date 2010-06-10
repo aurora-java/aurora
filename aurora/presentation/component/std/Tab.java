@@ -99,6 +99,7 @@ public class Tab extends Component {
 				CompositeMap tab = (CompositeMap)it.next();
 				
 				String prompt = tab.getString(ComponentConfig.PROPERTITY_LABEL, "");
+				prompt = session.getLocalizedPrompt(prompt);
 				int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);
 				String id = tab.getString(ComponentConfig.PROPERTITY_ID, "");
 				String target = tab.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");

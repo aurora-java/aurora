@@ -17,11 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import aurora.i18n.DummyLocalizedMessageProvider;
-import aurora.i18n.DummyMessageProvider;
-import aurora.i18n.ILocalizedMessageProvider;
-import aurora.i18n.IMessageProvider;
-
 import uncertain.composite.CompositeMap;
 import uncertain.composite.QualifiedName;
 import uncertain.event.Configuration;
@@ -31,6 +26,8 @@ import uncertain.logging.DummyLogger;
 import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
 import uncertain.util.template.TextTemplate;
+import aurora.i18n.DummyLocalizedMessageProvider;
+import aurora.i18n.ILocalizedMessageProvider;
 
 /**
  * The 'cursor' in View creation hierarchy 
@@ -247,7 +244,13 @@ public class BuildSession {
     }
     
     public String getLocalizedPrompt(String key){
-        return key;
+    	ILocalizedMessageProvider provider = getMessageProvider();
+    	if(provider!=null){
+    		String p = provider.getMessage(key);
+    		return p == null ? key : p;
+    	}else{
+    		return key;
+    	}
     }
     
     public Writer getWriter(){

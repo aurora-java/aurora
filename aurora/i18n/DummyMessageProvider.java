@@ -9,20 +9,23 @@ public class DummyMessageProvider implements IMessageProvider {
     public static final DummyMessageProvider DEFAULT_INSTANCE = new DummyMessageProvider(); 
 
     public String getMessage(String language_code, String message_code) {
-        // TODO Auto-generated method stub
         return message_code;
     }
 
-    public String getMessage(String language_code, String message_code,
-            Object[] params) {
-        // TODO Auto-generated method stub
+    public String getMessage(String language_code, String message_code, Object[] params) {
         return message_code;
     }
 
-    public ILocalizedMessageProvider getLocalizedMessageProvider(
-            String language_code) {
-        // TODO Auto-generated method stub
+    public ILocalizedMessageProvider getLocalizedMessageProvider(String language_code) {
         return DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
     }
+
+	public String getDefaultLang() {
+		return "ZHS";
+	}
+
+	public String getLangPath() {
+		return "/session/@lang";
+	}
 
 }

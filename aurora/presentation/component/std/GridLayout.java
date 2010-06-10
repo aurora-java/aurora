@@ -166,7 +166,12 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 				rows = 1;				
 			}
 		} else if(rows != UNLIMITED && columns == UNLIMITED) {
-			columns = (int)Math.ceil((double)view.getChilds().size()/rows);
+			List children = view.getChilds();
+			if(children!=null){
+				columns = (int)Math.ceil((double)view.getChilds().size()/rows);
+			}else{
+				columns = 1;				
+			}
 		}
 		try {
 			buildTop(session, model, view , rows, columns,id);

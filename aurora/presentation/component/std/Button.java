@@ -46,7 +46,7 @@ public class Button extends Field {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
-		CompositeMap model = context.getModel();
+//		CompositeMap model = context.getModel();
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		String clickEvent = view.getString(PROPERTITY_CLICK, "");
@@ -54,7 +54,8 @@ public class Button extends Field {
 			addEvent(id, "click", clickEvent);
 		}
 		String text = view.getString(PROPERTITY_TEXT, "");
-		text = uncertain.composite.TextParser.parse(text, model);
+		text = session.getLocalizedPrompt(text);
+//		text = uncertain.composite.TextParser.parse(text, model);
 		String icon = view.getString(PROPERTITY_ICON, "");
 		String btnstyle = view.getString(BUTTON_STYLE, "");
 		if(!"".equals(icon)){

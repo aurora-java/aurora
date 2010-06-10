@@ -31,11 +31,11 @@ public class NavBar extends ToolBar {
 			}
 			view.putString(ComponentConfig.PROPERTITY_ID, id);
 			
-			view.addChild(createButton("nav-firstpage","background-position:0px 1px;","function(){$('"+dataset+"').firstPage()}","第一页"));
-			view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}","上一页"));
+			view.addChild(createButton("nav-firstpage","background-position:0px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("AURORA_FIRST_PAGE")));
+			view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}",session.getLocalizedPrompt("AURORA_PREVIOUS_PAGE")));
 			
 			CompositeLoader loader = new CompositeLoader();
-			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>页数:</div>";
+			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>"+session.getLocalizedPrompt("AURORA_PAGENUM")+":</div>";
 			CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
 			view.addChild(pageinfo);
 			
@@ -54,9 +54,9 @@ public class NavBar extends ToolBar {
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
 			
-			view.addChild(createButton("nav-nextpage","background-position:0px -46px;","function(){$('"+dataset+"').nextPage()}","下一页"));
-			view.addChild(createButton("nav-lastpage","background-position:0px -15px","function(){$('"+dataset+"').lastPage()}","最后页"));
-			view.addChild(createButton("nav-refresh","background-position:0px -63px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}","刷新"));
+			view.addChild(createButton("nav-nextpage","background-position:0px -46px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("AURORA_NEXT_PAGE")));
+			view.addChild(createButton("nav-lastpage","background-position:0px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("AURORA_LAST_PAGE")));
+			view.addChild(createButton("nav-refresh","background-position:0px -63px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("AURORA_REFRESH")));
 			
 			String infoId = IDGenerator.getInstance().generate();
 			map.put("infoid", infoId);

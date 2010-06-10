@@ -10,4 +10,5 @@ public interface ILocalizedMessageProvider {
     
     public String getMessage( String message_code, Object[] params );    
 
+    public void putMessage( String code, String description);    
 }

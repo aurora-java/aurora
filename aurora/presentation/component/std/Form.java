@@ -14,6 +14,7 @@ public class Form extends Box {
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		Writer out = session.getWriter();
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
+		title = session.getLocalizedPrompt(title);
 		if(!"".equals(title)) {
 			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
 			out.write(title);
