@@ -3,6 +3,7 @@
  */
 package aurora.bm;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -40,9 +41,13 @@ public class BusinessModel extends DynamicObject {
     
     public static final String KEY_NAME = "name";
     
+    public static final String KEY_MODEL_TYPE = "modeltype";
+    
     public static final String KEY_DATABASE_TYPE = "databasetype";
 
     public static  String KEY_DATA_SOURCE_NAME="datasourcename";
+    
+    public static final String DEFAULT_FIELD_PROMPT_FORMAT = "bm.{0}.{1}";
     
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -517,6 +522,30 @@ public class BusinessModel extends DynamicObject {
 
     protected void setOcManager(OCManager ocManager) {
         mOcManager = ocManager;
+    }
+    
+    public String getModelType(){
+        return getString(KEY_MODEL_TYPE);
+    }
+    
+    public void setModelType( String type ){
+        putString(KEY_MODEL_TYPE, type);
+    }
+    
+    public String getFieldPrompt( Field field, String default_prompt_pattern ){
+        String prompt = field.getPrompt();
+        if(prompt!=null)
+            return prompt;
+        String name = getBaseTable();
+        if(name==null)
+            name = getName();
+        String field_name = field.getName();
+        String result = MessageFormat.format(default_prompt_pattern, new Object[]{name,field_name} );
+        return result.toLowerCase();
+    }
+    
+    public String getFieldPrompt( Field field){
+        return getFieldPrompt(field,DEFAULT_FIELD_PROMPT_FORMAT);
     }
 
 
