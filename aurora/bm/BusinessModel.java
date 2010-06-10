@@ -151,6 +151,10 @@ public class BusinessModel extends DynamicObject {
         String operation;
         
         void movePointer(){
+            if(fieldsArray==null){
+                id = -1;
+                return;
+            }
             while( id<fieldsArray.length && !fieldsArray[id].isForOperation(operation))
                 id++;
             if( id >= fieldsArray.length )
