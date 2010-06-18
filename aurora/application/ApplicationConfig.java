@@ -5,14 +5,14 @@
 package aurora.application;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.DynamicObject;
+import uncertain.core.IGlobalInstance;
 import uncertain.ocm.IConfigurable;
 
-public class ApplicationConfig implements IConfigurable, IApplicationConfig {
+public class ApplicationConfig extends DynamicObject implements IConfigurable, IApplicationConfig, IGlobalInstance {
     
-    CompositeMap    mConfig;
-
     public void beginConfigure(CompositeMap config) {
-        mConfig = config;
+        initialize(config);
 
     }
 
@@ -21,7 +21,15 @@ public class ApplicationConfig implements IConfigurable, IApplicationConfig {
     }
     
     public CompositeMap getApplicationConfig(){
-        return mConfig;
+        return super.getObjectContext();
+    }
+    
+    public ApplicationViewConfig getApplicationViewConfig(){
+        CompositeMap section = getObjectContext().getChild("application-view-config");
+        if(section==null)
+            return null;
+        else
+            return (ApplicationViewConfig)DynamicObject.cast(section, ApplicationViewConfig.class);
     }
 
 }
