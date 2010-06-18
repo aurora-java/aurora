@@ -30,6 +30,7 @@ import aurora.presentation.ViewCreationException;
  */
 public class TemplateRenderer implements IViewBuilder, ISingleton {
     
+    public static final String KEY_PACKAGE = "package";
     public static final String KEY_TEMPLATE = "template";
     //ResourceTemplateFactory     mFactory;
     TagTemplateParser             mTemplateParser;
@@ -50,7 +51,7 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
             name += TemplateBasedView.TEMPLATE_EXT;
         // Get package name
         ViewComponentPackage pkg = null;
-        String pkg_name = view.getString("package");
+        String pkg_name = view.getString(KEY_PACKAGE);
         if(pkg_name==null)
             pkg = session.getCurrentPackage();
         else{
