@@ -119,6 +119,13 @@ public class Grid extends Component {
 		List unlocks = new ArrayList();
 		int maxRow =1;
 		
+		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+		Integer viewWidth = (Integer)map.get(ComponentConfig.OLD_WIDTH);
+		float bl = 1;
+		if(viewWidth!=null && viewWidth.intValue() !=0) bl = (width.floatValue()/viewWidth.floatValue());
+		
+		
 		if(columns != null) {
 			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTIONMODEL);
@@ -199,7 +206,11 @@ public class Grid extends Component {
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
 					if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
-					column.putInt(ComponentConfig.PROPERTITY_WIDTH, column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH));
+					
+					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
+					String type = column.getString(COLUMN_TYPE);
+					if(!"rowcheck".equals(type) && !"rowradio".equals(type))cwidth = cwidth*bl;
+					column.putFloat(ComponentConfig.PROPERTITY_WIDTH, cwidth);
 					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
@@ -210,14 +221,12 @@ public class Grid extends Component {
 			}		
 		}
 		
+		
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session));
 		map.put(GridConfig.PROPERTITY_COLUMNS, jsons.toString());
-		
-		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
-		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
 		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
 	}
@@ -273,9 +282,11 @@ public class Grid extends Component {
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
 			CompositeMap tb = new CompositeMap(GridConfig.PROPERTITY_TOOLBAR);
-			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
-			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+//			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+//			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+//			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+			
 			tb.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_tb");
 			tb.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-toolbar");
@@ -333,9 +344,11 @@ public class Grid extends Component {
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
-			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
-			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+//			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+//			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+			
+			
 //			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
 			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
 			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
@@ -447,8 +460,9 @@ public class Grid extends Component {
 				hasLockColumn = true;
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
-					lockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
+					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
+					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
+					lockWidth +=cwidth;				
 				}				
 			}
 		}
@@ -513,8 +527,9 @@ public class Grid extends Component {
 			if(!column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false)){
 				List children = column.getChilds();
 				if(children == null){
-					th.append("<TH style='width:"+column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH)+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
-					unlockWidth +=column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);				
+					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
+					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
+					unlockWidth +=cwidth;				
 				}				
 			}
 		}

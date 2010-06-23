@@ -70,10 +70,10 @@ public class DataSet extends Component {
 					try {
 						json.put(DataSetConfig.PROPERTITY_MAPPING, maplist);
 					} catch (JSONException e) {
-						e.printStackTrace();
+						throw new IOException(e.getMessage());
 					}
-					fieldList.add(json);
 				}
+				fieldList.add(json);
 			}
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, true)));

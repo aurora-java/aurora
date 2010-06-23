@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +16,8 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.markup.HtmlPageContext;
+import aurora.service.ServiceInstance;
+import aurora.service.http.HttpServiceInstance;
 
 /**
  * 
@@ -71,16 +75,37 @@ public class Component {
 		}
 		map.put(WRAP_CSS, clazz);
 		
+		CompositeMap vwc = null,vhc = null;
+		Integer vw = null,vh = null;
+		CompositeMap root = view.getRoot();
+		if(root !=null) {
+			vwc = (CompositeMap)root.getObject("/cookie/@vw");
+			vhc = (CompositeMap)root.getObject("/cookie/@vh");
+		}
+		if(vwc !=null){
+			vw = vwc.getInt("value");
+		}
+		if(vhc !=null){
+			vh = vhc.getInt("value");
+		}
+
 		/** Width属性**/
 		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
+		map.put(ComponentConfig.OLD_WIDTH, width);
+		int marginWidth = view.getInt("marginwidth",0);
+		if(marginWidth!=0&&vw!=null) 
+			width = new Integer((vw.intValue() - marginWidth) > width.intValue() ? (vw.intValue() - marginWidth) :  width.intValue());
 		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
 		
 		/** Height属性**/
 		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, ""+getDefaultHeight());
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) :  Integer.valueOf(hstr);
+		int marginHeight = view.getInt("marginheight",0);
+		if(marginHeight!=0&&vh!=null)
+			height = new Integer((vh.intValue() - marginHeight)>height.intValue() ? (vh.intValue() - marginHeight) : height.intValue());
 		if(height.intValue() !=0) map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 		
 		/** NAME属性 **/
