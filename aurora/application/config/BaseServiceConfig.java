@@ -4,6 +4,7 @@
  */
 package aurora.application.config;
 
+import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 
@@ -24,6 +25,15 @@ public class BaseServiceConfig extends DynamicObject {
     
     public CompositeMap getParameterConfig(){
         return object_context.getChild(KEY_PARAMETER);
+    }
+    
+    public void addInitProcedureAction( CompositeMap config ){
+        CompositeMap init_config = getInitProcedureConfig();
+        if(init_config==null){
+            init_config = object_context.createChild(KEY_INIT_PROCEDURE);
+            init_config.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        }
+        init_config.addChild(config);
     }
 
 }
