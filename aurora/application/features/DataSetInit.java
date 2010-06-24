@@ -15,6 +15,8 @@ import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.bm.IModelFactory;
+import aurora.database.actions.config.ActionConfigManager;
+import aurora.database.actions.config.ModelQueryConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
@@ -44,14 +46,29 @@ public class DataSetInit implements IViewBuilder {
         Iterator it = list.iterator();
         while(it.hasNext()){
         	CompositeMap dataset = (CompositeMap)it.next();
-        	processDataSet(dataset,model,dslist);
+        	processDataSet(dataset,model,dslist,screen);
         }
         datasets.getChilds().addAll(dslist);
     }
     
-    private void processDataSet(CompositeMap ds,CompositeMap model,List dslist) throws Exception{
+    private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
 		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
 		String queryUrl = ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
+		String m = ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
+		if(!"".equals(m)){
+			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
+			mqc.setModel(m);
+			mqc.setRootPath("/model/"+m);
+			mqc.setAutoCount(ds.getBoolean(DataSetConfig.PROPERTITY_AUTOCOUNT, false));
+			mqc.setFetchAll(ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true));
+			screen.addInitProcedureAction(mqc.getObjectContext());
+			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
+			if(datas == null){
+				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
+			}
+			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+m);
+		}
+		
 		if(!"".equals(queryUrl)){
 			queryUrl = uncertain.composite.TextParser.parse(queryUrl, model);
 			ds.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);

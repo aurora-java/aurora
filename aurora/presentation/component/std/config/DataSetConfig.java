@@ -25,6 +25,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SELECTABLE = "selectable";
 	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	public static final String PROPERTITY_BINDNAME = "bindname";
+	public static final String PROPERTITY_MODEL = "model";
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -79,6 +80,14 @@ public class DataSetConfig extends ComponentConfig {
 	}
 	public void setQueryDataSet(String id){
 		putString(PROPERTITY_QUERYDATASET, id);
+	}
+	
+	public void setModel(String model){
+		putString(PROPERTITY_MODEL, model);
+	}
+	
+	public String getModel(){
+		return getString(PROPERTITY_MODEL);
 	}
 	
 	public void setFetchAll(boolean fetchAll){
