@@ -200,8 +200,8 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap column = (CompositeMap)it.next();
 				if(column.getChilds() == null){
-					String dataindex = column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"");
-					if(!"".equals(dataindex)) column.putString(GridColumnConfig.PROPERTITY_DATAINDEX, dataindex);
+					String dataindex = column.getString(GridColumnConfig.PROPERTITY_NAME,"");
+					if(!"".equals(dataindex)) column.putString(GridColumnConfig.PROPERTITY_NAME, dataindex);
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false))column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
 					if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
@@ -221,11 +221,11 @@ public class Grid extends Component {
 			}		
 		}
 		
-		
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
+		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
-		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session));
-		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session));
+		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session, bindTarget));
+		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session, bindTarget));
 		map.put(GridConfig.PROPERTITY_COLUMNS, jsons.toString());
 		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
 		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
@@ -447,7 +447,7 @@ public class Grid extends Component {
 
 	
 	
-	private String generateLockArea(Map map, List columns, Map pro,BuildSession session){
+	private String generateLockArea(Map map, List columns, Map pro,BuildSession session, String dataSet){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		boolean hasLockColumn = false;
@@ -461,7 +461,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
-					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
+					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></TH>");
 					lockWidth +=cwidth;				
 				}				
 			}
@@ -489,9 +489,9 @@ public class Grid extends Component {
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 							if(!hidden){
-								String headTitle = column.getString(GridColumnConfig.PROPERTITY_PROMPT, "");
+								String headTitle = getFieldPrompt(session, column, dataSet);
 								headTitle = session.getLocalizedPrompt(headTitle);
-								hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+headTitle+"</div></TD>");
+								hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 							}
 						}
 					}
@@ -515,7 +515,7 @@ public class Grid extends Component {
 	}
 	
 	
-	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session){
+	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session, String dataSet){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		
@@ -528,7 +528,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
-					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'></TH>");
+					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></TH>");
 					unlockWidth +=cwidth;				
 				}				
 			}
@@ -549,9 +549,9 @@ public class Grid extends Component {
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 					if(!hidden){
-						String headTitle = column.getString(GridColumnConfig.PROPERTITY_PROMPT, "");
+						String headTitle = getFieldPrompt(session, column, dataSet);
 						headTitle = session.getLocalizedPrompt(headTitle);
-						hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_DATAINDEX,"")+"'><div>"+headTitle+"</div></TD>");
+						hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 					}
 				}
 			}

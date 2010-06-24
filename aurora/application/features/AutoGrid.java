@@ -121,7 +121,7 @@ public class AutoGrid implements IFeature{
 				if(field.isForDisplay()){
 					GridColumnConfig column = GridColumnConfig.getInstance(field.getObjectContext());
 					column.setWidth(field.getDisplayWidth());
-					column.setDataIndex(column.getName());
+//					column.setName(column.getName());
 					if(field.isDateType() && "".equals(column.getRenderer())){
 						column.setRenderer("Aurora.formateDate");
 					}
@@ -141,8 +141,8 @@ public class AutoGrid implements IFeature{
 				Iterator bit = bmColumns.iterator();
 				while(bit.hasNext()){
 					GridColumnConfig bmColumn = (GridColumnConfig)bit.next();
-					String bmDataIndex = bmColumn.getDataIndex();
-					String griddataIndex = column.getString(GridColumnConfig.PROPERTITY_DATAINDEX);
+					String bmDataIndex = bmColumn.getName();
+					String griddataIndex = column.getString(GridColumnConfig.PROPERTITY_NAME);
 					if(bmDataIndex.equals(griddataIndex)){
 						defined = true;
 						bmColumn.getObjectContext().copy(column);

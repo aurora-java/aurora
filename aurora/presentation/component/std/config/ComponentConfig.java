@@ -9,7 +9,7 @@ public class ComponentConfig extends DynamicObject {
 	
 	public static final String PROPERTITY_ID = "id";
 	public static final String PROPERTITY_NAME = "name";
-	public static final String PROPERTITY_LABEL = "prompt";
+	public static final String PROPERTITY_PROMPT = "prompt";
 	public static final String PROPERTITY_STYLE = "style";
 	public static final String PROPERTITY_VALUE = "value";
 	public static final String PROPERTITY_WIDTH = "width";
@@ -47,10 +47,10 @@ public class ComponentConfig extends DynamicObject {
     }
     
     public String getPrompt(){
-        return getString(PROPERTITY_LABEL);
+        return getString(PROPERTITY_PROMPT);
     }
     public void setPrompt(String prompt){
-        putString(PROPERTITY_LABEL, prompt);
+        putString(PROPERTITY_PROMPT, prompt);
     }
     
     public String getStyle(){

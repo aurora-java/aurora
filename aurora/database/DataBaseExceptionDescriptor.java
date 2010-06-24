@@ -6,13 +6,15 @@
  */
 package aurora.database;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
+import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
-import aurora.database.service.RawSqlService;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceContext;
-import aurora.service.exception.BaseExceptionDescriptor;
 import aurora.service.validation.ErrorMessage;
 
 /**
@@ -23,7 +25,7 @@ import aurora.service.validation.ErrorMessage;
  */
 public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 
-	private static final String SERVICE_NAME = "sys.error_message";
+	private static final String SERVICE_NAME = "sys.sys_error_message";
 
 	private UncertainEngine engine;
 
@@ -51,12 +53,14 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 			}catch(Exception e){}
 			
 			if(errLineId.intValue()!=-1){
-				SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
-				sqlServiceContext.getParameter().put("lineId", errLineId);
+//				SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context.getObjectContext());
+//				sqlServiceContext.getParameter().put("lineId", errLineId);
+				Map map  = new HashMap();
+				map.put("lineId", errLineId);
 	            
 				DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
-				RawSqlService sqlService = svcFactory.getSqlService(SERVICE_NAME, context);
-				CompositeMap resultMap = sqlService.queryAsMap(sqlServiceContext, FetchDescriptor.getDefaultInstance());
+				BusinessModelService sqlService = svcFactory.getModelService(SERVICE_NAME);//(name, context_map)getSqlService
+				CompositeMap resultMap = sqlService.queryAsMap(map, FetchDescriptor.getDefaultInstance());
 	
 				CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);
 				message = (String) msg.getObject("@MESSAGE");

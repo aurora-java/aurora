@@ -10,11 +10,11 @@ public class GridColumnConfig extends ComponentConfig {
 	
 	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_ALIGN = "align";
-	public static final String PROPERTITY_DATAINDEX = "dataindex";
+//	public static final String PROPERTITY_DATAINDEX = "dataindex";
 	public static final String PROPERTITY_LOCK = "lock";
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	public static final String PROPERTITY_RESIZABLE = "resizable";
-	public static final String PROPERTITY_PROMPT = "prompt";
+//	public static final String PROPERTITY_PROMPT = "prompt";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_SORTABLE = "sortable";
 	public static final String PROPERTITY_SORTABLE_FIELD = "sortfield";
@@ -45,12 +45,12 @@ public class GridColumnConfig extends ComponentConfig {
 		}
 	}
 	
-	public String getDataIndex(){
-		return getString(PROPERTITY_DATAINDEX);
-	}
-	public void setDataIndex(String index){
-		putString(PROPERTITY_DATAINDEX, index);
-	}
+//	public String getDataIndex(){
+//		return getString(PROPERTITY_DATAINDEX);
+//	}
+//	public void setDataIndex(String index){
+//		putString(PROPERTITY_DATAINDEX, index);
+//	}
 	
 	public boolean isLock(){
 		return getBoolean(PROPERTITY_LOCK, false);

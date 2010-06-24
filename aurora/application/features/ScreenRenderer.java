@@ -31,111 +31,146 @@ import aurora.service.http.HttpServiceInstance;
 
 public class ScreenRenderer {
 
-    public static final String HTML_PAGE = "html-page";
+	public static final String HTML_PAGE = "html-page";
 
-    /**
-     * @param prtManager
-     */
-    public ScreenRenderer(PresentationManager prtManager,
-            IObjectRegistry registry) {
-        super();
-        mPrtManager = prtManager;
-        mRegistry = registry;
+	private static final String DEFAULT_LANG_CODE = "ZHS";
 
-        mMessageProvider = (IMessageProvider) mRegistry
-                .getInstanceOfType(IMessageProvider.class);
-        if (mMessageProvider == null)
-            mMessageProvider = DummyMessageProvider.DEFAULT_INSTANCE;
+	/**
+	 * @param prtManager
+	 */
+	public ScreenRenderer(PresentationManager prtManager,
+			IObjectRegistry registry) {
+		super();
+		mPrtManager = prtManager;
+		mRegistry = registry;
 
-        mApplicationConfig = (ApplicationConfig) mRegistry
-                .getInstanceOfType(IApplicationConfig.class);
-        if (mApplicationConfig != null) {
-            ApplicationViewConfig view_config = mApplicationConfig
-                    .getApplicationViewConfig();
-            if (view_config != null) {
-                mDefaultPackage = view_config.getDefaultPackage();
-                mDefaultTemplate = view_config.getDefaultTemplate();
-            }
-        }
-    }
+		mMessageProvider = (IMessageProvider) mRegistry
+				.getInstanceOfType(IMessageProvider.class);
+		if (mMessageProvider == null)
+			mMessageProvider = DummyMessageProvider.DEFAULT_INSTANCE;
 
-    PresentationManager mPrtManager;
-    HttpServiceInstance mService;
-    CompositeMap mContext;
-    CompositeMap mScreen;
+		mApplicationConfig = (ApplicationConfig) mRegistry
+				.getInstanceOfType(IApplicationConfig.class);
+		if (mApplicationConfig != null) {
+			ApplicationViewConfig view_config = mApplicationConfig
+					.getApplicationViewConfig();
+			if (view_config != null) {
+				mDefaultPackage = view_config.getDefaultPackage();
+				mDefaultTemplate = view_config.getDefaultTemplate();
+			}
+		}
+	}
 
-    IObjectRegistry mRegistry;
-    IMessageProvider mMessageProvider;
-    String mLangPath = "/session/@lang";
-    ApplicationConfig mApplicationConfig;
-    String mDefaultPackage;
-    String mDefaultTemplate;
+	PresentationManager mPrtManager;
+	HttpServiceInstance mService;
+	CompositeMap mContext;
+	CompositeMap mScreen;
 
-    // DatabaseServiceFactory mServiceFactory;
+	IObjectRegistry mRegistry;
+	IMessageProvider mMessageProvider;
+	String mLangPath = "/session/@lang";
+	ApplicationConfig mApplicationConfig;
+	String mDefaultPackage;
+	String mDefaultTemplate;
 
-    public int onCreateView(ProcedureRunner runner) {
-        mContext = runner.getContext();
-        mService = (HttpServiceInstance) ServiceInstance.getInstance(mContext);
-        ScreenConfig cfg = ScreenConfig.createScreenConfig(mService
-                .getServiceConfigData());
-        mScreen = cfg.getViewConfig();
-        if (mScreen != null) {
-            mScreen.setName(HTML_PAGE);
-            mScreen.setNameSpaceURI(null);
-            if(mScreen.getString(TemplateRenderer.KEY_TEMPLATE)==null)
-                mScreen.putString(TemplateRenderer.KEY_TEMPLATE, mDefaultTemplate);
-            if(mScreen.getString(TemplateRenderer.KEY_PACKAGE)==null)
-                mScreen.putString(TemplateRenderer.KEY_PACKAGE, mDefaultPackage);
-            mContext.addChild(mScreen);
-            mContext.putBoolean("output", true);
-        }
-        return EventModel.HANDLE_NORMAL;
-    }
+	// DatabaseServiceFactory mServiceFactory;
 
-    public int onBuildOutputContent(ProcedureRunner runner) throws Exception {
-        if (mScreen == null)
-            return EventModel.HANDLE_NORMAL;
+	public int onCreateView(ProcedureRunner runner) {
+		mContext = runner.getContext();
+		mService = (HttpServiceInstance) ServiceInstance.getInstance(mContext);
+		ScreenConfig cfg = ScreenConfig.createScreenConfig(mService
+				.getServiceConfigData());
+		mScreen = cfg.getViewConfig();
+		if (mScreen != null) {
+			mScreen.setName(HTML_PAGE);
+			mScreen.setNameSpaceURI(null);
+			if (mScreen.getString(TemplateRenderer.KEY_TEMPLATE) == null)
+				mScreen.putString(TemplateRenderer.KEY_TEMPLATE,
+						mDefaultTemplate);
+			if (mScreen.getString(TemplateRenderer.KEY_PACKAGE) == null)
+				mScreen
+						.putString(TemplateRenderer.KEY_PACKAGE,
+								mDefaultPackage);
+			mContext.addChild(mScreen);
+			mContext.putBoolean("output", true);
+		}
+		return EventModel.HANDLE_NORMAL;
+	}
 
-        CompositeMap context = runner.getContext();
-        ILogger logger = LoggingContext.getLogger(context,
-                BuildSession.LOGGING_TOPIC);
-        HttpServletResponse response = mService.getResponse();
-        HttpServletRequest request = mService.getRequest();
+	public int onBuildOutputContent(ProcedureRunner runner) throws Exception {
+		if (mScreen == null)
+			return EventModel.HANDLE_NORMAL;
 
-        // create BuildSession
-        response.setContentType("text/html;charset=utf-8");
-        Writer out = response.getWriter();
-        BuildSession session = mPrtManager.createSession(out);
+		CompositeMap context = runner.getContext();
+		ILogger logger = LoggingContext.getLogger(context,
+				BuildSession.LOGGING_TOPIC);
+		HttpServletResponse response = mService.getResponse();
+		HttpServletRequest request = mService.getRequest();
 
-        // set localized message provider for i18n
-        String language_code = (String) context.getObject(mLangPath);
-        if (language_code != null) {
-            ILocalizedMessageProvider lp = mMessageProvider
-                    .getLocalizedMessageProvider(language_code);
-            session.setMessageProvider(lp);
-        }
+		// create BuildSession
+		response.setContentType("text/html;charset=utf-8");
+		Writer out = response.getWriter();
+		BuildSession session = mPrtManager.createSession(out);
 
-        // set theme
-        Cookie[] cookies = request.getCookies();
-        String appTheme = "default";
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                Cookie cookie = cookies[i];
-                String cname = cookie.getName();
-                if ("app_theme".equals(cname)) {
-                    appTheme = cookie.getValue();
-                }
-            }
-        }
-        session.setTheme(appTheme);
-        session.setBaseConfig(mService.getServiceConfig());
-        session.setInstanceOfType(IService.class, mService);
-        session.setLogger(logger);
-        session.buildView(mService.getServiceContext().getModel(), mScreen);
-        out.flush();
+		// set localized message provider for i18n
+		String language_code = getLanguageCode(runner, mService,
+				mMessageProvider.getLangPath(), mMessageProvider
+						.getDefaultLang());
+		if (language_code != null) {
+			ILocalizedMessageProvider lp = mMessageProvider
+					.getLocalizedMessageProvider(language_code);
+			session.setMessageProvider(lp);
+		}
 
-        return EventModel.HANDLE_NO_SAME_SEQUENCE;
+		// set theme
+		Cookie[] cookies = request.getCookies();
+		String appTheme = "default";
+		if (cookies != null) {
+			for (int i = 0; i < cookies.length; i++) {
+				Cookie cookie = cookies[i];
+				String cname = cookie.getName();
+				if ("app_theme".equals(cname)) {
+					appTheme = cookie.getValue();
+				}
+			}
+		}
+		session.setTheme(appTheme);
+		session.setBaseConfig(mService.getServiceConfig());
+		session.setInstanceOfType(IService.class, mService);
+		session.setLogger(logger);
+		session.buildView(mService.getServiceContext().getModel(), mScreen);
+		out.flush();
 
-    }
+		return EventModel.HANDLE_NO_SAME_SEQUENCE;
 
+	}
+
+	private String getLanguageCode(ProcedureRunner runner,
+			HttpServiceInstance service, String langPath, String defaultLange) {
+		String langCode = "";
+		CompositeMap context = runner.getContext();
+		if (!"".equals(langPath)) {
+			Object lo = context.getObject(langPath);
+			langCode = lo != null ? lo.toString() : "";
+		}
+		if ("".equals(langCode) && !"".equals(defaultLange)) {
+			langCode = defaultLange;
+		}
+		if ("".equals(langCode)) {
+			HttpServletRequest request = service.getRequest();
+			String acceptLanguage = request.getHeader("Accept-Language");
+			langCode = translateLanguageCode(acceptLanguage.toLowerCase());
+		}
+		return langCode;
+	}
+
+	private String translateLanguageCode(String acceptLanguage) {
+		String code = DEFAULT_LANG_CODE;
+		if (acceptLanguage.indexOf("zh-cn") != -1) {
+			code = "ZHS";
+		} else if (acceptLanguage.indexOf("en-us") != -1) {
+			code = "US";
+		}
+		return code;
+	}
 }

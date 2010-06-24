@@ -11,11 +11,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.markup.HtmlPageContext;
+import aurora.service.IService;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
@@ -76,17 +79,28 @@ public class Component {
 		map.put(WRAP_CSS, clazz);
 		
 		CompositeMap vwc = null,vhc = null;
+		String vws = null,vhs = null;
 		Integer vw = null,vh = null;
 		CompositeMap root = view.getRoot();
-		if(root !=null) {
-			vwc = (CompositeMap)root.getObject("/cookie/@vw");
-			vhc = (CompositeMap)root.getObject("/cookie/@vh");
-		}
-		if(vwc !=null){
-			vw = vwc.getInt("value");
-		}
-		if(vhc !=null){
-			vh = vhc.getInt("value");
+		if(root !=null) {			
+			vws = (String)root.getObject("/parameter/@_vw");
+			vhs = (String)root.getObject("/parameter/@_vh");			
+			if(vws==null){
+				vwc = (CompositeMap)root.getObject("/cookie/@vw");
+				if(vwc !=null){
+					vw = vwc.getInt("value");
+				}
+			}else{
+				vw = Integer.valueOf(vws);
+			}
+			if(vhs==null){
+				vhc = (CompositeMap)root.getObject("/cookie/@vh");
+				if(vhc !=null){
+					vh = vhc.getInt("value");
+				}
+			}else{
+				vh = Integer.valueOf(vhs);
+			}			
 		}
 
 		/** Width属性**/
@@ -213,5 +227,50 @@ public class Component {
 	 */
 	protected String getConfigString(){
 		return config.toString();
+	}
+	
+	
+	protected String getFieldPrompt(BuildSession session, CompositeMap field, String dataset){
+		String label = field.getString(ComponentConfig.PROPERTITY_PROMPT, "");
+		if("".equals(label)){
+			String name = field.getString(ComponentConfig.PROPERTITY_NAME, "");
+			CompositeMap ds = getDataSet(session, dataset);
+			if(ds!=null){
+				CompositeMap fieldcm = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
+				if(fieldcm !=null){
+					List fields = fieldcm.getChilds();
+					Iterator it = fields.iterator();
+					while(it.hasNext()){
+						CompositeMap fieldMap = (CompositeMap)it.next();
+						String fn = fieldMap.getString(ComponentConfig.PROPERTITY_NAME,"");
+						if(name.equals(fn)){
+							label = fieldMap.getString(ComponentConfig.PROPERTITY_PROMPT,"");
+							break;
+						}
+					}
+				}
+			}
+		}
+		return label;
+	}
+	
+	private CompositeMap getDataSet(BuildSession session, String dataSetName){
+		CompositeMap dataset = null;
+		ServiceInstance svc = (ServiceInstance)session.getInstanceOfType(IService.class);
+        ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
+        CompositeMap datasets = screen.getDataSetsConfig();
+        if(datasets!=null){
+	        List list = datasets.getChilds();
+	        Iterator it =list.iterator();
+	        while(it.hasNext()){
+	        	CompositeMap ds = (CompositeMap)it.next();
+	        	String dsname = ds.getString("id", "");
+	        	if(dataSetName.equals(dsname)){
+	        		dataset = ds;
+	        		break;
+	        	}
+	        }
+        }
+        return dataset;
 	}
 }

@@ -5,6 +5,7 @@ package aurora.database.actions;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
+import uncertain.composite.TextParser;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
@@ -58,8 +59,9 @@ public class ModelQuery extends AbstractQueryAction {
         if(model==null)
             throw new IllegalArgumentException("Must set 'model' property");
         ILogger logger = LoggingContext.getLogger(context, DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
-        logger.config("===================================== prepare to run model-query "+model+"==============================");
-        service = svcFactory.getModelService(model, context);
+        String parsed_model = TextParser.parse(model, context);
+        logger.config("===================================== prepare to run model-query "+parsed_model+"==============================");
+        service = svcFactory.getModelService(parsed_model, context);
         setConnectionName(service.getBusinessModel().getDataSourceName());
         /*
         SqlServiceContext
