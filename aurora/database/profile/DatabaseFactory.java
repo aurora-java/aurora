@@ -71,7 +71,7 @@ public class DatabaseFactory implements IDatabaseFactory {
     }
     
     public void addProperties( CompositeMap propers ){
-        mProperties.putAll(propers);
+        mProperties.copy(propers);
     }
     
     public String getDefaultDatabase(){
