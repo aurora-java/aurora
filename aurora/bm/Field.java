@@ -38,6 +38,8 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_DISPLAY_WIDTH = "displaywidth";
     public static final String KEY_EDITOR_TYPE = "editortype";
     public static final String KEY_OPTIONS = "options";
+    public static final String KEY_LOOKUP_FIELD = "lookupfield";
+    public static final String KEY_LOOKUP_CODE = "lookupcode";
     
     BusinessModel       owner;
     
@@ -293,6 +295,23 @@ public class Field extends DynamicObject implements IParameter {
     public void setDefaultValue( Object value ){
         put(KEY_DEFAULT_VALUE, value);
     }
+    
+    public void setLookUpField(String field){
+    	putString(KEY_LOOKUP_FIELD,field);
+    }
+    
+    public String getLookUpField(){
+    	return getString(KEY_LOOKUP_FIELD);
+    }
+    
+    public void setLookUpCode(String code){
+    	putString(KEY_LOOKUP_CODE,code);
+    }
+    
+    public String getLookUpCode(){
+    	return getString(KEY_LOOKUP_CODE);
+    }
+    
     
     public String getReferredModelName(){
         if(!isReferenceField())
