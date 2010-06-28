@@ -21,7 +21,7 @@ public class TagDeleteField{
 		this.name = name;
 	}	
 	public void onDecideDeleteStatement(BusinessModelServiceContext context){		
-		context.put("SqlStatementType", new StringBuffer("TagDelete"));
+		context.setOperation("TagDelete");
 	}
 	public void onCreateTagDeleteStatement(BusinessModel model,BusinessModelServiceContext context){
 		UpdateStatement stmt = new UpdateStatement(model.getBaseTable(), model.getAlias());
