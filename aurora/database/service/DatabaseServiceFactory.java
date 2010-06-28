@@ -33,6 +33,7 @@ import aurora.bm.QuerySqlCreator;
 import aurora.bm.UpdateSqlCreator;
 import aurora.database.DatabaseConstant;
 import aurora.database.features.AutoQueryCounter;
+import aurora.database.features.LookUpField;
 import aurora.database.features.OrderByClauseCreator;
 import aurora.database.features.WhereClauseCreator;
 import aurora.database.profile.IDatabaseFactory;
@@ -87,6 +88,9 @@ public class DatabaseServiceFactory {
         DeleteSqlCreator delete_creator = new DeleteSqlCreator(
                 getModelFactory(), getDatabaseFactory());
         setGlobalParticipant(DeleteSqlCreator.class, delete_creator);
+        
+        LookUpField lookupfiled = new LookUpField(databaseFactory);
+        setGlobalParticipant(LookUpField.class, lookupfiled);
 
         setGlobalParticipant(OrderByClauseCreator.class,
                 new OrderByClauseCreator());
