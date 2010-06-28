@@ -4,6 +4,8 @@
  */
 package aurora.database.profile;
 
+import uncertain.composite.CompositeMap;
+
 /**
  * The facade interface to get a ISqlBuilderRegistry instance under specified database profile
  * ISqlFactory
@@ -37,5 +39,7 @@ public interface IDatabaseFactory {
     public Object getProperty( String key );
     
     public void setProperty( String key, Object value );
+    
+    public CompositeMap getProperties();
 
 }
