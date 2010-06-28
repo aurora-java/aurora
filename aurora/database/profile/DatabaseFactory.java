@@ -114,6 +114,10 @@ public class DatabaseFactory implements IDatabaseFactory {
         return mProperties.get(key);
     }
     
+    public CompositeMap getProperties(){
+        return mProperties;
+    }
+    
     public void setProperty( String key, Object value ){
         mProperties.put(key, value);    
     }
