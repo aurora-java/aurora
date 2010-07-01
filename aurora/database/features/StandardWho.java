@@ -18,7 +18,39 @@ public class StandardWho {
     String  createdByField = "CREATED_BY";
     String  creationDateField = "CREATION_DATE";
     String  lastUpdatedByField = "LAST_UPDATED_BY";
-    String  lastUpdatedDateField = "LAST_UPDATED_DATE";
+    public String getCreatedByField() {
+		return createdByField;
+	}
+
+	public void setCreatedByField(String createdByField) {
+		this.createdByField = createdByField;
+	}
+
+	public String getCreationDateField() {
+		return creationDateField;
+	}
+
+	public void setCreationDateField(String creationDateField) {
+		this.creationDateField = creationDateField;
+	}
+
+	public String getLastUpdatedByField() {
+		return lastUpdatedByField;
+	}
+
+	public void setLastUpdatedByField(String lastUpdatedByField) {
+		this.lastUpdatedByField = lastUpdatedByField;
+	}
+
+	public String getLastUpdatedDateField() {
+		return lastUpdatedDateField;
+	}
+
+	public void setLastUpdatedDateField(String lastUpdatedDateField) {
+		this.lastUpdatedDateField = lastUpdatedDateField;
+	}
+
+	String  lastUpdatedDateField = "LAST_UPDATED_DATE";
     
     public static Field CREATED_BY = Field.createField("CREATED_BY");
     public static Field CREATION_DATE = Field.createField("CREATION_DATE");
