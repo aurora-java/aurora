@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" datasourceName="oracle" baseTable="FND_DESCRIPTIONS">
+ 	<operations>		
+		<operation name="update">
+			<parameters>
+				<parameter name="DESCRIPTION_ID" dataType="java.lang.Long" required="true"/>				
+				<parameter name="REF_TABLE" dataType="java.lang.String" required="true"/>
+				<parameter name="REF_FIELD" dataType="java.lang.String" required="true"/>
+				<parameter name="DESCRIPTION_TEXT" dataType="java.lang.String"/>
+			</parameters>
+			<update-sql>
+				begin 
+					fnd_description_pkg.reset_fnd_descriptions(${@DESCRIPTION_ID},
+                                                               ${@REF_TABLE},
+				                                               ${@REF_FIELD},
+				                                               ${@DESCRIPTION_TEXT},
+															   ${/session/@user_id},
+															   ${/session/@user_id},
+															   userenv('lang')
+				                                               );
+				end;				
+			</update-sql>
+		</operation>		
+		<operation name="delete">
+			<parameters>
+				<parameter name="DESCRIPTION_ID" dataType="java.lang.Long" required="true"/>					
+			</parameters>
+			<update-sql>
+				begin 
+					fnd_description_pkg.delete_fnd_descriptions(${@DESCRIPTION_ID});
+				end;				
+			</update-sql>
+		</operation>		
+	</operations>
+</model>

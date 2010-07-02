@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:model xmlns:ns1="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" datasourceName="oracle" baseTable="FND_COMPANIES" alias="fc">
+    <ns1:fields>
+    	<ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="COMPANY_ID"/>
+		<ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="COMPANY_CODE"/>
+		<ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="COMPANY_TYPE"/>
+		<ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="COMPANY_SHORT_NAME_ID" multiLanguage="true" multiLanguageDescField="COMPANY_SHORT_NAME"/>
+		<ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="COMPANY_FULL_NAME_ID" multiLanguage="true" multiLanguageDescField="COMPANY_FULL_NAME"/>
+		<ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="SET_OF_BOOKS_ID"/>		
+		<ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="COMPANY_SHORT_NAME" forInsert="false" forUpdate="false" expression="(select 1111111111111 from dual)"/>
+		<ns1:field databaseType="DATE" datatype="java.util.Date" name="START_DATE_ACTIVE" forInsert="true" forUpdate="true"/>
+    </ns1:fields>
+    <ns1:primary-key>
+        <ns1:field name="COMPANY_ID"/>
+    </ns1:primary-key>
+    <ns1:features>        
+	    <ns2:sequence-pk/>
+        <f:standard-who lastUpdatedDateField="LAST_UPDATE_DATE"/>      
+		<f:multi-language-storage/> 
+    </ns1:features>
+</ns1:model>
