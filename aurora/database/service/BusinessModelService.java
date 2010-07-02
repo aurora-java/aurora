@@ -267,16 +267,19 @@ public class BusinessModelService {
         List param_list = mBusinessModel.getParameterForOperationInList(mServiceContext.getOperation());
         s.defineParameters(param_list);
         s.parse(sql.toString());
-        SqlServiceContext context = null;
+        SqlRunner runner =createSqlRunner(bmsc,s);
+        bmsc.setSqlRunner(runner);        
+    }
+    public static SqlRunner createSqlRunner(BusinessModelServiceContext bmsc,ParsedSql parsedSql){
+    	SqlServiceContext context = null;
         CompositeMap root = bmsc.getObjectContext().getRoot();
         if (root != null)
             context = SqlServiceContext.createSqlServiceContext(root);
         else
             context = bmsc;
-        SqlRunner runner = new SqlRunner(context, s);
-        runner.setConnectionName(bmsc.getBusinessModel().getDataSourceName());
-        //runner.setTrace(bmsc.isTrace());
-        bmsc.setSqlRunner(runner);        
+        SqlRunner runner = new SqlRunner(context, parsedSql);
+        runner.setConnectionName(bmsc.getBusinessModel().getDataSourceName());        
+    	return runner;
     }
 
     public void onExecuteDmlStatement(SqlRunner runner) throws Exception {
