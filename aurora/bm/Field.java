@@ -42,7 +42,21 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_LOOKUP_CODE = "lookupcode";
     
     BusinessModel       owner;
-    
+    public static final String KEY_MULTI_LANGUAGE="multilanguage";
+    public static final String KEY_MULTI_LANGUAGE_DESC_FIELD="multilanguagedescfield";
+        
+    public void setMultiLanguage(boolean multiLanguage){
+    	putBoolean(KEY_MULTI_LANGUAGE, multiLanguage);
+    }
+    public boolean getMultiLanguage(){
+    	return getBoolean(KEY_MULTI_LANGUAGE,false);
+    }
+    public void setMultiLanguageDescField(String multiLanguageDescField){
+    	putString(KEY_MULTI_LANGUAGE_DESC_FIELD, multiLanguageDescField);
+    }
+    public String getMultiLanguageDescField(){
+    	return getString(KEY_MULTI_LANGUAGE_DESC_FIELD);
+    }
     public static Field getInstance(CompositeMap context){
         Field field = new Field();
         field.initialize(context);
