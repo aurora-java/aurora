@@ -25,7 +25,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
                 ControllerProcedures.INVOKE_SERVICE);
         String uri = request.getRequestURI();
         String[] args = uri.split("/");
-        if (args.length < 3)
+        if (args.length < 4)
             throw new ServletException("Invalid request format");
         int start_index = args[0].length() == 0 ? 1 : 0;
         String object_name = args[start_index + 2];
