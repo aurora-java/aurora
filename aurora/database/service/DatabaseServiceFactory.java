@@ -89,7 +89,7 @@ public class DatabaseServiceFactory {
                 getModelFactory(), getDatabaseFactory());
         setGlobalParticipant(DeleteSqlCreator.class, delete_creator);
         
-        LookUpField lookupfiled = new LookUpField(databaseFactory);
+        LookUpField lookupfiled = new LookUpField(databaseFactory,uncertainEngine.getObjectRegistry());
         setGlobalParticipant(LookUpField.class, lookupfiled);
 
         setGlobalParticipant(OrderByClauseCreator.class,
