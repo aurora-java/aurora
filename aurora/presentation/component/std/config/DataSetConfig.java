@@ -26,6 +26,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	public static final String PROPERTITY_BINDNAME = "bindname";
 	public static final String PROPERTITY_MODEL = "model";
+	public static final String PROPERTITY_LOOKUP_CODE = "lookupcode";
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -88,6 +89,14 @@ public class DataSetConfig extends ComponentConfig {
 	
 	public String getModel(){
 		return getString(PROPERTITY_MODEL);
+	}
+	
+	public void setLookupCode(String code){
+		putString(PROPERTITY_LOOKUP_CODE, code);
+	}
+	
+	public String getLookupCode(){
+		return getString(PROPERTITY_LOOKUP_CODE);
 	}
 	
 	public void setFetchAll(boolean fetchAll){
