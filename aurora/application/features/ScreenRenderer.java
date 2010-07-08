@@ -38,14 +38,12 @@ public class ScreenRenderer {
 	/**
 	 * @param prtManager
 	 */
-	public ScreenRenderer(PresentationManager prtManager,
-			IObjectRegistry registry) {
+	public ScreenRenderer(PresentationManager prtManager,IObjectRegistry registry) {
 		super();
 		mPrtManager = prtManager;
 		mRegistry = registry;
 
-		mMessageProvider = (IMessageProvider) mRegistry
-				.getInstanceOfType(IMessageProvider.class);
+		mMessageProvider = (IMessageProvider) mRegistry.getInstanceOfType(IMessageProvider.class);
 		if (mMessageProvider == null)
 			mMessageProvider = DummyMessageProvider.DEFAULT_INSTANCE;
 
@@ -67,8 +65,9 @@ public class ScreenRenderer {
 	CompositeMap mScreen;
 
 	IObjectRegistry mRegistry;
+	ILookupCodeProvider lookupProvider;
 	IMessageProvider mMessageProvider;
-	String mLangPath = "/session/@lang";
+//	String mLangPath = "/session/@lang";
 	ApplicationConfig mApplicationConfig;
 	String mDefaultPackage;
 	String mDefaultTemplate;
@@ -114,13 +113,15 @@ public class ScreenRenderer {
 
 		// set localized message provider for i18n
 		String language_code = getLanguageCode(runner, mService,
-				mMessageProvider.getLangPath(), mMessageProvider
-						.getDefaultLang());
+				mMessageProvider.getLangPath(), mMessageProvider.getDefaultLang());
 		if (language_code != null) {
 			ILocalizedMessageProvider lp = mMessageProvider
 					.getLocalizedMessageProvider(language_code);
 			session.setMessageProvider(lp);
 		}
+		
+		lookupProvider =  (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
+		session.setLookupProvider(lookupProvider);
 
 		// set theme
 		Cookie[] cookies = request.getCookies();

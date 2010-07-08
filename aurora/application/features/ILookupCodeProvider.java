@@ -4,6 +4,8 @@
  */
 package aurora.application.features;
 
+import java.util.List;
+
 import uncertain.composite.CompositeMap;
 
 /**
@@ -21,7 +23,7 @@ public interface ILookupCodeProvider {
      *  <item value="-1" prompt="Fail" />
      * </options>
      */
-    public CompositeMap getLookupList( CompositeMap session_context, String lookup_code );
+    public List getLookupList( CompositeMap session_context, String lookup_code );
     
     /**
      * Get prompt of a code
@@ -31,5 +33,9 @@ public interface ILookupCodeProvider {
      * @return Prompt according to specified value
      */
     public String getLookupPrompt( CompositeMap session_context, String lookup_code, Object lookup_value );
+    
+    public String getLookupType();
+    
+    public String getLookupModel();
 
 }
