@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import aurora.application.features.ILookupCodeProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -127,6 +128,19 @@ public class DataSet extends Component {
 				}						
 			}
 		}
+		String lcode = view.getString(DataSetConfig.PROPERTITY_LOOKUP_CODE, "");
+		if(!"".equals(lcode)){
+			ILookupCodeProvider provider = session.getLookupProvider();
+			if(provider!=null){
+				List llist = provider.getLookupList(model, lcode);
+				Iterator it = llist.iterator();
+				while(it.hasNext()){
+					JSONObject json = new JSONObject((CompositeMap)it.next());
+					dataList.add(json);					
+				}
+			}
+		}
+		
 		boolean create = view.getBoolean(DataSetConfig.PROPERTITY_CREATERECORD, false);
 		if(dataList.size() == 0 && create) {
 			JSONObject json = new JSONObject();
