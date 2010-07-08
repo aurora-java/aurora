@@ -26,6 +26,7 @@ import uncertain.logging.DummyLogger;
 import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
 import uncertain.util.template.TextTemplate;
+import aurora.application.features.ILookupCodeProvider;
 import aurora.i18n.DummyLocalizedMessageProvider;
 import aurora.i18n.ILocalizedMessageProvider;
 
@@ -70,6 +71,7 @@ public class BuildSession {
     
     // 
     ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
+    ILookupCodeProvider lookupProvider;
 
     public BuildSession( PresentationManager pm){
         this.mOwner = pm;
@@ -432,5 +434,13 @@ public class BuildSession {
     
     public void setMessageProvider(ILocalizedMessageProvider messageProvider) {
         mMessageProvider = messageProvider;
+    }
+    
+    public ILookupCodeProvider getLookupProvider() {
+        return lookupProvider;
+    }
+    
+    public void setLookupProvider(ILookupCodeProvider provider) {
+    	lookupProvider = provider;
     }
 }
