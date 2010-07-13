@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:bm="http://www.aurora-framework.org/schema/bm">
     <ss:types>
         <ss:complexType document="所有可以放置在bm的features部分的tag，必须继承此类型" name="bm:feature"/>
         <ss:simpleType base="ss:string" name="bm:rawsql"/>
@@ -71,8 +71,10 @@
                 <ss:attribute name="name"/>
             </ss:attributes>
             <ss:array ref="bm:parameter" name="bm:parameters"/>
-            <ss:element ref="bm:query-sql"/>
-            <ss:element ref="bm:update-sql"/>
+             <ss:elements>
+	            <ss:element ref="bm:query-sql"/>
+	            <ss:element ref="bm:update-sql"/>
+             </ss:elements>
         </ss:element>
         <ss:element name="bm:model">
             <ss:attributes>
@@ -81,13 +83,13 @@
                 <ss:attribute document="对应的数据源的名称" name="dataSourceName"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array type="bm:field" name="fields"/>
-                <ss:array type="bm:field" name="primary-key"/>
-                <ss:array type="bm:field" name="order-by"/>
-                <ss:array type="bm:relation" name="relations"/>
-                <ss:array type="bm:data-filter" name="data-filters"/>
-                <ss:array type="bm:feature" name="features"/>
-                <ss:array type="bm:operation" name="operations"/>
+                <ss:array type="bm:field" name="bm:fields"/>
+                <ss:array type="bm:field" name="bm:primary-key"/>
+                <ss:array type="bm:field" name="bm:order-by"/>
+                <ss:array type="bm:relation" name="bm:relations"/>
+                <ss:array type="bm:data-filter" name="bm:data-filters"/>
+                <ss:array type="bm:feature" name="bm:features"/>
+                <ss:array type="bm:operation" name="bm:operations"/>
             </ss:arrays>
         </ss:element>
     </ss:elements>
