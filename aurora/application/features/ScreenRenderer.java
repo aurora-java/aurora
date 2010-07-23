@@ -19,6 +19,7 @@ import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
 import aurora.application.config.ScreenConfig;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.i18n.DummyMessageProvider;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
@@ -38,10 +39,11 @@ public class ScreenRenderer {
 	/**
 	 * @param prtManager
 	 */
-	public ScreenRenderer(PresentationManager prtManager,IObjectRegistry registry) {
+	public ScreenRenderer(PresentationManager prtManager,IObjectRegistry registry,IDatabaseFactory factory) {
 		super();
 		mPrtManager = prtManager;
 		mRegistry = registry;
+		databaseFactory = factory;
 
 		mMessageProvider = (IMessageProvider) mRegistry.getInstanceOfType(IMessageProvider.class);
 		if (mMessageProvider == null)
@@ -63,10 +65,11 @@ public class ScreenRenderer {
 	HttpServiceInstance mService;
 	CompositeMap mContext;
 	CompositeMap mScreen;
-
+	IDatabaseFactory databaseFactory;
 	IObjectRegistry mRegistry;
 	ILookupCodeProvider lookupProvider;
 	IMessageProvider mMessageProvider;
+	
 //	String mLangPath = "/session/@lang";
 	ApplicationConfig mApplicationConfig;
 	String mDefaultPackage;
@@ -112,13 +115,14 @@ public class ScreenRenderer {
 		BuildSession session = mPrtManager.createSession(out);
 
 		// set localized message provider for i18n
-		String language_code = getLanguageCode(runner, mService,
-				mMessageProvider.getLangPath(), mMessageProvider.getDefaultLang());
-		if (language_code != null) {
-			ILocalizedMessageProvider lp = mMessageProvider
-					.getLocalizedMessageProvider(language_code);
-			session.setMessageProvider(lp);
-		}
+		CompositeMap dbProperties= databaseFactory.getProperties();
+		if(dbProperties==null)
+			throw new Exception("Database Properties undifined");
+		String language_code = getLanguageCode(runner, mService,dbProperties.getString("language_path"), mMessageProvider.getDefaultLang());//mMessageProvider.getLangPath()
+		
+		session.setLanguage(language_code);
+		ILocalizedMessageProvider lp = mMessageProvider.getLocalizedMessageProvider(language_code);
+		session.setMessageProvider(lp);
 		
 		lookupProvider =  (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
 		session.setLookupProvider(lookupProvider);
@@ -143,11 +147,9 @@ public class ScreenRenderer {
 		out.flush();
 
 		return EventModel.HANDLE_NO_SAME_SEQUENCE;
-
 	}
 
-	private String getLanguageCode(ProcedureRunner runner,
-			HttpServiceInstance service, String langPath, String defaultLange) {
+	private String getLanguageCode(ProcedureRunner runner,HttpServiceInstance service, String langPath, String defaultLange) {
 		String langCode = "";
 		CompositeMap context = runner.getContext();
 		if (!"".equals(langPath)) {

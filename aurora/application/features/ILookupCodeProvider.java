@@ -23,7 +23,7 @@ public interface ILookupCodeProvider {
      *  <item value="-1" prompt="Fail" />
      * </options>
      */
-    public List getLookupList( CompositeMap session_context, String lookup_code );
+    public List getLookupList(String language, String lookup_code ) throws Exception;
     
     /**
      * Get prompt of a code
@@ -32,7 +32,7 @@ public interface ILookupCodeProvider {
      * @param lookup_value Value of a item
      * @return Prompt according to specified value
      */
-    public String getLookupPrompt( CompositeMap session_context, String lookup_code, Object lookup_value );
+    public String getLookupPrompt(String language, String lookup_code, Object lookup_value );
     
     public String getLookupType();
     

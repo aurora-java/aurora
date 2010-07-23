@@ -1,12 +1,12 @@
 package aurora.application.features;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
@@ -35,18 +35,47 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 		this.registry = registry;
 	}
 	
-	public List getLookupList(CompositeMap session_context,String lookup_code) {
+	public List getLookupList(String language,String lookup_code) throws Exception {
+		if("sql".equals(lookupType)){			
+			return getListFromDataBase(language,lookup_code);
+		}else{
+			return getListFromCache(language,lookup_code);
+		}
+	}
+	
+	private List getListFromDataBase(String language,String lookup_code) throws Exception {
+		List result = new ArrayList();
+		BusinessModelService service = factory.getModelService(getLookupModel());
+		Map map = new HashMap();
+		map.put("code", lookup_code);
+		map.put("language", language);
+		CompositeMap resultMap = service.queryAsMap(map, FetchDescriptor.fetchAll());
+		if(resultMap!=null){
+			result = resultMap.getChilds();
+			sorList(result);
+		}
+		return result;
+	}
+	
+	private List getListFromCache(String language,String lookup_code) {
 		List result = new ArrayList();
 		Iterator it = cache.iterator();
-		if(lookup_code!=null){
+		
+		if(lookup_code!=null && language!=null){
 			while(it.hasNext()){
 				CompositeMap record = (CompositeMap)it.next();
 				String looupcode = record.getString("code");
-				if(lookup_code.equals(looupcode)){
+				String lan = record.getString("language");
+				if(lookup_code.equals(looupcode) && language.equals(lan)){
 					result.add(record);
 				}
 			}
 		}
+		sorList(result);
+		return result;
+	}
+	
+	private void sorList(List result){
 		Collections.sort(result, new Comparator() {
 			public int compare(Object arg0, Object arg1) {
 				CompositeMap r1 = (CompositeMap)arg0;
@@ -56,10 +85,10 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 				return id1.compareTo(id2);
 			}
 		});
-		return result;
 	}
+	
 
-	public String getLookupPrompt(CompositeMap session_context,String lookup_code, Object lookup_value) {
+	public String getLookupPrompt(String language,String lookup_code, Object lookup_value) {
 		return null;
 	}
 	
@@ -75,7 +104,7 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 	}
 	
 	private void init() throws Exception{
-		if(!inited){
+		if(!"sql".equals(lookupType) && !inited){
 			BusinessModelService service = factory.getModelService(getLookupModel());
 			CompositeMap resultMap = service.queryAsMap(new HashMap(), FetchDescriptor.fetchAll());
 			if(resultMap!=null){
