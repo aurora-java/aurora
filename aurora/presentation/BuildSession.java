@@ -72,6 +72,8 @@ public class BuildSession {
     // 
     ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
     ILookupCodeProvider lookupProvider;
+    
+    String 					language;
 
     public BuildSession( PresentationManager pm){
         this.mOwner = pm;
@@ -443,4 +445,10 @@ public class BuildSession {
     public void setLookupProvider(ILookupCodeProvider provider) {
     	lookupProvider = provider;
     }
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 }
