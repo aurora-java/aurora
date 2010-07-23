@@ -132,7 +132,12 @@ public class DataSet extends Component {
 		if(!"".equals(lcode)){
 			ILookupCodeProvider provider = session.getLookupProvider();
 			if(provider!=null){
-				List llist = provider.getLookupList(model, lcode);
+				List llist = new ArrayList();
+				try {
+					llist = provider.getLookupList(session.getLanguage(), lcode);
+				} catch (Exception e) {
+					throw new IOException(e.getMessage());
+				}
 				Iterator it = llist.iterator();
 				while(it.hasNext()){
 					JSONObject json = new JSONObject((CompositeMap)it.next());
