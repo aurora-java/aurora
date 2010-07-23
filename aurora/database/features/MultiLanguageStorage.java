@@ -36,7 +36,7 @@ public class MultiLanguageStorage{
 	String mlTable=null;
 	CompositeMap dbProperties=null;
 	public MultiLanguageStorage(IModelFactory modelFactory, IDatabaseFactory databaseFactory) throws Exception{	
-		dbProperties=databaseFactory.getProperties();		
+		dbProperties=databaseFactory.getProperties();
 		if(dbProperties==null)
 			throw new Exception("Database Properties undifined");	
 		CompositeMap mlProperties=dbProperties.getChild("multi-language-storage");
@@ -90,6 +90,8 @@ public class MultiLanguageStorage{
     			 if(!is_create){
     				 field=Field.createField(multiLanguageDescField);
     				 field.setPrompt(prompt);
+    				 field.setForInsert(false);
+    				 field.setForUpdate(false);
     				 field.setExpression(createQuerySql(fieldName,alias));
     				 model.addField(field);
     			 }
@@ -106,7 +108,7 @@ public class MultiLanguageStorage{
 		sql.append(" from ");
 		sql.append(mlTable);
 		sql.append(" where "+pkId+"="+alias+"."+fieldName+"" +
-				" and Language="+dbProperties.getString("language_path")+")");//language_path待修改		
+				" and Language=${"+dbProperties.getString("language_path")+"})");//language_path待修改		
 		return sql.toString();
     }
 	public void preCreateInsertStatement(BusinessModel model,
@@ -131,6 +133,7 @@ public class MultiLanguageStorage{
 		ResultSet rs = null;
 		rs = runner.query(new CompositeMap());
 		ResultSetLoader loader = new ResultSetLoader();
+		loader.setFieldNameCase(Character.LOWERCASE_LETTER);
 		FetchDescriptor desc  = FetchDescriptor.fetchAll();
 		CompositeMapCreator consumer = new CompositeMapCreator();
         loader.loadByResultSet( rs, desc, consumer ); 

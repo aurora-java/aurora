@@ -26,8 +26,8 @@ public class LookUpField {
 
 	public void onPrepareBusinessModel(BusinessModel model) {
 		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
-//		String type = lookupProvider.getLookupType();
-//		if("sql".equalsIgnoreCase(type)){
+		String type = lookupProvider.getLookupType();
+		if("sql".equalsIgnoreCase(type)){
 			Field[] fields = model.getFields();
 			List lookupfields = new ArrayList();
 			if (fields != null) {
@@ -73,32 +73,33 @@ public class LookUpField {
 					}
 				}
 			}
-//		}
+		}
+		model.makeReady();
 	}
 
 	public void postFetchResultSet(SqlServiceContext context,BusinessModel model) throws Exception {
 		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
 		String type = lookupProvider.getLookupType();
 		if("cache".equalsIgnoreCase(type)){
-			
+			//TODO:要等seacat修改好后才能实现
 		}
 	}
 
 	private String createExpression(String code, String name) {
-		
-		String sqltemplate = null, sql = null;
+		String sqltemplate = null, sql = null,langPath = "ZHS";
 		CompositeMap properties = this.factory.getProperties();
 		if (properties != null) {
 			CompositeMap lookupmap = properties.getChild("lookup-code");
+			langPath ="${"+properties.getString("language_path")+"}";
 			if (lookupmap != null)
 				sqltemplate = lookupmap.getString("lookupsql");
-		}
-		if (sqltemplate != null) {
-			MessageFormat mf = new MessageFormat(sqltemplate);
-			sql = mf.format(new Object[] { code, name });
+			if (sqltemplate != null) {
+				MessageFormat mf = new MessageFormat(sqltemplate);
+				sql = mf.format(new Object[] { code, name,langPath});
+			}
 		}
 		return sql != null ? sql
 				: "(select code_value_name from sys_code_values_v where code = '"
-						+ code + "' and code_value=to_char(" + name + "))";
+						+ code + "' and code_value=to_char(" + name + ") and language="+langPath+")";
 	}
 }
