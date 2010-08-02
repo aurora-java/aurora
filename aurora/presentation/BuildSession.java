@@ -69,6 +69,8 @@ public class BuildSession {
     // Base configuration
     Configuration             mBaseConfig;
     
+    String 	contextPath;
+    
     // 
     ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
     ILookupCodeProvider lookupProvider;
@@ -328,7 +330,18 @@ public class BuildSession {
                 return null;
             }
         }
-        return mapper.getResourceUrl( pkg.getName(), theme, resource );            
+        StringBuffer buf = new StringBuffer();
+        String path = mapper.getResourceUrl(pkg.getName(), theme, resource );
+        String contextPath = getContextPath();
+        if(contextPath!=null) {
+        	buf.append(contextPath);
+        	if(!contextPath.endsWith("/")){
+        		buf.append("/");
+        	}        	
+        }
+        buf.append(path);
+        return buf.toString();
+        
     }
     
     
@@ -450,5 +463,11 @@ public class BuildSession {
 	}
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+	public String getContextPath() {
+		return contextPath;
+	}
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 }
