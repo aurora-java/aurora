@@ -44,8 +44,12 @@
 				<parameter name="creation_date" dataType="java.sql.Date"/>
 			</parameters>
 			<update-sql>
+			begin
+				exp_pkg....
 				update emp set #UPDATE_FIELDS# 
-				where empno=${@empno}
+				#WHERE_CLAUSE#;
+				exp...
+			end;
 			</update-sql>
 		</operation>
 		<operation name="insert">
@@ -53,11 +57,12 @@
 				<parameter name="ename" dataType="java.lang.String" required="true"/>
 				<parameter name="deptno" dataType="java.lang.Long"/>
 				<parameter name="empno" output="true" />
+				<parameter inputPath="/session/@user_id" />
 			</parameters>
 			<update-sql>
 			begin
 				insert into  emp ( empno, ename, deptno, creation_date, created_by ) 
-				values ( emp_s.nextval, ${@ename}, ${@deptno}, sysdate, ${/session/@user_id})
+				values ( emp_s.nextval, ${/session/@user_id}, ${@deptno}, sysdate, ${/session/@user_id})
 				returning empno into ${@empno};
 			end;
 			</update-sql>
