@@ -38,8 +38,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
     protected IService createServiceInstance(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         final String name = getServiceName(request);
-        final HttpServiceInstance svc = mServiceFactory.createHttpService(name,
-                request, response, this);
+        final HttpServiceInstance svc = mServiceFactory.createHttpService(name, request, response, this);
         return svc;
     }
 
@@ -62,8 +61,8 @@ public class FacadeServlet extends AbstractFacadeServlet {
         Throwable thr = ex.getCause();
         if (thr == null)
             thr = ex;
-        if (thr instanceof IOException)
-            response.sendError(404, request.getRequestURI());
+//        if (thr instanceof IOException)
+//            response.sendError(404, request.getRequestURI());
         else if (thr instanceof SAXException)
             response.sendError(500, "error when parse screen file:"
                     + thr.getMessage());
