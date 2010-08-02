@@ -57,10 +57,22 @@ public class WebContextInit implements ServletContextListener {
     }
 
     public void init(ServletContext servlet_context) throws Exception {
-        System.out.println("***** Aurora Application "
-                + servlet_context.getResource("/").toExternalForm()
-                + " starting up *****");
-        System.out.println("Aurora core version " + Version.getVersion());
+    	StringBuffer sb = new StringBuffer(),line = new StringBuffer();   	
+    	
+    	sb.append("* ").append("Aurora-").append(Version.getVersion());
+    	sb.append("  |  ").append(servlet_context.getResource("/").toExternalForm());
+    	sb.append("  |  ").append(servlet_context.getServletContextName());
+    	sb.append("  |  ").append("Running").append(" *");
+    	int len = sb.length();
+    	for(int i=0;i<len;i++){
+    		line.append("*");
+    	}
+    	System.out.println(line.toString());
+    	System.out.println(sb.toString());
+    	System.out.println(line.toString());
+    	
+//        System.out.println("***** Aurora("+Version.getVersion()+") Application " + servlet_context.getResource("/").toExternalForm() + " starting up *****");
+//        System.out.println("Aurora core version " + Version.getVersion());
 
         initUncertain(servlet_context);
 
