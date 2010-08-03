@@ -62,7 +62,7 @@ public class WebContextInit implements ServletContextListener {
     	sb.append("* ").append("Aurora-").append(Version.getVersion());
     	sb.append("  |  ").append(servlet_context.getResource("/").toExternalForm());
     	sb.append("  |  ").append(servlet_context.getServletContextName());
-    	sb.append("  |  ").append("Running").append(" *");
+    	sb.append(" *");
     	int len = sb.length();
     	for(int i=0;i<len;i++){
     		line.append("*");
