@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
+import aurora.application.Namespace;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -282,6 +283,7 @@ public class Grid extends Component {
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
 			CompositeMap tb = new CompositeMap(GridConfig.PROPERTITY_TOOLBAR);
+			tb.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 //			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 //			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 //			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
