@@ -25,6 +25,18 @@ import aurora.service.validation.Parameter;
 
 public class BusinessModel extends DynamicObject {
 
+    /** How to extend parent model's fields
+     *  override: use all parent's fields, and override parent's config with self
+     *  reference: only use self referred fields
+     */
+    public static final String KEY_EXTEND_MODE = "extendmode";
+    
+    public static final String VALUE_OVERRIDE = "override";
+    
+    public static final String VALUE_REFERENCE = "reference";
+
+    public static final String KEY_EXTEND = "extend";
+
     public static final String KEY_OPERATIONS = "operations";
 
     public static final String SECTION_RELATIONS = "relations";
@@ -546,6 +558,22 @@ public class BusinessModel extends DynamicObject {
     
     public String getFieldPrompt( Field field){
         return getFieldPrompt(field,DEFAULT_FIELD_PROMPT_FORMAT);
+    }
+    
+    public String getExtend(){
+        return getString(KEY_EXTEND);
+    }
+    
+    public void setExtend( String base ){
+        putString(KEY_EXTEND, base);
+    }
+    
+    public String getExtendMode(){
+        return getString(KEY_EXTEND_MODE);
+    }
+    
+    public void setExtendMode( String mode ){
+        putString(KEY_EXTEND_MODE, mode);
     }
 
 

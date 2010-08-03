@@ -5,12 +5,14 @@ package aurora.bm;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.composite.CompositeUtil;
 import uncertain.ocm.OCManager;
 
 public class ModelFactory implements IModelFactory {
@@ -20,16 +22,16 @@ public class ModelFactory implements IModelFactory {
 
     public static final String DEFAULT_MODEL_EXTENSION = "bm";
 
-    //UncertainEngine mUncertainEngine;
-    OCManager       mOcManager;
+    // UncertainEngine mUncertainEngine;
+    OCManager mOcManager;
 
     CompositeLoader mCompositeLoader;
 
     // name -> BusinessModel
     Map mModelCache;
 
-    public ModelFactory(OCManager   ocm) {
-        //mUncertainEngine = engine;
+    public ModelFactory(OCManager ocm) {
+        // mUncertainEngine = engine;
         mOcManager = ocm;
         mCompositeLoader = CompositeLoader.createInstanceForOCM();
         mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
@@ -45,8 +47,9 @@ public class ModelFactory implements IModelFactory {
      * @return A read-only BusinessModel instance
      * @throws IOException
      */
-    public BusinessModel getModelForRead(String name, String ext ) throws IOException {
-//        assert name!=null;
+    public BusinessModel getModelForRead(String name, String ext)
+            throws IOException {
+        // assert name!=null;
         String full_name = name + '.' + ext;
         BusinessModel model = (BusinessModel) mModelCache.get(full_name);
         if (model == null) {
@@ -55,8 +58,8 @@ public class ModelFactory implements IModelFactory {
         }
         return model;
     }
-    
-    public BusinessModel getModelForRead(String name ) throws IOException {
+
+    public BusinessModel getModelForRead(String name) throws IOException {
         return getModelForRead(name, mCompositeLoader.getDefaultExt());
     }
 
@@ -65,9 +68,57 @@ public class ModelFactory implements IModelFactory {
         model.setModelFactory(this);
         model.setOcManager(mOcManager);
         model.initialize(config);
+        String base = model.getExtend();
+        String mode = model.getExtendMode();
+        if (mode == null)
+            mode = BusinessModel.VALUE_OVERRIDE;
+        boolean is_override = BusinessModel.VALUE_OVERRIDE
+                .equalsIgnoreCase(mode);
+        if (base != null) {
+            CompositeMap base_config = null;
+            try {
+                base_config = getModelConfig(base);
+            } catch (IOException ex) {
+                throw new RuntimeException("Error when loading base model "
+                        + base, ex);
+            }
+            CompositeMap final_config = mergeConfig(config, base_config,
+                    is_override);
+            model.initialize(final_config);
+        }
         model.makeReady();
         mModelCache.put(model.getName(), model);
         return model;
+    }
+
+    /**
+     * @todo check this
+     * @param config
+     * @param base_config
+     * @return
+     */
+    private CompositeMap mergeConfig(CompositeMap config,
+            CompositeMap base_config, boolean is_override) {
+        CompositeMap merged_map = (CompositeMap) config.clone();
+        CompositeUtil.copyAttributes(base_config, merged_map);
+        Iterator it = base_config.getChildIterator();
+        while (it.hasNext()) {
+            CompositeMap origin_child = (CompositeMap) it.next();
+            String name = origin_child.getName();
+            CompositeMap new_child = merged_map.getChild(name);
+            if (is_override) {
+                if (new_child != null)
+                    CompositeUtil.mergeChildsByOverride(origin_child,
+                            new_child, "name");
+                else
+                    merged_map.addChild((CompositeMap) origin_child.clone());
+            } else {
+                if (new_child != null)
+                    CompositeUtil.mergeChildsByReference(origin_child,
+                            new_child, "name");
+            }
+        }
+        return merged_map;
     }
 
     public CompositeMap getModelConfig(String name, String ext)
@@ -99,12 +150,12 @@ public class ModelFactory implements IModelFactory {
     public BusinessModel getModel(String name, String ext) throws IOException {
         return getNewModelInstance(name, ext);
     }
-    
+
     public BusinessModel getModel(String name) throws IOException {
         return getNewModelInstance(name, mCompositeLoader.getDefaultExt());
     }
-    
-    public CompositeLoader  getCompositeLoader(){
+
+    public CompositeLoader getCompositeLoader() {
         return mCompositeLoader;
     }
 
