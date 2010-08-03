@@ -68,24 +68,16 @@ public class ModelFactory implements IModelFactory {
         model.setModelFactory(this);
         model.setOcManager(mOcManager);
         model.initialize(config);
-        String base = model.getExtend();
-        String mode = model.getExtendMode();
-        if (mode == null)
-            mode = BusinessModel.VALUE_OVERRIDE;
-        boolean is_override = BusinessModel.VALUE_OVERRIDE
-                .equalsIgnoreCase(mode);
-        if (base != null) {
-            CompositeMap base_config = null;
-            try {
-                base_config = getModelConfig(base);
-            } catch (IOException ex) {
-                throw new RuntimeException("Error when loading base model "
-                        + base, ex);
-            }
-            CompositeMap final_config = mergeConfig(config, base_config,
-                    is_override);
-            model.initialize(final_config);
-        }
+        /*
+         * String base = model.getExtend(); String mode = model.getExtendMode();
+         * if (mode == null) mode = BusinessModel.VALUE_OVERRIDE; boolean
+         * is_override = BusinessModel.VALUE_OVERRIDE .equalsIgnoreCase(mode);
+         * if (base != null) { CompositeMap base_config = null; try {
+         * base_config = getModelConfig(base); } catch (IOException ex) { throw
+         * new RuntimeException("Error when loading base model " + base, ex); }
+         * CompositeMap final_config = mergeConfig(config, base_config,
+         * is_override); model.initialize(final_config); }
+         */
         model.makeReady();
         mModelCache.put(model.getName(), model);
         return model;
@@ -106,17 +98,15 @@ public class ModelFactory implements IModelFactory {
             CompositeMap origin_child = (CompositeMap) it.next();
             String name = origin_child.getName();
             CompositeMap new_child = merged_map.getChild(name);
-            if (is_override) {
-                if (new_child != null)
+            if (new_child != null) {
+                if (is_override)
                     CompositeUtil.mergeChildsByOverride(origin_child,
                             new_child, "name");
                 else
-                    merged_map.addChild((CompositeMap) origin_child.clone());
-            } else {
-                if (new_child != null)
                     CompositeUtil.mergeChildsByReference(origin_child,
                             new_child, "name");
-            }
+            } else
+                merged_map.addChild((CompositeMap) origin_child.clone());
         }
         return merged_map;
     }
@@ -127,7 +117,25 @@ public class ModelFactory implements IModelFactory {
             CompositeMap config = mCompositeLoader.loadFromClassPath(name, ext);
             if (config == null)
                 throw new IOException("Can't load resource " + name);
-            return config;
+            String base = config.getString(BusinessModel.KEY_EXTEND);
+            String mode = config.getString(BusinessModel.KEY_EXTEND_MODE);
+            if (mode == null)
+                mode = BusinessModel.VALUE_OVERRIDE;
+            boolean is_override = BusinessModel.VALUE_OVERRIDE
+                    .equalsIgnoreCase(mode);
+            if (base != null) {
+                CompositeMap base_config = null;
+                try {
+                    base_config = getModelConfig(base);
+                } catch (IOException ex) {
+                    throw new RuntimeException("Error when loading base model "
+                            + base, ex);
+                }
+                CompositeMap final_config = mergeConfig(config, base_config,
+                        is_override);
+                return final_config;
+            } else
+                return config;
         } catch (SAXException ex) {
             throw new RuntimeException("Error when parsing " + name, ex);
         }
