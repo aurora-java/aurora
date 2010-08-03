@@ -113,6 +113,7 @@ public class ScreenRenderer {
 		response.setContentType("text/html;charset=utf-8");
 		Writer out = response.getWriter();
 		BuildSession session = mPrtManager.createSession(out);
+		session.setContextPath(request.getContextPath());
 
 		// set localized message provider for i18n
 		CompositeMap dbProperties= databaseFactory.getProperties();
