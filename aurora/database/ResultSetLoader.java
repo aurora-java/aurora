@@ -62,6 +62,8 @@ public class ResultSetLoader {
         DataType[] types = struct.getFieldTypeArray(datatypeRegistry);
         if(fields==null) throw new IllegalArgumentException("Can't get fields from model");
         for(int i=0; i<fields.length; i++){
+            if(!fields[i].isForSelect())
+                continue;
             String name = getFieldName(fields[i].getName());
             if(name==null) throw new IllegalArgumentException("must specify name property in field config: "+fields[i].getObjectContext().toXML());
             String physical_name = fields[i].getPhysicalName();   

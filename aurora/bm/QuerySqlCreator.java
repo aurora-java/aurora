@@ -55,6 +55,8 @@ public class QuerySqlCreator extends AbstractSqlCreator {
                     + model.getName());
         for (int i = 0; i < fields.length; i++) {
             Field f = fields[i];
+            if(!f.isForSelect())
+                continue;
             f.checkValidation();
             SelectField sf = null;
             if (f.isReferenceField()) {

@@ -28,6 +28,7 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_IS_PRIMARYKEY = "isprimarykey";
     public static final String KEY_REQUIRED = "required";
     public static final String KEY_DEFAULT_VALUE = "defaultvalue"; 
+    public static final String KEY_FOR_SELECT = "forselect";
     public static final String KEY_FOR_QUERY = "forquery";
     public static final String KEY_FOR_INSERT = "forinsert";    
     public static final String KEY_FOR_UPDATE = "forupdate";
@@ -283,6 +284,15 @@ public class Field extends DynamicObject implements IParameter {
             return b.booleanValue();
     }
     
+    /** default true */
+    public boolean isForSelect(){
+        Boolean b = getBoolean(KEY_FOR_SELECT);
+        if(b==null)
+            return true;
+        else
+            return b.booleanValue();
+    }
+    
     public boolean isForOperation( String operation ){
         if(operation==null) throw new IllegalArgumentException("operation name is null");
         String key = "for" + operation.toLowerCase();
@@ -379,6 +389,10 @@ public class Field extends DynamicObject implements IParameter {
     public void setOwner(BusinessModel owner) {
         this.owner = owner;
     }
+    
+    public void setForSelect( boolean b ){
+        putBoolean(KEY_FOR_SELECT, b);
+    }    
     
     public void setForInsert( boolean b ){
         putBoolean(KEY_FOR_INSERT, b);
