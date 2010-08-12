@@ -91,6 +91,9 @@ public class BusinessModel extends DynamicObject {
     Map         operationMap;
     // default operation without name
     Operation   defaultOperation;
+    
+    // ============= Parent model ===================
+    BusinessModel   parent;
 
 
     public class BaseQueryFieldIterator implements IParameterIterator {
@@ -265,7 +268,15 @@ public class BusinessModel extends DynamicObject {
         assert name!=null;
         if(fieldMap==null) makeReady();
         String key = name.toLowerCase();
-        return (Field)fieldMap.get(key);
+        Field f =  (Field)fieldMap.get(key);
+        if(f!=null)
+            return f;
+        else{
+            if( parent != null)
+                return parent.getField(name);
+            else
+                return null;
+        }
     }
     
     protected CompositeMap getChildSectionNotNull( String section_name ){
@@ -346,7 +357,8 @@ public class BusinessModel extends DynamicObject {
                     CompositeMap field = (CompositeMap) it.next();
                     String name = field.getString(Field.KEY_NAME);
                     if(name==null) throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
-                    Field f = (Field)fieldMap.get(name.toLowerCase());
+                    Field f = getField(name.toLowerCase()); 
+                        //(Field)fieldMap.get(name.toLowerCase());
                     if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());                    f.setPrimaryKey(true);
                     pkFieldsArray[n++] = f;
                 }
@@ -403,7 +415,7 @@ public class BusinessModel extends DynamicObject {
         else
             return new BaseQueryFieldIterator();
     }
-    
+    /*
     public IParameterIterator getParameterForInsert(){
         return null;
     }
@@ -415,7 +427,7 @@ public class BusinessModel extends DynamicObject {
     public IParameterIterator getParameterForDelete(){
         return null;
     }
-    
+    */
     /** Get parameter iterator for specified operation
      * @param operation name of operation
      * @return If the operation is defined in <operations> part, and this operation has <parameter> config,
@@ -574,6 +586,14 @@ public class BusinessModel extends DynamicObject {
     
     public void setExtendMode( String mode ){
         putString(KEY_EXTEND_MODE, mode);
+    }
+    
+    public BusinessModel getParent(){
+        return parent;
+    }
+    
+    protected void setParent( BusinessModel parent ){
+        this.parent = parent;
     }
 
 

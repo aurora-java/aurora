@@ -26,6 +26,8 @@ public class ModelFactory implements IModelFactory {
     OCManager mOcManager;
 
     CompositeLoader mCompositeLoader;
+    
+    boolean mUseCache = false;
 
     // name -> BusinessModel
     Map mModelCache;
@@ -36,6 +38,11 @@ public class ModelFactory implements IModelFactory {
         mCompositeLoader = CompositeLoader.createInstanceForOCM();
         mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
         mModelCache = new HashMap();
+    }
+    
+    private void saveCachedModel( String name, BusinessModel model ){
+        if(mUseCache)
+            mModelCache.put(name, model);
     }
 
     /**
@@ -49,12 +56,13 @@ public class ModelFactory implements IModelFactory {
      */
     public BusinessModel getModelForRead(String name, String ext)
             throws IOException {
-        // assert name!=null;
+        if(!mUseCache)
+            return getNewModelInstance(name, ext);
         String full_name = name + '.' + ext;
         BusinessModel model = (BusinessModel) mModelCache.get(full_name);
         if (model == null) {
             model = getNewModelInstance(name, ext);
-            mModelCache.put(full_name, model);
+            saveCachedModel(full_name, model);
         }
         return model;
     }
@@ -64,22 +72,7 @@ public class ModelFactory implements IModelFactory {
     }
 
     public BusinessModel getModel(CompositeMap config) {
-        BusinessModel model = new BusinessModel();
-        model.setModelFactory(this);
-        model.setOcManager(mOcManager);
-        model.initialize(config);
-        /*
-         * String base = model.getExtend(); String mode = model.getExtendMode();
-         * if (mode == null) mode = BusinessModel.VALUE_OVERRIDE; boolean
-         * is_override = BusinessModel.VALUE_OVERRIDE .equalsIgnoreCase(mode);
-         * if (base != null) { CompositeMap base_config = null; try {
-         * base_config = getModelConfig(base); } catch (IOException ex) { throw
-         * new RuntimeException("Error when loading base model " + base, ex); }
-         * CompositeMap final_config = mergeConfig(config, base_config,
-         * is_override); model.initialize(final_config); }
-         */
-        model.makeReady();
-        mModelCache.put(model.getName(), model);
+        BusinessModel model = createBusinessModelInternal(config);
         return model;
     }
 
@@ -111,48 +104,59 @@ public class ModelFactory implements IModelFactory {
         return merged_map;
     }
 
-    public CompositeMap getModelConfig(String name, String ext)
-            throws IOException {
-        try {
-            CompositeMap config = mCompositeLoader.loadFromClassPath(name, ext);
-            if (config == null)
-                throw new IOException("Can't load resource " + name);
-            String base = config.getString(BusinessModel.KEY_EXTEND);
-            String mode = config.getString(BusinessModel.KEY_EXTEND_MODE);
+    protected BusinessModel createBusinessModelInternal(CompositeMap config) {
+        BusinessModel model = new BusinessModel();
+        model.setModelFactory(this);
+        model.setOcManager(mOcManager);
+        model.initialize(config);
+
+        String base = model.getExtend();
+        if (base != null) {
+            String mode = model.getExtendMode();
             if (mode == null)
                 mode = BusinessModel.VALUE_OVERRIDE;
             boolean is_override = BusinessModel.VALUE_OVERRIDE
                     .equalsIgnoreCase(mode);
-            if (base != null) {
-                CompositeMap base_config = null;
-                try {
-                    base_config = getModelConfig(base);
-                } catch (IOException ex) {
-                    throw new RuntimeException("Error when loading base model "
-                            + base, ex);
-                }
-                CompositeMap final_config = mergeConfig(config, base_config,
-                        is_override);
-                return final_config;
-            } else
-                return config;
-        } catch (SAXException ex) {
-            throw new RuntimeException("Error when parsing " + name, ex);
+            try {
+                BusinessModel parent_model = getModelForRead(base);
+                CompositeMap final_config = mergeConfig(config, parent_model
+                        .getObjectContext(), is_override);
+                model.initialize(final_config);
+                model.setParent(parent_model);
+            } catch (IOException ex) {
+                throw new RuntimeException("Error when loading base model "
+                        + base, ex);
+            }
         }
-    }
-
-    public CompositeMap getModelConfig(String name) throws IOException {
-        return getModelConfig(name, mCompositeLoader.getDefaultExt());
+        model.makeReady();
+        return model;
     }
 
     protected BusinessModel getNewModelInstance(String name, String ext)
             throws IOException {
         if (name == null)
             throw new IllegalArgumentException("model name is null");
-        CompositeMap config = getModelConfig(name, ext);
-        BusinessModel model = getModel(config);
-        model.setName(name);
-        return model;
+        try {
+            CompositeMap config = mCompositeLoader.loadFromClassPath(name, ext);
+            if (config == null)
+                throw new IOException("Can't load resource " + name);
+            BusinessModel model = createBusinessModelInternal(config);
+            model.setName(name);
+            saveCachedModel(name, model);
+            return model;
+        } catch (SAXException ex) {
+            throw new RuntimeException("Error when parsing " + name, ex);
+        }
+    }
+
+    public CompositeMap getModelConfig(String name, String ext)
+            throws IOException {
+        BusinessModel model = getNewModelInstance(name, ext);
+        return model.getObjectContext();
+    }
+
+    public CompositeMap getModelConfig(String name) throws IOException {
+        return getModelConfig(name, mCompositeLoader.getDefaultExt());
     }
 
     public BusinessModel getModel(String name, String ext) throws IOException {
@@ -165,6 +169,17 @@ public class ModelFactory implements IModelFactory {
 
     public CompositeLoader getCompositeLoader() {
         return mCompositeLoader;
+    }
+
+    public boolean getUseCache() {
+        return mUseCache;
+    }
+
+    public void setUseCache(boolean useCache) {
+        this.mUseCache = useCache;
+        if(!mUseCache)
+            if(mModelCache!=null)
+                mModelCache.clear();
     }
 
 }
