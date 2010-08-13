@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
-    <ss:element document="每次创建、更改记录时，留下操作人员ID和操作日期的记录" name="f:standard-who">
-        <ss:attributes>
-            <ss:attribute document="用于获取当前操作用户的的XPath路径，如/session/@user_id" name="userIdPath"/>
-            <ss:attribute document="表中记录创建人ID的字段名" name="createdByField"/>
-            <ss:attribute document="表中记录创建日期的字段名" name="creationDateField"/>
-            <ss:attribute document="表中记录最后更新人ID的字段名" name="lastUpdatedByField"/>
-            <ss:attribute document="表中记录最后更新日期的字段名" name="lastUpdatedDateField"/>
-        </ss:attributes>
-        <ss:extensions>
-            <ss:extension base="bm:feature"/>
-        </ss:extensions>
-    </ss:element>
-    <ss:element document="删除标记字段" name="f:tag-delete-field">
-        <ss:attributes>
-            <ss:attribute document="删除标记的字段名" name="name"/>
-            <ss:attribute document="标记已删除的表达式" name="expression"/>
-        </ss:attributes>
-    </ss:element>
-    <ss:element document="删除操作时，不是物理删除，而是更新删除标记字段" name="f:tag-delete">
-        <ss:arrays>
-            <ss:array type="f:tag-delete-field" name="fields"/>
-        </ss:arrays>
-        <ss:extensions>
-            <ss:extension base="bm:feature"/>
-        </ss:extensions>
-    </ss:element>
+<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:o="aurora.database.local.oracle" xmlns:f="aurora.database.features">
+	<ss:types>
+		<ss:complexType document="所有可以放置在bm的features部分的tag，必须继承此类型" name="bm:feature"/>
+	</ss:types>
+	<ss:elements>
+		<ss:element name="o:sequence-use" document="sequence与字段的对应">
+			<ss:attributes>
+				<ss:attribute name="fieldName" document="字段名"/>
+				<ss:attribute name="sequence" document="sequence的名称"/>
+				<ss:attribute name="autoReturn" type="ss:boolean" document="是否自动将新记录的sequence值返回到结果集中"/>
+			</ss:attributes>
+		</ss:element>
+		<ss:element document="Oracle数据库的Sequence作为Primary key" name="o:sequence-pk">
+			<ss:attributes>
+				<ss:attribute name="sequenceName" document="缺省的sequence名称"/>
+				<ss:attribute name="autoReturn" type="ss:boolean" document="是否自动将新记录的sequence值返回到结果集中"/>
+			</ss:attributes>
+			<ss:elements>
+				<ss:element ref="o:sequence-use"/>
+			</ss:elements>
+			<ss:extensions>
+				<ss:extension base="bm:feature"/>
+			</ss:extensions>			
+		</ss:element>
+		<ss:element document="每次创建、更改记录时，留下操作人员ID和操作日期的记录" name="f:standard-who">
+			<ss:attributes>
+				<ss:attribute document="用于获取当前操作用户的的XPath路径，如/session/@user_id" name="userIdPath"/>
+				<ss:attribute document="表中记录创建人ID的字段名" name="createdByField"/>
+				<ss:attribute document="表中记录创建日期的字段名" name="creationDateField"/>
+				<ss:attribute document="表中记录最后更新人ID的字段名" name="lastUpdatedByField"/>
+				<ss:attribute document="表中记录最后更新日期的字段名" name="lastUpdatedDateField"/>
+			</ss:attributes>
+			<ss:extensions>
+				<ss:extension base="bm:feature"/>
+			</ss:extensions>
+		</ss:element>
+		<ss:element document="删除标记字段" name="f:tag-delete-field">
+			<ss:attributes>
+				<ss:attribute document="删除标记的字段名" name="name"/>
+				<ss:attribute document="标记已删除的表达式" name="expression"/>
+			</ss:attributes>
+		</ss:element>
+		<ss:element document="删除操作时，不是物理删除，而是更新删除标记字段" name="f:tag-delete">
+			<ss:arrays>
+				<ss:array type="f:tag-delete-field" name="fields"/>
+			</ss:arrays>
+			<ss:extensions>
+				<ss:extension base="bm:feature"/>
+			</ss:extensions>
+		</ss:element>
+	</ss:elements>
 </ss:schema>
