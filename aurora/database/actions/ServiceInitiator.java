@@ -10,6 +10,7 @@ import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.action.AuroraCookie;
+import aurora.application.action.ImageValidate;
 import aurora.bm.IModelFactory;
 import aurora.database.service.DatabaseServiceFactory;
 
@@ -42,6 +43,7 @@ public class ServiceInitiator {
         reg.addClassMapping( "sql-execute", SqlExecute.class);
         reg.addClassMapping( "sql-query", SqlQuery.class);
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
+        reg.addClassMapping("img-validate", ImageValidate.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");

@@ -6,7 +6,6 @@ import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
-import uncertain.core.ConfigurationError;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 
