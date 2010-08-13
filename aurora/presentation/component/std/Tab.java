@@ -19,6 +19,10 @@ public class Tab extends Component {
 	private static final String VALID_SCRIPT = "validscript";
 	
 	protected static final String PROPERTITY_TAB = "tab";
+	protected static final String PROPERTITY_TAB_CLASS = "tabclassname";
+	protected static final String PROPERTITY_TAB_STYLE = "tabstyle";
+	protected static final String PROPERTITY_BODY_CLASS = "bodyclassname";
+	protected static final String PROPERTITY_BODY_STYLE = "bodystyle";
 	protected static final String PROPERTITY_REF = "ref";
 	protected static final String PROPERTITY_SELECTED = "selected";
 	
@@ -61,8 +65,11 @@ public class Tab extends Component {
 			while(it.hasNext()){
 				CompositeMap tab = (CompositeMap)it.next();
 				Integer bodywidth = (Integer)map.get("bodywidth");
-				sb.append("<div class='tab' style='width:"+bodywidth+"px'>");
+				Integer bodyheight = (Integer)map.get("bodyheight");
 				String ref = tab.getString(PROPERTITY_REF, "");
+				String bodyClass = tab.getString(PROPERTITY_BODY_CLASS, "");
+				String bodyStyle = tab.getString(PROPERTITY_BODY_STYLE, "");
+				sb.append("<div class='tab "+bodyClass+"' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'>");
 				if("".equals(ref)){
 					List tabchilds = tab.getChilds();
 					if(tabchilds!=null){
@@ -116,10 +123,15 @@ public class Tab extends Component {
 				if("true".equals(selected)){
 					map.put("selected", new Integer(i));
 				}
-				sb.append("<div class='strip' unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
-				sb.append("<div class='strip-left'></div>");
-				sb.append("<div class='strip-center' style='width:"+width+"px;'>"+prompt+"</div>");
-				sb.append("<div class='strip-right'></div>");
+				String tabClass = tab.getString(PROPERTITY_TAB_CLASS, "");
+				String tabStyle = tab.getString(PROPERTITY_TAB_STYLE, "");
+				if(!"".equals(tabStyle)){
+					tabStyle = "style='"+tabStyle+"'";
+				}
+				sb.append("<div class='strip unactive' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
+				sb.append("<div class='strip-left "+tabClass+"'></div>");
+				sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>"+prompt+"</div>");
+				sb.append("<div class='strip-right "+tabClass+"'></div>");
 				sb.append("</div>");
 				
 				tab.putBoolean(PROPERTITY_SELECTED, tab.getBoolean(PROPERTITY_SELECTED, false));

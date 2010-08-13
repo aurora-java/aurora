@@ -1,24 +1,29 @@
 package aurora.presentation.component.std.config;
 
+import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 
 
 public class FormConfig extends BoxConfig {
 	
-	public static final String TAG_NAME = "formPanel";
+	public static final String TAG_NAME = "form";
 	
 	public static final String PROPERTITY_TITLE="title";	
 	public static final String PROPERTITY_SHOWMARGIN = "showmargin";
 	
 	public static FormConfig getInstance(){
 		FormConfig model = new FormConfig();
-        model.initialize(FormConfig.createContext(null,TAG_NAME));
+		CompositeMap map = FormConfig.createContext(null,TAG_NAME);
+		map.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        model.initialize(map);
         return model;
     }
 	
 	public static FormConfig getInstance(CompositeMap context){
 		FormConfig model = new FormConfig();
-        model.initialize(FormConfig.createContext(context,TAG_NAME));
+		CompositeMap map = FormConfig.createContext(context,TAG_NAME);
+		map.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        model.initialize(map);
         return model;
     }
 	

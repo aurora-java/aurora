@@ -1,5 +1,6 @@
 package aurora.presentation.component.std.config;
 
+import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 
 
@@ -12,13 +13,17 @@ public class TextFieldConfig extends InputFieldConfig {
 	
 	public static TextFieldConfig getInstance(){
 		TextFieldConfig model = new TextFieldConfig();
-        model.initialize(TextFieldConfig.createContext(null,TAG_NAME));
+		CompositeMap context = TextFieldConfig.createContext(null,TAG_NAME);
+		context.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        model.initialize(context);
         return model;
     }
 	
 	public static TextFieldConfig getInstance(CompositeMap context){
 		TextFieldConfig model = new TextFieldConfig();
-        model.initialize(TextFieldConfig.createContext(context,TAG_NAME));
+		CompositeMap map = TextFieldConfig.createContext(context,TAG_NAME);
+		map.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        model.initialize(map);
         return model;
     }
 	

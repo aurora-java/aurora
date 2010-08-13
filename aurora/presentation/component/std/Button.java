@@ -18,6 +18,7 @@ public class Button extends Field {
 	public static final String BUTTON_CLASS = "btnclass";
 	public static final String PROPERTITY_CLICK = "click";
 	public static final String PROPERTITY_TITLE = "title";
+	public static final String PROPERTITY_DISABLED = "disabled";
 	private static final int DEFAULT_HEIGHT = 17;
 	private static final int DEFAULT_WIDTH = 60;
 	
@@ -53,9 +54,13 @@ public class Button extends Field {
 		if(!"".equals(clickEvent)){
 			addEvent(id, "click", clickEvent);
 		}
-		String text = view.getString(PROPERTITY_TEXT, "");
+		String text = view.getString(PROPERTITY_TEXT, "&#160;");
 		text = session.getLocalizedPrompt(text);
-//		text = uncertain.composite.TextParser.parse(text, model);
+		boolean disabled = view.getBoolean(PROPERTITY_DISABLED, false);
+		if(disabled != false) {
+			addConfig(PROPERTITY_DISABLED, Boolean.valueOf(disabled));
+		}
+		
 		String icon = view.getString(PROPERTITY_ICON, "");
 		String btnstyle = view.getString(BUTTON_STYLE, "");
 		if(!"".equals(icon)){

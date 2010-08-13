@@ -1,5 +1,6 @@
 package aurora.presentation.component.std.config;
 
+import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 
@@ -26,6 +27,7 @@ public class ComponentConfig extends DynamicObject {
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
+		context.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 		if(map != null){
 			context.copy(map);
 		}

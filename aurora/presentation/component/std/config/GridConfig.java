@@ -1,5 +1,6 @@
 package aurora.presentation.component.std.config;
 
+import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 
 public class GridConfig extends ComponentConfig {

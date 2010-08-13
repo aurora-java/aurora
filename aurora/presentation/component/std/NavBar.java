@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 
+import aurora.application.Namespace;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -44,12 +45,14 @@ public class NavBar extends ToolBar {
 			String inputId = IDGenerator.getInstance().generate();
 			map.put("inputid", inputId);
 			CompositeMap button = new CompositeMap("textField");
+			button.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 			button.putString(ComponentConfig.PROPERTITY_ID, inputId);
 			button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 			view.addChild(button);
 			
 			String pageId = IDGenerator.getInstance().generate();
 			map.put("pageId", pageId);
+			//TODO:多语言
 			String text = "<div id='"+pageId+"' class='item-label' style='margin-left:5px;margin-right:5px;'>共1页</div>";
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
@@ -71,6 +74,7 @@ public class NavBar extends ToolBar {
 	
 	private CompositeMap createButton(String clz,String style, String function, String title){
 		CompositeMap button = new CompositeMap("button");
+		button.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(Button.PROPERTITY_ICON, "null");
 		button.put(Button.BUTTON_CLASS, clz);
 		button.put(Button.PROPERTITY_TITLE, title);

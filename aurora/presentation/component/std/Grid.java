@@ -132,6 +132,7 @@ public class Grid extends Component {
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTIONMODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
+				column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 				column.putBoolean(GridColumnConfig.PROPERTITY_LOCK,true);
 				column.putInt(ComponentConfig.PROPERTITY_WIDTH,25);
 				column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE,false);
@@ -211,7 +212,7 @@ public class Grid extends Component {
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
 					if(!"rowcheck".equals(type) && !"rowradio".equals(type))cwidth = cwidth*bl;
-					column.putFloat(ComponentConfig.PROPERTITY_WIDTH, cwidth);
+					column.putInt(ComponentConfig.PROPERTITY_WIDTH, Math.round(cwidth));
 					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
@@ -346,6 +347,7 @@ public class Grid extends Component {
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
+			navbar.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 //			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 //			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);
