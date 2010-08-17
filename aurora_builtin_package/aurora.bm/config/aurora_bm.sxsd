@@ -2,15 +2,28 @@
 <ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:bm="http://www.aurora-framework.org/schema/bm">
 	<ss:types>
 		<ss:complexType document="所有可以放置在bm的features部分的tag，必须继承此类型" name="bm:feature"/>
-		<ss:simpleType base="ss:string" name="bm:rawsql"/>
-		<ss:SimpleType name="bm:ExtendModeType">
+		<ss:simpleType base="ss:string" name="bm:rawsql" document="SQL脚本片段" />
+		<ss:simpleType name="bm:ExtendModeType">
 			<ss:restriction base="ss:String">
 				<ss:enumerations>
 					<ss:enumeration value="override"/>
 					<ss:enumeration value="reference"/>
 				</ss:enumerations>
 			</ss:restriction>
-		</ss:SimpleType>
+		</ss:simpleType>
+		<ss:simpleType name="bm:JoinType">
+			<ss:restriction base="ss:String">
+				<ss:enumerations>
+					<ss:enumeration value="LEFT OUTER"/>
+					<ss:enumeration value="RIGHT OUTER"/>
+					<ss:enumeration value="FULL OUTER" />
+					<ss:enumeration value="INNER" />
+				</ss:enumerations>
+			</ss:restriction>
+		</ss:simpleType>		
+		<ss:simpleType name="bm:ModelReference" document="对其他BM的引用" base="ss:string" />
+		<ss:simpleType name="bm:LocalFieldReference" document="对同一BM中其它字段的引用" base="ss:string" />
+		<ss:simpleType name="bm:ForeignFieldReference" document="对其它BM字段的引用" base="ss:string" />		
 	</ss:types>
 	<ss:elements>
 		<ss:element name="bm:field">
@@ -49,15 +62,15 @@
 		<ss:element name="bm:reference">
 			<ss:attributes>
 				<ss:attribute document="自定义的join表达式" name="expression"/>
-				<ss:attribute document="本表的字段" name="localField"/>
-				<ss:attribute document="关联表对应的字段" name="foreignField"/>
+				<ss:attribute document="本表的字段" name="localField" type="bm:LocalFieldReference" />
+				<ss:attribute document="关联表对应的字段" name="foreignField" type="bm:ForeignFieldReference" />
 			</ss:attributes>
 		</ss:element>
 		<ss:element name="bm:relation">
 			<ss:attributes>
 				<ss:attribute document="关系的名称，用于在其他地方引用" name="name"/>
-				<ss:attribute document="join的类型" name="joinType"/>
-				<ss:attribute document="所引用的主表的业务模型全名" name="refModel"/>
+				<ss:attribute document="join的类型" name="joinType" type="bm:JoinType"/>
+				<ss:attribute document="所引用的主表的业务模型全名" name="refModel" type="bm:ModelReference"/>
 				<ss:attribute document="所引用的主表的SQL别名" name="refAlias"/>
 			</ss:attributes>
 			<ss:elements>
@@ -101,7 +114,7 @@
 				<ss:attribute document="对应的数据库基表" name="baseTable"/>
 				<ss:attribute document="缺省的别名，用于SQL语句" name="alias"/>
 				<ss:attribute document="对应的数据源的名称" name="dataSourceName"/>
-				<ss:attribute document="父对象" name="extend"/>
+				<ss:attribute document="父对象" name="extend" type="bm:ModelReference"/>
 				<ss:attribute document="继承方式" name="extendMode" type="bm:ExtendModeType" default="override"/>
 			</ss:attributes>
 			<ss:arrays>
@@ -114,12 +127,6 @@
 				<ss:array type="bm:feature" name="bm:features"/>
 				<ss:array type="bm:operation" name="bm:operations"/>
 			</ss:arrays>
-		</ss:element>
-
-		<ss:element name="bm:test-feature">
-				<ss:extensions>
-                		<ss:extension base="bm:feature"/>
-            		</ss:extensions>
 		</ss:element>
 
 	</ss:elements>
