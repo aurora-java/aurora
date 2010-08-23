@@ -88,6 +88,9 @@ public class HtmlPage implements IViewBuilder, ISingleton {
     public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
     	try{
         	String pageid = IDGenerator.getInstance().generate();
+        	String title = session.getTitle();
+        	title = session.getLocalizedPrompt(title);
+        	view_context.getContextMap().put(TemplateRenderer.KEY_TITLE, title);
         	view_context.getContextMap().put("pageid", pageid);
         	session.getSessionContext().put("pageid", pageid);
             session.fireBuildEvent(EVENT_PREPARE_PAGE_CONTENT, view_context, true);

@@ -10,7 +10,7 @@ public class DataSetFieldConfig extends DynamicObject  {
 	public static final String PROPERTITY_REQUIRED = "required";
 	public static final String PROPERTITY_READONLY = "readonly";
     public static final String PROPERTITY_PROMPT = "prompt";
-    
+    public static final String PROPERTITY_RETURN_FIELD = "returnfield";
     
     public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);

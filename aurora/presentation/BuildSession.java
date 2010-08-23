@@ -71,6 +71,8 @@ public class BuildSession {
     
     String 	contextPath;
     
+    String  title;
+    
     // 
     ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
     ILookupCodeProvider lookupProvider;
@@ -469,5 +471,11 @@ public class BuildSession {
 	}
 	public void setContextPath(String contextPath) {
 		this.contextPath = contextPath;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

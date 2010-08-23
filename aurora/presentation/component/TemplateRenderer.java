@@ -32,6 +32,8 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
     
     public static final String KEY_PACKAGE = "package";
     public static final String KEY_TEMPLATE = "template";
+    public static final String KEY_TITLE = "title";
+    
     //ResourceTemplateFactory     mFactory;
     TagTemplateParser             mTemplateParser;
     

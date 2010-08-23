@@ -15,6 +15,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
+import aurora.presentation.component.std.config.DataSetFieldConfig;
 
 public class DataSet extends Component {
 	
@@ -39,12 +40,12 @@ public class DataSet extends Component {
 				if(!"".equals(validator))
 				field.putString("validator", validator);
 				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
-				field.putBoolean("required", field.getBoolean("required", false));
-				field.putBoolean("readonly", field.getBoolean("readonly", false));
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, field.getBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, false));
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, field.getBoolean(DataSetFieldConfig.PROPERTITY_READONLY, false));
 				String dv = field.getString(DataSetConfig.PROPERTITY_DEFAULTVALUE, "");
 				if(!"".equals(dv))field.putString(DataSetConfig.PROPERTITY_DEFAULTVALUE, dv);
 				
-				String returnField = field.getString("returnfield", "");
+				String returnField = field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = !"".equals(returnField);
 				JSONObject json = new JSONObject(field);
 				CompositeMap mapping = field.getChild(DataSetConfig.PROPERTITY_MAPPING);
@@ -149,8 +150,7 @@ public class DataSet extends Component {
 		boolean create = view.getBoolean(DataSetConfig.PROPERTITY_CREATERECORD, false);
 		if(dataList.size() == 0 && create) {
 			JSONObject json = new JSONObject();
-			dataList.add(json);
-			
+			dataList.add(json);			
 		}
 		map.put(DataSetConfig.PROPERTITY_BINDTARGET, view.getString(DataSetConfig.PROPERTITY_BINDTARGET, ""));
 		map.put(DataSetConfig.PROPERTITY_BINDNAME, view.getString(DataSetConfig.PROPERTITY_BINDNAME, ""));

@@ -2,6 +2,11 @@ package aurora.presentation.component.std.config;
 
 import uncertain.composite.CompositeMap;
 
+/**
+ * 
+ * @version $Id$
+ * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
+ */
 public class DataSetConfig extends ComponentConfig {
 	
 	public static final String TAG_NAME = "dataSet";
@@ -26,7 +31,10 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SELECTIONMODEL = "selectionmodel";
 	public static final String PROPERTITY_BINDNAME = "bindname";
 	public static final String PROPERTITY_MODEL = "model";
-	public static final String PROPERTITY_LOOKUP_CODE = "lookupcode";
+	public static final String PROPERTITY_LOOKUP_CODE = "lookupcode";	
+	public static final String PROPERTITY_CAN_QUERY = "canquery";
+	public static final String PROPERTITY_CAN_SUBMIT = "cansubmit";
+	
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
