@@ -158,7 +158,7 @@ public class ServiceContext extends RuntimeContext {
     public void setServiceName(String service_name){
         put(KEY_SERVICE_NAME, service_name);
     }
-    
+        
     public CompositeMap getCurrentParameter(){
         CompositeMap map = (CompositeMap)get(KEY_CURRENT_PARAMETER);
         if(map==null)
