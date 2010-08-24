@@ -54,7 +54,12 @@ public class DataSetInit implements IViewBuilder {
     private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
 		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
 		String queryUrl = ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
+		String submitUrl = ds.getString(DataSetConfig.PROPERTITY_SUBMITURL,"");
 		String m = ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
+		boolean cq = ds.getBoolean(DataSetConfig.PROPERTITY_CAN_QUERY,true);
+		boolean cs = ds.getBoolean(DataSetConfig.PROPERTITY_CAN_SUBMIT,true);
+		
+		
 		if(!"".equals(m)){
 			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
 			mqc.setModel(m);
@@ -68,10 +73,21 @@ public class DataSetInit implements IViewBuilder {
 			}
 			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+m);
 		}
-		
-		if(!"".equals(queryUrl)){
-			queryUrl = uncertain.composite.TextParser.parse(queryUrl, model);
-			ds.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
+		if(cq){
+			if(!"".equals(queryUrl)){
+				queryUrl = uncertain.composite.TextParser.parse(queryUrl, model);
+				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
+			}else if(!"".equals(href)){
+				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+href+"/query");
+			}
+		}
+		if(cs){
+			if(!"".equals(submitUrl)){
+				submitUrl = uncertain.composite.TextParser.parse(submitUrl, model);
+				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, submitUrl);
+			}else if(!"".equals(href)){
+				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+href+"/batch_update");
+			}
 		}
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);

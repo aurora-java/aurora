@@ -67,6 +67,7 @@ public class HttpRequestTransfer implements ISingleton {
 			r.put("params", dm);
 		}
 		r.put("server_name", request.getServerName());
+		r.put("context_path", request.getContextPath());
 		r.put("server_port", new Integer(request.getServerPort()));
 		CompositeMap cookie = svc.getContextMap().createChild("cookie");
 		populateCookieMap(request, cookie);

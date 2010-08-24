@@ -57,6 +57,7 @@ public class ScreenRenderer {
 			if (view_config != null) {
 				mDefaultPackage = view_config.getDefaultPackage();
 				mDefaultTemplate = view_config.getDefaultTemplate();
+				mDefaultTitle = view_config.getDefaultTitle();
 			}
 		}
 	}
@@ -74,25 +75,24 @@ public class ScreenRenderer {
 	ApplicationConfig mApplicationConfig;
 	String mDefaultPackage;
 	String mDefaultTemplate;
+	String mDefaultTitle = "";
 
 	// DatabaseServiceFactory mServiceFactory;
 
 	public int onCreateView(ProcedureRunner runner) {
 		mContext = runner.getContext();
 		mService = (HttpServiceInstance) ServiceInstance.getInstance(mContext);
-		ScreenConfig cfg = ScreenConfig.createScreenConfig(mService
-				.getServiceConfigData());
+		ScreenConfig cfg = ScreenConfig.createScreenConfig(mService.getServiceConfigData());
 		mScreen = cfg.getViewConfig();
 		if (mScreen != null) {
 			mScreen.setName(HTML_PAGE);
 			mScreen.setNameSpaceURI(null);
 			if (mScreen.getString(TemplateRenderer.KEY_TEMPLATE) == null)
-				mScreen.putString(TemplateRenderer.KEY_TEMPLATE,
-						mDefaultTemplate);
+				mScreen.putString(TemplateRenderer.KEY_TEMPLATE, mDefaultTemplate);
 			if (mScreen.getString(TemplateRenderer.KEY_PACKAGE) == null)
-				mScreen
-						.putString(TemplateRenderer.KEY_PACKAGE,
-								mDefaultPackage);
+				mScreen.putString(TemplateRenderer.KEY_PACKAGE, mDefaultPackage);
+			if (mScreen.getString(TemplateRenderer.KEY_TITLE) != null)
+				mDefaultTitle = mScreen.getString(TemplateRenderer.KEY_TITLE);
 			mContext.addChild(mScreen);
 			mContext.putBoolean("output", true);
 		}
@@ -104,6 +104,7 @@ public class ScreenRenderer {
 			return EventModel.HANDLE_NORMAL;
 
 		CompositeMap context = runner.getContext();
+		CompositeMap model = mService.getServiceContext().getModel();
 		ILogger logger = LoggingContext.getLogger(context,
 				BuildSession.LOGGING_TOPIC);
 		HttpServletResponse response = mService.getResponse();
@@ -113,6 +114,7 @@ public class ScreenRenderer {
 		response.setContentType("text/html;charset=utf-8");
 		Writer out = response.getWriter();
 		BuildSession session = mPrtManager.createSession(out);
+		
 		session.setContextPath(request.getContextPath());
 
 		// set localized message provider for i18n
@@ -140,6 +142,7 @@ public class ScreenRenderer {
 				}
 			}
 		}
+		session.setTitle(mDefaultTitle);
 		session.setTheme(appTheme);
 		session.setBaseConfig(mService.getServiceConfig());
 		session.setInstanceOfType(IService.class, mService);
