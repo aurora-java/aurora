@@ -17,11 +17,14 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
 
+/**
+ * 
+ * @version $Id: DataSet.java v 1.0 2010-8-24 下午01:28:18 IBM Exp $
+ * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
+ */
 public class DataSet extends Component {
 	
 	private static final String VALID_SCRIPT = "validscript";
-	private static final String VALID_LISTENER = "validlistener";
-	
     
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -30,31 +33,32 @@ public class DataSet extends Component {
 		Map map = context.getMap();
 		List fieldList = new ArrayList(); 
 		
-		CompositeMap fields = view.getChild(DataSetConfig.PROPERTITY_FIELDS);
+		DataSetConfig dsc = DataSetConfig.getInstance(view);
+		CompositeMap fields = dsc.getFields();
 		if(fields != null) {
 			Iterator it = fields.getChildIterator();
 			if(it != null)
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
-				String validator = field.getString("validator", "");
-				if(!"".equals(validator))
-				field.putString("validator", validator);
-				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, field.getBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, false));
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, field.getBoolean(DataSetFieldConfig.PROPERTITY_READONLY, false));
-				String dv = field.getString(DataSetConfig.PROPERTITY_DEFAULTVALUE, "");
-				if(!"".equals(dv))field.putString(DataSetConfig.PROPERTITY_DEFAULTVALUE, dv);
+				DataSetFieldConfig sdfc = DataSetFieldConfig.getInstance(field);
+//				String validator = sdfc.getValidator();
+//				if(!"".equals(validator)) field.putString("validator", validator);
+//				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired());//field.getBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, false)
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());//field.getBoolean(DataSetFieldConfig.PROPERTITY_READONLY, false)
+//				String dv = field.getString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, "");
+//				if(!"".equals(dv))field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, dv);
 				
-				String returnField = field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
-				boolean addReturn = !"".equals(returnField);
+				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
+				boolean addReturn = returnField!=null;//!"".equals(returnField);
 				JSONObject json = new JSONObject(field);
-				CompositeMap mapping = field.getChild(DataSetConfig.PROPERTITY_MAPPING);
+				CompositeMap mapping = sdfc.getMapping();//field.getChild(DataSetConfig.PROPERTITY_MAPPING);
 				List maplist = new ArrayList();
 				if(mapping != null){
 					Iterator mit = mapping.getChildIterator();
 					while(mit.hasNext()){
 						CompositeMap mapfield = (CompositeMap)mit.next();
-						if(returnField.equals(mapfield.getString("to"))){
+						if(returnField!=null && returnField.equals(mapfield.getString("to"))){
 							addReturn = false;
 						}
 						JSONObject mj = new JSONObject(mapfield);
@@ -63,7 +67,7 @@ public class DataSet extends Component {
 				}
 				if(addReturn) {
 					CompositeMap returnmap = new CompositeMap("map");
-					returnmap.putString("from", field.getString("valuefield"));
+					returnmap.putString("from", sdfc.getValueField());//field.getString("valuefield")
 					returnmap.putString("to", returnField);
 					JSONObject jo = new JSONObject(returnmap);
 					maplist.add(jo);
@@ -78,13 +82,13 @@ public class DataSet extends Component {
 				fieldList.add(json);
 			}
 		}
-		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, true)));
-		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, view.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple"));
+		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
+		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, dsc.getSelectionModel());
 		map.put(DataSetConfig.PROPERTITY_FIELDS, fieldList.toString());
 		
 		StringBuffer sb = new StringBuffer();
-		String attachTab = view.getString(VALID_LISTENER, "");
-		if(!"".equals(attachTab)){
+		String attachTab = dsc.getValidListener();
+		if(attachTab != null){
 			String[] ts = attachTab.split(",");
 			for(int i=0;i<ts.length;i++){
 				String tid = ts[i];
@@ -93,7 +97,7 @@ public class DataSet extends Component {
 		}
 		map.put(VALID_SCRIPT, sb.toString());
 		
-		CompositeMap datas = view.getChild(DataSetConfig.PROPERTITY_DATAS);
+		CompositeMap datas = dsc.getDatas();
 		List dataList = new ArrayList(); 
 		List list = null;
 		if(datas != null){
@@ -129,8 +133,8 @@ public class DataSet extends Component {
 				}						
 			}
 		}
-		String lcode = view.getString(DataSetConfig.PROPERTITY_LOOKUP_CODE, "");
-		if(!"".equals(lcode)){
+		String lcode = dsc.getLookupCode();
+		if(lcode!=null){
 			ILookupCodeProvider provider = session.getLookupProvider();
 			if(provider!=null){
 				List llist = new ArrayList();
@@ -147,21 +151,21 @@ public class DataSet extends Component {
 			}
 		}
 		
-		boolean create = view.getBoolean(DataSetConfig.PROPERTITY_CREATERECORD, false);
+		boolean create = dsc.isAutoCreate();
 		if(dataList.size() == 0 && create) {
 			JSONObject json = new JSONObject();
 			dataList.add(json);			
 		}
-		map.put(DataSetConfig.PROPERTITY_BINDTARGET, view.getString(DataSetConfig.PROPERTITY_BINDTARGET, ""));
-		map.put(DataSetConfig.PROPERTITY_BINDNAME, view.getString(DataSetConfig.PROPERTITY_BINDNAME, ""));
+		map.put(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
+		map.put(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
 		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		map.put(DataSetConfig.PROPERTITY_DATAS, dataList.toString());	
-		map.put(DataSetConfig.PROPERTITY_AUTOQUERY, view.getString(DataSetConfig.PROPERTITY_AUTOQUERY, "false"));	
-		map.put(DataSetConfig.PROPERTITY_QUERYURL, view.getString(DataSetConfig.PROPERTITY_QUERYURL, ""));	
-		map.put(DataSetConfig.PROPERTITY_SUBMITURL, view.getString(DataSetConfig.PROPERTITY_SUBMITURL, ""));	
-		map.put(DataSetConfig.PROPERTITY_QUERYDATASET, view.getString(DataSetConfig.PROPERTITY_QUERYDATASET, ""));
-		map.put(DataSetConfig.PROPERTITY_FETCHALL, view.getString(DataSetConfig.PROPERTITY_FETCHALL, "false"));
-		map.put(DataSetConfig.PROPERTITY_PAGESIZE, view.getString(DataSetConfig.PROPERTITY_PAGESIZE, "10"));
-		map.put(DataSetConfig.PROPERTITY_AUTOCOUNT, view.getString(DataSetConfig.PROPERTITY_AUTOCOUNT, "true"));
+		map.put(DataSetConfig.PROPERTITY_AUTO_QUERY, new Boolean(dsc.isAutoQuery()));
+		map.put(DataSetConfig.PROPERTITY_QUERYURL, dsc.getQueryUrl());
+		map.put(DataSetConfig.PROPERTITY_SUBMITURL, dsc.getSubmitUrl());
+		map.put(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
+		map.put(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
+		map.put(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
+		map.put(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
 	}
 }

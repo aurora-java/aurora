@@ -92,14 +92,14 @@ public class Grid extends Component {
 				}
 				if(id.equals(dds)){
 					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
-					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTIONMODEL, "multiple");
+					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL, "multiple");
 					break;
 				}
 			}
 			
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
-		map.put(DataSetConfig.PROPERTITY_SELECTIONMODEL, selectionmodel);
+		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 	}
 	
 	private void createGridColumns(Map map, CompositeMap view,BuildSession session){
@@ -129,7 +129,7 @@ public class Grid extends Component {
 		
 		if(columns != null) {
 			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
-			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTIONMODEL);
+			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTION_MODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
 				column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);

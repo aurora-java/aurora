@@ -91,7 +91,7 @@ public class ComponentConfig extends DynamicObject {
     }
     
     public String getBindTarget(){
-        return getString(PROPERTITY_BINDTARGET);
+        return getString(PROPERTITY_BINDTARGET, "");
     }
     public void setBindTarget(String target){
         putString(PROPERTITY_BINDTARGET, target);

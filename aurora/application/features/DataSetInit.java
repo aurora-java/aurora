@@ -64,7 +64,7 @@ public class DataSetInit implements IViewBuilder {
 			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
 			mqc.setModel(m);
 			mqc.setRootPath("/model/"+m);
-			mqc.setAutoCount(ds.getBoolean(DataSetConfig.PROPERTITY_AUTOCOUNT, false));
+			mqc.setAutoCount(ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false));
 			mqc.setFetchAll(ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true));
 			screen.addInitProcedureAction(mqc.getObjectContext());
 			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);

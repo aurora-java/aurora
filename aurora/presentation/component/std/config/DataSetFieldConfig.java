@@ -11,6 +11,9 @@ public class DataSetFieldConfig extends DynamicObject  {
 	public static final String PROPERTITY_READONLY = "readonly";
     public static final String PROPERTITY_PROMPT = "prompt";
     public static final String PROPERTITY_RETURN_FIELD = "returnfield";
+    public static final String PROPERTITY_VALUE_FIELD = "valuefield";
+    public static final String PROPERTITY_VALIDATOR = "validator";
+    public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";
     
     public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -52,5 +55,38 @@ public class DataSetFieldConfig extends DynamicObject  {
     }
     public void setPrompt(String prompt){
     	putString(PROPERTITY_PROMPT, prompt);
+    }
+    
+    public String getValidator(){
+    	return getString(PROPERTITY_VALIDATOR, "");
+    }
+    public void setValidator(String validator){
+    	putString(PROPERTITY_VALIDATOR, validator);
+    }
+    
+    public String getReturnField(){
+    	return getString(PROPERTITY_RETURN_FIELD);
+    }
+    public void setReturnField(String field){
+    	putString(PROPERTITY_RETURN_FIELD, field);
+    }
+    
+    public String getValueField(){
+    	return getString(PROPERTITY_VALUE_FIELD);
+    }
+    public void setValueField(String field){
+    	putString(PROPERTITY_VALUE_FIELD, field);
+    }
+    
+    public String getDefaultValue(){
+    	return getString(PROPERTITY_DEFAULTVALUE);
+    }
+    public void setDefaultValue(String value){
+    	putString(PROPERTITY_DEFAULTVALUE, value);
+    }
+    
+    public CompositeMap getMapping(){
+    	CompositeMap context = getObjectContext();
+    	return context.getChild(DataSetConfig.PROPERTITY_MAPPING);
     }
 }
