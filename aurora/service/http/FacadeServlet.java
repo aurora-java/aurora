@@ -63,7 +63,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
             thr = ex;
 //        if (thr instanceof IOException)
 //            response.sendError(404, request.getRequestURI());
-        else if (thr instanceof SAXException)
+        if (thr instanceof SAXException)
             response.sendError(500, "error when parse screen file:"
                     + thr.getMessage());
         else {
