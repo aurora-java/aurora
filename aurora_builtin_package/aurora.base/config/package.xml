@@ -1,0 +1,5 @@
+<package name="aurora.base">
+	<schema-files>
+		<schema-file path="aurora_base_type.sxsd"/>
+	</schema-files>
+</package>

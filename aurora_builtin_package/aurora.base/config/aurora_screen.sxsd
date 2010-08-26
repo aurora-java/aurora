@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
+    <sxsd:attributes/>
+    <sxsd:elements>
+        <sxsd:element name="a:dataSet">
+            <sxsd:attributes>
+                <sxsd:attribute use="required" name="id"/>
+                <sxsd:attribute document="直接通过BM获取数据" name="model"/>
+                <sxsd:attribute document="引用的BM，自身的结构将与引用BM一致" name="href"/>
+            </sxsd:attributes>
+        </sxsd:element>
+        <sxsd:element name="a:view">
+            <sxsd:elements>
+                <sxsd:element ref="a:BaseViewComponent"/>
+            </sxsd:elements>
+            <sxsd:arrays>
+                <sxsd:array ref="a:dataSet" name="a:dataSets"/>
+            </sxsd:arrays>
+            <sxsd:attributes>
+                <sxsd:attribute document="页面使用的模板" name="template"/>
+                <sxsd:attribute document="页面模板所在的package" name="package"/>
+            </sxsd:attributes>
+        </sxsd:element>
+        <sxsd:element document="UI界面的基础单元" name="a:screen">
+            <sxsd:elements>
+                <sxsd:element name="a:init-procedure"/>
+                <sxsd:element ref="a:view"/>
+            </sxsd:elements>
+            <sxsd:attributes>
+                <sxsd:attribute type="sxsd:boolean" document="是否启用trace" name="trace"/>
+            </sxsd:attributes>
+        </sxsd:element>
+    </sxsd:elements>
+    <sxsd:categories/>
+    <sxsd:types/>
+    <sxsd:editors/>
+</sxsd:schema>
