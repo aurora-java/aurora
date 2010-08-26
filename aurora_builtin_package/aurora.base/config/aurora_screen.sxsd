@@ -14,7 +14,7 @@
                 <sxsd:element ref="a:BaseViewComponent"/>
             </sxsd:elements>
             <sxsd:arrays>
-                <sxsd:array ref="a:dataSet" name="a:dataSets"/>
+                <sxsd:array type="a:dataSet" name="a:dataSets"/>
             </sxsd:arrays>
             <sxsd:attributes>
                 <sxsd:attribute document="页面使用的模板" name="template"/>
