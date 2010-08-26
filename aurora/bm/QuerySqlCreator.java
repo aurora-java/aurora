@@ -55,15 +55,19 @@ public class QuerySqlCreator extends AbstractSqlCreator {
                     + model.getName());
         for (int i = 0; i < fields.length; i++) {
             Field f = fields[i];
-            if(!f.isForSelect())
+            if (!f.isForSelect())
                 continue;
             f.checkValidation();
             SelectField sf = null;
             if (f.isReferenceField()) {
+                boolean need_create_join = false;
                 String relation_name = f.getSourceModel();
                 Relation relation = null;
                 if (relation_name == null)
                     relation_name = f.getRelationName();
+                if (relation_name == null)
+                    throw new ConfigurationError(
+                            "Must either set 'sourceModel' or 'relationName' for relation");
                 String key = relation_name.toLowerCase();
                 relation = (Relation) ref_map.get(key);
                 if (relation == null) {
@@ -75,7 +79,10 @@ public class QuerySqlCreator extends AbstractSqlCreator {
                                         + "' in model config for field "
                                         + f.getObjectContext().toXML());
                 }
-                ref_map.put(key, relation);
+                if (!ref_map.containsKey(key)) {
+                    ref_map.put(key, relation);
+                    need_create_join = true;
+                }
                 BusinessModel ref_model = modelFactory.getModel(relation
                         .getReferenceModel());
                 SelectSource ref_source = new SelectSource(ref_model
@@ -83,25 +90,29 @@ public class QuerySqlCreator extends AbstractSqlCreator {
                 if (relation.getReferenceAlias() != null)
                     ref_source.setAlias(relation.getReferenceAlias());
 
-                Join join = new Join(relation.getJoinType() + " JOIN",
-                        base_table, ref_source);
-                Reference[] refs = relation.getReferences();
-                if (refs != null)
-                    for (int n = 0; n < refs.length; n++) {
-                        Reference ref = refs[n];
-                        String exp = ref.getExpression();
-                        if (exp != null)
-                            join.getJoinConditions().addCondition(exp);
-                        else {
-                            SelectField local = getSelectField(base_table, ref
-                                    .getLocalField(), model);
-                            SelectField foreign = getSelectField(ref_source,
-                                    ref.getForeignField(), ref_model);
-                            join.addJoinField(local, foreign);
+                if (need_create_join) {
+                    Join join = new Join(relation.getJoinType() + " JOIN",
+                            base_table, ref_source);
+                    Reference[] refs = relation.getReferences();
+                    if (refs != null)
+                        for (int n = 0; n < refs.length; n++) {
+                            Reference ref = refs[n];
+                            String exp = ref.getExpression();
+                            if (exp != null)
+                                join.getJoinConditions().addCondition(exp);
+                            else {
+                                SelectField local = getSelectField(base_table,
+                                        ref.getLocalField(), model);
+                                SelectField foreign = getSelectField(
+                                        ref_source, ref.getForeignField(),
+                                        ref_model);
+                                join.addJoinField(local, foreign);
+                            }
                         }
-                    }
-                stmt.addJoin(join);
+                    stmt.addJoin(join);
+                }
                 ref_list.add(ref_source);
+
                 Field ref_field = ref_model.getField(f.getSourceField());
                 if (ref_field == null)
                     throw new ConfigurationError(
@@ -158,12 +169,15 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         try {
             rs = runner.query(bmsc.getCurrentParameter());
             ResultSetLoader loader = new ResultSetLoader();
-            if(option!=null)
+            if (option != null)
                 loader.setFieldNameCase(option.getFieldCase());
-            if( bmsc.getBusinessModel() !=null && bmsc.getBusinessModel().getFields()!=null )
-                loader.loadByConfig(rs, desc, bmsc.getBusinessModel(), consumer);
+            if (bmsc.getBusinessModel() != null
+                    && bmsc.getBusinessModel().getFields() != null)
+                loader
+                        .loadByConfig(rs, desc, bmsc.getBusinessModel(),
+                                consumer);
             else
-                loader.loadByResultSet( rs, desc, consumer ); 
+                loader.loadByResultSet(rs, desc, consumer);
         } finally {
             DBUtil.closeResultSet(rs);
         }
