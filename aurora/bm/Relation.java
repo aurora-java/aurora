@@ -41,7 +41,10 @@ public class Relation extends DynamicObject {
      * @return A String alias 
      */
     public String getReferenceAlias(){
-        return getString(KEY_REF_ALIAS);
+        String str =getString(KEY_REF_ALIAS);
+        if(str==null)
+            str = getName();
+        return str;
     }
     
     public void setReferenceAlias(String alias){
