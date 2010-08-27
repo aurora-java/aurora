@@ -5,6 +5,7 @@ package aurora.database.sql.builder;
 
 import java.util.Iterator;
 
+import aurora.database.profile.DatabaseProfile;
 import aurora.database.sql.CompareExpression;
 import aurora.database.sql.ComplexExpression;
 import aurora.database.sql.Condition;
@@ -12,6 +13,8 @@ import aurora.database.sql.ConditionList;
 import aurora.database.sql.ExistsClause;
 import aurora.database.sql.ILogicalExpression;
 import aurora.database.sql.ISqlStatement;
+import aurora.database.sql.Join;
+import aurora.database.sql.OracleJoinExpression;
 import aurora.database.sql.RawSqlExpression;
 
 public class ConditionListBuilder extends AbstractSqlBuilder {
@@ -52,15 +55,31 @@ public class ConditionListBuilder extends AbstractSqlBuilder {
     }
     
     public String createSql(CompareExpression exp){
+            boolean is_oracle_join = exp instanceof OracleJoinExpression;
+            if(DatabaseProfile.isUseJoinKeyword( getDatabaseProfile() ))
+                is_oracle_join = false;
+            //super.getDatabaseProfile().getProperty(name)
+            OracleJoinExpression join = is_oracle_join ? (OracleJoinExpression)exp: null;
+            String join_type = is_oracle_join? join.getJoinType(): null;
             if(exp.getLeftField()==null) return "";
             StringBuffer result = new StringBuffer();
             result.append(mRegistry.getSql(exp.getLeftField()));
+            if(is_oracle_join){
+                if(Join.TYPE_RIGHT_OUTTER_JOIN.equalsIgnoreCase(join_type) || 
+                   Join.TYPE_FULL_OUTTER_JOIN.equalsIgnoreCase(join_type))               
+                 result.append("(+)").append(' ');
+            }
             result.append(' ');
             result.append(CompareExpression.getOperatorText( exp.getOperator() ));
             if(!CompareExpression.isSingleOperator(exp.getOperator())){
                 result.append(' ');
                 result.append(mRegistry.getSql(exp.getRightField()));
             }        
+            if(is_oracle_join){
+                if(Join.TYPE_LEFT_OUTTER_JOIN.equalsIgnoreCase(join_type) || 
+                   Join.TYPE_FULL_OUTTER_JOIN.equalsIgnoreCase(join_type))               
+                 result.append("(+)");
+            }
             return result.toString();
     }
     

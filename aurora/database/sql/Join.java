@@ -114,8 +114,9 @@ public class Join extends AbstractStatement {
         joinConditions.addConditions(condition_list);
     }
     
-    public void addJoinField( SelectField left_field, SelectField right_field){
-        CompareExpression cexp = new CompareExpression(left_field, CompareExpression.EQUAL, right_field);
+    public void addJoinField( SelectField left_field, SelectField right_field){        
+        //CompareExpression cexp = new CompareExpression(left_field, CompareExpression.EQUAL, right_field);
+        OracleJoinExpression cexp = new OracleJoinExpression( getType(), left_field, CompareExpression.EQUAL, right_field);
         addJoinCondition(cexp);
     }
 

@@ -16,10 +16,10 @@ public class DefaultJoinBuilder extends AbstractSqlBuilder {
             if(join.getOrder()==0){
                 buf.append(mRegistry.getSql(join.getLeftPart()));
             }
-            buf.append(" ").append(join.getType()).append(" ");
+            buf.append("\r\n\t").append(join.getType()).append(" ");
             buf.append(mRegistry.getSql(join.getRightPart()));
             buf.append(" ").append(mRegistry.getDatabaseProfile().getKeyword("ON"));
-            buf.append(" \r\n");
+            buf.append(" ");
             buf.append(mRegistry.getSql(join.getJoinConditions()));
             return buf.toString();
         }else

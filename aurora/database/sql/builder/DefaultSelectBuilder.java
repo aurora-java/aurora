@@ -6,6 +6,7 @@ package aurora.database.sql.builder;
 import java.util.Iterator;
 import java.util.List;
 
+import aurora.database.profile.DatabaseProfile;
 import aurora.database.profile.IDatabaseProfile;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.IAliasSettable;
@@ -29,12 +30,9 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
     }
     */
     
+
     public boolean isUseJoinKeyword(){
-        Object obj  = getDatabaseProfile().getProperty(IDatabaseProfile.KEY_USE_JOIN_KEYWORD);
-        if(obj==null)
-            return true;
-        String str = obj.toString();
-        return Boolean.parseBoolean(str);
+        return DatabaseProfile.isUseJoinKeyword( getDatabaseProfile() );
     }
 
     public String createSql(ISqlStatement sqlStatement) {
