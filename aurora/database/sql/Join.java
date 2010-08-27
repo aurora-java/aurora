@@ -39,6 +39,7 @@ public class Join extends AbstractStatement {
     SelectSource      leftPart;
     SelectSource      rightPart;
     ConditionList       joinConditions;
+    int                 joinOrder = 0;
     
     public Join( String type, SelectSource left, SelectSource right ){
         super(type);
@@ -116,6 +117,15 @@ public class Join extends AbstractStatement {
     public void addJoinField( SelectField left_field, SelectField right_field){
         CompareExpression cexp = new CompareExpression(left_field, CompareExpression.EQUAL, right_field);
         addJoinCondition(cexp);
+    }
+
+    /** A int number to identify its index number in a join list, starts from 0  */
+    public int getOrder() {
+        return joinOrder;
+    }
+
+    public void setOrder(int joinOrder) {
+        this.joinOrder = joinOrder;
     }
     
     
