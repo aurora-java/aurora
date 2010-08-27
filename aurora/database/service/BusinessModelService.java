@@ -225,6 +225,10 @@ public class BusinessModelService {
     public void deleteByPK(Map parameters) throws Exception {
         executeDml(parameters, "Delete");
     }
+    
+    public void execute(Map parameters) throws Exception {
+        executeDml(parameters, "Execute");
+    }
 
     public void parseParameter(ServiceContext context)
             throws ValidationException {
