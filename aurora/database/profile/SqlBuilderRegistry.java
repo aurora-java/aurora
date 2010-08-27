@@ -15,6 +15,7 @@ import aurora.database.sql.ExistsClause;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.InsertStatement;
 import aurora.database.sql.Join;
+import aurora.database.sql.OracleJoinExpression;
 import aurora.database.sql.OrderByField;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.SelectField;
@@ -54,6 +55,7 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
         registerSqlBuilder(ExistsClause.class, builder );
         registerSqlBuilder(ComplexExpression.class, builder );
         registerSqlBuilder(RawSqlExpression.class, builder );
+        registerSqlBuilder(OracleJoinExpression.class, builder);
         
         builder = new DefaultUpdateBuilder();
         registerSqlBuilder(UpdateStatement.class, builder);
