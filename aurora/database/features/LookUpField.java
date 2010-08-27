@@ -26,6 +26,8 @@ public class LookUpField {
 
 	public void onPrepareBusinessModel(BusinessModel model) {
 		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
+		if(lookupProvider==null)
+		    return;
 		String type = lookupProvider.getLookupType();
 		if("sql".equalsIgnoreCase(type)){
 			Field[] fields = model.getFields();
@@ -79,6 +81,8 @@ public class LookUpField {
 
 	public void postFetchResultSet(SqlServiceContext context,BusinessModel model) throws Exception {
 		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
+		if(lookupProvider==null)
+		    return;
 		String type = lookupProvider.getLookupType();
 		if("cache".equalsIgnoreCase(type)){
 			//TODO:要等seacat修改好后才能实现
