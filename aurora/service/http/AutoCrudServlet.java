@@ -52,7 +52,10 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
             action_config = ActionConfigManager.createModelDelete(object_name);
         } else if("batch_update".equals(action_name)){
             action_config = ActionConfigManager.createModelBatchUpdate(object_name);
-        } else
+        } else if("execute".equals(action_name)){
+            action_config = ActionConfigManager.createModelAction("model-execute", object_name);
+        }
+        else
             throw new ServletException("Unknown command:"+action_name);
         screen.getInitProcedureConfig().addChild(0, action_config);
         svc.setServiceConfigData(service_config);
