@@ -26,6 +26,7 @@ import aurora.database.SqlRunner;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IStatementWithParameter;
 import aurora.service.ServiceContext;
+import aurora.service.validation.IParameter;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.ParameterParser;
 import aurora.service.validation.ValidationException;
@@ -61,6 +62,9 @@ public class BusinessModelService {
     
     // object registry to get instances
     IObjectRegistry     mObjectRegistry;
+    
+    // logger
+    ILogger mLogger;  
 
     protected BusinessModelService(DatabaseServiceFactory factory,
             Configuration config, BusinessModel model, CompositeMap context_map)
@@ -70,6 +74,9 @@ public class BusinessModelService {
         this.mServiceFactory = factory;
         this.mObjectRegistry = factory.getObjectRegistry();
         setContextMap(context_map);
+        mLogger = LoggingContext.getLogger(mServiceContext
+                .getObjectContext(),
+                DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);  
     }
 
     protected void prepareForRun(String proc_name) throws ValidationException, SQLException {
@@ -227,7 +234,7 @@ public class BusinessModelService {
                 ServiceContext.KEY_PARAMETER_PARSED, false);
         if (!parsed) {
             ParameterParser parser = ParameterParser.getInstance();
-            List exceptions = null;
+            List exceptions = null;           
             IParameterIterator params = mBusinessModel
                     .getParameterForOperation(operation);
             if (params != null) {
