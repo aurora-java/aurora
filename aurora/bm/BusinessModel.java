@@ -595,6 +595,14 @@ public class BusinessModel extends DynamicObject {
     protected void setParent( BusinessModel parent ){
         this.parent = parent;
     }
+    
+    public static String getDefaultAlias( int index ){
+        return "t"+index;
+    }
+    
+    public static String getDefaultAlias(){
+        return "t1";
+    }
 
 
 }
