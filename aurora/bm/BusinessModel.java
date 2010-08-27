@@ -349,19 +349,23 @@ public class BusinessModel extends DynamicObject {
         if(pk_conf==null)
             pkFieldsArray = EMPTY_FIELDS;
         else{            
-            pkFieldsArray = new Field[pk_conf.getChilds().size()];
-            int n=0;
-            it = pk_conf.getChildIterator();
-            if(it!=null)
-                while(it.hasNext()){
-                    CompositeMap field = (CompositeMap) it.next();
-                    String name = field.getString(Field.KEY_NAME);
-                    if(name==null) throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
-                    Field f = getField(name.toLowerCase()); 
-                        //(Field)fieldMap.get(name.toLowerCase());
-                    if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());                    f.setPrimaryKey(true);
-                    pkFieldsArray[n++] = f;
-                }
+            if(pk_conf.getChilds()==null)
+                pkFieldsArray = EMPTY_FIELDS;
+            else{
+                pkFieldsArray = new Field[pk_conf.getChilds().size()];
+                int n=0;
+                it = pk_conf.getChildIterator();
+                if(it!=null)
+                    while(it.hasNext()){
+                        CompositeMap field = (CompositeMap) it.next();
+                        String name = field.getString(Field.KEY_NAME);
+                        if(name==null) throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
+                        Field f = getField(name.toLowerCase()); 
+                            //(Field)fieldMap.get(name.toLowerCase());
+                        if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());                    f.setPrimaryKey(true);
+                        pkFieldsArray[n++] = f;
+                    }
+            }
         }
     }
 
