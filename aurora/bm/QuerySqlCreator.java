@@ -39,6 +39,8 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         return source.createSelectField(f.getPhysicalName());
     }
 
+    
+    /** @todo refactor needed */
     public void createSelectStatement(BusinessModel model, SelectStatement stmt)
             throws IOException {
         SelectSource base_table = new SelectSource(model.getBaseTable());
