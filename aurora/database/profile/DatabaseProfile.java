@@ -19,6 +19,18 @@ public class DatabaseProfile implements IDatabaseProfile {
     IObjectCreator          mObjectCreator;
     IDatabaseFactory        owner;
     
+    public static boolean getBooleanValue( IDatabaseProfile profile, String key, boolean default_value ){
+        Object obj  = profile.getProperty(key);
+        if(obj==null)
+            return default_value;
+        String str = obj.toString();
+        return Boolean.parseBoolean(str);        
+    }
+    
+    public static boolean isUseJoinKeyword( IDatabaseProfile profile ){
+        return getBooleanValue(profile, IDatabaseProfile.KEY_USE_JOIN_KEYWORD, true );
+    }    
+    
     public DatabaseProfile(){
         mSqlBuilderRegistry = new SqlBuilderRegistry(this);
     }
