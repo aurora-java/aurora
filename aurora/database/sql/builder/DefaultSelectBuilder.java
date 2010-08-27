@@ -21,10 +21,20 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
 
     public static final String EMPTY_WHERE = "";
 
+    /*
     boolean useJoinKeyword = true;
 
     public boolean useJoinKeyword() {
         return useJoinKeyword;
+    }
+    */
+    
+    public boolean isUseJoinKeyword(){
+        Object obj  = getDatabaseProfile().getProperty(IDatabaseProfile.KEY_USE_JOIN_KEYWORD);
+        if(obj==null)
+            return true;
+        String str = obj.toString();
+        return Boolean.parseBoolean(str);
     }
 
     public String createSql(ISqlStatement sqlStatement) {
@@ -45,12 +55,13 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
     }
 
     public String getFromPart(SelectStatement stmt) {
+        boolean useJoinKeyword = isUseJoinKeyword();
         StringBuffer result = new StringBuffer();
         result.append(getKeyword(IDatabaseProfile.KEYWORD_FROM)).append(" ");
         boolean is_use_join = false;
         List lst = stmt.getJoins();
         if (lst != null)
-            if (lst.size() >= 0)
+            if (lst.size() > 0)
                 is_use_join = true;
         is_use_join = is_use_join & useJoinKeyword;
         if (is_use_join) {
@@ -76,7 +87,7 @@ public class DefaultSelectBuilder extends AbstractSqlBuilder {
     public String getWherePart(SelectStatement stmt) {
         StringBuffer buf = new StringBuffer();
         ConditionList where = stmt.getWhereClause();
-        if (useJoinKeyword()) {
+        if (isUseJoinKeyword()) {
             if (where.size() == 0)
                 return EMPTY_WHERE;
             else {
