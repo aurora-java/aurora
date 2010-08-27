@@ -14,6 +14,7 @@ import aurora.database.sql.DeleteStatement;
 import aurora.database.sql.ExistsClause;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.InsertStatement;
+import aurora.database.sql.Join;
 import aurora.database.sql.OrderByField;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.SelectField;
@@ -26,6 +27,7 @@ import aurora.database.sql.builder.ConditionListBuilder;
 import aurora.database.sql.builder.DefaultCompositeBuilder;
 import aurora.database.sql.builder.DefaultDeleteBuilder;
 import aurora.database.sql.builder.DefaultInsertBuilder;
+import aurora.database.sql.builder.DefaultJoinBuilder;
 import aurora.database.sql.builder.DefaultSelectBuilder;
 import aurora.database.sql.builder.DefaultUpdateBuilder;
 
@@ -66,6 +68,9 @@ public class SqlBuilderRegistry implements ISqlBuilderRegistry {
         
         builder = new DefaultCompositeBuilder();
         registerSqlBuilder(CompositeStatement.class, builder);
+        
+        builder = new DefaultJoinBuilder();
+        registerSqlBuilder(Join.class, builder);
     }
     
     public SqlBuilderRegistry(){
