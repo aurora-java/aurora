@@ -32,12 +32,12 @@ public class NavBar extends ToolBar {
 			}
 			view.putString(ComponentConfig.PROPERTITY_ID, id);
 			
-			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("AURORA_FIRST_PAGE")));
-			view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}",session.getLocalizedPrompt("AURORA_PREVIOUS_PAGE")));
+			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));
+			view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}",session.getLocalizedPrompt("HAP_PREVIOUS_PAGE")));
 			view.addChild(createSeparator());
 			
 			CompositeLoader loader = new CompositeLoader();
-			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>"+session.getLocalizedPrompt("AURORA_PAGENUM")+":</div>";
+			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>"+session.getLocalizedPrompt("HAP_PAGENUM")+":</div>";
 			CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
 			view.addChild(pageinfo);
 			
@@ -58,8 +58,8 @@ public class NavBar extends ToolBar {
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
 			view.addChild(createSeparator());
-			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("AURORA_NEXT_PAGE")));
-			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("AURORA_LAST_PAGE")));
+			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
+			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
 			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("AURORA_REFRESH")));
 			view.addChild(createSeparator());
 			

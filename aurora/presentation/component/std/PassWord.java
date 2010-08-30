@@ -8,10 +8,12 @@ import aurora.presentation.ViewContext;
 
 public class PassWord extends TextField {
 	
+	public static String DEFAULT_INPUT_TYPE = "password";
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();		
-		map.put(INPUT_TYPE, "password");
+		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		addConfig("detectCapsLock", new Boolean(true));
 		map.put(CONFIG, getConfigString());
 	}

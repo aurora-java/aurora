@@ -1,6 +1,7 @@
 package aurora.presentation.component.std;
 
 import java.io.Writer;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
@@ -26,7 +27,7 @@ public class FieldSet extends Box {
 		super.afterBuildTop(session, model, view);
 	}
 	
-	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,int rows, int columns,String id) throws Exception{
+	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,Map map,int rows, int columns,String id) throws Exception{
 		
 		Writer out = session.getWriter();
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");

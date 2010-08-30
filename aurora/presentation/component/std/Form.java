@@ -1,6 +1,7 @@
 package aurora.presentation.component.std;
 
 import java.io.Writer;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
@@ -30,7 +31,7 @@ public class Form extends Box {
 		super.afterBuildTop(session, model, view);
 	}
 	
-	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,int rows, int columns,String id) throws Exception{
+	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,Map map,int rows, int columns,String id) throws Exception{
 		
 		Writer out = session.getWriter();
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
@@ -38,12 +39,15 @@ public class Form extends Box {
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
 		
-		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
-		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-		int width = Integer.valueOf("".equals(wstr) ?  "300" : wstr).intValue();
-		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
-		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
+//		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
+//		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+//		int width = Integer.valueOf("".equals(wstr) ?  "300" : wstr).intValue();
+//		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
+//		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
+//		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
+		int width = getComponentWidth(model, view, map).intValue();
+		int height = getComponentHeight(model, view, map).intValue();
+		
 		
 		String className = DEFAULT_TABLE_CLASS + " layout-form";
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");

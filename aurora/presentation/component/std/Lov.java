@@ -22,6 +22,8 @@ public class Lov extends TextField {
 	private static final String PROPERTITY_LOV_HEIGHT = "lovheight";
 	private static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	
+	private static final String CONFIG_CONTEXT = "context";
+	
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
@@ -31,6 +33,7 @@ public class Lov extends TextField {
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
 		
+		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
 		addConfig(PROPERTITY_LOV_URL, view.getString(PROPERTITY_LOV_URL,""));
 		addConfig(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE,""));
 		addConfig(PROPERTITY_VALUE_FIELD, view.getString(PROPERTITY_VALUE_FIELD,""));

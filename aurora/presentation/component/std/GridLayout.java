@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
@@ -35,6 +36,14 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected static final String DEFAULT_TD_CELL = "layout-td-cell";
 	protected static final String DEFAULT_TD_CONTAINER = "layout-td-con";
 	
+	
+	protected int getDefaultWidth(){
+		return 0;
+	}
+	
+	protected int getDefaultHeight(){
+		return 0;
+	}
 		
 	protected int getRows(CompositeMap view){
 		int rows = view.getInt(ROWS, UNLIMITED);
@@ -104,19 +113,22 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 
 	
-	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, int rows, int columns,String id) throws Exception{
+	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, Map map, int rows, int columns,String id) throws Exception{
 		Writer out = session.getWriter();
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
 		
-		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
-		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-		int width = Integer.valueOf(wstr).intValue();
-		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
-		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-		int height = Integer.valueOf(hstr).intValue();
+//		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
+//		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+//		int width = Integer.valueOf(wstr).intValue();
+//		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
+//		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
+//		int height = Integer.valueOf(hstr).intValue();
+		
+		int width = getComponentWidth(model, view, map).intValue();
+		int height = getComponentHeight(model, view, map).intValue();
 		
 		String className = DEFAULT_TABLE_CLASS;
 		className += " " + cls;
@@ -143,6 +155,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
+		Map map = view_context.getMap();
 		
 		/** ID属性 **/
 		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
@@ -174,7 +187,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 			}
 		}
 		try {
-			buildTop(session, model, view , rows, columns,id);
+			buildTop(session, model, view, map, rows, columns,id);
 			if (it != null) {
 				if(rows == UNLIMITED){
 					buildRows(session, model, view, it);

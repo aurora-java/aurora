@@ -134,7 +134,7 @@ public class Grid extends Component {
 				CompositeMap column = new CompositeMap("column");
 				column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
 				column.putBoolean(GridColumnConfig.PROPERTITY_LOCK,true);
-				column.putInt(ComponentConfig.PROPERTITY_WIDTH,25);
+				column.putInt(ComponentConfig.PROPERTITY_WIDTH, 25);
 				column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE,false);
 				column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE,false);
 				if("multiple".equals(selectmodel)) {
@@ -300,11 +300,11 @@ public class Grid extends Component {
 					String type = item.getString("type");
 					if(!"".equals(type)){
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("AURORA_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("AURORA_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("AURORA_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}
 					}
 				}
@@ -514,7 +514,6 @@ public class Grid extends Component {
 			sb.append("</DIV><DIV class='grid-lb' atype='grid.lb' style='width:100%;height:"+(height.intValue()-rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue())+"px'>");
 			sb.append("</DIV></DIV>");
 		}
-		
 		return sb.toString();
 	}
 	
@@ -561,11 +560,8 @@ public class Grid extends Component {
 			}
 			hsb.append("</TR>");
 		}
-		
 		sb.append(hsb);
-		sb.append("</TBODY></TABLE>");
-		
-		
+		sb.append("</TBODY></TABLE>");		
 		return sb.toString();
 	}
 	

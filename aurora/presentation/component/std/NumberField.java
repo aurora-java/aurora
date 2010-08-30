@@ -7,28 +7,25 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.DataSetFieldConfig;
+import aurora.presentation.component.std.config.NumberFieldConfig;
 
-public class NumberField extends TextField {
-	
-	protected static final String PROPERTITY_ALLOWDECIMALS = "allowdecimals";
-	protected static final String PROPERTITY_DECIMALPRECISION = "decimalprecision";	
-	protected static final String PROPERTITY_ALLOWNEGATIVE = "allownegative";	
+public class NumberField extends TextField {	
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		
-		Boolean allowDecimals = new Boolean(view.getBoolean(PROPERTITY_ALLOWDECIMALS, true));
-		addConfig(PROPERTITY_ALLOWDECIMALS, allowDecimals);
+		NumberFieldConfig nfc = NumberFieldConfig.getInstance(view);
 		
-		Boolean allowNegative = new Boolean(view.getBoolean(PROPERTITY_ALLOWNEGATIVE, true));
-		addConfig(PROPERTITY_ALLOWNEGATIVE, allowNegative);
+		if(!nfc.isAllowDecimals())addConfig(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, new Boolean(false));
+		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
+		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, new Boolean(false));
 		
-		Integer decimalPrecision = new Integer(view.getInt(PROPERTITY_DECIMALPRECISION, 2));
-		addConfig(PROPERTITY_DECIMALPRECISION, decimalPrecision);
+		addConfig(NumberFieldConfig.PROPERTITY_DECIMALPRECISION, new Integer(nfc.getDecimalPrecision()));
 		
 		Map map = context.getMap();		
-		map.put(INPUT_TYPE, "input");
+		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		map.put(CONFIG, getConfigString());
 	}
 }

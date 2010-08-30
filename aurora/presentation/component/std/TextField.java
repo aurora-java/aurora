@@ -19,6 +19,7 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 public class TextField extends InputField {	
 	
 	public static String INPUT_TYPE = "inputtype";
+	public static String DEFAULT_INPUT_TYPE = "input";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -29,7 +30,7 @@ public class TextField extends InputField {
 		if(!"".equals(typeCase)) {
 			addConfig(TextFieldConfig.PROPERTITY_TYPE_CASE, typeCase.toLowerCase());
 		}
-		map.put(INPUT_TYPE, "input");
+		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		map.put(CONFIG, getConfigString());
 	}
 }

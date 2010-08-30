@@ -44,8 +44,8 @@ public class DataSet extends Component {
 //				String validator = sdfc.getValidator();
 //				if(!"".equals(validator)) field.putString("validator", validator);
 //				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired());//field.getBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, false)
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());//field.getBoolean(DataSetFieldConfig.PROPERTITY_READONLY, false)
+				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
+				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
 //				String dv = field.getString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, "");
 //				if(!"".equals(dv))field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, dv);
 				
@@ -103,15 +103,7 @@ public class DataSet extends Component {
 		if(datas != null){
 			String ds = datas.getString(DataSetConfig.PROPERTITY_DATASOURCE, "");
 			if(ds.equals("")){
-				list = datas.getChilds();				
-			}else{
-				
-				CompositeMap data= (CompositeMap)model.getObject(ds);
-				if(data!= null){
-					list = data.getChilds();
-				}				
-			}
-			if(list != null){
+				list = datas.getChilds();
 				Iterator dit = list.iterator();
 				while(dit.hasNext()){
 					CompositeMap item = (CompositeMap)dit.next();
@@ -126,6 +118,25 @@ public class DataSet extends Component {
 							}else{
 								item.put(key, value);
 							}
+						}
+					}
+				}
+			}else{
+				CompositeMap data= (CompositeMap)model.getObject(ds);
+				if(data!= null){
+					list = data.getChilds();
+				}				
+			}
+			if(list != null){
+				Iterator dit = list.iterator();
+				while(dit.hasNext()){
+					CompositeMap item = (CompositeMap)dit.next();
+					Iterator it = new ArrayList(item.keySet()).iterator();
+					while(it.hasNext()){
+						String key = (String)it.next();
+						Object valueKey = item.get(key);
+						if(valueKey==null){
+							item.remove(key);
 						}
 					}
 					JSONObject json = new JSONObject(item);
