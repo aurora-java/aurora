@@ -21,7 +21,6 @@ import aurora.database.SqlRunner;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
-import aurora.presentation.component.std.config.ComponentConfig;
 
 public class MultiLanguageStorage{
 	final static String KEY_ML_MODEL="model";
@@ -106,7 +105,10 @@ public class MultiLanguageStorage{
     				 }
     			 }
     			 if(!is_create){
+    				 System.out.println(multiLanguageDescField + " " + refield.getDatabaseType() + "  "  + refield.getDatabaseType());
     				 Field f=Field.createField(multiLanguageDescField);
+    				 f.setDatabaseType(refield.getDatabaseType());
+    				 f.setDataType(refield.getDataType());
     				 f.setPrompt(prompt);
     				 f.setForInsert(false);
     				 f.setForUpdate(false);
@@ -173,11 +175,14 @@ public class MultiLanguageStorage{
 		String operation=context.getOperation();
 		Field[] fields = model.getFields();
 		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];	
+			Field field = fields[i];
+			if(!field.isReferenceField())
 			if(field.getMultiLanguage()){
-				if("insert".equalsIgnoreCase(operation.toLowerCase())||"update".equalsIgnoreCase(operation.toLowerCase())){			
+				if("insert".equalsIgnoreCase(operation.toLowerCase()) && field.isForInsert()){			
 					createMultiLanguageSql(context,field,"update");
-				}else{
+				}else if("update".equalsIgnoreCase(operation.toLowerCase()) && field.isForUpdate()) {
+					createMultiLanguageSql(context,field,"update");
+				}else {
 					createMultiLanguageSql(context,field,"delete");
 				}														
 			}
