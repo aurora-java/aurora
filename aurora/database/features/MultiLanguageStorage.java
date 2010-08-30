@@ -106,8 +106,6 @@ public class MultiLanguageStorage{
     			 }
     			 if(!is_create){
     				 Field f=Field.createField(multiLanguageDescField);
-    				 f.setDatabaseType(refield.getDatabaseType());
-    				 f.setDataType(refield.getDataType());
     				 f.setPrompt(prompt);
     				 f.setForInsert(false);
     				 f.setForUpdate(false);
