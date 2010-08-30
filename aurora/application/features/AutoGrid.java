@@ -26,7 +26,7 @@ import aurora.service.ServiceContext;
 
 public class AutoGrid implements IFeature{
 	
-	private static final String PROPERTITY_HREF = "href";
+	private static final String PROPERTITY_MODEL = "model";
 	
 	IModelFactory mFactory;
 	CompositeMap view;
@@ -105,7 +105,7 @@ public class AutoGrid implements IFeature{
     private CompositeMap processColumns(CompositeMap model) throws IOException{
     	GridConfig grid = GridConfig.getInstance(view);
 		List bmColumns = new ArrayList();
-		String href = view.getString(PROPERTITY_HREF, "");
+		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
 			BusinessModel bm = null;

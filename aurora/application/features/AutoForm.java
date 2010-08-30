@@ -15,7 +15,7 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.service.ServiceContext;
 
 public class AutoForm implements IFeature{
-	private static final String PROPERTITY_HREF = "href";
+	private static final String PROPERTITY_MODEL = "model";
 	
 	IModelFactory mFactory;
 	CompositeMap view;
@@ -33,7 +33,7 @@ public class AutoForm implements IFeature{
 		
 		String target = view.getString(ComponentConfig.PROPERTITY_BINDTARGET,"");
 		
-		String href = view.getString(PROPERTITY_HREF, "");
+		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
 			BusinessModel bm = null;

@@ -52,50 +52,51 @@ public class DataSetInit implements IViewBuilder {
     }
     
     private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
-		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
-		String queryUrl = ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
-		String submitUrl = ds.getString(DataSetConfig.PROPERTITY_SUBMITURL,"");
-		String m = ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
-		boolean cq = ds.getBoolean(DataSetConfig.PROPERTITY_CAN_QUERY,true);
-		boolean cs = ds.getBoolean(DataSetConfig.PROPERTITY_CAN_SUBMIT,true);
+    	DataSetConfig dsc = DataSetConfig.getInstance(ds);
+//		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
+		String queryUrl = dsc.getQueryUrl();//ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
+		String submitUrl = dsc.getSubmitUrl();//ds.getString(DataSetConfig.PROPERTITY_SUBMITURL,"");
+		String baseModel = dsc.getModel();//ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
+		boolean cq = dsc.isCanQuery();//ds.getBoolean(DataSetConfig.PROPERTITY_CAN_QUERY,true);
+		boolean cs = dsc.isCanSubmit();//ds.getBoolean(DataSetConfig.PROPERTITY_CAN_SUBMIT,true);
 		
 		
-		if(!"".equals(m)){
+		if(baseModel!=null && dsc.getLoadData() == true){
 			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
-			mqc.setModel(m);
-			mqc.setRootPath("/model/"+m);
-			mqc.setAutoCount(ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false));
-			mqc.setFetchAll(ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true));
+			mqc.setModel(baseModel);
+			mqc.setRootPath("/model/"+baseModel);
+			mqc.setAutoCount(false);//ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false)
+			mqc.setFetchAll(true);//ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true)
 			screen.addInitProcedureAction(mqc.getObjectContext());
 			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
 			if(datas == null){
 				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
 			}
-			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+m);
+			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+baseModel);
 		}
 		if(cq){
 			if(!"".equals(queryUrl)){
 				queryUrl = uncertain.composite.TextParser.parse(queryUrl, model);
 				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
-			}else if(!"".equals(href)){
-				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+href+"/query");
+			}else if(baseModel!=null){
+				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/query");
 			}
 		}
 		if(cs){
 			if(!"".equals(submitUrl)){
 				submitUrl = uncertain.composite.TextParser.parse(submitUrl, model);
 				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, submitUrl);
-			}else if(!"".equals(href)){
-				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+href+"/batch_update");
+			}else if(baseModel!=null){
+				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/batch_update");
 			}
 		}
-		if(!"".equals(href)){
-			href = uncertain.composite.TextParser.parse(href, model);
+		if(baseModel!=null){
+			baseModel = uncertain.composite.TextParser.parse(baseModel, model);
 			BusinessModel bm = null;
 			try {
-				bm = mFactory.getModelForRead(href);
+				bm = mFactory.getModelForRead(baseModel);
 			}catch(Exception e){
-				bm = mFactory.getModelForRead(href,"xml");
+				bm = mFactory.getModelForRead(baseModel,"xml");
 			}
 			Field[] bmfields = bm.getFields();
 			if(bmfields != null){
@@ -110,7 +111,7 @@ public class DataSetInit implements IViewBuilder {
 				int fl = bmfields.length;
 				for(int n=0;n<fl;n++){
 					Field field = bmfields[n];
-					processField(field,dslist);
+					processField(model,field,dslist);
 					DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(field.getObjectContext());
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
@@ -142,16 +143,16 @@ public class DataSetInit implements IViewBuilder {
 		}
     }
     
-    private void processField(Field field,List list) {
+    private void processField(CompositeMap model,Field field,List list) {
     	String type = field.getEditorType();
     	if("combobox".equalsIgnoreCase(type)){
-    		String model = field.getObjectContext().getString("sourcemodel", "");
-    		if(!"".equals(model)){
+    		String sourceModel = field.getObjectContext().getString("sourcemodel", "");
+    		if(!"".equals(sourceModel)){
     			String id = IDGenerator.getInstance().generate();
     			DataSetConfig ds = DataSetConfig.getInstance();    			
-    			ds.setHref(model);
+    			ds.setModel(sourceModel);
     			ds.setFetchAll(true);
-    			ds.setQueryUrl("autocrud/"+model+"/query");
+    			ds.setQueryUrl(model.getObject("/request/@context_path").toString() + "/autocrud/"+sourceModel+"/query");
     			ds.setAutoQuery(true);
     			ds.setId(id);
     			list.add(ds.getObjectContext());
