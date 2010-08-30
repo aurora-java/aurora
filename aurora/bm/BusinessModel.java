@@ -308,7 +308,10 @@ public class BusinessModel extends DynamicObject {
         DataType[] fieldTypeArray = new DataType[fields.length];
         for(int i=0; i<fields.length; i++){
             //String datatype = fields[i].getDatabaseType();
-            String datatype = fields[i].getDataType();
+            Field fld = fields[i];
+            if(fld.isReferenceField())
+                fld = fld.getReferredField();
+            String datatype = fld.getDataType();
             if(datatype==null) datatype="java.lang.String";
             // revised
             fieldTypeArray[i] = registry.getDataType(datatype);
