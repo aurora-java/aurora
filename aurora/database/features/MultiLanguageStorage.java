@@ -1,15 +1,18 @@
 package aurora.database.features;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import uncertain.composite.CompositeMap;
+import uncertain.core.ConfigurationError;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.bm.Operation;
+import aurora.bm.Relation;
 import aurora.database.CompositeMapCreator;
 import aurora.database.FetchDescriptor;
 import aurora.database.ParsedSql;
@@ -18,6 +21,7 @@ import aurora.database.SqlRunner;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class MultiLanguageStorage{
 	final static String KEY_ML_MODEL="model";
@@ -35,65 +39,79 @@ public class MultiLanguageStorage{
 	BusinessModel mlModel=null;	
 	String mlTable=null;
 	CompositeMap dbProperties=null;
-	public MultiLanguageStorage(IModelFactory modelFactory, IDatabaseFactory databaseFactory) throws Exception{	
+	public MultiLanguageStorage(IModelFactory modelFactory, IDatabaseFactory databaseFactory) throws IOException{	
 		dbProperties=databaseFactory.getProperties();
 		if(dbProperties==null)
-			throw new Exception("Database Properties undifined");	
+			throw new ConfigurationError("Database Properties undifined");	
 		CompositeMap mlProperties=dbProperties.getChild("multi-language-storage");
 		if(mlProperties==null)
-			throw new Exception("multi-language-storage Properties undifined");			
+			throw new ConfigurationError("multi-language-storage Properties undifined");			
 		refTable=mlProperties.getString(KEY_ML_REF_TABLE);
 		if(refTable==null)
-			throw new Exception("multi-language-storage ref_table undifined");		
+			throw new ConfigurationError("multi-language-storage ref_table undifined");		
 		refField=mlProperties.getString(KEY_ML_REF_FIELD);
 		if(refField==null)
-			throw new Exception("multi-language-storage ref_field undifined");
+			throw new ConfigurationError("multi-language-storage ref_field undifined");
 		mlDescription=mlProperties.getString(KEY_ML_DESCRIPTION);
 		if(mlDescription==null)
-			throw new Exception("multi-language-storage description undifined");
+			throw new ConfigurationError("multi-language-storage description undifined");
 		pkId=mlProperties.getString(KEY_ML_PK_ID);
 		if(pkId==null)
-			throw new Exception("multi-language-storage pk_id undifined");	
+			throw new ConfigurationError("multi-language-storage pk_id undifined");	
 		mlModelString=mlProperties.getString(KEY_ML_MODEL);
 		if(mlModelString==null)
-			throw new Exception("multi-language-storage model undifined");
+			throw new ConfigurationError("multi-language-storage model undifined");
 		sequence=mlProperties.getString(KEY_ML_SEQUENCE);
 		if(sequence==null)
-			throw new Exception("multi-language-storage sequence undifined");
+			throw new ConfigurationError("multi-language-storage sequence undifined");
 		mlModel = modelFactory.getModel(mlModelString);		
 		mlTable=mlModel.getBaseTable();
 	}
+	
     public void onPrepareBusinessModel(BusinessModel model){
     	 Field[] fields = model.getFields();
     	 boolean is_create=false;
     	 Field field=null;
+    	 Field refield = null;
     	 String alias=model.getAlias();
     	 String fieldName=null;
     	 String prompt=null;
     	 String multiLanguageDescField=null;
     	 for(int i=0,l=fields.length;i<l;i++){
     		 field=fields[i];
-    		 if(field.getMultiLanguage()){
-    			 prompt=field.getPrompt();
-    			 fieldName=field.getName();
-    			 multiLanguageDescField=field.getMultiLanguageDescField();
+ 			 if(field.isReferenceField()) {
+                 CompositeMap cmap = (CompositeMap)field.getReferredField().getObjectContext().clone();
+                 cmap.copy(field.getObjectContext());
+ 				 refield = Field.getInstance(cmap);//field.getReferredField();
+ 				 Relation relation = model.getRelation(field.getRelationName());
+ 				 alias = relation.getReferenceAlias();
+ 				 if(alias==null) alias = field.getRelationName();
+ 				 fieldName=field.getSourceField();
+ 			 }else{
+ 			     refield = field;
+ 			     fieldName=refield.getName();
+ 			 }
+ 			 
+    		 if(refield.getMultiLanguage()){
+    			 prompt=refield.getPrompt();
+    			 multiLanguageDescField=refield.getMultiLanguageDescField();
     			 for(int j=0;j<l;j++){
-    				 field=fields[j];
-    				 if(field.getName().equalsIgnoreCase(multiLanguageDescField)){
-    					 if(!field.isExpression()){
-    						 field.setExpression(createQuerySql(fieldName,alias));
+    				 Field f=fields[j];
+    				 if(f.getName().equalsIgnoreCase(multiLanguageDescField)){
+    					 if(!f.isExpression()){
+    						 f.setExpression(createQuerySql(fieldName,alias));
     						 is_create=true;
     						 break;
     					 }
     				 }
     			 }
     			 if(!is_create){
-    				 field=Field.createField(multiLanguageDescField);
-    				 field.setPrompt(prompt);
-    				 field.setForInsert(false);
-    				 field.setForUpdate(false);
-    				 field.setExpression(createQuerySql(fieldName,alias));
-    				 model.addField(field);
+    				 Field f=Field.createField(multiLanguageDescField);
+    				 f.setPrompt(prompt);
+    				 f.setForInsert(false);
+    				 f.setForUpdate(false);
+    				 f.setExpression(createQuerySql(fieldName,alias));
+    				 model.addField(f);
     			 }
     		 }
     		 is_create=false;
@@ -108,7 +126,7 @@ public class MultiLanguageStorage{
 		sql.append(" from ");
 		sql.append(mlTable);
 		sql.append(" where "+pkId+"="+alias+"."+fieldName+"" +
-				" and Language=${"+dbProperties.getString("language_path")+"})");//language_path待修改		
+				" and Language=${"+dbProperties.getString("language_path")+"})");
 		return sql.toString();
     }
 	public void preCreateInsertStatement(BusinessModel model,
@@ -155,7 +173,7 @@ public class MultiLanguageStorage{
 		String operation=context.getOperation();
 		Field[] fields = model.getFields();
 		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];			
+			Field field = fields[i];	
 			if(field.getMultiLanguage()){
 				if("insert".equalsIgnoreCase(operation.toLowerCase())||"update".equalsIgnoreCase(operation.toLowerCase())){			
 					createMultiLanguageSql(context,field,"update");
