@@ -21,11 +21,11 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_DATASOURCE = "datasource";
 	public static final String PROPERTITY_FETCHALL = "fetchall";
 	public static final String PROPERTITY_FIELDS = "fields";
-	public static final String PROPERTITY_HREF = "href";
 	public static final String PROPERTITY_LOOKUP_CODE = "lookupcode";	
 	public static final String PROPERTITY_MAPPING = "mapping";
 	public static final String PROPERTITY_MAP = "map";
 	public static final String PROPERTITY_MODEL = "model";
+	public static final String PROPERTITY_LOADDATA = "loaddata";
 	public static final String PROPERTITY_PAGESIZE = "pagesize";
 	public static final String PROPERTITY_PAGEID = "pageid";	
 	public static final String PROPERTITY_QUERYURL = "queryurl";
@@ -59,11 +59,11 @@ public class DataSetConfig extends ComponentConfig {
         return model;
     }
 	
-	public String getHref(){
-		return getString(PROPERTITY_HREF);		
+	public boolean getLoadData(){
+		return getBoolean(PROPERTITY_LOADDATA, false);
 	}
-	public void setHref(String href){
-		putString(PROPERTITY_HREF, href);
+	public void setLoadData(boolean loadData){
+		putBoolean(PROPERTITY_LOADDATA, loadData);
 	}
 	
 	public void setAutoQuery(boolean autoQuery){
@@ -135,7 +135,7 @@ public class DataSetConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_SELECTABLE, selectable);
 	}
 	public boolean isSelectable(){
-		return getBoolean(PROPERTITY_SELECTABLE, true);
+		return getBoolean(PROPERTITY_SELECTABLE, false);
 	}	
 	
 	public String getSelectionModel(){

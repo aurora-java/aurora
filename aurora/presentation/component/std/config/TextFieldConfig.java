@@ -14,7 +14,7 @@ public class TextFieldConfig extends InputFieldConfig {
 	public static TextFieldConfig getInstance(){
 		TextFieldConfig model = new TextFieldConfig();
 		CompositeMap context = TextFieldConfig.createContext(null,TAG_NAME);
-		context.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+//		context.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
         model.initialize(context);
         return model;
     }
@@ -22,7 +22,7 @@ public class TextFieldConfig extends InputFieldConfig {
 	public static TextFieldConfig getInstance(CompositeMap context){
 		TextFieldConfig model = new TextFieldConfig();
 		CompositeMap map = TextFieldConfig.createContext(context,TAG_NAME);
-		map.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+//		map.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
         model.initialize(map);
         return model;
     }
