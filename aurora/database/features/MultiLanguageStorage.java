@@ -105,7 +105,6 @@ public class MultiLanguageStorage{
     				 }
     			 }
     			 if(!is_create){
-    				 System.out.println(multiLanguageDescField + " " + refield.getDatabaseType() + "  "  + refield.getDatabaseType());
     				 Field f=Field.createField(multiLanguageDescField);
     				 f.setDatabaseType(refield.getDatabaseType());
     				 f.setDataType(refield.getDataType());
