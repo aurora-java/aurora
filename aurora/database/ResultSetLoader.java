@@ -64,9 +64,12 @@ public class ResultSetLoader {
         for(int i=0; i<fields.length; i++){
             if(!fields[i].isForSelect())
                 continue;
+            Field fld = fields[i];
+            if(fld.isReferenceField())
+                fld = fld.getReferredField();
             String name = getFieldName(fields[i].getName());
             if(name==null) throw new IllegalArgumentException("must specify name property in field config: "+fields[i].getObjectContext().toXML());
-            String physical_name = fields[i].getPhysicalName();   
+            String physical_name = fld.getPhysicalName();   
             DataType type = types[i];
             Object value = null;
             try{
@@ -75,7 +78,7 @@ public class ResultSetLoader {
                 else
                     value = rs.getObject(physical_name);
             }catch(Exception ex){
-                throw new RuntimeException("can't load value for field No. "+(i+1)+", named '"+fields[i].getName()+"'", ex);
+                throw new RuntimeException("can't load value for field No. "+(i+1)+", named '"+fld.getName()+"'", ex);
             }
             consumer.loadField(name, value);
         }  
