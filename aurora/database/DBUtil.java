@@ -73,7 +73,7 @@ public class DBUtil {
              logger.config("SqlRunner is null");
              return;
          }
-         String trace_text = "\n============= BEGIN [{0}] SQL Statement execution dump ============\n{1}\n---------------------Binding info---------------------\n{2}\n=============== END [{0}] SQL Statement execution dump ============\n";
+         String trace_text = "\r\n============= BEGIN [{0}] SQL Statement execution dump ============\r\n{1}\r\n---------------------Binding info---------------------\r\n{2}\n=============== END [{0}] SQL Statement execution dump ============\r\n";
          Object params[] = new Object[] {type, runner.getStatement()==null?null:runner.getStatement().getParsedSQL(), runner.getBindDescription(), type};
          logger.log(Level.CONFIG, trace_text, params);
      }     
