@@ -9,6 +9,8 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
 import uncertain.event.RuntimeContext;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
@@ -205,6 +207,10 @@ public class ServiceInstance implements IService {
 
     public void setRootConfig(Configuration rootConfig) {
         mRootConfig = rootConfig;
+    }
+    
+    public ILogger getServiceLogger(){
+        return LoggingContext.getLogger(mContextMap, LOGGING_TOPIC);
     }
 
 }
