@@ -9,17 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uncertain.composite.CompositeMap;
+import uncertain.event.Configuration;
 import aurora.application.config.ScreenConfig;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
 import aurora.database.service.BusinessModelService;
+import aurora.events.E_CheckBMAccess;
 import aurora.service.IService;
 import aurora.service.controller.ControllerProcedures;
 
 public class AutoCrudServlet extends AbstractAutoServiceServlet {
-
+    
     protected void populateService(HttpServletRequest request,
             HttpServletResponse response, IService service) throws Exception {
+        
         HttpServiceInstance svc = (HttpServiceInstance) service;
         svc.getController().setProcedureName(
                 ControllerProcedures.INVOKE_SERVICE);
@@ -37,6 +40,14 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         svc.setName(object_name + "_" + action_name);
         ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
         CompositeMap action_config = null;
+        // begin check access
+        Configuration config = super.getGlobalServiceConfig();
+        if(config!=null){
+            Object[] bm_args = new Object[]{ msvc.getBusinessModel(), action_name, svc };
+            config.fireEvent(E_CheckBMAccess.EVENT_NAME, bm_args);
+        }
+        // end
+        
         if ("query".equals(action_name)) {
             ModelQueryConfig mq = ActionConfigManager
                     .createModelQuery(object_name);
