@@ -57,7 +57,15 @@ public class BusinessModel extends DynamicObject {
     
     public static final String KEY_DATABASE_TYPE = "databasetype";
 
-    public static  String KEY_DATA_SOURCE_NAME="datasourcename";
+    public static final String KEY_DATA_SOURCE_NAME="datasourcename";
+    
+    public static final String KEY_ACCESS_CONTROL_MODE = "accesscontrolmode";
+    
+    public static final String ACCESS_CONTROL_MODE_DEFAULT = "default";
+    
+    public static final String ACCESS_CONTROL_MODE_NONE = "none";
+    
+    public static final String ACCESS_CONTROL_MODE_SEPARATE = "separate";
     
     public static final String DEFAULT_FIELD_PROMPT_FORMAT = "bm.{0}.{1}";
     
@@ -609,6 +617,18 @@ public class BusinessModel extends DynamicObject {
     
     public static String getDefaultAlias(){
         return "t1";
+    }
+    
+    public String getAccessControlMode(){
+        String mode = getString(KEY_ACCESS_CONTROL_MODE);
+        if(mode==null)
+            return ACCESS_CONTROL_MODE_DEFAULT;
+        else
+            return mode;
+    }
+    
+    public void setAccessControlMode( String mode ){
+        putString(KEY_ACCESS_CONTROL_MODE, mode);
     }
 
 
