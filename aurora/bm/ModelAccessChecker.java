@@ -5,6 +5,7 @@
 package aurora.bm;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.ConfigurationError;
@@ -38,8 +39,7 @@ public class ModelAccessChecker implements E_CheckBMAccess {
         
         BusinessModelService bmsc = mDbSvcFactory.getModelService(mBMCheckService);
         if(bmsc==null)
-            throw new ConfigurationError("Can't load BM check service "+mBMCheckService);
-            
+            throw new ConfigurationError("Can't load BM check service "+mBMCheckService);            
     }
 
     //IObjectRegistry               mObjectRegistry;
@@ -70,14 +70,16 @@ public class ModelAccessChecker implements E_CheckBMAccess {
         String bm_name = model.getName();
         String mode = model.getAccessControlMode();
         if(BusinessModel.ACCESS_CONTROL_MODE_NONE.equalsIgnoreCase(mode)){
-            logger.config("No access control required for BM "+bm_name);
+            logger.log(Level.FINE,"No access control required for BM "+bm_name);
             return;
         }
         bm_name = getModelNameForAccessCheck(model);
         CompositeMap context = svc.getContextMap();
-        context.putObject("/request/@bm_name", bm_name);
-        context.putObject("/request/@operation_name", operation_name);
-        //System.out.println("Check BM "+model.getName()+" "+action_name);
+        context.putObject("/request/@bm_name", bm_name, true);
+        context.putObject("/request/@operation_name", operation_name, true);
+        BusinessModelService bmsc = mDbSvcFactory.getModelService(mBMCheckService);
+        bmsc.execute(svc.getServiceContext().getParameter());
+        //System.out.println(context.toXML());
     }
 
 }
