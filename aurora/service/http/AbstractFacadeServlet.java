@@ -15,6 +15,7 @@ import javax.transaction.UserTransaction;
 
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.event.IParticipantManager;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
@@ -37,6 +38,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	Procedure mPreServiceProc;
 	Procedure mPostServiceProc;
+	
+	Configuration  mGlobalServiceConfig;
 
 	protected abstract IService createServiceInstance(
 			HttpServletRequest request, HttpServletResponse response)
@@ -138,6 +141,25 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			mPreServiceProc = mProcRegistry.getProcedure(PRE_SERVICE);
 			mPostServiceProc = mProcRegistry.getProcedure(POST_SERVICE);
 		}
+		
+		// get global service config
+		IObjectRegistry reg = getObjectRegistry();
+		IParticipantManager pm = (IParticipantManager)reg.getInstanceOfType(IParticipantManager.class);
+		if(pm!=null){
+		    mGlobalServiceConfig = pm.getParticipantsAsConfig("service");
+		}
+	}
+	
+	public UncertainEngine getUncertainEngine(){
+	    return mUncertainEngine;
+	}
+	
+	public IObjectRegistry getObjectRegistry(){
+	    return mUncertainEngine == null?null:mUncertainEngine.getObjectRegistry();
+	}
+	
+	public Configuration getGlobalServiceConfig(){
+	    return mGlobalServiceConfig;
 	}
 
 }
