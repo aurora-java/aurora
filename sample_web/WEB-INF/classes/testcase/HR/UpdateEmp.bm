@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bm:model xmlns:bm="http://www.aurora-framework.org/schema/bm">
+    <bm:operations>
+        <bm:operation name="execute">
+            <bm:update-sql><![CDATA[update emp set hiredate=${@hiredate} where empno = ${@empno}]]></bm:update-sql>
+            <bm:parameters>
+                <bm:parameter required="true" dataType="java.sql.Date" name="hiredate"/>
+                <bm:parameter required="true" dataType="java.lang.Long" name="empno"/>
+            </bm:parameters>
+        </bm:operation>
+    </bm:operations>
+</bm:model>

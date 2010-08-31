@@ -9,7 +9,7 @@
 	</parameters>
 -->
 	<query>
-		select *
+		select *.*
 		from emp e 
 		#WHERE_CLAUSE#
 		#ORDER_BY_CLAUSE#

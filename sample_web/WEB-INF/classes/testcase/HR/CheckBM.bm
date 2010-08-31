@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bm:model xmlns:bm="http://www.aurora-framework.org/schema/bm">
+    <bm:operations>
+        <bm:operation name="execute">
+            <bm:query-sql><![CDATA[
+             select ${/request/@bm_name} as bm_name from dual
+            ]]></bm:query-sql>
+            <bm:parameters>
+                <bm:parameter inputPath="/request/@bm_name"/>
+            </bm:parameters>
+        </bm:operation>
+    </bm:operations>
+    <bm:fields>
+        <bm:field datatype="java.lang.String" name="bm_name"/>
+    </bm:fields>
+</bm:model>

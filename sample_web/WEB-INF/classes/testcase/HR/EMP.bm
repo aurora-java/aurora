@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ns1:model xmlns:ns1="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" baseTable="EMP1" alias="e">
+<ns1:model xmlns:ns1="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" baseTable="EMP" alias="e">
     <ns1:fields>
         <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="empno"/>
         <ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="ename"/>
         <ns1:field databaseType="BIGINT" datatype="java.lang.String" name="job"/>
         <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="mgr"/>
-        <ns1:field databaseType="DATE" datatype="java.sql.Date" name="hiredate"/>
+        <ns1:field databaseType="DATE" datatype="java.sql.Date" forUpdate="true" name="hiredate"/>
         <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="deptno"/>
         <ns1:field databaseType="FLOAT" datatype="java.lang.Long" name="sal"/>
         <ns1:field databaseType="FLOAT" datatype="java.lang.Long" name="comm"/>
         <ns1:field databaseType="DATE" datatype="java.sql.Date" expression="sysdate" forInsert="false" name="NOW_DATE"/>
-        <ns1:ref-field sourceField="dname" sourceModel="testcase.HR.DEPT" name="dname"/>
+        <ns1:ref-field sourceField="dname" relationName="d" name="dname"/>
         <ns1:ref-field sourceField="ename" relationName="MGR" name="mgr_name"/>
+        <ns1:ref-field sourceField="DEPTNO" relationName="d" name="dept_num"/>
     </ns1:fields>
     <ns1:primary-key>
         <ns1:field name="empno"/>
     </ns1:primary-key>
     <ns1:relations>
-        <ns1:relation joinType="INNER" refModel="testcase.HR.DEPT">
+        <ns1:relation joinType="INNER" refModel="testcase.HR.DEPT" name="d">
             <ns1:reference foreignField="DEPTNO" localField="DEPTNO"/>
         </ns1:relation>
-        <ns1:relation refAlias="M1" joinType="LEFT OUTER" refModel="testcase.HR.EMP" name="MGR">
+        <ns1:relation joinType="LEFT OUTER" refAlias="M1" refModel="testcase.HR.EMP" name="MGR">
             <ns1:reference foreignField="EMPNO" localField="MGR"/>
             <ns1:reference expression="M1.DEPTNO is not null"/>
         </ns1:relation>
@@ -44,12 +45,5 @@
     <ns1:features>
         <ns2:sequence-pk/>
         <f:standard-who/>
-<!--
-        <f:tag-delete>
-            <f:fields>
-                <f:tag-delete-field expression="&apos;N&apos;" name="test1"/>
-            </f:fields>
-        </f:tag-delete>
--->        
     </ns1:features>
 </ns1:model>

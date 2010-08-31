@@ -3,6 +3,9 @@
 		<field name="DEPTNO" datatype="java.lang.Long" databaseType="BIGINT" />
 		<field name="DNAME" datatype="java.lang.String" databaseType="VARCHAR"/>
 		<field name="LOC" datatype="java.lang.String" databaseType="VARCHAR"/>
+		<!--
+		<field name="NUM" expression="rownum" datatype="java.lang.Long" databaseType="NUMBER" />
+		-->
 	</fields>
 	<primary-key>
 		<field name="DEPTNO"/>
