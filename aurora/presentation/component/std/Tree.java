@@ -11,7 +11,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Tree extends Component {
 	
-	public static final String PROPERTITY_DATASET = "dataset";
+//	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_FIELD_ID = "idfield";
 	public static final String PROPERTITY_SHOWCHECKBOX = "showcheckbox";
@@ -19,7 +19,7 @@ public class Tree extends Component {
 	public static final String PROPERTITY_FIELD_DISPLAY = "displayfield";
 	private static final String DEFAULT_CLASS = "item-tree";
 	
-	private static final String CONFIG_CONTEXT = "context";
+	public static final String CONFIG_CONTEXT = "context";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		return DEFAULT_CLASS;
@@ -51,7 +51,7 @@ public class Tree extends Component {
 		}
 		
 		map.put("size", size);
-		map.put(PROPERTITY_DATASET, view.getString(PROPERTITY_DATASET));
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		
 		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
 		addConfig(PROPERTITY_FIELD_DISPLAY, view.getString(PROPERTITY_FIELD_DISPLAY,"name"));
