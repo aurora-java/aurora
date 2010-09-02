@@ -55,7 +55,7 @@ public class Radio extends Component {
 			
 		}
 		addConfig("valueField", valueField);
-		addConfig("selectIndex", new Integer(rc.getSelectIndex()));
+//		addConfig("selectIndex", new Integer(rc.getSelectIndex()));
 		map.put(CONFIG, getConfigString());
 	}
 	

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
-
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 
 public class NumberField extends TextField {	

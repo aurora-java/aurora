@@ -1,9 +1,6 @@
 package aurora.presentation.component.std;
 
 import java.io.IOException;
-import java.util.Map;
-
-import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;

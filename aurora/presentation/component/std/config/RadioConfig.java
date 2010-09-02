@@ -12,7 +12,7 @@ public class RadioConfig extends ComponentConfig {
 	private static final String PROPERTITY_LAYOUT = "layout";
 	private static final String PROPERTITY_OPTIONS = "options";
 	private static final String PROPERTITY_LABEL_EXPRESSION = "labelexpression";
-	private static final String PROPERTITY_SELECT_IDNEX = "selectindex";
+//	private static final String PROPERTITY_SELECT_IDNEX = "selectindex";
 	
 	public static final String DEFAULT_LAYOUT_HORIZONTAL = "horizontal";
 	public static final String DEFAULT_LAYOUT_VERTICAL = "vertical";
@@ -32,12 +32,12 @@ public class RadioConfig extends ComponentConfig {
         return model;
     }
 	
-	public int getSelectIndex(){
-		return getInt(PROPERTITY_SELECT_IDNEX, 0);
-	}
-	public void setSelectIndex(int index){
-		putInt(PROPERTITY_SELECT_IDNEX, index);
-	}
+//	public int getSelectIndex(){
+//		return getInt(PROPERTITY_SELECT_IDNEX, 0);
+//	}
+//	public void setSelectIndex(int index){
+//		putInt(PROPERTITY_SELECT_IDNEX, index);
+//	}
 	
 	public String getLayout(){
 		return getString(PROPERTITY_LAYOUT, DEFAULT_LAYOUT_HORIZONTAL);

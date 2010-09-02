@@ -162,11 +162,11 @@ public class DataSet extends Component {
 			}
 		}
 		
-		boolean create = dsc.isAutoCreate();
-		if(dataList.size() == 0 && create) {
-			JSONObject json = new JSONObject();
-			dataList.add(json);			
-		}
+//		boolean create = dsc.isAutoCreate();
+//		if(dataList.size() == 0 && create) {
+//			JSONObject json = new JSONObject();
+//			dataList.add(json);			
+//		}
 		map.put(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
 		map.put(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
 		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
@@ -178,5 +178,6 @@ public class DataSet extends Component {
 		map.put(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
 		map.put(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
 		map.put(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
+		map.put(DataSetConfig.PROPERTITY_AUTO_CREATE, new Boolean(dsc.isAutoCreate()));
 	}
 }
