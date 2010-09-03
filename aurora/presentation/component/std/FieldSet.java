@@ -15,6 +15,7 @@ public class FieldSet extends Box {
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		Writer out = session.getWriter();
 		String title = view.getString(PROPERTITY_TITLE, "");
+		title = session.getLocalizedPrompt(title);
 		out.write("<LEGEND class='field_head' unselectable='on'><SPAN>");
 		out.write(title);
 		out.write("</SPAN></LEGEND>");
