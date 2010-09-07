@@ -294,10 +294,14 @@ public class Field extends DynamicObject implements IParameter {
     }
     
     public boolean isForOperation( String operation ){
+        return isForOperation( operation, false );
+    }
+    
+    public boolean isForOperation( String operation, boolean default_value ){
         if(operation==null) throw new IllegalArgumentException("operation name is null");
         String key = "for" + operation.toLowerCase();
         Boolean b = getBoolean(key);
-        return b==null?false:b.booleanValue();
+        return b==null?default_value:b.booleanValue();
     }
     
     public boolean getRequired(){
