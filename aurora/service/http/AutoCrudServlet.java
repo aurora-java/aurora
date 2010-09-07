@@ -86,7 +86,6 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         else
             throw new ServletException("Unknown command:"+action_name);
         screen.getInitProcedureConfig().addChild(0, action_config);
-        System.out.println(action_config.toXML());
         svc.setServiceConfigData(service_config);
     }
 
