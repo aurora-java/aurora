@@ -173,29 +173,31 @@ public class BusinessModel extends DynamicObject {
         
     }
     
-    public class GeneralFieldIterator implements IParameterIterator {
+    public class GeneralParameterIterator implements IParameterIterator {
         
-        int id=0;
-        String operation;
+        int         id=0;
+        String      operation;
+        boolean     default_value;
         
         void movePointer(){
             if(fieldsArray==null){
                 id = -1;
                 return;
             }
-            while( id<fieldsArray.length && !fieldsArray[id].isForOperation(operation))
+            while( id<fieldsArray.length && (!fieldsArray[id].isForOperation(operation, default_value) || fieldsArray[id].isReferenceField() ) )
                 id++;
             if( id >= fieldsArray.length )
-                id = -1;            
+                id = -1;   
         }
         
-        public GeneralFieldIterator(String operation){
+        public GeneralParameterIterator(String operation, boolean default_value ){
             this.operation = operation;
+            this.default_value = default_value;
             movePointer();
         }
         
         public boolean hasNext(){
-            return id>0;
+            return id>=0;
         }
         
         public IParameter next(){
@@ -460,8 +462,12 @@ public class BusinessModel extends DynamicObject {
                 params = op.getParameters();
             if(params!=null)
                 return new PredefinedParameterIterator(params);
-            else
-                return new GeneralFieldIterator(operation);
+            else{
+                boolean default_value = false;
+                if("update".equalsIgnoreCase(operation)||"insert".equalsIgnoreCase(operation))
+                    default_value = true;
+                return new GeneralParameterIterator(operation, default_value);
+            }
         }
     }
     
@@ -580,7 +586,7 @@ public class BusinessModel extends DynamicObject {
             name = getName();
         String field_name = field.getName();
         String result = MessageFormat.format(default_prompt_pattern, new Object[]{name,field_name} );
-        return result.toLowerCase();
+        return result.toUpperCase();
     }
     
     public String getFieldPrompt( Field field){
