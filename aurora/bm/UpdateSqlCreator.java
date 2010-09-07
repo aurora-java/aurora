@@ -3,8 +3,11 @@
  */
 package aurora.bm;
 
+import uncertain.composite.CompositeMap;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelServiceContext;
+import aurora.database.service.ServiceOption;
+import aurora.database.service.SqlServiceContext;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.UpdateStatement;
 public class UpdateSqlCreator extends AbstractSqlCreator {
@@ -21,22 +24,34 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
         super(model_fact, db_fact);
     }    
     
-    public UpdateStatement createUpdateStatement(BusinessModel model){
-        UpdateStatement stmt = new UpdateStatement(model.getBaseTable(), model.getAlias());        
+    public UpdateStatement createUpdateStatement(BusinessModel model, SqlServiceContext context ){
+        UpdateStatement stmt = new UpdateStatement(model.getBaseTable(), model.getAlias()); 
+        ServiceOption op = context.getServiceOption();
+        CompositeMap param = context.getCurrentParameter();
+        boolean update_passed_param = false;
+        if(op!=null)
+            update_passed_param = op.isUpdatePassedFieldOnly();
         Field[] fields = model.getFields();
         for(int i=0; i<fields.length; i++){
             Field field = fields[i];
-            if(field.isForUpdate())
+            if(field.isForUpdate()){
+                if(update_passed_param){
+                    //String path = field.getInputPath();
+                    if(!param.containsKey(field.getName()))
+                        continue;
+                }
                 stmt.addUpdateField(field.getPhysicalName(), field.getUpdateExpression());
+            }
         }
         return stmt;
     }
     
     public void onCreateUpdateStatement(BusinessModel model, BusinessModelServiceContext context){
-        UpdateStatement statement = createUpdateStatement(model);
+        UpdateStatement statement = createUpdateStatement(model, SqlServiceContext.createSqlServiceContext(context.getObjectContext()));
         String type = context.getObjectContext().getString("UpdateType", "PK");
         if("PK".equals(type)){
             addPrimaryKeyQuery( model, statement );
+            
         }
         context.setStatement(statement);
     }
