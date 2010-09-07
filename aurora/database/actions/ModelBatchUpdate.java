@@ -14,6 +14,7 @@ import uncertain.proc.ProcedureRunner;
 import aurora.database.SqlRunner;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
 /**
@@ -97,5 +98,17 @@ public class ModelBatchUpdate extends AbstractModelAction {
     public void setSourcePath(String sourcePath) {
         this.mSourcePath = sourcePath;
     }
+
+    public String getStatusField() {
+        return statusField;
+    }
+
+    public void setStatusField(String statusField) {
+        this.statusField = statusField;
+    }
+    
+    protected void prepareServiceOption(ServiceOption option) {
+        transferServiceOption(option, ServiceOption.KEY_UPDATE_PASSED_FIELD_ONLY);
+    }    
 
 }

@@ -4,15 +4,18 @@
 package aurora.database.actions;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
 import uncertain.logging.ILogger;
+import uncertain.ocm.IConfigurable;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
-public abstract class AbstractModelAction extends AbstractEntry  {
+public abstract class AbstractModelAction extends AbstractEntry implements IConfigurable {
     
     String                  mModel;
 
@@ -21,10 +24,19 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     DatabaseServiceFactory  mServiceFactory;
     
     BusinessModelService    mService;
-    ILogger                 mLogger;  
+    ILogger                 mLogger;
+    CompositeMap            mEntryConfig;
 
     public AbstractModelAction( DatabaseServiceFactory  svcFactory) {
         this.mServiceFactory = svcFactory;
+    }
+    
+    protected void transferServiceOption( ServiceOption option, String key ){
+        option.getObjectContext().put( key, mEntryConfig.get(key));        
+    }
+    
+    protected void prepareServiceOption( ServiceOption option ){
+        
     }
     
     protected void prepareRun(ProcedureRunner runner)
@@ -32,10 +44,14 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     {
         if(mModel==null)
             throw new IllegalArgumentException("Must set 'model' property");
-        CompositeMap context = runner.getContext();
-        
-        mService = mServiceFactory.getModelService(TextParser.parse(mModel, runner.getContext()), context);
-        mLogger = DatabaseServiceFactory.getLogger(context);
+        //CompositeMap context = runner.getContext();
+        CompositeMap context_map = runner.getContext();
+        SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);        
+        mService = mServiceFactory.getModelService(TextParser.parse(mModel, context_map), context_map);
+        mLogger = DatabaseServiceFactory.getLogger(context_map);
+        ServiceOption option = ServiceOption.createInstance();
+        prepareServiceOption(option);
+        context.setServiceOption(option);
         //SqlServiceContext sqlContext=SqlServiceContext.createSqlServiceContext(context);
         //sqlContext.initConnection(mServiceFactory.getUncertainEngine().getObjectRegistry(), mService.getBusinessModel().getDataSourceName());        
         //service.setTrace(getTrace());
@@ -67,7 +83,15 @@ public abstract class AbstractModelAction extends AbstractEntry  {
     
     protected ILogger getLogger(){
         return mLogger;
-    }    
+    }
+    
+    public void beginConfigure(CompositeMap config){
+        mEntryConfig = config;
+    }
+    
+    public void endConfigure(){
+        
+    }
     
 /*
     

@@ -5,6 +5,7 @@ package aurora.database.actions;
 
 import uncertain.proc.ProcedureRunner;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.ServiceOption;
 
 public class ModelUpdate extends AbstractModelAction {
 
@@ -12,20 +13,19 @@ public class ModelUpdate extends AbstractModelAction {
         super(svcFactory);
     }
     
-    /*
-     * 
-implements IFeature
-    public int attachTo( CompositeMap map, Configuration config) {
-        String name = map.getName();
-        Action = name.substring(name.indexOf('-')+1);
-        System.out.println("action is:"+Action);
-        return IFeature.NORMAL;
-    }
-    */
+    
+
 
     public void run(ProcedureRunner runner) throws Exception {
         prepareRun(runner);
         mService.updateByPK(null);
+    }
+
+
+
+
+    protected void prepareServiceOption(ServiceOption option) {
+        transferServiceOption(option, ServiceOption.KEY_UPDATE_PASSED_FIELD_ONLY);
     }
 
 }
