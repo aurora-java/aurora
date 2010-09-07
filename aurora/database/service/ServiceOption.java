@@ -22,6 +22,8 @@ public class ServiceOption extends DynamicObject {
     
     public static final String KEY_FIELD_CASE = "fieldcase";    
     
+    public static final String KEY_UPDATE_PASSED_FIELD_ONLY = "updatepassedfieldonly";
+    
     public String getConnectionName() {
 		return getString(KEY_CONNECTION_NAME);
 	}
@@ -32,7 +34,7 @@ public class ServiceOption extends DynamicObject {
 
 	public static ServiceOption createInstance(){
         CompositeMap map = new CompositeMap(20);
-        map.setName("query-option");
+        map.setName("service-option");
         ServiceOption option = new ServiceOption();
         option.initialize(map);
         return option;
@@ -42,6 +44,11 @@ public class ServiceOption extends DynamicObject {
         super();
     }
     
+    /**
+     * Mode of query
+     * freeQuery: add where clause for each passed query parameter
+     * pkQuery: query one record by primary key
+     */
     public String getQueryMode(){
         return getString("querymode");
     }
@@ -58,6 +65,18 @@ public class ServiceOption extends DynamicObject {
         return MODE_BY_PK.equalsIgnoreCase(getQueryMode());
     }
     
+    /**
+     * Only update field that exists in passed parameter
+     * for example: in parameter { a=3 }, update sql will be "update t set a=3 where ..."
+     * in parameter { a=3,b=4 }, update sql will be "update t set a=3,b=4 where ..."
+     */
+    public boolean isUpdatePassedFieldOnly(){
+        return "true".equalsIgnoreCase(getString(KEY_UPDATE_PASSED_FIELD_ONLY));
+    }
+    
+    /**
+     * Whether automatically generate a query sql to get count of all records
+     */
     public boolean isAutoCount(){
         return getBoolean(KEY_AUTO_COUNT, false);
     }
@@ -66,6 +85,10 @@ public class ServiceOption extends DynamicObject {
         putBoolean(KEY_AUTO_COUNT, b);
     }   
     
+    /**
+     * Order by expression in query sql
+     * @return
+     */
     public String getQueryOrderBy(){
         return getString(KEY_QUERY_ORDER_BY);
     }
@@ -74,6 +97,10 @@ public class ServiceOption extends DynamicObject {
         putString(KEY_QUERY_ORDER_BY, order_by);
     }
     
+    /**
+     * Default where clause in query sql
+     * @return
+     */
     public String getDefaultWhereClause(){
         return getString(KEY_DEFAULT_WHERE_CLAUSE);
     }
@@ -82,11 +109,19 @@ public class ServiceOption extends DynamicObject {
         putString(KEY_DEFAULT_WHERE_CLAUSE, where);
     }
     
+    /**
+     * Case of table field name in response JSON or XML
+     * @return
+     */
     public byte getFieldCase(){
         return (byte)getInt(KEY_FIELD_CASE, Character.UNASSIGNED);
     }
     
     public void setFieldCase( byte field_case ){
         putInt(KEY_FIELD_CASE, field_case);
+    }
+    
+    public void setUpdatePassedFieldOnly( boolean b ){
+        putBoolean(KEY_UPDATE_PASSED_FIELD_ONLY, b);
     }
 }
