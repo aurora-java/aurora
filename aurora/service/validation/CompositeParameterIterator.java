@@ -8,8 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Accept a collection of IParameterIterator and iterates each
- * CompositeParameterIterator
+ * Accept a collection of IParameterIterator and iterates each iterator
  */
 public class CompositeParameterIterator implements IParameterIterator {
     
