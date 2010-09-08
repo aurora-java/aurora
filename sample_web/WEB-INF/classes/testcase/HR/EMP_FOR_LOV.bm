@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bm:model xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ns2="aurora.database.local.oracle" xmlns:f="aurora.database.features" baseTable="EMP" alias="e" extend="testcase.HR.EMP" extendMode="reference">
+    <bm:fields>
+        <bm:field expression="&apos;aaaaa&apos;" name="test_f"/>
+        <bm:field expression="sysdate" name="hiredate"/>
+        <bm:field name="empno"/>
+    </bm:fields>
+    <bm:data-filters><![CDATA[
+
+    ]]></bm:data-filters>
+</bm:model>
