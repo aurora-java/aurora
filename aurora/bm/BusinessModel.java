@@ -19,6 +19,7 @@ import uncertain.ocm.OCManager;
 import aurora.application.Namespace;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.profile.IDatabaseProfile;
+import aurora.service.validation.CompositeParameterIterator;
 import aurora.service.validation.IParameter;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.Parameter;
@@ -103,7 +104,7 @@ public class BusinessModel extends DynamicObject {
     // ============= Parent model ===================
     BusinessModel   parent;
 
-
+    /** Iterates through all fields that is for query */
     public class BaseQueryFieldIterator implements IParameterIterator {
         
         int         id=0;
@@ -137,7 +138,7 @@ public class BusinessModel extends DynamicObject {
         
     };  
     
-    
+    /** Iterates through predefined query fields */
     public class QueryFieldIterator implements IParameterIterator {
         
         Iterator mFieldsIt;
@@ -173,6 +174,7 @@ public class BusinessModel extends DynamicObject {
         
     }
     
+    /** Iterates through all fields under certain operation */
     public class GeneralParameterIterator implements IParameterIterator {
         
         int         id=0;
@@ -208,6 +210,28 @@ public class BusinessModel extends DynamicObject {
             return f;
         }
         
+    };
+    
+    /**
+     * Provides parameter iterator for primary key fields
+     */
+    public class PrimaryKeyParameterIterator  implements IParameterIterator {
+        
+        int id=0;
+        
+        public boolean hasNext(){
+            if(pkFieldsArray==null)
+                return false;
+            return id>=0 & id<pkFieldsArray.length;
+        }
+        
+        public IParameter next(){
+            if(!hasNext())
+                return null;
+            Field f =  pkFieldsArray[id++].createCopy();
+            f.setRequired(true);
+            return f;            
+        }
     };
     
     // parameter list for validation
@@ -463,10 +487,20 @@ public class BusinessModel extends DynamicObject {
             if(params!=null)
                 return new PredefinedParameterIterator(params);
             else{
+                if("delete".equalsIgnoreCase(operation)){
+                    return new PrimaryKeyParameterIterator();
+                }
                 boolean default_value = false;
                 if("update".equalsIgnoreCase(operation)||"insert".equalsIgnoreCase(operation))
                     default_value = true;
-                return new GeneralParameterIterator(operation, default_value);
+                    IParameterIterator general_it = new GeneralParameterIterator(operation, default_value);
+                if("update".equalsIgnoreCase(operation)){
+                    LinkedList lst = new LinkedList();
+                    lst.add(new PrimaryKeyParameterIterator());
+                    lst.add(general_it);
+                    return new CompositeParameterIterator(lst);
+                }else
+                    return general_it;
             }
         }
     }
