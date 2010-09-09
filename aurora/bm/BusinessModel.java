@@ -26,6 +26,8 @@ import aurora.service.validation.Parameter;
 
 public class BusinessModel extends DynamicObject {
 
+    public static final String KEY_CASCADE_OPERATIONS = "cascade-operations";
+
     /** How to extend parent model's fields
      *  override: use all parent's fields, and override parent's config with self
      *  reference: only use self referred fields
@@ -100,6 +102,8 @@ public class BusinessModel extends DynamicObject {
     Map         operationMap;
     // default operation without name
     Operation   defaultOperation;
+    // cascade operations
+    CascadeOperation[]  mCascadeOperations;
     
     // ============= Parent model ===================
     BusinessModel   parent;
@@ -533,6 +537,7 @@ public class BusinessModel extends DynamicObject {
         loadFields();
         loadRelations();
         prepareOperationMap();
+        prepareCascadeOperations();
     }
 
     /**
@@ -598,9 +603,34 @@ public class BusinessModel extends DynamicObject {
             operationMap.put(name, op);
         }
     }
+    
+    protected void prepareCascadeOperations(){
+        CompositeMap child = getObjectContext().getChild(KEY_CASCADE_OPERATIONS);
+        if(child==null){
+            mCascadeOperations = null;
+        }else{
+            int total_count = child.getChilds().size();
+            if(total_count==0){
+                mCascadeOperations = null;
+                return;
+            }
+            mCascadeOperations = new CascadeOperation[total_count];
+            Iterator it = child.getChildIterator();
+            int i=0;
+            while(it.hasNext()){
+                CompositeMap item = (CompositeMap)it.next();
+                CascadeOperation op = CascadeOperation.createCascadeOperation(item);
+                mCascadeOperations[i++] = op;
+            }
+        }
+    }
 
     protected void setOcManager(OCManager ocManager) {
         mOcManager = ocManager;
+    }
+    
+    public CascadeOperation[] getCascadeOperations(){
+        return mCascadeOperations;
     }
     
     public String getModelType(){
