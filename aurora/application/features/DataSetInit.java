@@ -118,6 +118,9 @@ public class DataSetInit implements IViewBuilder {
 						CompositeMap lfield = (CompositeMap)lit.next();
 						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
 							fieldConfig.getObjectContext().copy(lfield);
+							if(fieldConfig.getPrompt() == null){
+								fieldConfig.setPrompt(bm.getFieldPrompt(field));
+							}
 						}
 					}
 					childs.add(fieldConfig.getObjectContext());
