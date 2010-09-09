@@ -12,6 +12,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_TOOLBAR = "toolBar";
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_NAVBAR = "navbar";
+	public static final String PROPERTITY_AUTO_FOCUS = "autofocus";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -54,6 +55,13 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setDataSet(String ds){
 		putString(PROPERTITY_DATASET, ds);
+	}
+	
+	public boolean isAutoFocus(){
+		return getBoolean(PROPERTITY_AUTO_FOCUS, false);		
+	}
+	public void setAutoFocus(boolean focus){
+		putBoolean(PROPERTITY_AUTO_FOCUS, focus);
 	}
 	
 	public boolean hasNavBar(){

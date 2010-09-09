@@ -6,6 +6,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.FormConfig;
 
 public class FieldSet extends Box {
 	
@@ -67,6 +68,8 @@ public class FieldSet extends Box {
 	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
 		buildFoot(session,model,view);
 		Writer out = session.getWriter();
+		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
+		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
 		out.write("</tbody>");
 		out.write("</table>");
 		out.write("</FIELDSET>");	

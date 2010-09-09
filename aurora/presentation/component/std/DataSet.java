@@ -162,11 +162,6 @@ public class DataSet extends Component {
 			}
 		}
 		
-//		boolean create = dsc.isAutoCreate();
-//		if(dataList.size() == 0 && create) {
-//			JSONObject json = new JSONObject();
-//			dataList.add(json);			
-//		}
 		map.put(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
 		map.put(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
 		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));

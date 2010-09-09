@@ -60,6 +60,7 @@ public class Grid extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		GridConfig gc = GridConfig.getInstance(view);
 		Map map = context.getMap();
 		boolean hasToolBar = creatToolBar(session,context);
 		boolean hasNavBar = createNavgationToolBar(session,context);
@@ -71,6 +72,7 @@ public class Grid extends Component {
 			style += "border-bottom:none;";
 		}
 		map.put("gridstyle", style);
+		map.put(GridConfig.PROPERTITY_AUTO_FOCUS,new Boolean(gc.isAutoFocus()));
 		processSelectable(map,view);
 		createGridColumns(map,view,session);
 		createGridEditors(session,context);
