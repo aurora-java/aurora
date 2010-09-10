@@ -13,5 +13,9 @@ public class ParameterNullException extends FieldValidationException {
 		super(parameter_name, null);
 	}
 	
+	public String toString(){
+	    return "parameter "+mFieldName+" is null";
+	}
+	
 
 }
