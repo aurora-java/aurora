@@ -305,7 +305,7 @@ public class Field extends DynamicObject implements IParameter {
     }
     
     public boolean getRequired(){
-        return isPrimaryKey() || getBoolean(KEY_REQUIRED, false);
+        return getBoolean(KEY_REQUIRED, false);
     }
     
     public void setRequired(boolean required){

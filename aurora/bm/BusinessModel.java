@@ -481,7 +481,7 @@ public class BusinessModel extends DynamicObject {
 
      */
     public IParameterIterator getParameterForOperation( String operation ){
-        if("query".equalsIgnoreCase(operation))
+        if(Operation.QUERY.equalsIgnoreCase(operation))
             return getParameterForQuery();
         else{
             List params = null;
