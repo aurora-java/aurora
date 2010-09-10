@@ -32,20 +32,21 @@ public abstract class AbstractModelAction extends AbstractEntry implements IConf
     }
     
     protected void transferServiceOption( ServiceOption option, String key ){
-        option.getObjectContext().put( key, mEntryConfig.get(key));        
+        if(mEntryConfig!=null)
+            option.getObjectContext().put( key, mEntryConfig.get(key));        
     }
     
     protected void prepareServiceOption( ServiceOption option ){
         
     }
     
-    protected void prepareRun(ProcedureRunner runner)
+    protected void prepareRun(CompositeMap context_map)
         throws Exception
     {
         if(mModel==null)
             throw new IllegalArgumentException("Must set 'model' property");
         //CompositeMap context = runner.getContext();
-        CompositeMap context_map = runner.getContext();
+        //CompositeMap context_map = runner.getContext();
         SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);        
         mService = mServiceFactory.getModelService(TextParser.parse(mModel, context_map), context_map);
         mLogger = DatabaseServiceFactory.getLogger(context_map);

@@ -15,7 +15,7 @@ public class ModelExecute extends AbstractModelAction {
     }
 
     public void run(ProcedureRunner runner) throws Exception {
-        prepareRun(runner);
+        prepareRun(runner.getContext());
         String op = operation==null?"execute":operation;
         mService.executeDml(null, op);
     }

@@ -17,7 +17,7 @@ public class ModelUpdate extends AbstractModelAction {
 
 
     public void run(ProcedureRunner runner) throws Exception {
-        prepareRun(runner);
+        prepareRun(runner.getContext());
         mService.updateByPK(null);
     }
 

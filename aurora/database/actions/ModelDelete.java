@@ -14,7 +14,7 @@ public class ModelDelete extends AbstractModelAction {
     }
 
     public void run(ProcedureRunner runner) throws Exception {
-        prepareRun(runner);
+        prepareRun(runner.getContext());
         mService.deleteByPK(null);
     }
 
