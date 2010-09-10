@@ -88,6 +88,7 @@ public class BusinessModelService {
         mRunner = mServiceFactory.loadProcedure(proc_name, mContextMap);
         parseParameter(mServiceContext);
         mServiceContext.initConnection(mObjectRegistry, mBusinessModel.getDataSourceName());
+        mServiceContext.put("BusinessModel", mBusinessModel);
     }
 
     public void setServiceContext(ServiceContext context) {
@@ -193,9 +194,9 @@ public class BusinessModelService {
             throws Exception {
         pushConfig();
         try {
-            prepareForRun(proc_name);
             if (parameters != null)
                 mServiceContext.setCurrentParameter(parameters);
+            prepareForRun(proc_name);
             mRunner.run();
             mRunner.checkAndThrow();
         } finally {
