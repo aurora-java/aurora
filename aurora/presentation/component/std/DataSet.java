@@ -47,7 +47,7 @@ public class DataSet extends Component {
 				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
 				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
 //				String dv = field.getString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, "");
-//				if(!"".equals(dv))field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, dv);
+				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, uncertain.composite.TextParser.parse(sdfc.getDefaultValue(), model));
 				
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
