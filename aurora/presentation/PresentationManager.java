@@ -161,10 +161,14 @@ public class PresentationManager implements IGlobalInstance {
     }
 
     public void addPackage(ViewComponentPackage p) {
-        mComponentIdMap.putAll(p.getComponentMap());
-        if (mUncertainEngine != null) {
-            mUncertainEngine.getClassRegistry().addAll(p.getClassRegistry());
-        }
+        if (p.getComponentMap() != null)
+            mComponentIdMap.putAll(p.getComponentMap());
+
+        if (mUncertainEngine != null)
+            if (p.getClassRegistry() != null) {
+                mUncertainEngine.getClassRegistry()
+                        .addAll(p.getClassRegistry());
+            }
         mPackageManager.addPackage(p);
         mLogger.log(Level.CONFIG, "Components:{0}", new Object[] { p
                 .getComponentMap() });
@@ -219,8 +223,8 @@ public class PresentationManager implements IGlobalInstance {
             try {
                 loadViewComponentPackage(path);
             } catch (Throwable ex) {
-                mLogger.log(Level.SEVERE,
-                        "Error when loading package " + path, ex);
+                mLogger.log(Level.SEVERE, "Error when loading package " + path,
+                        ex);
             }
         }
     }
