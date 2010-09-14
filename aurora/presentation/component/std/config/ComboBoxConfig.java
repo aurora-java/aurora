@@ -6,8 +6,16 @@ import uncertain.composite.CompositeMap;
 
 public class ComboBoxConfig extends InputFieldConfig {
 	
+	public static final String PROPERTITY_POPWIDTH = "popwidth";
+	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
+	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
+	public static final String PROPERTITY_OPTIONS = "options";
+	public static final String PROPERTITY_RENDERER = "renderer";
+	
 	public static final String TAG_NAME = "comboBox";
-
+	
+	private static final String DEFAULT_VALUE_FIELD = "code";
+	private static final String DEFAULT_DISPLAY_FIELD = "name";
 	
 	public static ComboBoxConfig getInstance(){
 		ComboBoxConfig model = new ComboBoxConfig();
@@ -20,4 +28,33 @@ public class ComboBoxConfig extends InputFieldConfig {
         model.initialize(ComboBoxConfig.createContext(context,TAG_NAME));
         return model;
     }
+	
+	public String getOptions(){
+		return getString(PROPERTITY_OPTIONS);
+	}
+	public void setOptions(String options){
+		putString(PROPERTITY_OPTIONS, options);
+	}
+	
+	public String getValueField(){
+		return getString(PROPERTITY_VALUE_FIELD,DEFAULT_VALUE_FIELD);		
+	}
+	public void setValueField(String field){
+		putString(PROPERTITY_VALUE_FIELD, field);
+	}
+	
+	public String getDisplayField(){
+		return getString(PROPERTITY_DISPLAY_FIELD,DEFAULT_DISPLAY_FIELD);		
+	}
+	public void setDisplayField(String field){
+		putString(PROPERTITY_DISPLAY_FIELD, field);
+	}
+	
+	public String getRenderer(){
+		return getString(PROPERTITY_RENDERER);
+	}
+	public void setRenderer(String renderer){
+		putString(PROPERTITY_RENDERER, renderer);
+	}
+	
 }
