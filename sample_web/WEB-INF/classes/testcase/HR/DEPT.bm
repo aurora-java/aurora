@@ -1,13 +1,14 @@
-<model baseTable="DEPT" xmlns="http://www.aurora-framework.org/schema/bm">
-	<fields>
-		<field name="DEPTNO" datatype="java.lang.Long" databaseType="BIGINT" />
-		<field name="DNAME" datatype="java.lang.String" databaseType="VARCHAR"/>
-		<field name="LOC" datatype="java.lang.String" databaseType="VARCHAR"/>
-		<!--
-		<field name="NUM" expression="rownum" datatype="java.lang.Long" databaseType="NUMBER" />
-		-->
-	</fields>
-	<primary-key>
-		<field name="DEPTNO"/>
-	</primary-key>
-</model>
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:model xmlns:ns1="http://www.aurora-framework.org/schema/bm" baseTable="DEPT">
+    <ns1:fields>
+        <ns1:field databaseType="BIGINT" datatype="java.lang.Long" name="DEPTNO"/>
+        <ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="DNAME"/>
+        <ns1:field databaseType="VARCHAR" datatype="java.lang.String" name="LOC"/>
+    </ns1:fields>
+    <ns1:primary-key>
+        <ns1:field name="DEPTNO"/>
+    </ns1:primary-key>
+    <ns1:data-filters>
+        <ns1:data-filter enforceOperations="update" expression="1&lt;&gt;1" name="Test"/>
+    </ns1:data-filters>
+</ns1:model>

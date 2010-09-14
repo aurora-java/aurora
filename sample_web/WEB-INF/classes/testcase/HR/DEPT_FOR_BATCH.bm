@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bm:model xmlns:bm="http://www.aurora-framework.org/schema/bm" extend="testcase.HR.DEPT" extendMode="override">
+    <bm:cascade-operations>
+        <bm:cascade-operation inputPath="EMPLOYEE-LIST" model="testcase.HR.EMP" operations="insert,update,delete"/>
+    </bm:cascade-operations>
+</bm:model>
