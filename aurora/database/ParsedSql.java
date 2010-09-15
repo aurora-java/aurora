@@ -73,14 +73,26 @@ public class ParsedSql {
     }
     
     public void defineParameter(Parameter param){
+        defineParameter(param, true);
+    }
+    
+    public void defineParameter(Parameter param, boolean override){
+        if(!override)
+            if(parameter_map.containsKey(param.getInputPath())){
+                return;
+            }
         parameter_map.put(param.getInputPath(), param);
     }
     
     public void defineParameters(Collection param_list){
+        defineParameters( param_list, true );
+    }
+    
+    public void defineParameters(Collection param_list, boolean override){
         Iterator it = param_list.iterator();
         while(it.hasNext()){
             Parameter param = (Parameter)it.next();
-            defineParameter( param );
+            defineParameter( param, override );
         }
     }
     
