@@ -275,9 +275,9 @@ public class BusinessModelService {
                 parameters = ((IStatementWithParameter) stmt).getParameters();
         ParsedSql s = new ParsedSql();
         if (parameters != null)
-            s.defineParameters(parameters);
+            s.defineParameters(parameters, true);
         List param_list = mBusinessModel.getParameterForOperationInList(mServiceContext.getOperation());
-        s.defineParameters(param_list);
+        s.defineParameters(param_list, false);
         s.parse(sql.toString());
         SqlRunner runner =createSqlRunner(bmsc,s);
         bmsc.setSqlRunner(runner);        
