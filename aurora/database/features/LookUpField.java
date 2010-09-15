@@ -29,6 +29,7 @@ public class LookUpField {
 		if(lookupProvider==null)
 		    return;
 		String type = lookupProvider.getLookupType();
+		String sqlTemplate = lookupProvider.getLookupSql();
 		if("sql".equalsIgnoreCase(type)){
 			Field[] fields = model.getFields();
 			List lookupfields = new ArrayList();
@@ -58,7 +59,7 @@ public class LookUpField {
 								h = true;
 								String express = f.getExpression();
 								if (express == null) {
-									f.setExpression(createExpression(lookupcode,value));
+									f.setExpression(createExpression(sqlTemplate,lookupcode,value));
 								}
 								break;
 							}
@@ -69,7 +70,7 @@ public class LookUpField {
 							lfield.setRequired(field.getRequired());
 							lfield.setForInsert(false);
 							lfield.setForUpdate(false);
-							lfield.setExpression(createExpression(lookupcode,value));
+							lfield.setExpression(createExpression(sqlTemplate,lookupcode,value));
 							model.addField(lfield);
 						}
 					}
@@ -89,21 +90,21 @@ public class LookUpField {
 		}
 	}
 
-	private String createExpression(String code, String name) {
-		String sqltemplate = null, sql = null,langPath = "ZHS";
+	private String createExpression(String sqlTemplate,String code, String name) {
+		String sql = null,langPath = "ZHS";
 		CompositeMap properties = this.factory.getProperties();
 		if (properties != null) {
-			CompositeMap lookupmap = properties.getChild("lookup-code");
+//			CompositeMap lookupmap = properties.getChild("lookup-code");
 			langPath ="${"+properties.getString("language_path")+"}";
-			if (lookupmap != null)
-				sqltemplate = lookupmap.getString("lookupsql");
-			if (sqltemplate != null) {
-				MessageFormat mf = new MessageFormat(sqltemplate);
+//			if (lookupmap != null)
+//				sqltemplate = lookupmap.getString("lookupsql");
+			if (sqlTemplate != null) {
+				MessageFormat mf = new MessageFormat(sqlTemplate);
 				sql = mf.format(new Object[] { code, name,langPath});
 			}
 		}
 		return sql != null ? sql
-				: "(select code_value_name from sys_code_values_v where code = '"
+				: "(select code_value_name from sys_code_vl where code = '"
 						+ code + "' and code_value=to_char(" + name + ") and language="+langPath+")";
 	}
 }
