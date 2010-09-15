@@ -46,7 +46,7 @@ public class ServiceInitiator {
 
         /** @todo move into optional package */
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
-        reg.addClassMapping("img-validate", ImageValidate.class);        
+        reg.addClassMapping("img-validate", ImageValidate.class);
         
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
