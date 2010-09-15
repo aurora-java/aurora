@@ -37,5 +37,7 @@ public interface ILookupCodeProvider {
     public String getLookupType();
     
     public String getLookupModel();
+    
+    public String getLookupSql();
 
 }
