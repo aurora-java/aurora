@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
@@ -72,7 +73,8 @@ public class Grid extends Component {
 			style += "border-bottom:none;";
 		}
 		map.put("gridstyle", style);
-		map.put(GridConfig.PROPERTITY_AUTO_FOCUS,new Boolean(gc.isAutoFocus()));
+		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
+//		map.put(GridConfig.PROPERTITY_AUTO_FOCUS,new Boolean(gc.isAutoFocus()));
 		processSelectable(map,view);
 		createGridColumns(map,view,session);
 		createGridEditors(session,context);
@@ -102,10 +104,12 @@ public class Grid extends Component {
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
 		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
+		addConfig(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
+		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 	}
 	
 	private void createGridColumns(Map map, CompositeMap view,BuildSession session){
-		List jsons = new ArrayList(); 
+		JSONArray jsons = new JSONArray(); 
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
 		lkpro.put(LOCK_WIDTH, new Integer(0));
@@ -220,7 +224,7 @@ public class Grid extends Component {
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
 					}
 					JSONObject json = new JSONObject(column);
-					jsons.add(json);
+					jsons.put(json);
 				}
 			}		
 		}
@@ -230,9 +234,13 @@ public class Grid extends Component {
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session, bindTarget));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session, bindTarget));
-		map.put(GridConfig.PROPERTITY_COLUMNS, jsons.toString());
 		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
 		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
+		
+		addConfig(GridConfig.PROPERTITY_COLUMNS, jsons);
+		addConfig(ComponentConfig.PROPERTITY_WIDTH, map.get(ComponentConfig.PROPERTITY_WIDTH));
+		addConfig(ComponentConfig.PROPERTITY_HEIGHT, map.get(ComponentConfig.PROPERTITY_HEIGHT));
+		map.put(CONFIG, getConfigString());
 	}
 	
 	private void createGridEditors(BuildSession session, ViewContext context) throws IOException{

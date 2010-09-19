@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ public class DataSet extends Component {
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
 		Map map = context.getMap();
-		List fieldList = new ArrayList(); 
+		JSONArray fieldList = new JSONArray(); 
 		
 		DataSetConfig dsc = DataSetConfig.getInstance(view);
 		CompositeMap fields = dsc.getFields();
@@ -41,12 +42,8 @@ public class DataSet extends Component {
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
 				DataSetFieldConfig sdfc = DataSetFieldConfig.getInstance(field);
-//				String validator = sdfc.getValidator();
-//				if(!"".equals(validator)) field.putString("validator", validator);
-//				field.putString(ComponentConfig.PROPERTITY_NAME, field.getString(ComponentConfig.PROPERTITY_NAME,""));
 				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
 				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
-//				String dv = field.getString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, "");
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, uncertain.composite.TextParser.parse(sdfc.getDefaultValue(), model));
 				
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
@@ -67,7 +64,7 @@ public class DataSet extends Component {
 				}
 				if(addReturn) {
 					CompositeMap returnmap = new CompositeMap("map");
-					returnmap.putString("from", sdfc.getValueField());//field.getString("valuefield")
+					returnmap.putString("from", sdfc.getValueField());
 					returnmap.putString("to", returnField);
 					JSONObject jo = new JSONObject(returnmap);
 					maplist.add(jo);
@@ -79,12 +76,9 @@ public class DataSet extends Component {
 						throw new IOException(e.getMessage());
 					}
 				}
-				fieldList.add(json);
+				fieldList.put(json);
 			}
 		}
-		map.put(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
-		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, dsc.getSelectionModel());
-		map.put(DataSetConfig.PROPERTITY_FIELDS, fieldList.toString());
 		
 		StringBuffer sb = new StringBuffer();
 		String attachTab = dsc.getValidListener();
@@ -98,7 +92,7 @@ public class DataSet extends Component {
 		map.put(VALID_SCRIPT, sb.toString());
 		
 		CompositeMap datas = dsc.getDatas();
-		List dataList = new ArrayList(); 
+		JSONArray dataList = new JSONArray(); 
 		List list = null;
 		if(datas != null){
 			String ds = datas.getString(DataSetConfig.PROPERTITY_DATASOURCE, "");
@@ -140,7 +134,7 @@ public class DataSet extends Component {
 						}
 					}
 					JSONObject json = new JSONObject(item);
-					dataList.add(json);
+					dataList.put(json);
 				}						
 			}
 		}
@@ -157,22 +151,26 @@ public class DataSet extends Component {
 				Iterator it = llist.iterator();
 				while(it.hasNext()){
 					JSONObject json = new JSONObject((CompositeMap)it.next());
-					dataList.add(json);					
+					dataList.put(json);					
 				}
 			}
 		}
 		
-		map.put(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
-		map.put(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
-		map.put(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
-		map.put(DataSetConfig.PROPERTITY_DATAS, dataList.toString());	
-		map.put(DataSetConfig.PROPERTITY_AUTO_QUERY, new Boolean(dsc.isAutoQuery()));
-		map.put(DataSetConfig.PROPERTITY_QUERYURL, dsc.getQueryUrl());
-		map.put(DataSetConfig.PROPERTITY_SUBMITURL, dsc.getSubmitUrl());
-		map.put(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
-		map.put(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
-		map.put(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
-		map.put(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
-		map.put(DataSetConfig.PROPERTITY_AUTO_CREATE, new Boolean(dsc.isAutoCreate()));
+		if(fieldList.length()!=0)addConfig(DataSetConfig.PROPERTITY_FIELDS, fieldList);
+		if(dataList.length()!=0)addConfig(DataSetConfig.PROPERTITY_DATAS, dataList);
+		if(!"".equals(dsc.getQueryDataSet()))addConfig(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
+		if(!"".equals(dsc.getQueryUrl()))addConfig(DataSetConfig.PROPERTITY_QUERYURL, dsc.getQueryUrl());
+		if(!"".equals(dsc.getSubmitUrl()))addConfig(DataSetConfig.PROPERTITY_SUBMITURL, dsc.getSubmitUrl());
+		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
+		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
+		if(dsc.isFetchAll())addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
+		if(dsc.isAutoQuery())addConfig(DataSetConfig.PROPERTITY_AUTO_QUERY, new Boolean(dsc.isAutoQuery()));
+		addConfig(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
+		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
+		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
+		if(dsc.isAutoCreate())addConfig(DataSetConfig.PROPERTITY_AUTO_CREATE, new Boolean(dsc.isAutoCreate()));
+		if(dsc.isSelectable())addConfig(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
+		if(!DataSetConfig.DEFAULT_SELECTION_MODEL.equals(dsc.getSelectionModel()))addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, dsc.getSelectionModel());
+		map.put(CONFIG, getConfigString());
 	}
 }

@@ -66,7 +66,7 @@ public class Button extends Field {
 		if(!"".equals(icon)){
 			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+icon+");";
 		}
-		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
+//		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
 		map.put(PROPERTITY_TEXT, text);
 		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
 		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));

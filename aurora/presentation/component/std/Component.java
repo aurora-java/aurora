@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONString;
+import org.json.JSONTokener;
 
 import uncertain.composite.CompositeMap;
 import aurora.application.config.ScreenConfig;
@@ -18,6 +20,8 @@ import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.markup.HtmlPageContext;
 import aurora.service.IService;
 import aurora.service.ServiceInstance;
+import aurora.service.json.JSONDirectOutputor;
+import aurora.service.json.JSONDispatcher;
 
 /**
  * 
@@ -34,7 +38,8 @@ public class Component {
 	protected static final String PROPERTITY_MARGIN_HEIGHT = "marginheight";
 	
 	protected String id;
-	protected StringBuffer esb = new StringBuffer();
+//	protected StringBuffer esb = new StringBuffer();
+	private JSONObject listeners = new JSONObject();
 	private StringBuffer bsb = new StringBuffer();
 	private JSONObject config = new JSONObject();
 	
@@ -167,7 +172,8 @@ public class Component {
 				
 			}
 		}
-		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
+//		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
+		addConfig("listeners", listeners);
 		
 		/** 绑定DataSet **/
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
@@ -215,7 +221,10 @@ public class Component {
 	 * @param handler 事件函数
 	 */
 	protected void addEvent(String id, String eventName, String handler){
-		esb.append("$('"+id+"').on('" + eventName + "'," + handler + ");\n");
+//		esb.append("$('"+id+"').on('" + eventName + "'," + handler + ");\n");
+		try {
+			listeners.put(eventName, new JSONFunction(handler));
+		} catch (JSONException e) {}
 	}
 	
 	/**
@@ -284,4 +293,15 @@ public class Component {
         }
         return dataset;
 	}
+}
+
+class JSONFunction implements JSONString {
+	private String funciton;
+	public JSONFunction(String func){
+		funciton = func;
+	}
+	public String toJSONString() {
+		return funciton;
+	}
+	
 }

@@ -35,8 +35,8 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SELECTION_MODEL = "selectionmodel";
 	public static final String PROPERTITY_VALID_LISTENER = "validlistener";
 	
-	private static final String DEFAULT_SELECTION_MODEL = "multiple";
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	public static final String DEFAULT_SELECTION_MODEL = "multiple";
+	public static final int DEFAULT_PAGE_SIZE = 10;
 	
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
