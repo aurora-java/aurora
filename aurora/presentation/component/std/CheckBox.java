@@ -21,7 +21,7 @@ public class CheckBox extends Component {
 		String label = view.getString(CheckBoxConfig.PROPERTITY_LABEL, "");
 		label = session.getLocalizedPrompt(label);
 		if(!"".equals(label)){
-			label = ":"+label;
+			label = label;
 		}
 		map.put(CheckBoxConfig.PROPERTITY_LABEL, label);
 		map.put(CONFIG, getConfigString());
