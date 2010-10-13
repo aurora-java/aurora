@@ -117,10 +117,6 @@ public class DataSetInit implements IViewBuilder {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
 						CompositeMap lfield = (CompositeMap)lit.next();
-						String lovService = lfield.getString(Lov.PROPERTITY_LOV_SERVICE);
-						if(lovService!=null){
-							lfield.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
-						}
 						if(field.getString("name").equalsIgnoreCase(lfield.getString("name"))){
 							fieldConfig.getObjectContext().copy(lfield);
 							if(fieldConfig.getPrompt() == null){
