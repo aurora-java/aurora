@@ -45,7 +45,10 @@ public class DataSet extends Component {
 				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
 				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, uncertain.composite.TextParser.parse(sdfc.getDefaultValue(), model));
-				
+				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
+				if(lovService!=null){
+					field.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
+				}
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
 				JSONObject json = new JSONObject(field);
