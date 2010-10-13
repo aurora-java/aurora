@@ -26,8 +26,7 @@ import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
 
-public class MultiLanguageStorage extends MultiLanguageDisplay {
-/*    
+public class MultiLanguageDisplay {
     final static String KEY_ML_MODEL = "model";
     final static String KEY_ML_SEQUENCE = "sequence";
     final static String KEY_ML_REF_TABLE = "ref_table";
@@ -46,7 +45,7 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
     ILogger mLogger = null;
     boolean hasMlFields = false;
 
-    public MultiLanguageStorage(IModelFactory modelFactory,
+    public MultiLanguageDisplay(IModelFactory modelFactory,
             IDatabaseFactory databaseFactory) throws IOException {
 
         dbProperties = databaseFactory.getProperties();
@@ -150,19 +149,7 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
                 + "})");
         return sql.toString();
     }
-    */
-
-    /**
-     * @param modelFactory
-     * @param databaseFactory
-     * @throws IOException
-     */
-    public MultiLanguageStorage(IModelFactory modelFactory,
-            IDatabaseFactory databaseFactory) throws IOException {
-        super(modelFactory, databaseFactory);
-        // TODO Auto-generated constructor stub
-    }
-
+/*
     public void preCreateInsertStatement(BusinessModel model,
             BusinessModelServiceContext context) throws Exception {
         if (!hasMlFields)
@@ -268,5 +255,5 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
                     runner);
         }
     }
-
+*/    
 }
