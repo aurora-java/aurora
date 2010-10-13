@@ -69,7 +69,8 @@ public class ResultSetLoader {
                 fld = fld.getReferredField();
             String name = getFieldName(fields[i].getName());
             if(name==null) throw new IllegalArgumentException("must specify name property in field config: "+fields[i].getObjectContext().toXML());
-            String physical_name = fld.getPhysicalName();   
+            //String physical_name = fld.getPhysicalName();
+            String physical_name = fields[i].getName();
             DataType type = types[i];
             Object value = null;
             try{
