@@ -127,7 +127,6 @@ public class JSONServiceInterpreter {
         if(thr!=null){
             LoggingUtil.logException(thr, logger);
         }
-        // create response message
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());        
         HttpServletResponse response = svc.getResponse();
         prepareResponse(response);
