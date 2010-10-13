@@ -11,16 +11,16 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 
 public class Lov extends TextField {
-	
-	private static final String PROPERTITY_TITLE = "title";
-	private static final String PROPERTITY_VALUE_FIELD = "valuefield";
-	private static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
-	private static final String PROPERTITY_LOV_URL = "lovurl";
-	private static final String PROPERTITY_LOV_MODEL = "lovmodel";
-	private static final String PROPERTITY_LOV_SERVICE = "lovservice";
-	private static final String PROPERTITY_LOV_WIDTH = "lovwidth";
-	private static final String PROPERTITY_LOV_HEIGHT = "lovheight";
-	private static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
+	//TODO:需要改造
+	public static final String PROPERTITY_TITLE = "title";
+	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
+	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
+	public static final String PROPERTITY_LOV_URL = "lovurl";
+	public static final String PROPERTITY_LOV_MODEL = "lovmodel";
+	public static final String PROPERTITY_LOV_SERVICE = "lovservice";
+	public static final String PROPERTITY_LOV_WIDTH = "lovwidth";
+	public static final String PROPERTITY_LOV_HEIGHT = "lovheight";
+	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	
 	private static final String CONFIG_CONTEXT = "context";
 	
