@@ -126,7 +126,6 @@ public class JSONServiceInterpreter {
         Throwable thr = runner.getException();
         if(thr!=null){
             LoggingUtil.logException(thr, logger);
-            thr.printStackTrace();
         }
         // create response message
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());        
