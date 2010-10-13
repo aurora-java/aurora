@@ -104,7 +104,7 @@ public class ScreenRenderer {
 			return EventModel.HANDLE_NORMAL;
 
 		CompositeMap context = runner.getContext();
-		CompositeMap model = mService.getServiceContext().getModel();
+		//CompositeMap model = mService.getServiceContext().getModel();
 		ILogger logger = LoggingContext.getLogger(context,
 				BuildSession.LOGGING_TOPIC);
 		HttpServletResponse response = mService.getResponse();
