@@ -5,25 +5,21 @@ package aurora.service.json;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
-import uncertain.composite.DynamicObject;
 import uncertain.composite.JSONAdaptor;
 import uncertain.event.EventModel;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
+import uncertain.logging.LoggingTopic;
 import uncertain.proc.ProcedureRunner;
+import uncertain.util.LoggingUtil;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.ServiceOutputConfig;
@@ -122,8 +118,17 @@ public class JSONServiceInterpreter {
         writeResponse(service_context);
     }
 
-    public void onCreateFailResponse(ServiceContext context)
+    public void onCreateFailResponse(ProcedureRunner runner)
             throws IOException, JSONException {
+        ServiceContext context = ServiceContext.createServiceContext(runner.getContext());
+        // log exception
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(), ServiceInstance.LOGGING_TOPIC);
+        Throwable thr = runner.getException();
+        if(thr!=null){
+            LoggingUtil.logException(thr, logger);
+            thr.printStackTrace();
+        }
+        // create response message
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());        
         HttpServletResponse response = svc.getResponse();
         prepareResponse(response);
