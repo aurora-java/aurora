@@ -71,6 +71,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");//form post encoding
 		IService svc = null;
 		boolean is_success = true;
 		UserTransaction trans = null;
