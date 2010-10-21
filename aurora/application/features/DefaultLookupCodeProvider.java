@@ -52,6 +52,7 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 		CompositeMap resultMap = service.queryAsMap(map, FetchDescriptor.fetchAll());
 		if(resultMap!=null){
 			result = resultMap.getChilds();
+			if(result!=null)
 			sorList(result);
 		}
 		return result;
