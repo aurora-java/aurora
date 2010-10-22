@@ -151,10 +151,12 @@ public class DataSet extends Component {
 				} catch (Exception e) {
 					throw new IOException(e.getMessage());
 				}
-				Iterator it = llist.iterator();
-				while(it.hasNext()){
-					JSONObject json = new JSONObject((CompositeMap)it.next());
-					dataList.put(json);					
+				if(llist!=null){
+					Iterator it = llist.iterator();
+					while(it.hasNext()){
+						JSONObject json = new JSONObject((CompositeMap)it.next());
+						dataList.put(json);					
+					}
 				}
 			}
 		}
