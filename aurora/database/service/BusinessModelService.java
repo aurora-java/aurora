@@ -87,6 +87,7 @@ public class BusinessModelService {
          */
         mRunner = mServiceFactory.loadProcedure(proc_name, mContextMap);
         parseParameter(mServiceContext);
+        mServiceContext.prepareForRun();
         mServiceContext.initConnection(mObjectRegistry, mBusinessModel.getDataSourceName());
         mServiceContext.put("BusinessModel", mBusinessModel);
     }

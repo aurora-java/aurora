@@ -78,4 +78,14 @@ public class BusinessModelServiceContext extends SqlServiceContext {
         return getString(KEY_SQL_GENERATION_MODE);
     }
 
+    
+    /**
+     * Clear previous set local variables in service context
+     */
+    public void prepareForRun(){
+        setSqlRunner(null);
+        setSqlString(null);
+        setBusinessModel(null);
+        setStatement(null);
+    }    
 }
