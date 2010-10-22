@@ -13,6 +13,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_NAVBAR = "navbar";
 	public static final String PROPERTITY_AUTO_FOCUS = "autofocus";
+	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -49,6 +50,13 @@ public class GridConfig extends ComponentConfig {
         model.initialize(GridConfig.createContext(context,TAG_NAME));
         return model;
     }
+	
+	public String getRowRenderer(){
+		return getString(PROPERTITY_ROW_RENDERER);
+	}
+	public void setRowRenderer(String renderer){
+		putString(PROPERTITY_ROW_RENDERER,renderer);
+	}
 	
 	public String getDataSet(){
 		return getString(PROPERTITY_DATASET);	
