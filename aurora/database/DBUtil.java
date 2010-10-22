@@ -70,7 +70,7 @@ public class DBUtil {
   
      public static void printTraceInfo( String type, ILogger logger, SqlRunner runner){
          if(runner==null){
-             logger.config("SqlRunner is null");
+             logger.config("SqlRunner is null, no sql execution dump info available");
              return;
          }
          String trace_text = "\r\n============= BEGIN [{0}] SQL Statement execution dump ============\r\n{1}\r\n---------------------Binding info---------------------\r\n{2}\n=============== END [{0}] SQL Statement execution dump ============\r\n";
