@@ -82,8 +82,10 @@ public class Component {
 		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
 		map.put(ComponentConfig.OLD_WIDTH, width);
 		Integer marginWidth = view.getInt(PROPERTITY_MARGIN_WIDTH);
-		if(marginWidth!=null&&vw!=null) 
+		if(marginWidth!=null&&vw!=null) {
 			width = new Integer((vw.intValue() - marginWidth.intValue()) > width.intValue() ? (vw.intValue() - marginWidth.intValue()) :  width.intValue());
+			addConfig(PROPERTITY_MARGIN_WIDTH, marginWidth);
+		}
 		return width;
 	}
 	
@@ -106,8 +108,10 @@ public class Component {
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) :  Integer.valueOf(hstr);
 		Integer marginHeight = view.getInt(PROPERTITY_MARGIN_HEIGHT);
-		if(marginHeight!=null&&vh!=null)
+		if(marginHeight!=null&&vh!=null){
 			height = new Integer((vh.intValue() - marginHeight.intValue())>height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
+			addConfig(PROPERTITY_MARGIN_HEIGHT, marginHeight);
+		}
 		return height;
 	}
 	
