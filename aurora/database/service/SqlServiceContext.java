@@ -171,8 +171,8 @@ public class SqlServiceContext extends ServiceContext {
     			}
     			ds=dsProvider.getDataSource(datasourceName);
     			if(ds==null){
-    				mLogger.log(Level.SEVERE, datasourceName+" DataSource instance not configured in engine");    			
-	    			throw new IllegalStateException(datasourceName+" DataSource instance not configured in engine");
+    				mLogger.log(Level.SEVERE, "DataSource instance named \""+datasourceName+"\" not configured in engine");    			
+	    			throw new IllegalStateException("DataSource instance named \""+datasourceName+"\" not configured in engine");
     			}
     			conn=ds.getConnection();
     			if(conn.getAutoCommit())
