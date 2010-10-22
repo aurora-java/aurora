@@ -73,8 +73,11 @@ public class Grid extends Component {
 			style += "border-bottom:none;";
 		}
 		map.put("gridstyle", style);
+		
+		String rowRenderer = gc.getRowRenderer();
+		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
-//		map.put(GridConfig.PROPERTITY_AUTO_FOCUS,new Boolean(gc.isAutoFocus()));
+		
 		processSelectable(map,view);
 		createGridColumns(map,view,session);
 		createGridEditors(session,context);
