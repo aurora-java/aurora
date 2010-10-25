@@ -10,14 +10,15 @@ public class GridColumnConfig extends ComponentConfig {
 	
 	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_ALIGN = "align";
-//	public static final String PROPERTITY_DATAINDEX = "dataindex";
 	public static final String PROPERTITY_LOCK = "lock";
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	public static final String PROPERTITY_RESIZABLE = "resizable";
-//	public static final String PROPERTITY_PROMPT = "prompt";
 	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_FOOTER_RENDERER = "footerrenderer";
 	public static final String PROPERTITY_SORTABLE = "sortable";
 	public static final String PROPERTITY_SORTABLE_FIELD = "sortfield";
+	
+	private static final String DEFAULT_ALIGN = "left";
 	
 	
 	public static GridColumnConfig getInstance(){
@@ -67,7 +68,7 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	
 	public String getAlign(){
-		return getString(PROPERTITY_ALIGN);		
+		return getString(PROPERTITY_ALIGN,DEFAULT_ALIGN);		
 	}
 	public void setAlign(String align){
 		putString(PROPERTITY_ALIGN, align);
@@ -100,6 +101,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setPrompt(String prompt){
 		putString(PROPERTITY_PROMPT, prompt);
+	}
+	
+	public String getFooterRenderer(){
+		return getString(PROPERTITY_FOOTER_RENDERER);
+	}
+	public void setFooterRenderer(String renderer){
+		putString(PROPERTITY_FOOTER_RENDERER, renderer);
 	}
 	
 	public String getRenderer(){

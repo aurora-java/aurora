@@ -40,6 +40,12 @@ public class Grid extends Component {
 	private static final String ROW_HEIGHT = "rowHeight";
 	private static final String HEAD_HEIGHT = "headHeight";
 	private static final String LOCK_WIDTH = "lockwidth";
+	private static final String UNLOCK_WIDTH = "unlockwidth";
+	private static final String BODY_HEIGHT = "bodyHeight";
+	private static final String TABLE_HEIGHT = "tableHeight";
+	private static final String FOOTER_BAR = "footerBar";
+	private static final String LOCK_COLUMNS = "lockcolumns";
+	private static final String UNLOCK_COLUMNS = "unlockcolumns";
 	
 	private static final String COLUMN_TYPE = "type";
 	private static final String TYPE_CELL_CHECKBOX = "cellcheck";
@@ -64,23 +70,35 @@ public class Grid extends Component {
 		GridConfig gc = GridConfig.getInstance(view);
 		Map map = context.getMap();
 		boolean hasToolBar = creatToolBar(session,context);
+		boolean hasFooterBar = hasFooterBar(session, context);
 		boolean hasNavBar = createNavgationToolBar(session,context);
+		
 		String style = "";
 		if(hasToolBar){
 			style += "border-top:none;";
 		}
-		if(hasNavBar){
+		if(hasNavBar||hasFooterBar){
 			style += "border-bottom:none;";
 		}
-		map.put("gridstyle", style);
-		
+		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		int sh = 0;
+		if(hasToolBar) sh +=25;
+		if(hasFooterBar) sh +=25;
+		if(hasNavBar) sh +=25;
+		map.put(TABLE_HEIGHT, new Integer(height.intValue()-sh));
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
 		
 		processSelectable(map,view);
 		createGridColumns(map,view,session);
+		
+		if(hasFooterBar)creatFooterBar(session, context);
+		
+		map.put("gridstyle", style);		
 		createGridEditors(session,context);
+		
+		
 	}
 	
 	private void processSelectable(Map map,CompositeMap view){
@@ -116,6 +134,7 @@ public class Grid extends Component {
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
 		lkpro.put(LOCK_WIDTH, new Integer(0));
+		
 		lkpro.put(ROW_SPAN, new Integer(1));
 		Map ukpro = new HashMap();
 		ukpro.put(ROW_SPAN, new Integer(1));
@@ -129,7 +148,7 @@ public class Grid extends Component {
 		List unlocks = new ArrayList();
 		int maxRow =1;
 		
-		Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		Integer height = (Integer)map.get(TABLE_HEIGHT);
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		Integer viewWidth = (Integer)map.get(ComponentConfig.OLD_WIDTH);
 		float bl = 1;
@@ -235,10 +254,14 @@ public class Grid extends Component {
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
+		map.put(LOCK_COLUMNS, locks);
+		map.put(UNLOCK_COLUMNS, unlocks);
 		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session, bindTarget));
 		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session, bindTarget));
-		map.put("unlockwidth", new Integer(width.intValue()-((Integer)lkpro.get(LOCK_WIDTH)).intValue()));
-		map.put("bodyHeight", new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
+		Integer lockWidth = (Integer)lkpro.get(LOCK_WIDTH);
+		map.put(LOCK_WIDTH, lockWidth);
+		map.put(UNLOCK_WIDTH, new Integer(width.intValue()-lockWidth.intValue()));
+		map.put(BODY_HEIGHT, new Integer(height.intValue()-maxRow*DEFALUT_HEAD_HEIGHT));
 		
 		addConfig(GridConfig.PROPERTITY_COLUMNS, jsons);
 		addConfig(ComponentConfig.PROPERTITY_WIDTH, map.get(ComponentConfig.PROPERTITY_WIDTH));
@@ -346,7 +369,85 @@ public class Grid extends Component {
 		return button;
 	}
 	
+	public boolean hasFooterBar(BuildSession session, ViewContext context){
+		boolean hasFooterBar = false;
+		CompositeMap view = context.getView();
+		GridConfig gc = GridConfig.getInstance(view);
+		CompositeMap columns = gc.getColumns();
+		List childs = columns.getChilds();
+		if(childs!=null){
+			Iterator it = childs.iterator();
+			while(it.hasNext()){
+				CompositeMap column = (CompositeMap)it.next();
+				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+				String footerRenderer = gcc.getFooterRenderer();
+				if(footerRenderer!=null){
+					hasFooterBar = true;
+					break;
+				}
+			}
+		}
+		return hasFooterBar;
+		
+	}
 	
+	private void creatFooterBar(BuildSession session, ViewContext context) throws IOException{
+		Map map = context.getMap();
+		int lockWidth = ((Integer)map.get(LOCK_WIDTH)).intValue();
+		StringBuffer sb = new StringBuffer();
+		sb.append("<tr><td><div class='grid-footerbar' atype='grid.fb"+"' style='width:"+map.get(ComponentConfig.PROPERTITY_WIDTH)+"px'>");			
+		if(lockWidth!=0){
+			sb.append("<div class='grid-la' atype='grid.lf' style='width:"+(lockWidth-1)+"px'>");
+			List locks = (List)map.get(LOCK_COLUMNS);
+			if(locks!=null){
+				sb.append("<table cellSpacing='0' cellPadding='0' border='0' atype='fb.lbt'><tr>");
+				Iterator it = locks.iterator();
+				int i = 0;
+				while(it.hasNext()){
+					CompositeMap column = (CompositeMap)it.next();
+					GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+					sb.append("<td style='text-align:"+gcc.getAlign()+";width:"+gcc.getWidth()+"px;");
+					sb.append(((i==0) ? "border:none;" : "")+"'");
+					if(gcc.getName()!=null) sb.append("dataindex='"+gcc.getName()+"'");
+					sb.append("></td>");
+					i++;
+				}
+				sb.append("</tr></table>");
+			}
+			sb.append("</div>");
+		}
+
+		sb.append("<div class='grid-ua' atype='grid.uf' style='width:"+map.get(UNLOCK_WIDTH)+"px'>");
+		List unlocks = (List)map.get(UNLOCK_COLUMNS);
+		if(unlocks!=null){
+			sb.append("<table cellSpacing='0' cellPadding='0' border='0' atype='fb.ubt' ");
+			Iterator it = unlocks.iterator();
+			int i = 0,w = 0;
+			StringBuffer tb = new StringBuffer();
+			StringBuffer th = new StringBuffer();
+			th.append("<tr class='grid-hl'>");
+			while(it.hasNext()){
+				CompositeMap column = (CompositeMap)it.next();
+				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+				w += gcc.getWidth();
+				th.append("<th style='width:"+gcc.getWidth()+"px;' dataindex='"+gcc.getName()+"'></th>");
+				tb.append("<td style='text-align:"+gcc.getAlign()+";");
+				tb.append(((i==0) ? "border:none;" : "")+"'");
+				if(gcc.getName()!=null) tb.append("dataindex='"+gcc.getName()+"'");
+				tb.append("></td>");
+				i++;
+			}
+			sb.append("style='width:"+w+"px;margin-right:20px;padding-right:20px;table-layout:fixed;'>");
+			sb.append(th.toString()).append("</tr><tr>");
+			
+			sb.append(tb.toString());
+			sb.append("</tr></table>");
+		}
+		sb.append("</div>");
+		sb.append("</div></td></tr>")	;
+		map.put(FOOTER_BAR, sb.toString());
+		
+	}
 	
 	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
 		boolean hasNavBar = false;
@@ -523,7 +624,7 @@ public class Grid extends Component {
 			sb.append(hsb);
 			sb.append("</TBODY></TABLE>");
 			
-			Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+			Integer height = (Integer)map.get(TABLE_HEIGHT);
 			sb.append("</DIV><DIV class='grid-lb' atype='grid.lb' style='width:100%;height:"+(height.intValue()-rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue())+"px'>");
 			sb.append("</DIV></DIV>");
 		}
