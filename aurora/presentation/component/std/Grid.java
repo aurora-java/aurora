@@ -70,7 +70,7 @@ public class Grid extends Component {
 		GridConfig gc = GridConfig.getInstance(view);
 		Map map = context.getMap();
 		boolean hasToolBar = creatToolBar(session,context);
-		boolean hasFooterBar = hasFooterBar(session, context);
+		boolean hasFooterBar = hasFooterBar(gc.getColumns());
 		boolean hasNavBar = createNavgationToolBar(session,context);
 		
 		String style = "";
@@ -369,27 +369,47 @@ public class Grid extends Component {
 		return button;
 	}
 	
-	public boolean hasFooterBar(BuildSession session, ViewContext context){
+//	public boolean hasFooterBar(BuildSession session, ViewContext context){
+//		boolean hasFooterBar = false;
+//		CompositeMap view = context.getView();
+//		GridConfig gc = GridConfig.getInstance(view);
+//		CompositeMap columns = gc.getColumns();
+//		List childs = columns.getChilds();
+//		if(childs!=null){
+//			Iterator it = childs.iterator();
+//			while(it.hasNext()){
+//				CompositeMap column = (CompositeMap)it.next();
+//				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+//				String footerRenderer = gcc.getFooterRenderer();
+//				if(footerRenderer!=null){
+//					hasFooterBar = true;
+//					break;
+//				}
+//			}
+//		}
+//		return hasFooterBar;		
+//	}
+	
+	public boolean hasFooterBar(CompositeMap column){
 		boolean hasFooterBar = false;
-		CompositeMap view = context.getView();
-		GridConfig gc = GridConfig.getInstance(view);
-		CompositeMap columns = gc.getColumns();
-		List childs = columns.getChilds();
+		GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+		String footerRenderer = gcc.getFooterRenderer();
+		if(footerRenderer!=null){
+			return true;
+		}
+		List childs = column.getChilds();
 		if(childs!=null){
 			Iterator it = childs.iterator();
 			while(it.hasNext()){
-				CompositeMap column = (CompositeMap)it.next();
-				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
-				String footerRenderer = gcc.getFooterRenderer();
-				if(footerRenderer!=null){
+				CompositeMap col = (CompositeMap)it.next();
+				if(hasFooterBar(col)){
 					hasFooterBar = true;
 					break;
 				}
 			}
 		}
-		return hasFooterBar;
-		
-	}
+		return hasFooterBar;		
+	} 
 	
 	private void creatFooterBar(BuildSession session, ViewContext context) throws IOException{
 		Map map = context.getMap();
@@ -405,6 +425,7 @@ public class Grid extends Component {
 				int i = 0;
 				while(it.hasNext()){
 					CompositeMap column = (CompositeMap)it.next();
+					if(column.getChilds()!=null) continue;
 					GridColumnConfig gcc = GridColumnConfig.getInstance(column);
 					sb.append("<td style='text-align:"+gcc.getAlign()+";width:"+gcc.getWidth()+"px;");
 					sb.append(((i==0) ? "border:none;" : "")+"'");
@@ -428,6 +449,7 @@ public class Grid extends Component {
 			th.append("<tr class='grid-hl'>");
 			while(it.hasNext()){
 				CompositeMap column = (CompositeMap)it.next();
+				if(column.getChilds()!=null) continue;
 				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
 				w += gcc.getWidth();
 				th.append("<th style='width:"+gcc.getWidth()+"px;' dataindex='"+gcc.getName()+"'></th>");
