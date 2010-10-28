@@ -2,7 +2,7 @@
 <sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
     <sxsd:attributes/>
     <sxsd:elements>
-        <sxsd:element name="a:dataSet">
+        <sxsd:element wizard="a:dataSetWizard" name="a:dataSet">
             <sxsd:attributes>
                 <sxsd:attribute use="required" name="id"/>
                 <sxsd:attribute document="直接通过BM获取数据" name="model"/>
@@ -13,13 +13,13 @@
             <sxsd:elements>
                 <sxsd:element ref="a:BaseViewComponent"/>
             </sxsd:elements>
-            <sxsd:arrays>
-                <sxsd:array type="a:dataSet" name="a:dataSets"/>
-            </sxsd:arrays>
             <sxsd:attributes>
                 <sxsd:attribute document="页面使用的模板" name="template"/>
                 <sxsd:attribute document="页面模板所在的package" name="package"/>
             </sxsd:attributes>
+            <sxsd:arrays>
+                <sxsd:array wizard="a:dataSetsWizard" type="a:dataSet" name="a:dataSets"/>
+            </sxsd:arrays>
         </sxsd:element>
         <sxsd:element document="UI界面的基础单元" name="a:screen">
             <sxsd:elements>
@@ -34,4 +34,8 @@
     <sxsd:categories/>
     <sxsd:types/>
     <sxsd:editors/>
+    <sxsd:wizards>
+        <sxsd:wizard instanceClass="uncertain.ide.eclipse.action.DataSetWizardAction" name="a:dataSetWizard"/>
+        <sxsd:wizard instanceClass="uncertain.ide.eclipse.action.DataSetsWizardAction" name="a:dataSetsWizard"/>
+    </sxsd:wizards>
 </sxsd:schema>
