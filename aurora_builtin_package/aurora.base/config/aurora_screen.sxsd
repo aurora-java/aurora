@@ -9,6 +9,14 @@
                 <sxsd:attribute document="引用的BM，自身的结构将与引用BM一致" name="href"/>
             </sxsd:attributes>
         </sxsd:element>
+        <sxsd:element name="a:checkBox">
+            <sxsd:attributes>
+                <sxsd:attribute document="编辑器属性示例" name="example"/>
+            </sxsd:attributes>
+            <sxsd:extensions>
+                <sxsd:extension base="a:BaseEditorComponent"/>
+            </sxsd:extensions>
+        </sxsd:element>
         <sxsd:element name="a:view">
             <sxsd:elements>
                 <sxsd:element ref="a:BaseViewComponent"/>
