@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
-    <ss:elements/>
     <ss:categories/>
     <ss:types>
-        <ss:complexType name="BaseComponent"/>
+        <ss:complexType name="a:HasID">
+            <ss:attributes>
+                <ss:attribute name="id"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:RectangleComponent">
+            <ss:attributes>
+                <ss:attribute name="width" type="ss:integer"/>
+                <ss:attribute name="height" type="ss:integer"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:AbstractViewComponent">
+            <ss:extensions>
+                <ss:extension base="a:HasID"/>
+                <ss:extension base="a:RectangleComponent"/>
+                <ss:extension base="a:BaseViewComponent"/>
+            </ss:extensions>
+        </ss:complexType>
     </ss:types>
 </ss:schema>
