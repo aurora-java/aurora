@@ -3,6 +3,7 @@
     <ss:attributes/>
     <ss:categories/>
     <ss:types>
+    <!--
         <ss:complexType name="a:HasID">
             <ss:attributes>
                 <ss:attribute name="id"/>
@@ -13,7 +14,7 @@
                 <ss:attribute name="width" type="ss:integer"/>
                 <ss:attribute name="height" type="ss:integer"/>
             </ss:attributes>
-        </ss:complexType>
+        </ss:complexType>        
         <ss:complexType name="a:AbstractViewComponent">
             <ss:extensions>
                 <ss:extension base="a:HasID"/>
@@ -21,5 +22,6 @@
                 <ss:extension base="a:BaseViewComponent"/>
             </ss:extensions>
         </ss:complexType>
+        -->
     </ss:types>
 </ss:schema>
