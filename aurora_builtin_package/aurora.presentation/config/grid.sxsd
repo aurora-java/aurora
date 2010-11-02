@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
+    <sxsd:attributes/>
+    <sxsd:elements>
+        <sxsd:element name="a:grid">
+        	<!--
+            <sxsd:extensions>
+                <sxsd:extension base="a:AbstractViewComponent"/>
+            </sxsd:extensions>
+            -->
+            <sxsd:attributes>
+                <sxsd:attribute name="navBar" type="ss:boolean"/>
+            </sxsd:attributes>
+            <sxsd:arrays>
+                <sxsd:array name="a:columns" type="a:column"/>
+            </sxsd:arrays>
+            <sxsd:elements>
+                <sxsd:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
+            </sxsd:elements>
+        </sxsd:element>
+        <sxsd:element name="a:column">
+            <sxsd:attributes>
+                <sxsd:attribute name="name"/>
+                <sxsd:attribute name="prompt"/>
+                <sxsd:attribute name="width"/>
+                <sxsd:attribute name="sortable" type="ss:boolean"/>
+            </sxsd:attributes>
+            <sxsd:arrays>
+                <sxsd:array name="a:columns" type="a:column"/>
+            </sxsd:arrays>
+        </sxsd:element>
+
+        <sxsd:element name="a:toolBar">
+            <!--
+            <sxsd:elements>
+                <sxsd:element ref="a:BaseViewComponent"/>
+            </sxsd:elements>
+            <sxsd:extensions>
+                <sxsd:extension base="a:AbstractViewComponent"/>
+            </sxsd:extensions>
+                -->
+        </sxsd:element>
+                
+    </sxsd:elements>
+    <sxsd:categories/>
+    <sxsd:types/>
+    <sxsd:editors/>
+    <sxsd:wizards/>
+</sxsd:schema>
