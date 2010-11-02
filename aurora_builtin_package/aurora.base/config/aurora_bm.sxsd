@@ -20,29 +20,29 @@
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
-        <ss:simpleType base="ss:string" document="对其他BM的引用" name="bm:ModelReference"/>
-        <ss:simpleType base="ss:string" document="对同一BM中其它字段的引用" name="bm:LocalFieldReference"/>
-        <ss:simpleType base="ss:string" document="对其它BM字段的引用" name="bm:ForeignFieldReference"/>
+        <ss:simpleType base="ss:string" document="对其他BM的引用" editor="bm:ModelReferenceEditor" name="bm:ModelReference"/>
+        <ss:simpleType base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor" name="bm:LocalFieldReference"/>
+        <ss:simpleType base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor" name="bm:ForeignFieldReference"/>
     </ss:types>
     <ss:elements>
         <ss:element name="bm:field">
             <ss:attributes>
-                <ss:attribute use="required" document="字段的名称" name="name"/>
+                <ss:attribute document="字段的名称" name="name" use="required"/>
                 <ss:attribute default="string" document="数据类型" name="datatype"/>
                 <ss:attribute document="字段描述" name="prompt"/>
                 <ss:attribute document="对应的数据库字段名称" name="physicalName"/>
                 <ss:attribute document="对应的数据库的数据类型" name="databaseType"/>
-                <ss:attribute type="ss:boolean" document="是否必须" name="required"/>
+                <ss:attribute document="是否必须" name="required" type="ss:boolean"/>
                 <ss:attribute document="缺省值" name="defaultValue"/>
                 <ss:attribute document="执行DML时，输入参数的路径" name="parameterPath"/>
                 <ss:attribute document="如果是计算类字段，对应的表达式，" name="expression"/>
-                <ss:attribute type="ss:boolean" document="是否在界面中显示" name="forDisplay"/>
+                <ss:attribute document="是否在界面中显示" name="forDisplay" type="ss:boolean"/>
                 <ss:attribute document="显示字段的宽度" name="displayWidth"/>
-                <ss:attribute type="ss:boolean" document="是否查询Form字段" name="forQuery"/>
+                <ss:attribute document="是否查询Form字段" name="forQuery" type="ss:boolean"/>
                 <ss:attribute document="查询字段的宽度" name="queryWidth"/>
-                <ss:attribute type="ss:boolean" name="forInsert"/>
-                <ss:attribute type="ss:boolean" name="forUpdate"/>
-                <ss:attribute type="ss:boolean" name="forQuery"/>
+                <ss:attribute name="forInsert" type="ss:boolean"/>
+                <ss:attribute name="forUpdate" type="ss:boolean"/>
+                <ss:attribute name="forQuery" type="ss:boolean"/>
                 <ss:attribute name="insertExpression"/>
                 <ss:attribute name="updateExpression"/>
                 <ss:attribute name="queryExpression"/>
@@ -50,26 +50,26 @@
         </ss:element>
         <ss:element document="可用于查询的字段" name="bm:query-field">
             <ss:attributes>
-                <ss:attribute type="ss:string" document="查询参数的名字" name="name"/>
-                <ss:attribute type="ss:string" document="查询参数对应的字段" name="field"/>
-                <ss:attribute type="ss:string" document="对应的查询条件的操作符，适用于简单的查询条件：字段 + 操作符 + 值" name="queryOperator"/>
-                <ss:attribute type="ss:string" document="查询条件的SQL表达式，与queryOperator二选一" name="queryExpression"/>
-                <ss:attribute type="ss:string" document="参数的数据类型" name="dataType"/>
-                <ss:attribute type="ss:boolean" document="参数是否必须" name="required"/>
+                <ss:attribute document="查询参数的名字" name="name" type="ss:string"/>
+                <ss:attribute document="查询参数对应的字段" name="field" type="ss:string"/>
+                <ss:attribute document="对应的查询条件的操作符，适用于简单的查询条件：字段 + 操作符 + 值" name="queryOperator" type="ss:string"/>
+                <ss:attribute document="查询条件的SQL表达式，与queryOperator二选一" name="queryExpression" type="ss:string"/>
+                <ss:attribute document="参数的数据类型" name="dataType" type="ss:string"/>
+                <ss:attribute document="参数是否必须" name="required" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:reference">
             <ss:attributes>
                 <ss:attribute document="自定义的join表达式" name="expression"/>
-                <ss:attribute type="bm:LocalFieldReference" document="本表的字段" name="localField"/>
-                <ss:attribute type="bm:ForeignFieldReference" document="关联表对应的字段" name="foreignField"/>
+                <ss:attribute document="本表的字段" name="localField" type="bm:LocalFieldReference"/>
+                <ss:attribute document="关联表对应的字段" name="foreignField" type="bm:ForeignFieldReference"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:relation">
             <ss:attributes>
                 <ss:attribute document="关系的名称，用于在其他地方引用" name="name"/>
-                <ss:attribute type="bm:JoinType" document="join的类型" name="joinType"/>
-                <ss:attribute type="bm:ModelReference" document="所引用的主表的业务模型全名" name="refModel"/>
+                <ss:attribute document="join的类型" name="joinType" type="bm:JoinType"/>
+                <ss:attribute document="所引用的主表的业务模型全名" name="refModel" type="bm:ModelReference"/>
                 <ss:attribute document="所引用的主表的SQL别名" name="refAlias"/>
             </ss:attributes>
             <ss:elements>
@@ -80,28 +80,28 @@
             <ss:attributes>
                 <ss:attribute document="where限制条件的名称" name="name"/>
                 <ss:attribute document="where限制条件所对应的操作，可用逗号分隔，如&apos;insert,update,delete&apos;" name="enforceOperations"/>
-                <ss:attribute type="a:RawSql" document="where限制条件的SQL表达式" name="expression"/>
+                <ss:attribute document="where限制条件的SQL表达式" name="expression" type="a:RawSql"/>
             </ss:attributes>
         </ss:element>
         <ss:element document="参数定义" name="bm:parameter">
             <ss:attributes>
                 <ss:attribute name="name"/>
-                <ss:attribute type="JavaDataType" name="dataType"/>
-                <ss:attribute type="ss:boolean" name="required"/>
-                <ss:attribute type="ss:boolean" name="input"/>
-                <ss:attribute type="ss:boolean" name="output"/>
+                <ss:attribute name="dataType" type="JavaDataType"/>
+                <ss:attribute name="required" type="ss:boolean"/>
+                <ss:attribute name="input" type="ss:boolean"/>
+                <ss:attribute name="output" type="ss:boolean"/>
                 <ss:attribute name="inputPath"/>
                 <ss:attribute name="outputPath"/>
             </ss:attributes>
         </ss:element>
-        <ss:element type="a:RawSql" name="bm:query-sql"/>
-        <ss:element type="a:RawSql" name="bm:update-sql"/>
+        <ss:element name="bm:query-sql" type="a:RawSql"/>
+        <ss:element name="bm:update-sql" type="a:RawSql"/>
         <ss:element name="bm:operation">
             <ss:attributes>
                 <ss:attribute name="name"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array type="bm:parameter" name="bm:parameters"/>
+                <ss:array name="bm:parameters" type="bm:parameter"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element ref="bm:query-sql"/>
@@ -113,19 +113,24 @@
                 <ss:attribute document="对应的数据库基表" name="baseTable"/>
                 <ss:attribute document="缺省的别名，用于SQL语句" name="alias"/>
                 <ss:attribute document="对应的数据源的名称" name="dataSourceName"/>
-                <ss:attribute type="bm:ModelReference" document="父对象" name="extend"/>
-                <ss:attribute type="bm:ExtendModeType" default="override" document="继承方式" name="extendMode"/>
+                <ss:attribute document="父对象" name="extend" type="bm:ModelReference"/>
+                <ss:attribute default="override" document="继承方式" name="extendMode" type="bm:ExtendModeType"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array type="bm:field" name="bm:fields"/>
-                <ss:array type="bm:field" name="bm:primary-key"/>
-                <ss:array type="bm:field" name="bm:order-by"/>
-                <ss:array type="bm:relation" name="bm:relations"/>
-                <ss:array type="bm:data-filter" name="bm:data-filters"/>
-                <ss:array type="bm:query-field" name="bm:query-fields"/>
-                <ss:array type="bm:feature" name="bm:features"/>
-                <ss:array type="bm:operation" name="bm:operations"/>
+                <ss:array name="bm:fields" type="bm:field"/>
+                <ss:array name="bm:primary-key" type="bm:field"/>
+                <ss:array name="bm:order-by" type="bm:field"/>
+                <ss:array name="bm:relations" type="bm:relation"/>
+                <ss:array name="bm:data-filters" type="bm:data-filter"/>
+                <ss:array name="bm:query-fields" type="bm:query-field"/>
+                <ss:array name="bm:features" type="bm:feature"/>
+                <ss:array name="bm:operations" type="bm:operation"/>
             </ss:arrays>
         </ss:element>
     </ss:elements>
+    <ss:editors>
+        <ss:editor instanceClass="uncertain.ide.eclipse.celleditor.ModelReferenceCellEditor" name="bm:ModelReferenceEditor"/>
+        <ss:editor instanceClass="uncertain.ide.eclipse.celleditor.LocalFieldReferenceCellEditor" name="bm:LocalFieldReferenceEditor"/>
+        <ss:editor instanceClass="uncertain.ide.eclipse.celleditor.ForeignFieldReferenceCellEditor" name="bm:ForeignFieldReferenceEditor"/>
+    </ss:editors>
 </ss:schema>
