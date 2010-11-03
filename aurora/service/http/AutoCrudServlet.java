@@ -38,6 +38,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         HttpServiceInstance svc = (HttpServiceInstance) service;
         svc.getController().setProcedureName(
                 ControllerProcedures.INVOKE_SERVICE);
+        AutoCrudServiceContext crudSvcContext = AutoCrudServiceContext.createAutoCrudServiceContext(svc.getContextMap());
         String uri = request.getRequestURI();
         if(uri.startsWith("/")){
             uri = uri.substring(1);
@@ -47,14 +48,15 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
             throw new ServletException("Invalid request format");
         int start_index = args[0].length() == 0 ? 1 : 0;
         String object_name = args[start_index + 2];
-        String action_name = args[start_index + 3];
+        String operation_name = args[start_index + 3];
         BusinessModelService msvc = super.mDatabaseServiceFactory.getModelService(object_name);
         if(msvc==null)
             throw new ServletException("Can't load model:"+object_name);
         CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
-        svc.setName(object_name + "_" + action_name);
+        svc.setName(object_name + "_" + operation_name);
         ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
         CompositeMap action_config = null;
+        /*
         // begin check access
         Configuration config = super.getGlobalServiceConfig();
         if(config!=null){
@@ -62,31 +64,36 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
             config.fireEvent(E_CheckBMAccess.EVENT_NAME, bm_args);
         }
         // end
-        
-        if ("query".equals(action_name)) {
+        */
+        if ("query".equals(operation_name)) {
             ModelQueryConfig mq = ActionConfigManager
                     .createModelQuery(object_name);
             mq.setParameters(svc.getServiceContext().getParameter());
             action_config = mq.getObjectContext();
             CompositeMap service_output = service_config.getChild("service-output");
             service_output.put("output", "/model/"+mq.getRootPath());
-        } else if("update".equals(action_name)){
+        } else if("update".equals(operation_name)){
             action_config = ActionConfigManager.createModelUpdate(object_name);
             prepareUpdateAction(svc.getServiceContext(), action_config);
-        } else if("insert".equals(action_name)){
+        } else if("insert".equals(operation_name)){
             action_config = ActionConfigManager.createModelInsert(object_name);
-        } else if("delete".equals(action_name)){
+        } else if("delete".equals(operation_name)){
             action_config = ActionConfigManager.createModelDelete(object_name);
-        } else if("batch_update".equals(action_name)){
+        } else if("batch_update".equals(operation_name)){
             action_config = ActionConfigManager.createModelBatchUpdate(object_name);
             prepareUpdateAction(svc.getServiceContext(), action_config);
-        } else if("execute".equals(action_name)){
+        } else if("execute".equals(operation_name)){
             action_config = ActionConfigManager.createModelAction("model-execute", object_name);
         }
         else
-            throw new ServletException("Unknown command:"+action_name);
+            throw new ServletException("Unknown command:"+operation_name);
         screen.getInitProcedureConfig().addChild(0, action_config);
         svc.setServiceConfigData(service_config);
+        
+        // set autocrud service context flag
+        crudSvcContext.setAutoCrudService(true);
+        crudSvcContext.setRequestedBM(object_name);
+        crudSvcContext.setRequestedOperation(operation_name);
     }
 
 }
