@@ -42,7 +42,6 @@
                 <ss:attribute document="查询字段的宽度" name="queryWidth"/>
                 <ss:attribute name="forInsert" type="ss:boolean"/>
                 <ss:attribute name="forUpdate" type="ss:boolean"/>
-                <ss:attribute name="forQuery" type="ss:boolean"/>
                 <ss:attribute name="insertExpression"/>
                 <ss:attribute name="updateExpression"/>
                 <ss:attribute name="queryExpression"/>
