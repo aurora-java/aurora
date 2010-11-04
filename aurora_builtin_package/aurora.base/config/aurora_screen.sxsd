@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
     <sxsd:elements>
-        <sxsd:element wizard="a:dataSetWizard" name="a:dataSet">
+        <sxsd:element name="a:dataSet" wizard="a:dataSetWizard">
             <sxsd:attributes>
-                <sxsd:attribute use="required" name="id"/>
+                <sxsd:attribute name="id" use="required"/>
                 <sxsd:attribute document="直接通过BM获取数据" name="model"/>
                 <sxsd:attribute document="引用的BM，自身的结构将与引用BM一致" name="href"/>
             </sxsd:attributes>
-        </sxsd:element>
-        <sxsd:element name="a:checkBox">
-            <sxsd:attributes>
-                <sxsd:attribute document="编辑器属性示例" name="example"/>
-            </sxsd:attributes>
-            <sxsd:extensions>
-                <sxsd:extension base="a:BaseEditorComponent"/>
-            </sxsd:extensions>
         </sxsd:element>
         <sxsd:element name="a:view">
             <sxsd:elements>
@@ -25,7 +17,7 @@
                 <sxsd:attribute document="页面模板所在的package" name="package"/>
             </sxsd:attributes>
             <sxsd:arrays>
-                <sxsd:array wizard="a:dataSetsWizard" type="a:dataSet" name="a:dataSets"/>
+                <sxsd:array name="a:dataSets" type="a:dataSet" wizard="a:dataSetsWizard"/>
             </sxsd:arrays>
         </sxsd:element>
         <sxsd:element document="UI界面的基础单元" name="a:screen">
@@ -34,7 +26,7 @@
                 <sxsd:element ref="a:view"/>
             </sxsd:elements>
             <sxsd:attributes>
-                <sxsd:attribute type="sxsd:boolean" document="是否启用trace" name="trace"/>
+                <sxsd:attribute document="是否启用trace" name="trace" type="sxsd:boolean"/>
             </sxsd:attributes>
         </sxsd:element>
     </sxsd:elements>
