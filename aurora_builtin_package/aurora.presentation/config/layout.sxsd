@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:box">
+            <ss:attributes>
+                <ss:attribute document="行数" name="row" type="ss:int"/>
+                <ss:attribute document="列数" name="column" type="ss:int"/>
+                <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
+                <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
+                <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
+                <ss:attribute document="box的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element document="竖向box" name="a:vBox">
+            <ss:attributes>
+                <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
+                <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
+                <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
+                <ss:attribute document="vbox的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element document="横向box" name="a:hBox">
+            <ss:attributes>
+                <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
+                <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
+                <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
+                <ss:attribute document="hbox的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element document="form布局" name="a:form">
+            <ss:extensions>
+                <ss:extension base="a:box"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="form的标题" name="title"/>
+                <ss:attribute default="false" document="是否显示form的上下间隙" name="showmargin" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:fieldSet">
+            <ss:extensions>
+                <ss:extension base="a:box"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="fieldSet的标题" name="title"/>
+                <ss:attribute default="false" document="是否显示fieldSet的上下间隙" name="showmargin" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

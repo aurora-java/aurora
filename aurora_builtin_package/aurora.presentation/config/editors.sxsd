@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element document="文本输入框" name="a:textField">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="描述字段" name="emptyText"/>
+                <ss:attribute document="大小写类型" name="typeCase" type="a:caseType"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="密码输入框" name="a:passWord">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="描述字段" name="emptyText"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:comboBox">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="ComboBox的valueField" name="valueField"/>
+                <ss:attribute document="ComboBox的displayfield" name="displayField"/>
+                <ss:attribute document="ComboBox的数据源" name="options"/>
+                <ss:attribute document="描述字段" name="emptyText"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="数字输入框" name="a:numberField">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="描述字段" name="emptyText"/>
+                <ss:attribute document="是否允许有小数位" name="allowDecimals" type="ss:boolean"/>
+                <ss:attribute document="小数位精度" name="decimalPrecision" type="ss:int"/>
+                <ss:attribute document="是否允许为负数" name="allowNegative" type="ss:boolean"/>
+                <ss:attribute document="是否按照千分位显示" name="allowFormat" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="显示标签" name="a:label">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="渲染器" name="renderer"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="日期选择框" name="a:datePicker">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element document="单选框" name="a:radio">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:arrays>
+                <ss:array name="a:items" type="a:item"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="a:item">
+            <ss:attributes>
+                <ss:attribute document="raido的描述" name="label"/>
+                <ss:attribute document="radio的值" name="value"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:checkBox">
+            <ss:attributes>
+                <ss:attribute document="checkbox选中的值" name="checkedValue"/>
+                <ss:attribute document="checkbox未选中的值" name="uncheckedValue"/>
+                <ss:attribute document="checkBox的描述" name="label"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element document="lov组件" name="a:lov">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="描述字段" name="emptyText"/>
+                <ss:attribute document="Lov对应的model" name="lovService"/>
+                <ss:attribute document="lov弹出窗口的宽度" name="lovWidth" type="ss:int"/>
+                <ss:attribute document="lov弹出窗口的高度" name="lovHeight" type="ss:int"/>
+                <ss:attribute document="Lov窗口中grid的高度" name="lovGridHeight" type="ss:int"/>
+                <ss:attribute document="自定义URL" name="lovUrl"/>
+                <ss:attribute document="Lov弹出窗口的title" name="title"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="TextArea" name="a:textArea">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:types>
+        <ss:simpleType name="a:caseType">
+            <ss:restriction base="ss:string">
+                <ss:enumerations>
+                    <ss:enumeration value="upper"/>
+                    <ss:enumeration value="lower"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+    </ss:types>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

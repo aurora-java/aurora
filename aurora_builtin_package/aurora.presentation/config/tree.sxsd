@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:tree">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute document="是否显示checkbox" name="showCheckBox" type="ss:boolean"/>
+                <ss:attribute document="显示的field" name="displayField" use="required"/>
+                <ss:attribute document="id选项" name="idField" use="required"/>
+                <ss:attribute document="parentField" name="parentField" use="required"/>
+                <ss:attribute document="渲染器" name="renderer"/>
+            </ss:attributes>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

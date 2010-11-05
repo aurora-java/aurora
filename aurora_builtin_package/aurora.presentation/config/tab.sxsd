@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element document="TabPanel组件" name="a:tabPanel"/>
+    </ss:elements>
+    <ss:categories/>
+    <ss:types/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>
