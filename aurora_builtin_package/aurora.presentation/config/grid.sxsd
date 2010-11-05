@@ -1,49 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
-    <sxsd:attributes/>
-    <sxsd:elements>
-        <sxsd:element name="a:grid">
-        	<!--
-            <sxsd:extensions>
-                <sxsd:extension base="a:AbstractViewComponent"/>
-            </sxsd:extensions>
-            -->
-            <sxsd:attributes>
-                <sxsd:attribute name="navBar" type="ss:boolean"/>
-            </sxsd:attributes>
-            <sxsd:arrays>
-                <sxsd:array name="a:columns" type="a:column"/>
-            </sxsd:arrays>
-            <sxsd:elements>
-                <sxsd:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
-            </sxsd:elements>
-        </sxsd:element>
-        <sxsd:element name="a:column">
-            <sxsd:attributes>
-                <sxsd:attribute name="name"/>
-                <sxsd:attribute name="prompt"/>
-                <sxsd:attribute name="width"/>
-                <sxsd:attribute name="sortable" type="ss:boolean"/>
-            </sxsd:attributes>
-            <sxsd:arrays>
-                <sxsd:array name="a:columns" type="a:column"/>
-            </sxsd:arrays>
-        </sxsd:element>
-
-        <sxsd:element name="a:toolBar">
-            <!--
-            <sxsd:elements>
-                <sxsd:element ref="a:BaseViewComponent"/>
-            </sxsd:elements>
-            <sxsd:extensions>
-                <sxsd:extension base="a:AbstractViewComponent"/>
-            </sxsd:extensions>
-                -->
-        </sxsd:element>
-                
-    </sxsd:elements>
-    <sxsd:categories/>
-    <sxsd:types/>
-    <sxsd:editors/>
-    <sxsd:wizards/>
-</sxsd:schema>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:grid">
+            <ss:attributes>
+                <ss:attribute document="是否具有导航条" name="navBar" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:columns" type="a:column"/>
+            </ss:arrays>
+            <ss:elements>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:editors"/>
+            </ss:elements>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:column">
+            <ss:attributes>
+                <ss:attribute document="列的field的name" name="name"/>
+                <ss:attribute document="列名" name="prompt"/>
+                <ss:attribute document="列的宽度" name="width" type="ss:int"/>
+                <ss:attribute default="false" document="是否可按照次字段排序" name="sortable" type="ss:boolean"/>
+                <ss:attribute default="false" document="是否锁定" name="lock" type="ss:boolean"/>
+                <ss:attribute document="排列方式" name="align" type="a:alignType"/>
+                <ss:attribute default="true" document="是否可调整宽度" name="resizable" type="ss:boolean"/>
+                <ss:attribute document="列的渲染器" name="renderer"/>
+                <ss:attribute document="列的编辑器,对应editors中的id" name="editor"/>
+                <ss:attribute document="列编辑器函数,可动态改变编辑器" editor="" name="editorFunction"/>
+                <ss:attribute document="footerbar的渲染器" name="footerRenderer"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:column"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:toolBar">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:editors" type="a:Component"/>
+    </ss:elements>
+    <ss:categories/>
+    <ss:types>
+        <ss:simpleType name="a:alignType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="left"/>
+                    <ss:enumeration value="center"/>
+                    <ss:enumeration value="right"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+    </ss:types>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>
