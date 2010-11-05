@@ -1,39 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
-    <sxsd:elements>
-        <sxsd:element name="a:dataSet" wizard="a:dataSetWizard">
-            <sxsd:attributes>
-                <sxsd:attribute name="id" use="required"/>
-                <sxsd:attribute document="直接通过BM获取数据" name="model"/>
-                <sxsd:attribute document="引用的BM，自身的结构将与引用BM一致" name="href"/>
-            </sxsd:attributes>
-        </sxsd:element>
-        <sxsd:element name="a:view">
-            <sxsd:elements>
-                <sxsd:element ref="a:BaseViewComponent"/>
-            </sxsd:elements>
-            <sxsd:attributes>
-                <sxsd:attribute document="页面使用的模板" name="template"/>
-                <sxsd:attribute document="页面模板所在的package" name="package"/>
-            </sxsd:attributes>
-            <sxsd:arrays>
-                <sxsd:array name="a:dataSets" type="a:dataSet" wizard="a:dataSetsWizard"/>
-            </sxsd:arrays>
-        </sxsd:element>
-        <sxsd:element document="UI界面的基础单元" name="a:screen">
-            <sxsd:elements>
-                <sxsd:element name="a:init-procedure"/>
-                <sxsd:element ref="a:view"/>
-            </sxsd:elements>
-            <sxsd:attributes>
-                <sxsd:attribute document="是否启用trace" name="trace" type="sxsd:boolean"/>
-            </sxsd:attributes>
-        </sxsd:element>
-    </sxsd:elements>
-    <sxsd:types/>
-    <sxsd:editors/>
-    <sxsd:wizards>
-        <sxsd:wizard instanceClass="uncertain.ide.eclipse.action.DataSetWizardAction" name="a:dataSetWizard"/>
-        <sxsd:wizard instanceClass="uncertain.ide.eclipse.action.DataSetsWizardAction" name="a:dataSetsWizard"/>
-    </sxsd:wizards>
-</sxsd:schema>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:elements>
+        <ss:element name="a:dataSet" wizard="a:dataSetWizard">
+            <ss:attributes>
+                <ss:attribute document="DataSet的ID" name="id" use="required"/>
+                <ss:attribute document="DataSet关联的BM" name="model"/>
+                <ss:attribute default="false" document="是否服务端加载数据" name="loadData" type="ss:boolean"/>
+                <ss:attribute default="false" document="是否创建一条数据" name="autoCreate" type="ss:boolean"/>
+                <ss:attribute default="false" document="是否客户端自动发起ajax查询" name="autoQuery" type="ss:boolean"/>
+                <ss:attribute default="false" document="查询是否进行统计" name="autoCount" type="ss:boolean"/>
+                <ss:attribute default="false" document="是否查询所有数据" editor="" name="fetchAll" type="ss:boolean"/>
+                <ss:attribute default="true" document="是否可查询" editor="" name="canQuery" type="ss:boolean"/>
+                <ss:attribute default="true" document="是否可以提交" name="canSubmit" type="ss:boolean"/>
+                <ss:attribute document="值列表的CODE" name="lookupCode"/>
+                <ss:attribute document="查询的分页大小" name="pageSize" type="ss:int"/>
+                <ss:attribute document="查询的URL地址" name="queryUrl"/>
+                <ss:attribute document="提交的url地址" name="submitUrl"/>
+                <ss:attribute default="false" document="是否可选择" name="selectable" type="ss:boolean"/>
+                <ss:attribute document="选择模式" name="selectionModel" type="a:selectType"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
+            </ss:elements>
+            <ss:arrays>
+                <ss:array document="DataSet的field配置" minOccurs="" name="a:fields" type="a:field"/>
+                <ss:array name="a:events" type="a:event"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="a:view">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:screenBody"/>
+            </ss:elements>
+            <ss:attributes>
+                <ss:attribute document="页面使用的模板" name="template"/>
+                <ss:attribute document="页面模板所在的package" name="package"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:dataSets" type="a:dataSet" wizard="a:dataSetsWizard"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element document="UI界面的基础单元" name="a:screen">
+            <ss:elements>
+                <ss:element name="a:init-procedure"/>
+                <ss:element ref="a:view"/>
+            </ss:elements>
+            <ss:attributes>
+                <ss:attribute document="是否启用trace" name="trace" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="DataSet的数据" name="a:datas">
+            <ss:elements>
+                <ss:element ref="a:record"/>
+            </ss:elements>
+            <ss:attributes>
+                <ss:attribute document="DataSet的数据源" name="dataSource" type="ss:string"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="DataSet的数据项" name="a:record"/>
+        <ss:element document="DataSet的field" name="a:field">
+            <ss:attributes>
+                <ss:attribute document="field的name" name="name" type=""/>
+                <ss:attribute default="false" document="是否必输" name="required" type="ss:boolean"/>
+                <ss:attribute default="false" document="是否只读" name="readOnly" type="ss:boolean"/>
+                <ss:attribute document="ComboBox选中值的返回name" name="returnField"/>
+                <ss:attribute document="ComboBox的options,对应DataSet的id" name="options"/>
+                <ss:attribute document="ComboBox的displayField" name="displayField"/>
+                <ss:attribute document="ComboBox的valueField" name="valueField"/>
+                <ss:attribute document="field的prompt" name="prompt"/>
+                <ss:attribute document="Lov弹出窗口的title" name="title"/>
+                <ss:attribute document="Lov对应的model" name="lovService"/>
+                <ss:attribute document="lov弹出窗口的宽度" name="lovWidth" type="ss:int"/>
+                <ss:attribute document="lov弹出窗口的高度" name="lovHeight" type="ss:int"/>
+                <ss:attribute document="Lov窗口中grid的高度" name="lovGridHeight" type="ss:int"/>
+                <ss:attribute document="默认值" name="defaultValue"/>
+                <ss:attribute document="checkbox选中的值" name="checkedValue"/>
+                <ss:attribute document="checkbox未选中的值" name="uncheckedValue"/>
+                <ss:attribute document="自定义URL" name="lovUrl"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:mapping" type="a:map"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element document="lov或者combobox和当前dataSet的映射关系" name="a:map">
+            <ss:attributes>
+                <ss:attribute document="映射关系从,一般对应lov或者combobox的dataset的field" name="from"/>
+                <ss:attribute document="映射关系到,对应当前dataset的field" name="to"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:event">
+            <ss:attributes>
+                <ss:attribute name="name"/>
+                <ss:attribute name="handler"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element document="screenBody" name="a:screenBody">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+    </ss:elements>
+    <ss:types>
+        <ss:simpleType name="a:selectType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="single"/>
+                    <ss:enumeration value="multiple"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+    </ss:types>
+    <ss:editors/>
+    <ss:wizards>
+        <ss:wizard instanceClass="uncertain.ide.eclipse.action.DataSetWizardAction" name="a:dataSetWizard"/>
+        <ss:wizard instanceClass="uncertain.ide.eclipse.action.DataSetsWizardAction" name="a:dataSetsWizard"/>
+    </ss:wizards>
+</ss:schema>
