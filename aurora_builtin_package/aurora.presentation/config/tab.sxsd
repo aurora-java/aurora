@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
     <ss:elements>
-        <ss:element document="TabPanel组件" name="a:tabPanel"/>
+        <ss:element document="TabPanel组件" name="a:tabPanel">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:arrays>
+                <ss:array minOccurs="1" name="a:tabs" type="a:tab"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element document="TabPanel的tab页" name="a:tab">
+            <ss:attributes>
+                <ss:attribute document="tab的prompt" name="prompt" use="required"/>
+                <ss:attribute document="tab的宽度" name="width" type="ss:int"/>
+                <ss:attribute document="tab的引用screen" name="ref"/>
+                <ss:attribute document="tab的className" name="tabClassName"/>
+                <ss:attribute document="tab的style" name="tabStyle"/>
+                <ss:attribute document="是否选中(默认选中第一个tab)" name="selected" type="ss:boolean"/>
+                <ss:attribute document="tab的body的className" name="bodyClassName"/>
+                <ss:attribute document="tab的body的style" name="bodyStyle"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent" type=""/>
+            </ss:elements>
+        </ss:element>
     </ss:elements>
     <ss:categories/>
     <ss:types/>
