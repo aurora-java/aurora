@@ -417,23 +417,12 @@ public class Grid extends Component {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<tr><td><div class='grid-footerbar' atype='grid.fb"+"' style='width:"+map.get(ComponentConfig.PROPERTITY_WIDTH)+"px'>");			
 		if(lockWidth!=0){
-			sb.append("<div class='grid-la' atype='grid.lf' style='width:"+(lockWidth-1)+"px'>");
+			sb.append("<div atype='grid.lf' style='float:left;width:"+(lockWidth-1)+"px'>");//class='grid-la' 
 			List locks = (List)map.get(LOCK_COLUMNS);
 			if(locks!=null){
-				sb.append("<table cellSpacing='0' cellPadding='0' border='0' atype='fb.lbt'><tr>");
+				sb.append("<table cellSpacing='0' cellPadding='0' border='0' atype='fb.lbt' ");
 				Iterator it = locks.iterator();
-				int i = 0;
-				while(it.hasNext()){
-					CompositeMap column = (CompositeMap)it.next();
-					if(column.getChilds()!=null) continue;
-					GridColumnConfig gcc = GridColumnConfig.getInstance(column);
-					sb.append("<td style='text-align:"+gcc.getAlign()+";width:"+gcc.getWidth()+"px;");
-					sb.append(((i==0) ? "border:none;" : "")+"'");
-					if(gcc.getName()!=null) sb.append("dataindex='"+gcc.getName()+"'");
-					sb.append("></td>");
-					i++;
-				}
-				sb.append("</tr></table>");
+				sb.append(createFooterBarTable(it,false));
 			}
 			sb.append("</div>");
 		}
@@ -443,32 +432,39 @@ public class Grid extends Component {
 		if(unlocks!=null){
 			sb.append("<table cellSpacing='0' cellPadding='0' border='0' atype='fb.ubt' ");
 			Iterator it = unlocks.iterator();
-			int i = 0,w = 0;
-			StringBuffer tb = new StringBuffer();
-			StringBuffer th = new StringBuffer();
-			th.append("<tr class='grid-hl'>");
-			while(it.hasNext()){
-				CompositeMap column = (CompositeMap)it.next();
-				if(column.getChilds()!=null) continue;
-				GridColumnConfig gcc = GridColumnConfig.getInstance(column);
-				w += gcc.getWidth();
-				th.append("<th style='width:"+gcc.getWidth()+"px;' dataindex='"+gcc.getName()+"'></th>");
-				tb.append("<td style='text-align:"+gcc.getAlign()+";");
-				tb.append(((i==0) ? "border:none;" : "")+"'");
-				if(gcc.getName()!=null) tb.append("dataindex='"+gcc.getName()+"'");
-				tb.append("></td>");
-				i++;
-			}
-			sb.append("style='width:"+w+"px;margin-right:20px;padding-right:20px;table-layout:fixed;'>");
-			sb.append(th.toString()).append("</tr><tr>");
-			
-			sb.append(tb.toString());
-			sb.append("</tr></table>");
+			sb.append(createFooterBarTable(it,true));
 		}
 		sb.append("</div>");
-		sb.append("</div></td></tr>")	;
-		map.put(FOOTER_BAR, sb.toString());
+		sb.append("</div></td></tr>");
+		map.put(FOOTER_BAR, sb.toString());		
+	}
+	
+	private String createFooterBarTable(Iterator it,boolean hasSpan){
+		int i = 0,w = 0;
+		StringBuffer sb = new StringBuffer();
+		StringBuffer tb = new StringBuffer();
+		StringBuffer th = new StringBuffer();
+		th.append("<tr class='grid-hl'>");
+		while(it.hasNext()){
+			CompositeMap column = (CompositeMap)it.next();
+			if(column.getChilds()!=null) continue;
+			GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+			w += gcc.getWidth();
+			th.append("<th style='width:"+gcc.getWidth()+"px;' dataindex='"+gcc.getName()+"'></th>");
+			tb.append("<td style='text-align:"+gcc.getAlign()+";");
+//			tb.append(((i==0) ? "border:none;" : "")+"'");
+			tb.append("'");
+			if(gcc.getName()!=null) tb.append("dataindex='"+gcc.getName()+"'");
+			tb.append(">&#160;</td>");
+			i++;
+		}
+		if(hasSpan)th.append("<th style='width:17px;'></th>");
+		sb.append("style='width:"+w+"px;table-layout:fixed;'>");//margin-right:20px;padding-right:20px;
+		sb.append(th.toString()).append("</tr><tr>");
 		
+		sb.append(tb.toString());
+		sb.append("</tr></table>");
+		return sb.toString();
 	}
 	
 	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
@@ -601,7 +597,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
-					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></TH>");
+					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					lockWidth +=cwidth;				
 				}				
 			}
@@ -639,7 +635,7 @@ public class Grid extends Component {
 				hsb.append("</TR>");
 			}
 			
-			sb.append("<TABLE cellSpacing='0' atype='grid.lht' cellPadding='0' border='0' style='margin-right:20px;padding-right:20px;width:"+lockWidth+"px'><TBODY>");
+			sb.append("<TABLE cellSpacing='0' atype='grid.lht' cellPadding='0' border='0' style='width:"+lockWidth+"px'><TBODY>");//margin-right:20px;padding-right:20px;
 			sb.append("<TR class='grid-hl'>");
 			sb.append(th.toString());
 			sb.append("</TR>");
@@ -667,7 +663,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
-					th.append("<TH style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></TH>");
+					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					unlockWidth +=cwidth;				
 				}				
 			}

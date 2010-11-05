@@ -15,6 +15,7 @@ public class TreeGrid extends Grid {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
 		addStyleSheet(session, context, "tree/Tree.css");
+		addStyleSheet(session, context, "treegrid/TreeGrid.css");
 		addJavaScript(session, context, "tree/Tree.js");
 		addJavaScript(session, context, "treegrid/TreeGrid.js");
 	}

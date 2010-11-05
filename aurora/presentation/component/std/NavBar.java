@@ -37,7 +37,7 @@ public class NavBar extends ToolBar {
 			view.addChild(createSeparator());
 			
 			CompositeLoader loader = new CompositeLoader();
-			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>"+session.getLocalizedPrompt("HAP_PAGENUM")+":</div>";
+			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>页数:</div>";//+session.getLocalizedPrompt("HAP_PAGENUM")+
 			CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
 			view.addChild(pageinfo);
 			

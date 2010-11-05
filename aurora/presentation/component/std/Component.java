@@ -139,10 +139,14 @@ public class Component {
 		/** Width属性**/
 		Integer width = getComponentWidth(model,view,map);
 		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
+		addConfig(ComponentConfig.PROPERTITY_WIDTH,width);
 		
 		/** Height属性**/
 		Integer height = getComponentHeight(model, view, map);
-		if(height.intValue() !=0) map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
+		if(height.intValue() !=0) {
+			map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
+			addConfig(ComponentConfig.PROPERTITY_HEIGHT,height);
+		}
 		
 		/** NAME属性 **/
 		String name = view.getString(ComponentConfig.PROPERTITY_NAME, "");
