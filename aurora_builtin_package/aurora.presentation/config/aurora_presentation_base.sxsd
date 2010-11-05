@@ -5,21 +5,51 @@
     <ss:types>
         <ss:complexType name="a:HasID">
             <ss:attributes>
-                <ss:attribute name="id"/>
+                <ss:attribute document="组件的ID,在同一个screen中ID不能重复" name="id"/>
             </ss:attributes>
         </ss:complexType>
-        <ss:complexType name="a:RectangleComponent">
+        <ss:complexType document="具有尺寸的特性" name="a:RectangleComponent">
             <ss:attributes>
-                <ss:attribute name="width" type="ss:integer"/>
-                <ss:attribute name="height" type="ss:integer"/>
+                <ss:attribute document="组件的宽度,单位是像素(px)" name="width" type="ss:int"/>
+                <ss:attribute document="组件的高度,单位是像素(px)" name="height" type="ss:int"/>
+                <ss:attribute document="组件的边缘宽度,单位是像素(px)" name="marginWidth" type="ss:int"/>
+                <ss:attribute document="组件的边缘高度,单位是像素(px)" name="marginHeight" type="ss:int"/>
             </ss:attributes>
         </ss:complexType>
-        <ss:complexType name="a:AbstractViewComponent">
+        <ss:complexType document="基础UI组件" name="a:BaseViewComponent"/>
+        <ss:complexType name="a:HasName">
+            <ss:attributes>
+                <ss:attribute document="组件name,对应dataset中field的name" name="name"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:HasStyle">
+            <ss:attributes>
+                <ss:attribute document="组件的style" name="style"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:HasClassName">
+            <ss:attributes>
+                <ss:attribute document="组件的样式" name="className"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:BindTarget">
+            <ss:attributes>
+                <ss:attribute document="需要绑定的DataSet的ID" name="bindTarget"/>
+            </ss:attributes>
+        </ss:complexType>
+        <ss:complexType name="a:Component">
             <ss:extensions>
                 <ss:extension base="a:HasID"/>
                 <ss:extension base="a:RectangleComponent"/>
+                <ss:extension base="a:HasStyle"/>
+                <ss:extension base="a:HasClassName"/>
                 <ss:extension base="a:BaseViewComponent"/>
+                <ss:extension base="a:HasName"/>
+                <ss:extension base="a:BindTarget"/>
             </ss:extensions>
+            <ss:arrays>
+                <ss:array name="a:events" type="a:event"/>
+            </ss:arrays>
         </ss:complexType>
     </ss:types>
 </ss:schema>
