@@ -5,7 +5,6 @@
     <sxsd:categories/>
     <sxsd:types>
         <sxsd:complexType document="所有界面组件的基类" name="a:BaseViewComponent"/>
-        <sxsd:complexType document="输入编辑器" name="a:BaseEditorComponent"/>
         <sxsd:simpleType name="a:RawSql"/>
         <sxsd:simpleType name="a:JavaScript"/>
     </sxsd:types>
