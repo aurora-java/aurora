@@ -3,6 +3,8 @@
 	<fields>
 		<field name="service" type="aurora.service.IService"/>
 	</fields>
+	<switch test="@success">
+	<case Value="true">
 	<action name="ParseParameter" input="service" />
 	<action name="ValidateInput"  input="service" />
 	<action name="InvokeService" input="service" />
@@ -14,4 +16,10 @@
 			<action name="CreateFailResponse" input="service"/>
 		</catch>
 	</exception-handles>
+
+	</case>
+	<case>
+		<action name="AuthorityFailResponse" input="service"/>
+	</case>	
+</switch>	
 </procedure>

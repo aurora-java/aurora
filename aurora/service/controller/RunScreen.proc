@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <procedure xmlns="uncertain.proc">
-	<action Name="InitService" />
-	<action Name="ParseParameter" />
-	<action Name="CreateModel" />
-	<action Name="CreateView" />
-	<action Name="BuildDispatch" />
-	<switch Test="@output">
-		<case Value="true">
-			<action Name="BuildOutputContent" />
-		</case>
-		<case>
-			<action Name="DoDispatch" />
-		</case>
-	</switch>
+<switch test="@success">
+	<case Value="true">
+		<action Name="InitService" />
+		<action Name="ParseParameter" />
+		<action Name="CreateModel" />
+		<action Name="CreateView" />
+		<action Name="BuildDispatch" />
+		<switch Test="@output">
+			<case Value="true">
+				<action Name="BuildOutputContent" />
+			</case>
+			<case>
+				<action Name="DoDispatch" />
+			</case>
+		</switch>
+	</case>
+	<case>
+		<action Name="DoDispatch" />
+	</case>	
+</switch>	
 	<action Name="ServiceEnd" />
 </procedure>
