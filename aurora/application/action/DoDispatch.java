@@ -28,26 +28,27 @@ public class DoDispatch {
 		CompositeMap cm = context.getObjectContext();
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(cm);
-		String httptype = svc.getRequest().getHeader("x-requested-with")==null?"null":svc.getRequest().getHeader("x-requested-with").toString();
-	
-		if (httptype.equals("XMLHttpRequest")){
-		JSONObject json = new JSONObject();
-		json.put("success", false);
-		
-		boolean write_result = context.getBoolean("write_result", true);
-		if (write_result) {
-			
-			CompositeMap result = null;
-			JSONObject error = new JSONObject();
-			error.put("message", svc.getName()+"没有注册，请联系系统管理员");
-		   json.put("error",error);
-		}
-		prepareResponse(svc.getResponse());
-		PrintWriter out = svc.getResponse().getWriter();
-		json.write(out);
+		String httptype = svc.getRequest().getHeader("x-requested-with") == null ? "null"
+				: svc.getRequest().getHeader("x-requested-with").toString();
+
+		if (httptype.equals("XMLHttpRequest")) {
+			JSONObject json = new JSONObject();
+			json.put("success", false);
+
+			boolean write_result = context.getBoolean("write_result", true);
+			if (write_result) {
+
+				CompositeMap result = null;
+				JSONObject error = new JSONObject();
+				error.put("message", svc.getName() + cm.getString("error_msg"));
+				json.put("error", error);
+			}
+			prepareResponse(svc.getResponse());
+			PrintWriter out = svc.getResponse().getWriter();
+			json.write(out);
 		} else {
-		svc.getResponse().sendRedirect(cm.get("dispatch_url").toString()+"?url="+svc.getName());
-	}
+			svc.getResponse().sendRedirect("test.screen");
+		}
 	}
 
 	void prepareArrayNameSet(ServiceContext context) {
