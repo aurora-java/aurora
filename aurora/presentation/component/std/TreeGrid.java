@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
-
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.TreeConfig;
 
 public class TreeGrid extends Grid {
 
@@ -25,13 +24,18 @@ public class TreeGrid extends Grid {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
+		TreeConfig tc = TreeConfig.getInstance(view);
+		
 		
 		if(session.getContextPath()!=null) addConfig(Tree.CONFIG_CONTEXT,session.getContextPath()+"/");
-		addConfig(Tree.PROPERTITY_FIELD_DISPLAY, view.getString(Tree.PROPERTITY_FIELD_DISPLAY,"name"));
-		addConfig(Tree.PROPERTITY_RENDERER, view.getString(Tree.PROPERTITY_RENDERER,""));
-		addConfig(Tree.PROPERTITY_FIELD_ID, view.getString(Tree.PROPERTITY_FIELD_ID,"id"));
-		addConfig(Tree.PROPERTITY_FIELD_PARENT, view.getString(Tree.PROPERTITY_FIELD_PARENT,"pid"));
-		addConfig(Tree.PROPERTITY_SHOWCHECKBOX, new Boolean(view.getBoolean(Tree.PROPERTITY_SHOWCHECKBOX, false)));
+		addConfig(TreeConfig.PROPERTITY_FIELD_DISPLAY, tc.getDisplayField());
+		if(tc.getRenderer()!=null)addConfig(TreeConfig.PROPERTITY_RENDERER, tc.getRenderer());
+		addConfig(TreeConfig.PROPERTITY_FIELD_ID, tc.getIdField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_PARENT, tc.getParentField());
+		addConfig(TreeConfig.PROPERTITY_SHOWCHECKBOX,  new Boolean(tc.isShowCheckBox()));
+		addConfig(TreeConfig.PROPERTITY_FIELD_CHECKED, tc.getCheckField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField());
 		map.put(CONFIG, getConfigString());
 	}
 }

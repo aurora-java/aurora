@@ -8,15 +8,18 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.TreeConfig;
 
 public class Tree extends Component {
 	
 //	public static final String PROPERTITY_DATASET = "dataset";
-	public static final String PROPERTITY_RENDERER = "renderer";
-	public static final String PROPERTITY_FIELD_ID = "idfield";
-	public static final String PROPERTITY_SHOWCHECKBOX = "showcheckbox";
-	public static final String PROPERTITY_FIELD_PARENT = "parentfield";
-	public static final String PROPERTITY_FIELD_DISPLAY = "displayfield";
+//	public static final String PROPERTITY_RENDERER = "renderer";
+//	public static final String PROPERTITY_FIELD_ID = "idfield";
+//	public static final String PROPERTITY_SHOWCHECKBOX = "showcheckbox";
+//	public static final String PROPERTITY_FIELD_PARENT = "parentfield";
+//	public static final String PROPERTITY_FIELD_DISPLAY = "displayfield";
+//	public static final String PROPERTITY_FIELD_EXPAND = "expandfield";
+//	public static final String PROPERTITY_FIELD_CHECKED = "checkfield";
 	private static final String DEFAULT_CLASS = "item-tree";
 	
 	public static final String CONFIG_CONTEXT = "context";
@@ -36,6 +39,8 @@ public class Tree extends Component {
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 
+		TreeConfig tc = TreeConfig.getInstance(view);
+		
 		String size = "";
 		/** Width属性**/
 		String width = view.getString(ComponentConfig.PROPERTITY_WIDTH, "");
@@ -54,11 +59,14 @@ public class Tree extends Component {
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		
 		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
-		addConfig(PROPERTITY_FIELD_DISPLAY, view.getString(PROPERTITY_FIELD_DISPLAY,"name"));
-		addConfig(PROPERTITY_RENDERER, view.getString(PROPERTITY_RENDERER,""));
-		addConfig(PROPERTITY_FIELD_ID, view.getString(PROPERTITY_FIELD_ID,"id"));
-		addConfig(PROPERTITY_FIELD_PARENT, view.getString(PROPERTITY_FIELD_PARENT,"pid"));
-		addConfig(PROPERTITY_SHOWCHECKBOX, new Boolean(view.getBoolean(PROPERTITY_SHOWCHECKBOX, false)));
+		addConfig(TreeConfig.PROPERTITY_FIELD_DISPLAY, tc.getDisplayField());
+		if(tc.getRenderer()!=null)addConfig(TreeConfig.PROPERTITY_RENDERER, tc.getRenderer());
+		addConfig(TreeConfig.PROPERTITY_FIELD_ID, tc.getIdField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_PARENT, tc.getParentField());
+		addConfig(TreeConfig.PROPERTITY_SHOWCHECKBOX,  new Boolean(tc.isShowCheckBox()));
+		addConfig(TreeConfig.PROPERTITY_FIELD_CHECKED, tc.getCheckField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField());
 		map.put(CONFIG, getConfigString());
 	}
 	
