@@ -51,5 +51,6 @@
                 <ss:array name="a:events" type="a:event"/>
             </ss:arrays>
         </ss:complexType>
+        <ss:complexType name="a:Field"/>
     </ss:types>
 </ss:schema>

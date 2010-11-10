@@ -5,6 +5,7 @@
         <ss:element document="文本输入框" name="a:textField">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="描述字段" name="emptyText"/>
@@ -14,6 +15,7 @@
         <ss:element document="密码输入框" name="a:passWord">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="描述字段" name="emptyText"/>
@@ -22,6 +24,7 @@
         <ss:element name="a:comboBox">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="ComboBox的valueField" name="valueField"/>
@@ -33,6 +36,7 @@
         <ss:element document="数字输入框" name="a:numberField">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="描述字段" name="emptyText"/>
@@ -45,6 +49,7 @@
         <ss:element document="显示标签" name="a:label">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="渲染器" name="renderer"/>
@@ -53,11 +58,13 @@
         <ss:element document="日期选择框" name="a:datePicker">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
         <ss:element document="单选框" name="a:radio">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:arrays>
                 <ss:array name="a:items" type="a:item"/>
@@ -77,11 +84,13 @@
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
         <ss:element document="lov组件" name="a:lov">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute document="描述字段" name="emptyText"/>
@@ -96,6 +105,7 @@
         <ss:element document="TextArea" name="a:textArea">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
     </ss:elements>
