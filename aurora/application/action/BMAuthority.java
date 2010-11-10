@@ -16,6 +16,9 @@ import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class BMAuthority {
+	 public BMAuthority(){
+		 
+	 }
 	public static final String DEFAULT_JSON_CONTENT_TYPE = "text/html;charset=utf-8";
 	public void onAuthorityFailResponse(ServiceContext context) throws IOException,
 			JSONException {

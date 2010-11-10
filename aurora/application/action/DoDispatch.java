@@ -47,7 +47,7 @@ public class DoDispatch {
 			PrintWriter out = svc.getResponse().getWriter();
 			json.write(out);
 		} else {
-			svc.getResponse().sendRedirect("test.screen");
+			svc.getResponse().sendRedirect(context.getString("dispatch_url"));
 		}
 	}
 
