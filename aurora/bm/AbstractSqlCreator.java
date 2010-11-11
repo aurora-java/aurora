@@ -3,22 +3,12 @@
  */
 package aurora.bm;
 
-import java.util.Collection;
-import java.util.logging.Level;
-
-import uncertain.composite.CompositeMap;
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
-import aurora.database.ParsedSql;
-import aurora.database.SqlRunner;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.profile.IDatabaseProfile;
 import aurora.database.profile.ISqlBuilderRegistry;
 import aurora.database.service.BusinessModelServiceContext;
-import aurora.database.service.SqlServiceContext;
 import aurora.database.sql.ConditionList;
 import aurora.database.sql.ISqlStatement;
-import aurora.database.sql.IStatementWithParameter;
 import aurora.database.sql.RawSqlExpression;
 import aurora.database.sql.UpdateStatement;
 import aurora.database.sql.UpdateTarget;
@@ -26,7 +16,7 @@ import aurora.database.sql.UpdateTarget;
 public abstract class AbstractSqlCreator {
     
     IModelFactory                    modelFactory;
-    IDatabaseFactory                 mDatabaseFactory;
+	IDatabaseFactory                 mDatabaseFactory;
     
     public AbstractSqlCreator(IModelFactory model_fact, IDatabaseFactory db_fact ){
         modelFactory = model_fact;        
@@ -105,4 +95,11 @@ public abstract class AbstractSqlCreator {
             where.addEqualExpression(table.createField(fields[i].getPhysicalName()), new RawSqlExpression( fields[i].getUpdateExpression() ));
         }
     }
+    public IModelFactory getModelFactory() {
+		return modelFactory;
+	}
+
+	public void setModelFactory(IModelFactory modelFactory) {
+		this.modelFactory = modelFactory;
+	}
 }
