@@ -92,6 +92,7 @@ public class HtmlPage implements IViewBuilder, ISingleton {
         	title = session.getLocalizedPrompt(title);
         	view_context.getContextMap().put(TemplateRenderer.KEY_TITLE, title);
         	view_context.getContextMap().put("pageid", pageid);
+        	view_context.getContextMap().put("contextPath", session.getContextPath());
         	session.getSessionContext().put("pageid", pageid);
             session.fireBuildEvent(EVENT_PREPARE_PAGE_CONTENT, view_context, true);
         }catch(Exception ex){
