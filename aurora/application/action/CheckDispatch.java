@@ -3,6 +3,7 @@ package aurora.application.action;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 
@@ -23,14 +24,14 @@ public class CheckDispatch extends AbstractEntry {
 
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
-
 		String fieldvalue = context.getObject(this.getField()).toString();
 		String checkvalue = this.getValue();
 		if (fieldvalue.equals(checkvalue)) {
 			String errorMessage =context.getObject(this.getMessage()).toString();
 			context.put("success", "false");
 			context.put("error_msg",errorMessage);
-			context.put("dispatch_url", this.getDispatchUrl());
+			String url = TextParser.parse(this.getDispatchUrl(), context);
+			context.put("dispatch_url", url);
 		} else {
 			context.put("success", "true");
 		}
