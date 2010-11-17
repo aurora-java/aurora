@@ -28,34 +28,10 @@ public class MenuBar extends Component {
 	public static final String PROPERTITY_FOCUS = "focus";
 	public static final String PROPERTITY_MENU_TYPE = "menutype";
 	public static final String PROPERTITY_ROOT_ID = "rootid";
+	public static final String PROPERTITY_TARGET = "targetname";
+	public static final String PROPERTITY_URL = "url";
 	public static final String CONFIG_CONTEXT = "context";
 
-	public static void main(String[] args) {
-		JFrame jf=new JFrame();
-		JMenuBar jbm=new JMenuBar();
-		JMenu menu1=new JMenu("AAAAA");
-		JMenu menu2=new JMenu("BBBBB");
-		JRadioButtonMenuItem menu11=new JRadioButtonMenuItem("AAAAB");
-		JRadioButtonMenuItem menu12=new JRadioButtonMenuItem("AAAAC");
-		ButtonGroup group=new ButtonGroup();
-		group.add(menu11);group.add(menu12);
-		JCheckBoxMenuItem menu13=new JCheckBoxMenuItem("AAAAD");
-		JMenuItem menu21=new JMenuItem("BBBBA");
-		JMenuItem menu22=new JMenuItem("BBBBB");
-		jbm.add(menu1).add(menu11);
-		menu1.add(menu12);
-		menu1.addSeparator();
-		menu1.add(menu13);
-		menu1.add(menu2).add(menu21);
-		menu2.add(menu22);
-		jf.setJMenuBar(jbm);
-		jf.setSize(300, 300);
-		jf.setBackground(Color.GRAY);
-		jf.setVisible(true);
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
-	
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
@@ -78,7 +54,7 @@ public class MenuBar extends Component {
 				.getString(PROPERTITY_FIELD_ID, "id"));
 		addConfig(PROPERTITY_FIELD_PARENT, view.getString(
 				PROPERTITY_FIELD_PARENT, "pid"));
-		addConfig(PROPERTITY_ROOT_ID, view.getInt(PROPERTITY_ROOT_ID, -1));
+		addConfig(PROPERTITY_ROOT_ID, new Integer(view.getInt(PROPERTITY_ROOT_ID, -1)));
 		if (session.getContextPath() != null)
 			addConfig(CONFIG_CONTEXT, session.getContextPath());
 		if (null != view.getString(PROPERTITY_FOCUS))
@@ -90,7 +66,10 @@ public class MenuBar extends Component {
 			addConfig(PROPERTITY_SEQUENCE, view.getString(PROPERTITY_SEQUENCE));
 		if (null != view.getString(PROPERTITY_MENU_TYPE))
 			addConfig(PROPERTITY_MENU_TYPE, view.getString(PROPERTITY_MENU_TYPE));
-
+		if (null != view.getString(PROPERTITY_TARGET))
+			addConfig(PROPERTITY_TARGET, view.getString(PROPERTITY_TARGET));
+		if (null != view.getString(PROPERTITY_URL))
+			addConfig(PROPERTITY_URL, view.getString(PROPERTITY_URL));
 		map.put(CONFIG, getConfigString());
 	}
 }
