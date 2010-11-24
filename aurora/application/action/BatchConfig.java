@@ -15,12 +15,12 @@ import uncertain.proc.ProcedureRunner;
 import aurora.application.features.PlaceHolder;
 import aurora.service.ServiceInstance;
 
-public class BatchConfig extends Procedure implements IConfigurable{
+public class BatchConfig extends Procedure implements IConfigurable {
 
 	private String source;
-	
+
 	private String targetId;
-	
+
 	private CompositeMap config;
 
 	public BatchConfig() {
@@ -31,36 +31,23 @@ public class BatchConfig extends Procedure implements IConfigurable{
 		super(om);
 	}
 
-	/**
-	 * @return Returns source collection path
-	 */
 	public String getSource() {
 		return source;
 	}
 
-	/**
-	 * @param source
-	 *            path to a CompositeMap access path
-	 */
 	public void setSource(String source) {
 		this.source = source;
 	}
 
-	
-
-	/**
-	 * @see uncertain.proc.Procedure#run(uncertain.proc.ProcedureRunner)
-	 */
 	public void run(ProcedureRunner runner) throws Exception {
-		// if(source==null) throw new ConfigurationError("loop: 'source'
-		// property must be set");
 		CompositeMap context = runner.getContext();
 		List childs = config.getChilds();
 		CompositeMap datas = null;
 		List result = new ArrayList();
-		if (source != null && childs != null){
-			datas = (CompositeMap)context.getObject(source);
-			if(datas == null) return;
+		if (source != null && childs != null) {
+			datas = (CompositeMap) context.getObject(source);
+			if (datas == null)
+				return;
 			Iterator dit = datas.getChildIterator();
 			while (dit.hasNext()) {
 				CompositeMap item = (CompositeMap) dit.next();
@@ -69,11 +56,12 @@ public class BatchConfig extends Procedure implements IConfigurable{
 					CompositeMap iconfig = (CompositeMap) cit.next();
 					CompositeMap ic = new CompositeMap(iconfig);
 					Set set = ic.keySet();
-					if(set!=null){
+					if (set != null) {
 						Iterator sit = set.iterator();
 						while (sit.hasNext()) {
-							String key = (String)sit.next();
-							ic.put(key, TextParser.parse((String)ic.get(key), item));
+							String key = (String) sit.next();
+							ic.put(key, TextParser.parse((String) ic.get(key),
+									item));
 						}
 					}
 					result.add(ic);
@@ -82,30 +70,29 @@ public class BatchConfig extends Procedure implements IConfigurable{
 		}
 		ServiceInstance svc = ServiceInstance.getInstance(runner.getContext());
 		CompositeMap root = svc.getServiceConfigData().getRoot();
-		Map holders = (Map)root.get(PlaceHolder.PLACEHOLDER);
-		if(holders!=null){
-			CompositeMap holder = (CompositeMap)holders.get(targetId);
-			if(holder!=null){
+		Map holders = (Map) root.get(PlaceHolder.PLACEHOLDER);
+		if (holders != null) {
+			CompositeMap holder = (CompositeMap) holders.get(targetId);
+			if (holder != null) {
 				CompositeMap parent = holder.getParent();
 				Iterator it = result.iterator();
-				while(it.hasNext()){
-					CompositeMap cm = (CompositeMap)it.next();
+				while (it.hasNext()) {
+					CompositeMap cm = (CompositeMap) it.next();
 					cm.setParent(parent);
 				}
 				List children = parent.getChilds();
 				children.addAll(children.indexOf(holder), result);
 				children.remove(holder);
-				System.out.println(parent.toXML());
 			}
 		}
 	}
 
 	public void beginConfigure(CompositeMap config) {
-		this.config = config;		
+		this.config = config;
 	}
 
 	public void endConfigure() {
-		
+
 	}
 
 	public String getTargetId() {
