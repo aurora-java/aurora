@@ -24,17 +24,15 @@ public class CheckDispatch extends AbstractEntry {
 
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
-		String fieldvalue = context.getObject(this.getField()).toString();
+		String fieldvalue = (String)context.getObject(this.getField());
 		String checkvalue = this.getValue();
-		if (fieldvalue.equals(checkvalue)) {
+		if (fieldvalue!= null && fieldvalue.equals(checkvalue)) {
 			String errorMessage =context.getObject(this.getMessage()).toString();
 			context.put("success", "false");
 			context.put("error_msg",errorMessage);
 			String url = TextParser.parse(this.getDispatchUrl(), context);
 			context.put("dispatch_url", url);
-		} else {
-			context.put("success", "true");
-		}
+		} 
 	}
 
 	public String getName() {
