@@ -26,21 +26,31 @@ public class ProcessConfig extends Procedure implements IConfigurable {
 			while (cit.hasNext()) {
 				CompositeMap iconfig = (CompositeMap) cit.next();
 				CompositeMap ic = new CompositeMap(iconfig);
-				Set set = ic.keySet();
-				if (set != null) {
-					Iterator sit = set.iterator();
-					while (sit.hasNext()) {
-						String key = (String) sit.next();
-						ic.put(key, TextParser.parse((String) ic.get(key),
-								datas));
-					}
-				}
+				process(ic,datas);
 				result.add(ic);
 			}
 		}
-		CreateConfig createConfig = (CreateConfig) runner.getContext()
-				.getObject(CreateConfig.PATH_NAME);
+		CreateConfig createConfig = (CreateConfig) runner.getContext().getObject(CreateConfig.PATH_NAME);
 		createConfig.getResultList().addAll(result);
+	}
+	
+	private void process(CompositeMap view ,CompositeMap model){
+		Set set = view.keySet();
+		if (set != null) {
+			Iterator sit = set.iterator();
+			while (sit.hasNext()) {
+				String key = (String) sit.next();
+				view.put(key, TextParser.parse((String) view.get(key),model));
+			}
+		}
+		List children = view.getChilds();
+		if(children!=null){
+			Iterator it = children.iterator();
+			while(it.hasNext()){
+				CompositeMap child = (CompositeMap)it.next();
+				process(child,model);
+			}
+		}
 	}
 
 	public void beginConfigure(CompositeMap config) {
