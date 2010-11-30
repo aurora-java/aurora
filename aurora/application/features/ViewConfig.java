@@ -1,16 +1,15 @@
 package aurora.application.features;
 
-import aurora.service.ServiceInstance;
 import uncertain.composite.CompositeMap;
-import uncertain.event.Configuration;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
-import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
+import aurora.service.ServiceInstance;
 
 public class ViewConfig extends AbstractProcedureInvoker{
 	
-	private static final String CONFIG_NAME = "view-config";
+	public static final String CONFIG_NAME = "view-config";
+	
 
 	public ViewConfig(OCManager ocManager, IObjectRegistry registry) {
 		super(ocManager, registry);
@@ -19,13 +18,12 @@ public class ViewConfig extends AbstractProcedureInvoker{
 	public void doInvoke( ProcedureRunner runner ) throws Exception {
         ServiceInstance svc = ServiceInstance.getInstance(runner.getContext());
         CompositeMap config = svc.getServiceConfigData().getChild(CONFIG_NAME);
-        if(config!=null)
-            super.runProcedure(config, runner);   
-//        CompositeMap context = runner.getContext();
-//        System.out.println(config.toXML()); 
+        if(config!=null) super.runProcedure(config, runner);
+        
     }
     
     public void postCreateView( ProcedureRunner runner ) throws Exception {
         doInvoke(runner);
     }
+
 }

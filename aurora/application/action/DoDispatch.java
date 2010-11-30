@@ -34,7 +34,6 @@ public class DoDispatch {
 		if (httptype.equals("XMLHttpRequest")) {
 			JSONObject json = new JSONObject();
 			json.put("success", false);
-
 			boolean write_result = context.getBoolean("write_result", true);
 			if (write_result) {
 				CompositeMap result = null;

@@ -152,6 +152,7 @@ public class Grid extends Component {
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		Integer viewWidth = (Integer)map.get(ComponentConfig.OLD_WIDTH);
 		float bl = 1;
+		//TODO:判断,如果column的宽度之和小于总宽度就同比放大
 		if(viewWidth!=null && viewWidth.intValue() !=0) bl = (width.floatValue()/viewWidth.floatValue());
 		
 		
