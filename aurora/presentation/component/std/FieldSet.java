@@ -52,12 +52,14 @@ public class FieldSet extends Box {
 		
 		out.write("<FIELDSET class='item-fieldset' id='"+id+"'");
 		StringBuffer sb = new StringBuffer();
-		if(width != 0) sb.append("width:" + (width-22) + "px;");
-		if(height != 0) sb.append("height:" + height + "px;");
 		if(!"".equals(style)) {
 			sb.append(style);
-			out.write(" style='"+sb.toString()+"'");
 		}
+		if(width != 0) sb.append("width:" + (width-2) + "px;");
+		if(height != 0) sb.append("height:" + height + "px;");
+		if(sb.length() !=0)
+		out.write(" style='"+sb.toString()+"'");
+		
 		out.write(">");
 		buildHead(session,model,view, rows, columns);
 		out.write("<table border=0");

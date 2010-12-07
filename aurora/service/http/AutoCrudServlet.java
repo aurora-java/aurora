@@ -40,15 +40,33 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
                 ControllerProcedures.INVOKE_SERVICE);
         AutoCrudServiceContext crudSvcContext = AutoCrudServiceContext.createAutoCrudServiceContext(svc.getContextMap());
         String uri = request.getRequestURI();
-        if(uri.startsWith("/")){
-            uri = uri.substring(1);
-        }
+//        if(uri.startsWith("/")){
+//            uri = uri.substring(1);
+//        }
+//        String[] args = uri.split("/");
+//        if (args.length < 4)
+//            throw new ServletException("Invalid request format");
+//        int start_index = args[0].length() == 0 ? 1 : 0;
+//        String object_name = args[start_index + 2];
+//        String operation_name = args[start_index + 3];
+        
         String[] args = uri.split("/");
-        if (args.length < 4)
-            throw new ServletException("Invalid request format");
-        int start_index = args[0].length() == 0 ? 1 : 0;
-        String object_name = args[start_index + 2];
-        String operation_name = args[start_index + 3];
+		if (args.length < 4) {
+			throw new ServletException("Invalid request format");
+		}
+		int start_index = 0;
+		for (int i = 0; i < args.length; i++) {
+			String tmp = args[i];
+			if ("autocrud".equals(tmp)) {
+				start_index = i;
+				break;
+			}
+		}
+		String object_name = args[(start_index + 1)];
+		String operation_name = args[(start_index + 2)];
+        
+        
+        
         BusinessModelService msvc = super.mDatabaseServiceFactory.getModelService(object_name);
         if(msvc==null)
             throw new ServletException("Can't load model:"+object_name);
