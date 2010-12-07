@@ -59,6 +59,11 @@
                 <ss:attribute document="字段的名称" name="name" use="required"/>
             </ss:attributes>
         </ss:element>
+        <ss:element name="bm:order-field">
+            <ss:attributes>
+                <ss:attribute document="字段的名称" name="name" use="required"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element document="可用于查询的字段" name="bm:query-field">
             <ss:attributes>
                 <ss:attribute document="查询参数的名字" name="name" type="ss:string"/>
@@ -131,7 +136,7 @@
                 <ss:array name="bm:fields" type="bm:field"/>
                 <ss:array name="bm:ref-fields" type="bm:ref-field"/>
                 <ss:array name="bm:primary-key" type="bm:pk-field"/>
-                <ss:array name="bm:order-by" type="bm:field"/>
+                <ss:array name="bm:order-by" type="bm:order-field"/>
                 <ss:array name="bm:relations" type="bm:relation"/>
                 <ss:array name="bm:data-filters" type="bm:data-filter"/>
                 <ss:array name="bm:query-fields" type="bm:query-field"/>
