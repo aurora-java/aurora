@@ -46,6 +46,8 @@ public class BusinessModel extends DynamicObject {
 
     public static final String SECTION_FIELDS = "fields";
     
+    public static final String SECTION_REF_FIELDS = "ref-fields";
+    
     public static final String SECTION_QUERY_FIELDS = "query-fields";
 
     public static final String SECTION_PRIMARY_KEY = "primary-key";
@@ -369,21 +371,15 @@ public class BusinessModel extends DynamicObject {
         else
             fieldMap.clear();   
         List fields = getChildSection(SECTION_FIELDS);
-        if(fields==null) return;     
-        Field[] array = new Field[fields.size()];
-        Iterator it = fields.iterator();
+        List ref_fields = getChildSection(SECTION_REF_FIELDS);
+        if(fields==null && ref_fields == null) return;
+        int fieldCount = (fields==null?0:fields.size())+(ref_fields==null?0:ref_fields.size());
+        if(fieldCount == 0)
+        	return;
+        Field[] array = new Field[fieldCount];
         int i=0;
-        while(it.hasNext()){
-            CompositeMap field_map = (CompositeMap)it.next();
-            Field f = Field.getInstance(field_map);
-            f.setOwner(this);
-            f.checkValidation();
-            String name = f.getName();
-            if(name==null)
-                throw new ConfigurationError("Field No."+(i+1)+" has no name: "+f.getObjectContext().toXML());
-            fieldMap.put(name.toLowerCase(), f);            
-            array[i++] = f;
-        }
+        i = iteratorFields(array, fields, i);
+        i = iteratorFields(array, ref_fields, i);
         fieldsArray = array;
         // load PK fields
         CompositeMap pk_conf = getObjectContext().getChild(SECTION_PRIMARY_KEY);
@@ -395,7 +391,7 @@ public class BusinessModel extends DynamicObject {
             else{
                 pkFieldsArray = new Field[pk_conf.getChilds().size()];
                 int n=0;
-                it = pk_conf.getChildIterator();
+                Iterator it = pk_conf.getChildIterator();
                 if(it!=null)
                     while(it.hasNext()){
                         CompositeMap field = (CompositeMap) it.next();
@@ -409,6 +405,25 @@ public class BusinessModel extends DynamicObject {
             }
         }
     }
+
+	private int iteratorFields(Field[] array, List list, int i)
+			throws ConfigurationError {
+		if(list == null)
+			return i;
+		Iterator it = list.iterator();
+		while(it.hasNext()){
+            CompositeMap field_map = (CompositeMap)it.next();
+            Field f = Field.getInstance(field_map);
+            f.setOwner(this);
+            f.checkValidation();
+            String name = f.getName();
+            if(name==null)
+                throw new ConfigurationError("Field No."+(i+1)+" has no name: "+f.getObjectContext().toXML());
+            fieldMap.put(name.toLowerCase(), f);            
+            array[i++] = f;
+        }
+		return i;
+	}
 
     public Field[] getFields(){
         if(fieldsArray==null) loadFields();
