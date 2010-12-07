@@ -24,6 +24,7 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
+import aurora.bm.AbstractSqlCreator;
 import aurora.bm.BusinessModel;
 import aurora.bm.DeleteSqlCreator;
 import aurora.bm.IModelFactory;
@@ -208,7 +209,26 @@ public class DatabaseServiceFactory {
      */
     public void setModelFactory(IModelFactory factory) {
         this.modelFactory = factory;
+        
     }
+    public void updateSqlCreator(IModelFactory factory) {
+    	AbstractSqlCreator instance = (AbstractSqlCreator)getGlobalParticipant(QuerySqlCreator.class);
+    	if(instance != null){
+    		instance.setModelFactory(factory);
+    	}
+    	instance = (AbstractSqlCreator)getGlobalParticipant(UpdateSqlCreator.class);
+    	if(instance != null){
+    		instance.setModelFactory(factory);
+    	}
+    	instance = (AbstractSqlCreator)getGlobalParticipant(DeleteSqlCreator.class);
+    	if(instance != null){
+    		instance.setModelFactory(factory);
+    	}
+    	instance = (AbstractSqlCreator)getGlobalParticipant(InsertSqlCreator.class);
+    	if(instance != null){
+    		instance.setModelFactory(factory);
+    	}
+	}
 
     /**
      * @return the uncertainEngine
