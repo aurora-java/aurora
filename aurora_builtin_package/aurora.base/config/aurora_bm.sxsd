@@ -47,6 +47,18 @@
                 <ss:attribute name="queryExpression"/>
             </ss:attributes>
         </ss:element>
+        <ss:element name="bm:ref-field">
+            <ss:attributes>
+                <ss:attribute document="字段的名称" name="name" use="required"/>
+                <ss:attribute document="关系的名称" name="relationName"/>
+                <ss:attribute document="源字段的名称" name="sourceField"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="bm:pk-field">
+            <ss:attributes>
+                <ss:attribute document="字段的名称" name="name" use="required"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element document="可用于查询的字段" name="bm:query-field">
             <ss:attributes>
                 <ss:attribute document="查询参数的名字" name="name" type="ss:string"/>
@@ -117,7 +129,8 @@
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="bm:fields" type="bm:field"/>
-                <ss:array name="bm:primary-key" type="bm:field"/>
+                <ss:array name="bm:ref-fields" type="bm:ref-field"/>
+                <ss:array name="bm:primary-key" type="bm:pk-field"/>
                 <ss:array name="bm:order-by" type="bm:field"/>
                 <ss:array name="bm:relations" type="bm:relation"/>
                 <ss:array name="bm:data-filters" type="bm:data-filter"/>
