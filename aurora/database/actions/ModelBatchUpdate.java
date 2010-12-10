@@ -9,9 +9,13 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.CascadeOperation;
+import aurora.bm.DisabledOperationError;
+import aurora.bm.IBusinessModelAccessChecker;
+import aurora.bm.IBusinessModelAccessCheckerFactory;
 import aurora.bm.Operation;
 import aurora.database.SqlRunner;
 import aurora.database.service.DatabaseServiceFactory;
@@ -27,13 +31,18 @@ public class ModelBatchUpdate extends AbstractModelAction {
      * @param modelFactory
      * @param ocManager
      */
-    public ModelBatchUpdate(DatabaseServiceFactory factory, OCManager ocManager) {
+    public ModelBatchUpdate(DatabaseServiceFactory factory, OCManager ocManager, IObjectRegistry reg ) {
         super(factory);
         mOcManager = ocManager;
+        mObjectRegistry = reg;
+        mModelCheckerFactory = (IBusinessModelAccessCheckerFactory)mObjectRegistry.getInstanceOfType(IBusinessModelAccessCheckerFactory.class);
     }
 
     String                  mSourcePath = "/parameter";
     OCManager               mOcManager;
+    IObjectRegistry         mObjectRegistry;
+    IBusinessModelAccessCheckerFactory  mModelCheckerFactory;
+    IBusinessModelAccessChecker         mModelChecker;
    
     String                  statusField = "_status";
     Set                     mEnabledOperations;
@@ -49,6 +58,10 @@ public class ModelBatchUpdate extends AbstractModelAction {
             if(!mEnabledOperations.contains(status))
                 return;
         }
+        /** Model operation access check */
+        if(mModelChecker!=null)
+            if(!mModelChecker.canPerformOperation(status))
+                throw new DisabledOperationError("Can't perform operation "+status+" on BusinessModel "+getModel());
         mLogger.log(Level.CONFIG, "execute {0} on record No.{1} for model {2}", new Object[]{status,new Integer(record_no), mService.getBusinessModel().getName()} );        
         if(Operation.INSERT.equals(status)){
             mService.insert(item);
@@ -111,7 +124,7 @@ public class ModelBatchUpdate extends AbstractModelAction {
             for( int i=0; i<cascade_ops.length; i++)
             {
                 CascadeOperation op = cascade_ops[i];
-                ba_array[i] = new ModelBatchUpdate(mServiceFactory, mOcManager);
+                ba_array[i] = new ModelBatchUpdate(mServiceFactory, mOcManager, mObjectRegistry);
                 ba_array[i].setSourcePath(op.getInputPath());
                 ba_array[i].setModel(op.getModel());
                 ba_array[i].setEnabledOperations(op.getEnabledOperations());
@@ -129,6 +142,8 @@ public class ModelBatchUpdate extends AbstractModelAction {
 
     public void run(ProcedureRunner runner) throws Exception {        
         CompositeMap map = runner.getContext(); 
+        if(mModelCheckerFactory!=null)
+            mModelChecker = mModelCheckerFactory.getChecker( getModel(), map);        
         Collection records = SqlRunner.getSourceParameter(map, mSourcePath);
         doBatchUpdate(records, map);
     }
