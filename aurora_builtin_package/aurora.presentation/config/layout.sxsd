@@ -9,7 +9,7 @@
                 <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
                 <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
-                <ss:attribute document="box的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="box的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>
@@ -24,7 +24,7 @@
                 <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
                 <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
-                <ss:attribute document="vbox的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="vbox的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>
@@ -36,7 +36,7 @@
                 <ss:attribute document="table的cellPadding值" name="cellPadding" type="ss:int"/>
                 <ss:attribute document="table的cellspacing值" name="cellSpacing" type="ss:int"/>
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
-                <ss:attribute document="hbox的prompt" name="prompt" type="ss:int"/>
+                <ss:attribute document="hbox的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>
