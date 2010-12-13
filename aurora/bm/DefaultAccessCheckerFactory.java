@@ -8,11 +8,12 @@ package aurora.bm;
  * Creates BM Access checker by perform database query
  */
 import uncertain.composite.CompositeMap;
+import uncertain.core.IGlobalInstance;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class DefaultAccessCheckerFactory implements
-        IBusinessModelAccessCheckerFactory, IBusinessModelAccessChecker {
+        IBusinessModelAccessCheckerFactory, IGlobalInstance {
     
     /**
      * @param serviceFactory
@@ -38,11 +39,6 @@ public class DefaultAccessCheckerFactory implements
             throw new RuntimeException("Error when loading service "+mCheckServiceName,ex);
         }
         return null;
-    }
-
-    public boolean canPerformOperation(String operation) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     public String getCheckServiceName() {
