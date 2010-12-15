@@ -74,7 +74,7 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
         TagCreatorRegistry reg = new TagCreatorRegistry();
         ViewPartTagCreator creator = new ViewPartTagCreator(session, view_context);
         reg.setDefaultCreator(creator);
-        reg.setParent(session.getPresentationManager().getTagCreatorRegistry());
+        reg.setParent(session.getTagCreatorRegistry());
         return reg;
     }
     

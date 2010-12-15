@@ -26,7 +26,7 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
             String template_name = cpnt==null?null:cpnt.getDefaultTemplate();
             if(template_name==null)
                 template_name = view_context.getView().getName() + TEMPLATE_EXT;
-            template = session.getTemplate(template_name);
+            template = session.getTemplateByName(template_name);
         }
         if(template==null){
             CompositeMap view = view_context.getView();

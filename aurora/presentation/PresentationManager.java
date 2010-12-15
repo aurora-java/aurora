@@ -171,44 +171,26 @@ public class PresentationManager implements IGlobalInstance {
             }
         mPackageManager.addPackage(p);
         mLogger.log(Level.CONFIG, "Components:{0}", new Object[] { p
-                .getComponentMap() });
-        // mPackageManager.l
-        // Add all attached features
-        // ClassRegistry cr = mOcManager.getClassRegistry();
-        /*
-         * Iterator it = p.getComponents().iterator(); while(it.hasNext()){
-         * ViewComponent c = (ViewComponent)it.next(); Class[] types =
-         * c.getFeatureClassArray(); if(types!=null) for(int i=0;
-         * i<types.length; i++){ FeatureAttach f = new
-         * FeatureAttach(c.getNameSpace(), c.getName(), types[i].getName());
-         * try{ cr.addFeatureAttach(f); }catch(ClassNotFoundException ex){ throw
-         * new RuntimeException(ex); } }
-         * 
-         * }
-         */
+                .getComponentMap() });       
     }
-
-    /*
-     * public ViewComponentPackage loadPackage( File base_path, CompositeMap
-     * config ){ ViewComponentPackage pkg = new ViewComponentPackage();
-     * //pkg.base_path = base_path; mOcManager.populateObject(config, pkg);
-     * addPackage(pkg); return pkg; }
+    
+    /**
+     * @param template_file
+     * @return
+     * @throws IOException
      */
-
-    public TextTemplate parseTemplate(File template_file) throws IOException {
-        return mParser.buildTemplate(template_file);
+    public TextTemplate parseTemplate(File template_file, ITagCreatorRegistry reg ) throws IOException {
+        if(reg!=null){
+            return mParser.buildTemplate(template_file, reg);
+        }else{
+            return mParser.buildTemplate(template_file);
+        }
     }
 
     public TagTemplateParser getTemplateParser() {
         return mParser;
     }
 
-    /*
-     * public String getThemeFromRequest( HttpServletRequest request ){
-     * HttpSession session = request.getSession(); if(session == null) return
-     * "default"; String theme = (String)session.getAttribute("_theme_");
-     * if(theme==null) return "default"; return theme; }
-     */
 
     public void addPackages(PackagePath[] pkg_path) {
         mLogger.log(Level.CONFIG, "Loading " + pkg_path.length

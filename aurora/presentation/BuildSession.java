@@ -7,7 +7,9 @@ package aurora.presentation;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,10 +27,13 @@ import uncertain.event.RuntimeContext;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
+import uncertain.util.template.ITagCreatorRegistry;
+import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TextTemplate;
 import aurora.application.features.ILookupCodeProvider;
 import aurora.i18n.DummyLocalizedMessageProvider;
 import aurora.i18n.ILocalizedMessageProvider;
+import aurora.i18n.LocalizedMessageTagCreator;
 
 /**
  * The 'cursor' in View creation hierarchy 
@@ -69,12 +74,17 @@ public class BuildSession {
     // Base configuration
     Configuration             mBaseConfig;
     
+    // Path of web context
     String 	contextPath;
     
-    String  title;
-    
-    // 
+    // provide localized message translate
     ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
+    
+    // session level tag creator registry
+    ITagCreatorRegistry                 mSessionTagCreatorRegistry;
+
+    /** @todo refactor out */
+    String  title;    
     ILookupCodeProvider lookupProvider;
     
     String 					language;
@@ -197,14 +207,37 @@ public class BuildSession {
         }
     }
     
-    public TextTemplate getTemplate( String name )
+    public TextTemplate getTemplateByName( String name )
         throws IOException
     {
        if(mCurrentPackage==null) throw new IllegalStateException("package of current component is undefined");
        File template_file = mCurrentPackage.getTemplateFile( getTheme(), name);
        if( template_file==null ) return null;
-       else return mOwner.parseTemplate(template_file);       
+       else return mOwner.parseTemplate(template_file, mSessionTagCreatorRegistry);       
     }
+    
+    public TextTemplate getTemplateFromString( String content )
+        throws IOException
+    {
+        return mOwner.getTemplateParser().buildTemplate( new StringReader(content), getTagCreatorRegistry());
+    }
+    
+    /** Parse a String with tags, such as CompositeMap access tag, multi-language translation tag 
+     */
+    public String parseText( String text, CompositeMap context )
+        throws IOException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        OutputStreamWriter writer = new OutputStreamWriter(baos);
+        TextTemplate tplt = getTemplateFromString(text);
+        tplt.createOutput(writer, context);
+        writer.flush();
+        baos.flush();
+        String result = baos.toString();
+        baos.close();
+        return result;
+    }
+
     
     /**
      * Fire a build event
@@ -449,8 +482,35 @@ public class BuildSession {
         return mMessageProvider;
     }
     
+    public ITagCreatorRegistry getTagCreatorRegistry(){
+        return mSessionTagCreatorRegistry==null?mOwner.getTagCreatorRegistry():mSessionTagCreatorRegistry;
+    }
+    
+    /**
+     * @return A session level ITagCreatorRegistry, to do some session scope
+     * template tag creation
+     */
+    public ITagCreatorRegistry getSessionTagCreatorRegistry(){
+        return mSessionTagCreatorRegistry;
+    }
+    
+    protected void setSessionTagCreatorRegistry(ITagCreatorRegistry registry){
+        this.mSessionTagCreatorRegistry = registry;
+    }
+    
+    /** make sure that mSessionTagCreatorRegistry is created */
+    private void checkTagCreator(){
+        if(mSessionTagCreatorRegistry==null){
+            mSessionTagCreatorRegistry = new TagCreatorRegistry();
+            mSessionTagCreatorRegistry.setParent(mOwner.getTagCreatorRegistry());
+        }        
+    }
+    
     public void setMessageProvider(ILocalizedMessageProvider messageProvider) {
         mMessageProvider = messageProvider;
+        checkTagCreator();
+        LocalizedMessageTagCreator creator = new LocalizedMessageTagCreator(messageProvider);
+        mSessionTagCreatorRegistry.registerTagCreator(LocalizedMessageTagCreator.LOCALIZED_MESSAGE_NAMESPACE, creator);
     }
     
     public ILookupCodeProvider getLookupProvider() {

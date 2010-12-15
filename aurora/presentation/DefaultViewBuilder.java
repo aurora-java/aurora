@@ -22,12 +22,14 @@ import uncertain.ocm.ISingleton;
  */
 public class DefaultViewBuilder implements IViewBuilder, ISingleton {
 
-    String getParsedContent(String text, CompositeMap model) {
+    String getParsedContent(BuildSession session, String text, CompositeMap model) 
+        throws IOException
+    {
     	if(text.indexOf("$(") !=-1){
     		text = text.replaceAll("\\$\\(", "\\$\\$\\(");
     	}
         if (text.indexOf("$") >= 0)
-            return TextParser.parse(text, model);
+            return session.parseText(text, model);
         else
             return text;
     }
@@ -50,7 +52,7 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
                     out.write("=\"");
                     Object value = entry.getValue();
                     if(value!=null)
-                        out.write(getParsedContent(value.toString(),model));
+                        out.write(getParsedContent(session, value.toString(),model));
                     out.write('\"');                            
                 }
             }
@@ -66,7 +68,7 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
             }else{
                 String text = view.getText();
                 if(text!=null){ 
-                    out.write(getParsedContent(text,model));
+                    out.write(getParsedContent(session, text,model));
                     out.write(close_tag);
                 }
             }
