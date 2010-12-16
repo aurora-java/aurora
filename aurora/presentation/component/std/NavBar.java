@@ -37,7 +37,7 @@ public class NavBar extends ToolBar {
 			view.addChild(createSeparator());
 			
 			CompositeLoader loader = new CompositeLoader();
-			String pagetext = "<div class='item-label' style='margin-left:2px;margin-right:2px;'>页数:</div>";//+session.getLocalizedPrompt("HAP_PAGENUM")+
+			String pagetext = "<div class='item-label' atype='currentPage' style='margin-left:2px;margin-right:2px;'>&#160;</div>";
 			CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
 			view.addChild(pageinfo);
 			
@@ -51,21 +51,16 @@ public class NavBar extends ToolBar {
 			button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 			view.addChild(button);
 			
-			String pageId = IDGenerator.getInstance().generate();
-			map.put("pageId", pageId);
-			//TODO:多语言
-			String text = "<div id='"+pageId+"' class='item-label' style='margin-left:5px;margin-right:5px;'>共1页</div>";
+			String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>&#160;</div>";
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
 			view.addChild(createSeparator());
 			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
 			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
-			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("AURORA_REFRESH")));
+			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
 			view.addChild(createSeparator());
 			
-			String infoId = IDGenerator.getInstance().generate();
-			map.put("infoid", infoId);
-			String pageInfoText = "<div id='"+infoId+"' class='item-label' style='float:right;'></div>";
+			String pageInfoText = "<div atype='displayInfo' class='item-label' style='float:right;'></div>";
 			CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");
 			view.addChild(pageInfo);
 		} catch (SAXException e) {

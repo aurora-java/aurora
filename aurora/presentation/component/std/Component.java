@@ -47,6 +47,7 @@ public class Component {
 		addStyleSheet(session, context, "core/Aurora-all.css");
 		addJavaScript(session, context, "core/ext-core-min.js");
 		addJavaScript(session, context, "core/Aurora-all.js");
+		addJavaScript(session, context, "locale/aurora-lang-"+session.getLanguage()+".js");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
