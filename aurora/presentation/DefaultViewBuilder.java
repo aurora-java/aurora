@@ -30,15 +30,8 @@ import uncertain.util.template.TextTemplate;
 public class DefaultViewBuilder implements IViewBuilder, ISingleton {
     
     static CompositeMapTagCreator DEFAULT_CREATOR = new CompositeMapTagCreator();
-    /*
-    static TagCreatorRegistry DEFAULT_TAG_CREATOR_REGISTRY = new TagCreatorRegistry();
-    static {
-        DEFAULT_TAG_CREATOR_REGISTRY.registerTagCreator(null, new CompositeMapTagCreator() );
-    } 
-    */   
-/*
- */
-    String getParsedContent(BuildSession session, ITagCreatorRegistry reg, String text, CompositeMap model) 
+
+    private static String getParsedContent(BuildSession session, ITagCreatorRegistry reg, String text, CompositeMap model) 
         throws IOException
     {
     	text = prepareText(text);
