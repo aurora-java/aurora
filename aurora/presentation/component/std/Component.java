@@ -174,7 +174,7 @@ public class Component {
 					EventConfig eventConfig = EventConfig.getInstance(event);
 					String eventName = eventConfig.getEventName();//event.getString(ComponentConfig.PROPERTITY_EVENT_NAME, "");
 					String handler = eventConfig.getHandler();//event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER, "");
-					if(!"".equals(eventName) && !"".equals(handler));
+					if(!"".equals(eventName) && !"".equals(handler))
 					addEvent(id, eventName,handler);
 				}
 				
