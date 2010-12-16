@@ -18,6 +18,7 @@
                 <ss:attribute document="提交的url地址" name="submitUrl"/>
                 <ss:attribute default="false" document="是否可选择" name="selectable" type="ss:boolean"/>
                 <ss:attribute document="选择模式" name="selectionModel" type="a:selectType"/>
+                <ss:attribute document="查询的DataSet的id" name="queryDataSet" type="a:String"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
