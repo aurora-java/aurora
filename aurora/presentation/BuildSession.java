@@ -27,6 +27,7 @@ import uncertain.event.RuntimeContext;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
+import uncertain.util.template.CompositeMapTagCreator;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TextTemplate;
@@ -213,7 +214,7 @@ public class BuildSession {
        if(mCurrentPackage==null) throw new IllegalStateException("package of current component is undefined");
        File template_file = mCurrentPackage.getTemplateFile( getTheme(), name);
        if( template_file==null ) return null;
-       else return mOwner.parseTemplate(template_file, mSessionTagCreatorRegistry);       
+       else return mOwner.parseTemplate(template_file, getTagCreatorRegistry());       
     }
     
     public TextTemplate getTemplateFromString( String content )
@@ -222,8 +223,8 @@ public class BuildSession {
         return mOwner.getTemplateParser().buildTemplate( new StringReader(content), getTagCreatorRegistry());
     }
     
-    /** Parse a String with tags, such as CompositeMap access tag, multi-language translation tag 
-     */
+    /*
+    // Parse a String with tags, such as CompositeMap access tag, multi-language translation tag 
     public String parseText( String text, CompositeMap context )
         throws IOException
     {
@@ -237,7 +238,7 @@ public class BuildSession {
         baos.close();
         return result;
     }
-
+    */
     
     /**
      * Fire a build event
@@ -501,7 +502,9 @@ public class BuildSession {
     /** make sure that mSessionTagCreatorRegistry is created */
     private void checkTagCreator(){
         if(mSessionTagCreatorRegistry==null){
-            mSessionTagCreatorRegistry = new TagCreatorRegistry();
+            TagCreatorRegistry r = new TagCreatorRegistry();
+            //r.setDefaultCreator( new CompositeMapTagCreator());
+            mSessionTagCreatorRegistry = r;            
             mSessionTagCreatorRegistry.setParent(mOwner.getTagCreatorRegistry());
         }        
     }
