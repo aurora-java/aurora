@@ -36,6 +36,7 @@ public class ModelBatchUpdate extends AbstractModelAction {
         mOcManager = ocManager;
         mObjectRegistry = reg;
         mModelCheckerFactory = (IBusinessModelAccessCheckerFactory)mObjectRegistry.getInstanceOfType(IBusinessModelAccessCheckerFactory.class);
+        System.out.println(mModelCheckerFactory);
     }
 
     String                  mSourcePath = "/parameter";
