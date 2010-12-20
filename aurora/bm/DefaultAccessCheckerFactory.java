@@ -7,46 +7,108 @@ package aurora.bm;
 /**
  * Creates BM Access checker by perform database query
  */
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
+import uncertain.ocm.IObjectRegistry;
+import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class DefaultAccessCheckerFactory implements
-        IBusinessModelAccessCheckerFactory, IGlobalInstance {
-    
-    /**
-     * @param serviceFactory
-     */
-    public DefaultAccessCheckerFactory(DatabaseServiceFactory serviceFactory) {
-        super();
-        mServiceFactory = serviceFactory;
-    }
+		IBusinessModelAccessCheckerFactory, IGlobalInstance {
 
-    DatabaseServiceFactory          mServiceFactory;
-    String                          mCheckServiceName;
-    BusinessModel                   mCheckServiceModel;
+	/**
+	 * @param serviceFactory
+	 */
+	public DefaultAccessCheckerFactory(DatabaseServiceFactory serviceFactory) {
+		super();
+		mServiceFactory = serviceFactory;
+	}
 
-    public IBusinessModelAccessChecker getChecker(String model_name,
-            CompositeMap session_context) {
-        BusinessModelService svc = null;
-        // TODO Auto-generated method stub
-        try{
-            svc = mServiceFactory.getModelService(mCheckServiceModel, session_context);
-            CompositeMap result = svc.queryAsMap(null);
-            // fetch result set and put all operations into a Set
-        }catch(Exception ex){
-            throw new RuntimeException("Error when loading service "+mCheckServiceName,ex);
-        }
-        return null;
-    }
+	DatabaseServiceFactory mServiceFactory;
+	String mCheckServiceName;
+	BusinessModel mCheckServiceModel;
+	IObjectRegistry registry;
 
-    public String getCheckServiceName() {
-        return mCheckServiceName;
-    }
+	private String optionField;
+	private String valueField;
+	private String valueFlag;
+	private String[] optionFieldarryay;
+	private String[] valueFieldarryay;
 
-    public void setCheckServiceName(String checkServiceName) {
-        mCheckServiceName = checkServiceName;
-    }
+	public String getValueField() {
+		return valueField;
+	}
 
+	public void setValueField(String valueField) {
+		this.valueField = valueField;
+		this.valueFieldarryay = valueField.split(",");
+	}
+
+	public String getValueFlag() {
+		return valueFlag;
+	}
+
+	public void setValueFlag(String valueFlag) {
+		this.valueFlag = valueFlag;
+	}
+
+	public String getOptionField() {
+		return optionField;
+	}
+
+	public void setOptionField(String optionField) {
+		this.optionField = optionField;
+		this.optionFieldarryay = optionField.split(",");
+	}
+
+	public IBusinessModelAccessChecker getChecker(String model_name,
+			CompositeMap session_context) throws Exception {
+		Set hs = new HashSet();
+		BusinessModelService service = mServiceFactory
+				.getModelService(getCheckServiceName());
+		session_context.put("bm_name", model_name);
+		CompositeMap resultMap = service.queryAsMap(session_context,
+				FetchDescriptor.fetchAll());
+		if (resultMap != null) {
+			Iterator it = resultMap.getChildIterator();
+			while (it.hasNext()) {
+				CompositeMap record = (CompositeMap) it.next();
+				for (int i = 0, l = optionFieldarryay.length; i < l; i++) {
+					if (record.getString(optionFieldarryay[i]).equals(
+							getValueFlag())) {
+						hs.add(valueFieldarryay[i]);
+					}
+				}
+			}
+		}
+
+		return new DefaultAccessChecker(hs);
+	}
+
+	public String getCheckServiceName() {
+		return mCheckServiceName;
+	}
+
+	public void setCheckServiceName(String checkServiceName) {
+		mCheckServiceName = checkServiceName;
+	}
+
+	public void onInitialize() throws Exception {
+
+		mServiceFactory = (DatabaseServiceFactory) registry
+				.getInstanceOfType(DatabaseServiceFactory.class);
+	}
+
+	public DefaultAccessCheckerFactory(IObjectRegistry registry) {
+		this.registry = registry;
+
+	}
 }
