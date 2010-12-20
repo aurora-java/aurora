@@ -17,6 +17,6 @@ public interface IBusinessModelAccessCheckerFactory {
      * @param session_context A CompositeMap containing all session data
      * @return A IBusinessModelAccessChecker instance that can check if certain operation is enabled
      */
-    public IBusinessModelAccessChecker getChecker( String model_name, CompositeMap session_context );
+    public IBusinessModelAccessChecker getChecker( String model_name, CompositeMap session_context ) throws Exception;
 
 }
