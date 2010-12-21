@@ -33,7 +33,7 @@ public class ToolBar extends Component {
 				String style = editor.getString(ComponentConfig.PROPERTITY_STYLE,"");
 				if(editor.getName().equalsIgnoreCase("button")){
 					editor.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(1));
-					style = "float:left;margin-right:1px;margin-top:1px;" + style;
+					style = "float:left;margin-right:1px;margin-top:3px;" + style;
 				} else if(editor.getName().equalsIgnoreCase("separator")){
 					style = "float:left;margin-right:1px;" + style;	
 				}else{

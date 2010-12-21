@@ -19,7 +19,7 @@ public class Button extends Field {
 	public static final String PROPERTITY_CLICK = "click";
 	public static final String PROPERTITY_TITLE = "title";
 	public static final String PROPERTITY_DISABLED = "disabled";
-	private static final int DEFAULT_HEIGHT = 17;
+	private static final int DEFAULT_HEIGHT = 16;
 	private static final int DEFAULT_WIDTH = 60;
 	
 	protected int getDefaultWidth(){
