@@ -79,6 +79,8 @@ public class DefaultAccessCheckerFactory implements
 				FetchDescriptor.fetchAll());
 		if (resultMap != null) {
 			Iterator it = resultMap.getChildIterator();
+			if(it==null)
+				return new DefaultAccessChecker(hs);
 			while (it.hasNext()) {
 				CompositeMap record = (CompositeMap) it.next();
 				for (int i = 0, l = optionFieldarryay.length; i < l; i++) {
@@ -89,7 +91,6 @@ public class DefaultAccessCheckerFactory implements
 				}
 			}
 		}
-
 		return new DefaultAccessChecker(hs);
 	}
 
