@@ -91,6 +91,7 @@ public class DefaultAccessCheckerFactory implements
 				}
 			}
 		}
+	
 		return new DefaultAccessChecker(hs);
 	}
 
