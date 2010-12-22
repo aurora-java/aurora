@@ -6,6 +6,7 @@ package aurora.database.features;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
 import aurora.bm.BusinessModel;
+import aurora.bm.Field;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.RawSqlService;
 import aurora.database.service.ServiceOption;
@@ -78,10 +79,18 @@ public class OrderByClauseCreator  implements ISingleton {
                 String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
                 if(order_field!=null){
                     BusinessModel model = bmsc.getBusinessModel();
-                    if(model.getField(order_field)!=null){
+                    Field model_field = model.getField(order_field); 
+                    if( model_field!=null){
                         String order_type = getField(ORDER_TYPE_PARAM_NAME, ORDER_TYPE, param);
                         SelectField field = select.getField(order_field);
-                        select.addOrderByField(field, order_type);
+                        if(field!=null)
+                            select.addOrderByField(field, order_type);
+                        else{
+                            String qe = model_field.getQueryExpression();
+                            if(qe==null)
+                                qe = model_field.getPhysicalName();
+                            select.addOrderByField( new RawSqlExpression(qe), order_type);
+                        }
                     }
                 }                
             }
