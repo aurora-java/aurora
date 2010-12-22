@@ -86,7 +86,9 @@ public class OrderByClauseCreator  implements ISingleton {
                         if(field!=null)
                             select.addOrderByField(field, order_type);
                         else{
-                            String qe = model_field.getQueryExpression();
+                            String qe = model_field.getQueryExpression(); 
+                            if(qe==null)
+                                qe = model_field.getExpression();                             
                             if(qe==null)
                                 qe = model_field.getPhysicalName();
                             select.addOrderByField( new RawSqlExpression(qe), order_type);
