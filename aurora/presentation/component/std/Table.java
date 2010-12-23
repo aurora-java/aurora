@@ -45,8 +45,6 @@ public class Table extends Component {
 		CompositeMap view = context.getView();
 		GridConfig gc = GridConfig.getInstance(view);
 		
-		map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, view.getString(
-				TableConfig.PROPERTITY_PERCENT_WIDTH, "100"));
 		String rowRenderer = gc.getRowRenderer();
 		if (rowRenderer != null)
 			addConfig(TableConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
@@ -213,7 +211,7 @@ public class Table extends Component {
 	private String createColumn(CompositeMap column, BuildSession session,
 			String dataset) {
 		StringBuffer sb = new StringBuffer();
-		String pw = column.getString(TableConfig.PROPERTITY_PERCENT_WIDTH);
+		String pw = column.getString(ComponentConfig.PROPERTITY_WIDTH);
 		sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
 				+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
 				+ (pw == null ? "" : (" width='" + pw + "%'")) + ">");

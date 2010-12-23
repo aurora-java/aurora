@@ -11,7 +11,6 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_EDITORS = "editors";
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
-	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 	
 	public static TableConfig getInstance(){
 		TableConfig model = new TableConfig();
