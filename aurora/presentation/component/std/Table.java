@@ -34,8 +34,8 @@ public class Table extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "table/Table.css");
-		addJavaScript(session, context, "table/Table.js");
+		addStyleSheet(session, context, "table/Table-min.css");
+		addJavaScript(session, context, "table/Table-min.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
