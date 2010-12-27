@@ -26,6 +26,7 @@ public class Table extends Component {
 	private static final String DEFAULT_CLASS = "item-table";
 	private static final String HEADS = "headss";
 	private static final String FOOTS = "foots";
+	private static final String TITLE = "title";
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
@@ -34,7 +35,7 @@ public class Table extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "table/Table-min.css");
+		addStyleSheet(session, context, "table/Table.css");
 		addJavaScript(session, context, "table/Table-min.js");
 	}
 
@@ -52,6 +53,11 @@ public class Table extends Component {
 		createHeads(map, view, session, cols);
 		generateColumns(map,cols,hasFooterBar(gc.getColumns()));
 		createGridEditors(session, context);
+		String title=view.getString(TITLE);
+		if(null!=title&&!"".equals(title)){
+			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
+			map.put(TITLE,title);
+		}
 		map.put(CONFIG, getConfigString());
 	}
 
