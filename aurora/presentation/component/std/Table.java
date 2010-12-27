@@ -35,7 +35,7 @@ public class Table extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "table/Table.css");
+		addStyleSheet(session, context, "table/Table-min.css");
 		addJavaScript(session, context, "table/Table-min.js");
 	}
 
@@ -137,7 +137,7 @@ public class Table extends Component {
 			if (null == column.getChilds()) {
 				JSONObject json = new JSONObject(column);
 				jsons.put(json);
-				sb.append("<TD dataindex='"+column.getString("name")+"'></TD>");
+				sb.append("<TD dataindex='"+column.getString("name")+"' align='"+column.getString("align")+"'></TD>");
 			}
 		}
 		sb.append("</TR></TFOOT>");
