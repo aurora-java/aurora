@@ -33,6 +33,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SUBMITURL = "submiturl";
 	public static final String PROPERTITY_SELECTABLE = "selectable";
 	public static final String PROPERTITY_SELECTION_MODEL = "selectionmodel";
+	public static final String PROPERTITY_SELECT_FUNCTION = "selectfunction";
 	public static final String PROPERTITY_VALID_LISTENER = "validlistener";
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
@@ -144,7 +145,12 @@ public class DataSetConfig extends ComponentConfig {
 	public void setSelectionModel(String model){
 		putString(PROPERTITY_SELECTION_MODEL, model);
 	}
-	
+	public String getSelectFunction(){
+		return getString(PROPERTITY_SELECT_FUNCTION);		
+	}
+	public void setSelectFunction(String function){
+		putString(PROPERTITY_SELECT_FUNCTION, function);
+	}
     public String getBindName(){
         return getString(PROPERTITY_BINDNAME, "");
     }

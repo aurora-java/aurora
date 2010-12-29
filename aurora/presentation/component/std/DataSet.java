@@ -175,6 +175,7 @@ public class DataSet extends Component {
 		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
 		if(dsc.isAutoCreate())addConfig(DataSetConfig.PROPERTITY_AUTO_CREATE, new Boolean(dsc.isAutoCreate()));
 		if(dsc.isSelectable())addConfig(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
+		if(null!=dsc.getSelectFunction())addConfig(DataSetConfig.PROPERTITY_SELECT_FUNCTION,dsc.getSelectFunction());
 		if(!DataSetConfig.DEFAULT_SELECTION_MODEL.equals(dsc.getSelectionModel()))addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, dsc.getSelectionModel());
 		map.put(CONFIG, getConfigString());
 	}
