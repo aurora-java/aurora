@@ -51,7 +51,7 @@ public class NavBar extends ToolBar {
 			button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 			view.addChild(button);
 			
-			String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>&#160;</div>";
+			String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
 			view.addChild(createSeparator());
