@@ -4,22 +4,21 @@
 		<field name="service" type="aurora.service.IService"/>
 	</fields>
 	<switch test="@success">
-	<case Value="true">
-	<action name="ParseParameter" input="service" />
-	<action name="ValidateInput"  input="service" />
-	<action name="InvokeService" input="service" />
-	<action name="CreateSuccessResponse" input="service"/>
-	<action Name="ServiceEnd" />
-	<exception-handles>
-		<catch Exception="*">
-			<action name="HandleException" />		
-			<action name="CreateFailResponse" input="service"/>
-		</catch>
-	</exception-handles>
-
-	</case>
-	<case>
-		<action name="AuthorityFailResponse" input="service"/>
-	</case>	
-</switch>	
+    	<case Value="true">
+        	<action name="ParseParameter" input="service" />
+        	<action name="ValidateInput"  input="service" />
+        	<action name="InvokeService" input="service" />
+        	<action name="CreateSuccessResponse" input="service"/>
+        	<action Name="ServiceEnd" />
+        	<exception-handles>
+        		<catch Exception="*">
+        			<action name="HandleException" />		
+        			<action name="CreateFailResponse" input="service"/>
+        		</catch>
+        	</exception-handles>
+    	</case>
+    	<case>
+    		<action name="AuthorityFailResponse" input="service"/>
+    	</case>	
+    </switch>	
 </procedure>
