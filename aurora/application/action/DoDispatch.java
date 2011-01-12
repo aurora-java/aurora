@@ -30,7 +30,6 @@ public class DoDispatch {
 				.getInstance(cm);
 		String httptype = svc.getRequest().getHeader("x-requested-with") == null ? "null"
 				: svc.getRequest().getHeader("x-requested-with").toString();
-
 		if (httptype.equals("XMLHttpRequest")) {
 			JSONObject json = new JSONObject();
 			json.put("success", false);
@@ -39,6 +38,7 @@ public class DoDispatch {
 				CompositeMap result = null;
 				JSONObject error = new JSONObject();
 				error.put("message", svc.getName() + cm.getString("error_msg"));
+				error.put("code", cm.getString("error_msg"));
 				json.put("error", error);
 			}
 			prepareResponse(svc.getResponse());

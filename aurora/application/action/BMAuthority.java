@@ -34,6 +34,7 @@ public class BMAuthority {
 			CompositeMap result = null;
 			JSONObject error = new JSONObject();
 			error.put("message", svc.getName() +cm.getString("error_msg"));
+			error.put("code", cm.getString("error_msg"));
 			json.put("error", error);
 		}
 		prepareResponse(svc.getResponse());
