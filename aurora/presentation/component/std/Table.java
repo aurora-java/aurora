@@ -14,9 +14,6 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.FormConfig;
-import aurora.presentation.component.std.config.GridColumnConfig;
-import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
@@ -25,7 +22,7 @@ public class Table extends Component {
 	private static final String ROW_SPAN = "rowspan";
 	private static final String COL_SPAN = "colspan";
 	private static final String DEFAULT_CLASS = "item-table";
-	private static final String HEADS = "headss";
+	private static final String HEADS = "heads";
 	private static final String FOOTS = "foots";
 	private static final String TITLE = "title";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
@@ -48,7 +45,7 @@ public class Table extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getContextMap();
 		CompositeMap view = context.getView();
-		GridConfig gc = GridConfig.getInstance(view);
+		TableConfig gc = TableConfig.getInstance(view);
 		
 		String rowRenderer = gc.getRowRenderer();
 		if (rowRenderer != null)
@@ -89,7 +86,7 @@ public class Table extends Component {
 				}
 			}
 		}
-		map.put("editors", sb.toString());
+		map.put(TableConfig.PROPERTITY_EDITORS, sb.toString());
 	}
 
 	private void createHeads(Map map, CompositeMap view, BuildSession session,
@@ -132,7 +129,7 @@ public class Table extends Component {
 				sb.append("</TR>");
 			}
 		}
-		map.put("heads", sb.toString());
+		map.put(HEADS, sb.toString());
 	}
 
 	private void generateColumns(Map map,List cols,boolean hasFoot) {

@@ -7,7 +7,6 @@ public class TableConfig extends ComponentConfig {
 	public static final String TAG_NAME = "grid";
 	
 	public static final String PROPERTITY_COLUMNS = "columns";
-	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_EDITORS = "editors";
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
