@@ -14,6 +14,7 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.FormConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
@@ -27,11 +28,14 @@ public class Table extends Component {
 	private static final String HEADS = "headss";
 	private static final String FOOTS = "foots";
 	private static final String TITLE = "title";
+	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
 	}
-
+	protected int getDefaultWidth(){
+		return -1;
+	}
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
@@ -49,11 +53,15 @@ public class Table extends Component {
 		String rowRenderer = gc.getRowRenderer();
 		if (rowRenderer != null)
 			addConfig(TableConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
+		if(null!=view.getString(ComponentConfig.PROPERTITY_WIDTH))
+			map.put(PROPERTITY_PERCENT_WIDTH, view.getString(ComponentConfig.PROPERTITY_WIDTH)+"px");
+		else if(null!=view.getString(PROPERTITY_PERCENT_WIDTH))
+			map.put(PROPERTITY_PERCENT_WIDTH, view.getString(PROPERTITY_PERCENT_WIDTH)+"%");
 		List cols = new ArrayList();
 		createHeads(map, view, session, cols);
 		generateColumns(map,cols,hasFooterBar(gc.getColumns()));
 		createGridEditors(session, context);
-		String title=view.getString(TITLE);
+		String title = session.getLocalizedPrompt(view.getString(TITLE,""));
 		if(null!=title&&!"".equals(title)){
 			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
 			map.put(TITLE,title);
@@ -217,10 +225,14 @@ public class Table extends Component {
 	private String createColumn(CompositeMap column, BuildSession session,
 			String dataset) {
 		StringBuffer sb = new StringBuffer();
-		String pw = column.getString(ComponentConfig.PROPERTITY_WIDTH);
+		String pw="";
+		if(null!=column.getString(PROPERTITY_PERCENT_WIDTH))
+			pw = column.getString(PROPERTITY_PERCENT_WIDTH)+"%";
+		if(null!=column.getString(ComponentConfig.PROPERTITY_WIDTH))
+			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH)+"px";
 		sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
 				+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
-				+ (pw == null ? "" : (" width='" + pw + "%'")) + ">");
+				+ (pw == null ? "" : (" width='" + pw + "'")) + ">");
 		String text = session.getLocalizedPrompt(getFieldPrompt(session,
 				column, dataset));
 		sb.append("".equals(text) ? "&#160;" : text);
