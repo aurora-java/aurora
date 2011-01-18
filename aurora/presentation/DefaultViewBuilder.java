@@ -36,7 +36,7 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
     {
     	text = prepareText(text);
         if (text.indexOf("$") >= 0)
-            return getParsedContent(session, text, model, reg);
+            return getParsedContent(session.getPresentationManager().getTemplateParser(), text, model, reg);
         else
             return text;
     }
@@ -56,9 +56,9 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
         return reg;
     }
     
-    private static String getParsedContent(BuildSession session, String text, CompositeMap model, ITagCreatorRegistry reg )
+    private static String getParsedContent(TagTemplateParser parser, String text, CompositeMap model, ITagCreatorRegistry reg )
         throws IOException {
-        TagTemplateParser parser = session.getPresentationManager().getTemplateParser();
+        //TagTemplateParser parser = session.getPresentationManager().getTemplateParser();
         StringReader reader = new StringReader(text);
         TextTemplate tplt = parser.buildTemplate(reader, reg);        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -70,6 +70,13 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
         baos.close();
         return result;        
     }
+    
+    public static String parseString( BuildSession session, String text, CompositeMap model )
+        throws IOException {
+        ITagCreatorRegistry reg = createTagRegistryFromSession(session);
+        return getParsedContent(session.getPresentationManager().getTemplateParser(), text, model, reg);
+    }
+    
 
     public void buildView(BuildSession session, ViewContext view_context)
             throws IOException, ViewCreationException {
