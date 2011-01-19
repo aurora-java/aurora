@@ -23,7 +23,13 @@ public class DateField extends Component {
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
 	}
-
+	protected int getDefaultWidth(){
+		return 150;
+	}
+	
+	protected int getDefaultHeight(){
+		return 130;
+	}
 	public void onCreateViewContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onCreateViewContent(session, context);
