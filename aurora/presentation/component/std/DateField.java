@@ -28,7 +28,7 @@ public class DateField extends Component {
 	}
 	
 	protected int getDefaultHeight(){
-		return 130;
+		return 150;
 	}
 	public void onCreateViewContent(BuildSession session, ViewContext context)
 			throws IOException {
