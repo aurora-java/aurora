@@ -7,7 +7,6 @@ package aurora.presentation;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -27,7 +26,6 @@ import uncertain.event.RuntimeContext;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
-import uncertain.util.template.CompositeMapTagCreator;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TextTemplate;
@@ -37,508 +35,554 @@ import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.LocalizedMessageTagCreator;
 
 /**
- * The 'cursor' in View creation hierarchy 
- * @author  Zhou Fan
- * @version 
+ * The 'cursor' in View creation hierarchy
+ * 
+ * @author Zhou Fan
+ * @version
  */
 public class BuildSession {
-    
+
     public static final String LOGGING_TOPIC = "aurora.presentation.buildsession";
-    
+
     // Writer to write output content
-    protected                   Writer  mWriter;
-    
+    protected Writer mWriter;
+
     // Current Configuration generated from root view config
-    Configuration               mCurrentConfig;
-    
+    Configuration mCurrentConfig;
+
     // PresentationManager that associated with this instance
-    PresentationManager         mOwner;
+    PresentationManager mOwner;
 
     // provider of current view
-    ViewComponentPackage           mCurrentPackage;
-    
+    ViewComponentPackage mCurrentPackage;
+
     // Theme name that applies to this session
-    String                      mTheme = "default";
-    
+    String mTheme = "default";
+
     // The build session data container
-    CompositeMap              mSessionContext;
-    
+    CompositeMap mSessionContext;
+
     // mSessionContext in RuntimeContext type
-    RuntimeContext            mRuntimeContext;
-    
+    RuntimeContext mRuntimeContext;
+
     // A Set container to save included resource
-    Set                       mIncludedResourceSet;    
+    Set mIncludedResourceSet;
 
     // Named ViewContext
-    Map                       mNamedViewContextMap;   
-    
+    Map mNamedViewContextMap;
+
     // Base configuration
-    Configuration             mBaseConfig;
-    
+    Configuration mBaseConfig;
+
     // Path of web context
-    String 	contextPath;
-    
+    String contextPath;
+
     // provide localized message translate
-    ILocalizedMessageProvider          mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
-    
+    ILocalizedMessageProvider mMessageProvider = DummyLocalizedMessageProvider.DEFAULT_INSTANCE;
+
     // session level tag creator registry
-    ITagCreatorRegistry                 mSessionTagCreatorRegistry;
+    ITagCreatorRegistry mSessionTagCreatorRegistry;
 
     /** @todo refactor out */
-    String  title;    
+    String title;
     ILookupCodeProvider lookupProvider;
-    
-    String 					language;
 
-    public BuildSession( PresentationManager pm){
+    String language;
+
+    public BuildSession(PresentationManager pm) {
         this.mOwner = pm;
         mSessionContext = new CompositeMap("build-session");
         mRuntimeContext = RuntimeContext.getInstance(mSessionContext);
-        
+
     }
-/*    
-    public void setConfiguration( Configuration config){
-        this.current_config = config;
-    }
-*/    
-    public PresentationManager getPresentationManager(){
+
+    /*
+     * public void setConfiguration( Configuration config){ this.current_config
+     * = config; }
+     */
+    public PresentationManager getPresentationManager() {
         return mOwner;
     }
-    
-    private void startSession( CompositeMap view){
+
+    private void startSession(CompositeMap view) {
         mCurrentConfig = mOwner.createConfiguration();
         /*
-        if(mBaseConfig!=null)
-            mCurrentConfig.setParent(mBaseConfig);
-            */
+         * if(mBaseConfig!=null) mCurrentConfig.setParent(mBaseConfig);
+         */
         mCurrentConfig.loadConfig(view);
         mCurrentConfig.setLogger(getLogger());
-/*
-        if(mSessionContext!=null)
-            mSessionContext.clear();
-*/            
+        /*
+         * if(mSessionContext!=null) mSessionContext.clear();
+         */
     }
-    
-    private void endSession(){
+
+    private void endSession() {
         mCurrentConfig = null;
         mCurrentPackage = null;
-  /*
-        if(mSessionContext!=null)
-            mSessionContext.clear();
-                    */
+        /*
+         * if(mSessionContext!=null) mSessionContext.clear();
+         */
     }
-    
+
     /**
      * Create output content, from given data model and view config
-     * @param model Data model in CompositeMap
-     * @param view View configuration in CompositeMap
-     * @throws Exception 
+     * 
+     * @param model
+     *            Data model in CompositeMap
+     * @param view
+     *            View configuration in CompositeMap
+     * @throws Exception
      */
 
-    public void buildView( CompositeMap model, CompositeMap view ) 
-        throws Exception
-    {
-        ILogger     logger = getLogger();
+    public void buildView(CompositeMap model, CompositeMap view)
+            throws Exception {
+        ILogger logger = getLogger();
         boolean from_begin = false;
-        if(mCurrentConfig==null){
+        if (mCurrentConfig == null) {
             startSession(view);
             from_begin = true;
             logger.config("Start build session");
         }
         ViewComponentPackage old_package = mCurrentPackage;
-        mCurrentPackage = mOwner.getPackage(view);        
-        
+        mCurrentPackage = mOwner.getPackage(view);
+
         // Init ViewContext
-        ViewContext     context = getNamedViewContext(view.getQName());
-        if(context!=null){
+        ViewContext context = getNamedViewContext(view.getQName());
+        if (context != null) {
             context.model = model;
             context.view = view;
-        }else{
-            context = new ViewContext(model,view);
+        } else {
+            context = new ViewContext(model, view);
         }
-        
-        
+
         IViewBuilder builder = mOwner.getViewBuilder(view);
-        if(builder==null) throw new IllegalStateException("Can't get IViewBuilder instance for "+view.toXML());
-        logger.log(Level.CONFIG, "building view: <{0}> -> {1}", new Object[]{view.getName(), builder});
-        String[]    events   = builder.getBuildSteps(context);
-        if(events!=null)
-            fireBuildEvents(events, context);            
+        if (builder == null)
+            throw new IllegalStateException(
+                    "Can't get IViewBuilder instance for " + view.toXML());
+        logger.log(Level.CONFIG, "building view: <{0}> -> {1}", new Object[] {
+                view.getName(), builder });
+        String[] events = builder.getBuildSteps(context);
+        if (events != null)
+            fireBuildEvents(events, context);
         builder.buildView(this, context);
         mCurrentPackage = old_package;
-        if(from_begin){
+        if (from_begin) {
             endSession();
             logger.config("End build session");
         }
     }
-    
+
     /**
      * Build view content into a string buffer, without affecting current output
-     * @param model Data model in CompositeMap
-     * @param view View configuration in CompositeMap
+     * 
+     * @param model
+     *            Data model in CompositeMap
+     * @param view
+     *            View configuration in CompositeMap
      * @return Generated view content
      * @throws Exception
      */
-    public String buildViewAsString( CompositeMap model, CompositeMap view ) 
-    throws Exception{
+    public String buildViewAsString(CompositeMap model, CompositeMap view)
+            throws Exception {
         Writer old_writer = mWriter;
-        try{
-            ByteArrayOutputStream  bos = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintWriter out = new PrintWriter(bos);
             setWriter(out);
-            buildView(model,view);
+            buildView(model, view);
             out.flush();
             String str = bos.toString();
             out.close();
             bos.close();
             return str;
-        }finally{
+        } finally {
             mWriter = old_writer;
         }
     }
-    
-    public void buildViews( CompositeMap model, Collection view_list )
-        throws Exception
-    {
-    	if(view_list==null)return;
+
+    public void buildViews(CompositeMap model, Collection view_list)
+            throws Exception {
+        if (view_list == null)
+            return;
         Iterator it = view_list.iterator();
-        while(it.hasNext()){
-            CompositeMap view = (CompositeMap)it.next();
-            buildView( model, view );
+        while (it.hasNext()) {
+            CompositeMap view = (CompositeMap) it.next();
+            buildView(model, view);
         }
-    }
-    
-    public TextTemplate getTemplateByName( String name )
-        throws IOException
-    {
-       if(mCurrentPackage==null) throw new IllegalStateException("package of current component is undefined");
-       File template_file = mCurrentPackage.getTemplateFile( getTheme(), name);
-       if( template_file==null ) return null;
-       else return mOwner.parseTemplate(template_file, getTagCreatorRegistry());       
-    }
-    
-    public TextTemplate getTemplateFromString( String content )
-        throws IOException
-    {
-        return mOwner.getTemplateParser().buildTemplate( new StringReader(content), getTagCreatorRegistry());
-    }
-    
-    /*
-    // Parse a String with tags, such as CompositeMap access tag, multi-language translation tag 
-    public String parseText( String text, CompositeMap context )
-        throws IOException
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter writer = new OutputStreamWriter(baos);
-        TextTemplate tplt = getTemplateFromString(text);
-        tplt.createOutput(writer, context);
-        writer.flush();
-        baos.flush();
-        String result = baos.toString();
-        baos.close();
-        return result;
-    }
-    */
-    
-    /**
-     * Fire a build event
-     * @param event_name name of event
-     * @param context ViewContext that this event apply to
-     * @param for_all_components whether this event will fire to current view component,
-     *        or all components in one BuildSession
-     * @throws Exception
-     */
-    public void fireBuildEvent( String event_name, ViewContext context, boolean for_all_components )
-        throws Exception
-    {
-        Object[] args = new Object[2];
-        args[0] = this;
-        args[1] = context;
-        if( for_all_components ){
-            //mCurrentConfig.getLogger().info("to fire global "+event_name);
-            mCurrentConfig.fireEvent(event_name, mSessionContext, args );
-            if(mBaseConfig!=null){
-                mBaseConfig.fireEvent(event_name, mSessionContext, args );
-                mBaseConfig.getLogger().info("Fired "+event_name);
-            }
-        }else{
-            HandleManager manager = mCurrentConfig.createHandleManager(context.getView());
-            mCurrentConfig.fireEvent(event_name, args, mSessionContext, manager);            
-        }
-    }
-    
-    
-    public void fireBuildEvent( String event_name, ViewContext context)
-        throws Exception
-    {
-        fireBuildEvent( event_name, context, false );
     }
 
-    public void fireBuildEvents( String[] event_name, ViewContext context)
-        throws Exception
-    {
+    public TextTemplate getTemplateByName(String name) throws IOException {
+        if (mCurrentPackage == null)
+            throw new IllegalStateException(
+                    "package of current component is undefined");
+        File template_file = mCurrentPackage.getTemplateFile(getTheme(), name);
+        if (template_file == null)
+            return null;
+        else
+            return mOwner.parseTemplate(template_file, getTagCreatorRegistry());
+    }
+
+    public TextTemplate getTemplateFromString(String content)
+            throws IOException {
+        return mOwner.getTemplateParser().buildTemplate(
+                new StringReader(content), getTagCreatorRegistry());
+    }
+
+    /*
+     * // Parse a String with tags, such as CompositeMap access tag,
+     * multi-language translation tag public String parseText( String text,
+     * CompositeMap context ) throws IOException { ByteArrayOutputStream baos =
+     * new ByteArrayOutputStream(); OutputStreamWriter writer = new
+     * OutputStreamWriter(baos); TextTemplate tplt =
+     * getTemplateFromString(text); tplt.createOutput(writer, context);
+     * writer.flush(); baos.flush(); String result = baos.toString();
+     * baos.close(); return result; }
+     */
+
+    /**
+     * Fire a build event
+     * 
+     * @param event_name
+     *            name of event
+     * @param context
+     *            ViewContext that this event apply to
+     * @param for_all_components
+     *            whether this event will fire to current view component, or all
+     *            components in one BuildSession
+     * @throws Exception
+     */
+    public void fireBuildEvent(String event_name, ViewContext context,
+            boolean for_all_components) throws Exception {
         Object[] args = new Object[2];
         args[0] = this;
         args[1] = context;
-        HandleManager manager = mCurrentConfig.createHandleManager(context.getView());
-        for(int i=0; i<event_name.length; i++)
-            mCurrentConfig.fireEvent(event_name[i], args, mSessionContext, manager);
+        if (for_all_components) {
+            // mCurrentConfig.getLogger().info("to fire global "+event_name);
+            mCurrentConfig.fireEvent(event_name, mSessionContext, args);
+            if (mBaseConfig != null) {
+                mBaseConfig.fireEvent(event_name, mSessionContext, args);
+                mBaseConfig.getLogger().info("Fired " + event_name);
+            }
+        } else {
+            HandleManager manager = mCurrentConfig.createHandleManager(context
+                    .getView());
+            mCurrentConfig
+                    .fireEvent(event_name, args, mSessionContext, manager);
+        }
     }
-    
-    public String getLocalizedPrompt(String key){
-    	ILocalizedMessageProvider provider = getMessageProvider();
-    	if(provider!=null){
-    		String p = provider.getMessage(key);
-    		return p == null ? key : p;
-    	}else{
-    		return key;
-    	}
+
+    public void fireBuildEvent(String event_name, ViewContext context)
+            throws Exception {
+        fireBuildEvent(event_name, context, false);
     }
-    
-    public Writer getWriter(){
+
+    public void fireBuildEvents(String[] event_name, ViewContext context)
+            throws Exception {
+        Object[] args = new Object[2];
+        args[0] = this;
+        args[1] = context;
+        HandleManager manager = mCurrentConfig.createHandleManager(context
+                .getView());
+        for (int i = 0; i < event_name.length; i++)
+            mCurrentConfig.fireEvent(event_name[i], args, mSessionContext,
+                    manager);
+    }
+
+    public String getLocalizedPrompt(String key) {
+        ILocalizedMessageProvider provider = getMessageProvider();
+        if (provider != null) {
+            String p = provider.getMessage(key);
+            return p == null ? key : p;
+        } else {
+            return key;
+        }
+    }
+
+    public Writer getWriter() {
         return mWriter;
     }
 
-    
     /**
-     * @param writer A java.io.Writer to write content
+     * @param writer
+     *            A java.io.Writer to write content
      */
     public void setWriter(Writer writer) {
         this.mWriter = writer;
     }
 
-/*    
-    public Object getClientInfo() {
-        return client_info;
-    }
+    /*
+     * public Object getClientInfo() { return client_info; }
+     * 
+     * public void setClientInfo(Object client_info) { this.client_info =
+     * client_info; }
+     */
 
-    public void setClientInfo(Object client_info) {
-        this.client_info = client_info;
-    }
-*/
-    
     /**
      * @return the theme
      */
     public String getTheme() {
         return mTheme;
     }
+
     /**
-     * @param theme the theme to set
+     * @param theme
+     *            the theme to set
      */
     public void setTheme(String theme) {
         this.mTheme = theme;
     }
+
     /**
      * @return the mLogger
      */
     public ILogger getLogger() {
-        ILogger logger = (ILogger)mRuntimeContext.getInstanceOfType(ILogger.class);
-        return logger==null?DummyLogger.getInstance():logger;
+        ILogger logger = (ILogger) mRuntimeContext
+                .getInstanceOfType(ILogger.class);
+        return logger == null ? DummyLogger.getInstance() : logger;
     }
+
     /**
-     * @param logger the mLogger to set
+     * @param logger
+     *            the mLogger to set
      */
     public void setLogger(ILogger logger) {
         mRuntimeContext.setInstanceOfType(ILogger.class, logger);
     }
-    
-    public void setLoggerProvider( ILoggerProvider provider ){
+
+    public void setLoggerProvider(ILoggerProvider provider) {
         mRuntimeContext.setInstanceOfType(ILoggerProvider.class, provider);
     }
-    
+
     /**
      * Get web URL of a physical resource file, according to current theme
-     * @param pkg 
+     * 
+     * @param pkg
      * @param resource
      * @return
      */
-    public String getResourceUrl( ViewComponentPackage pkg, String resource ){
+    public String getResourceUrl(ViewComponentPackage pkg, String resource) {
         IResourceUrlMapper mapper = mOwner.getResourceUrlMapper();
-        if(mapper==null) throw new IllegalStateException("No instance of " + IResourceUrlMapper.class.getName() + " defined");
+        if (mapper == null)
+            throw new IllegalStateException("No instance of "
+                    + IResourceUrlMapper.class.getName() + " defined");
         String theme = null;
-        if(pkg.isResourceExist(mTheme, resource))
+        if (pkg.isResourceExist(mTheme, resource))
             theme = mTheme;
-        else{
+        else {
             theme = ViewComponentPackage.DEFAULT_THEME;
-            if(!pkg.isResourceExist(theme, resource)){
-                this.getLogger().warning("Required resource not found:"+resource);
+            if (!pkg.isResourceExist(theme, resource)) {
+                this.getLogger().warning(
+                        "Required resource not found:" + resource);
                 return null;
             }
         }
         StringBuffer buf = new StringBuffer();
-        String path = mapper.getResourceUrl(pkg.getName(), theme, resource );
+        String path = mapper.getResourceUrl(pkg.getName(), theme, resource);
         String contextPath = getContextPath();
-        if(contextPath!=null) {
-        	buf.append(contextPath);
-        	if(!contextPath.endsWith("/")){
-        		buf.append("/");
-        	}        	
+        if (contextPath != null) {
+            buf.append(contextPath);
+            if (!contextPath.endsWith("/")) {
+                buf.append("/");
+            }
         }
         buf.append(path);
         return buf.toString();
-        
+
     }
-    
-    
-    public String getResourceUrl( String package_name, String resource ){
+
+    public String getResourceUrl(String package_name, String resource) {
         ViewComponentPackage pkg = mOwner.getPackage(package_name);
-        if(pkg==null) throw new IllegalArgumentException("packge "+package_name+" does not exist");
-        return getResourceUrl( pkg, resource );
+        if (pkg == null)
+            throw new IllegalArgumentException("packge " + package_name
+                    + " does not exist");
+        return getResourceUrl(pkg, resource);
     }
-    
-    public String getResourceUrl( String resource ){
-        if(mCurrentPackage==null) return null;
-        return getResourceUrl( mCurrentPackage, resource );
+
+    public String getResourceUrl(String resource) {
+        if (mCurrentPackage == null)
+            return null;
+        return getResourceUrl(mCurrentPackage, resource);
     }
-    
+
     /**
      * Get full resource name with package prefix concatenated
-     * @param package_name name of package
-     * @param resource name of resource file, without theme prefix
+     * 
+     * @param package_name
+     *            name of package
+     * @param resource
+     *            name of resource file, without theme prefix
      */
-    protected String getResourceFullName( String package_name, String resource ){
-        return package_name +'.' + resource;
+    protected String getResourceFullName(String package_name, String resource) {
+        return package_name + '.' + resource;
     }
-    
-    protected void checkResourceSet(){
-        if( mIncludedResourceSet == null )
-            mIncludedResourceSet = new HashSet();       
+
+    protected void checkResourceSet() {
+        if (mIncludedResourceSet == null)
+            mIncludedResourceSet = new HashSet();
     }
-    
+
     /**
      * Decides whether a resource file is already included in BuilSession
+     * 
      * @param package_name
      * @param resource
-     * @return false if this resource has not been included yet, and the resource will 
-     * be marked as included. true if the resource is already marked as included.
+     * @return false if this resource has not been included yet, and the
+     *         resource will be marked as included. true if the resource is
+     *         already marked as included.
      */
-    public boolean includeResource( String package_name, String resource ){
+    public boolean includeResource(String package_name, String resource) {
         String full_name = getResourceFullName(package_name, resource);
         checkResourceSet();
-        if( mIncludedResourceSet.contains(full_name))
+        if (mIncludedResourceSet.contains(full_name))
             return true;
-        else{
+        else {
             mIncludedResourceSet.add(full_name);
             return false;
         }
     }
-    
-    public boolean includeResource( String resource ){
-        String pkg_name = mCurrentPackage==null?null:mCurrentPackage.getName();
-        return includeResource( pkg_name, resource);
+
+    public boolean includeResource(String resource) {
+        String pkg_name = mCurrentPackage == null ? null : mCurrentPackage
+                .getName();
+        return includeResource(pkg_name, resource);
     }
-    
-    public void setResourceIncluded( String package_name, String resource, boolean included ){
+
+    public void setResourceIncluded(String package_name, String resource,
+            boolean included) {
         String full_name = getResourceFullName(package_name, resource);
         checkResourceSet();
-        if( included )
+        if (included)
             mIncludedResourceSet.add(full_name);
         else
-            mIncludedResourceSet.remove(full_name);            
+            mIncludedResourceSet.remove(full_name);
     }
-    
-    public ViewComponentPackage getCurrentPackage(){
+
+    public ViewComponentPackage getCurrentPackage() {
         return mCurrentPackage;
     }
 
     public CompositeMap getSessionContext() {
         return mSessionContext;
     }
- 
 
-    public ViewContext  createNamedViewContext( QualifiedName qname ){
-        if(mNamedViewContextMap==null)
-            mNamedViewContextMap = new HashMap();        
-        ViewContext context = (ViewContext)mNamedViewContextMap.get(qname);
-        if(context==null){
+    public ViewContext createNamedViewContext(QualifiedName qname) {
+        if (mNamedViewContextMap == null)
+            mNamedViewContextMap = new HashMap();
+        ViewContext context = (ViewContext) mNamedViewContextMap.get(qname);
+        if (context == null) {
             context = new ViewContext();
             mNamedViewContextMap.put(qname, context);
         }
         return context;
     }
-    
-    
-    public ViewContext getNamedViewContext(  QualifiedName qname ){
-        return mNamedViewContextMap == null ? null: (ViewContext)mNamedViewContextMap.get(qname);
+
+    public ViewContext getNamedViewContext(QualifiedName qname) {
+        return mNamedViewContextMap == null ? null
+                : (ViewContext) mNamedViewContextMap.get(qname);
     }
-    
+
     public Configuration getBaseConfig() {
         return mBaseConfig;
     }
-    
+
     public void setBaseConfig(Configuration baseConfig) {
         mBaseConfig = baseConfig;
     }
-    
-    public void setInstanceOfType( Class type, Object instance ){
+
+    public void setInstanceOfType(Class type, Object instance) {
         mRuntimeContext.setInstanceOfType(type, instance);
     }
-    
-    public Object getInstanceOfType( Class type ){
+
+    public Object getInstanceOfType(Class type) {
         return mRuntimeContext.getInstanceOfType(type);
     }
-    
+
+    /**
+     * Parse a string containing tag, replacing tag with dynamic content from 
+     * specified CompositeMap
+     * @param text A String containing access tag
+     * @param model A CompositeMap instance containing dynamic content
+     * @return Parsed string
+     * @throws IOException
+     */
+    public String parseString(String text, CompositeMap model)
+            throws IOException {
+        return TagParseUtil.parseStringFromSession(this, text, model);
+    }
+
     public ILocalizedMessageProvider getMessageProvider() {
         return mMessageProvider;
     }
-    
-    public ITagCreatorRegistry getTagCreatorRegistry(){
-        return mSessionTagCreatorRegistry==null?mOwner.getTagCreatorRegistry():mSessionTagCreatorRegistry;
+
+    public ITagCreatorRegistry getTagCreatorRegistry() {
+        return mSessionTagCreatorRegistry == null ? mOwner
+                .getTagCreatorRegistry() : mSessionTagCreatorRegistry;
     }
-    
+
     /**
      * @return A session level ITagCreatorRegistry, to do some session scope
-     * template tag creation
+     *         template tag creation
      */
-    public ITagCreatorRegistry getSessionTagCreatorRegistry(){
+    public ITagCreatorRegistry getSessionTagCreatorRegistry() {
         return mSessionTagCreatorRegistry;
     }
-    
-    protected void setSessionTagCreatorRegistry(ITagCreatorRegistry registry){
+
+    protected void setSessionTagCreatorRegistry(ITagCreatorRegistry registry) {
         this.mSessionTagCreatorRegistry = registry;
     }
-    
+
     /** make sure that mSessionTagCreatorRegistry is created */
-    private void checkTagCreator(){
-        if(mSessionTagCreatorRegistry==null){
+    private void checkTagCreator() {
+        if (mSessionTagCreatorRegistry == null) {
             TagCreatorRegistry r = new TagCreatorRegistry();
-            //r.setDefaultCreator( new CompositeMapTagCreator());
-            mSessionTagCreatorRegistry = r;            
-            mSessionTagCreatorRegistry.setParent(mOwner.getTagCreatorRegistry());
-        }        
+            // r.setDefaultCreator( new CompositeMapTagCreator());
+            mSessionTagCreatorRegistry = r;
+            mSessionTagCreatorRegistry
+                    .setParent(mOwner.getTagCreatorRegistry());
+        }
     }
-    
+
     public void setMessageProvider(ILocalizedMessageProvider messageProvider) {
         mMessageProvider = messageProvider;
         checkTagCreator();
-        LocalizedMessageTagCreator creator = new LocalizedMessageTagCreator(messageProvider);
-        mSessionTagCreatorRegistry.registerTagCreator(LocalizedMessageTagCreator.LOCALIZED_MESSAGE_NAMESPACE, creator);
+        LocalizedMessageTagCreator creator = new LocalizedMessageTagCreator(
+                messageProvider);
+        mSessionTagCreatorRegistry
+                .registerTagCreator(
+                        LocalizedMessageTagCreator.LOCALIZED_MESSAGE_NAMESPACE,
+                        creator);
     }
-    
+
     public ILookupCodeProvider getLookupProvider() {
         return lookupProvider;
     }
-    
+
     public void setLookupProvider(ILookupCodeProvider provider) {
-    	lookupProvider = provider;
+        lookupProvider = provider;
     }
-	public String getLanguage() {
-		return language;
-	}
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	public String getContextPath() {
-		return contextPath;
-	}
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 }

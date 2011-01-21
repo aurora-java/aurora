@@ -3,10 +3,7 @@
  */
 package aurora.presentation;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,11 +11,6 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
-import uncertain.util.template.CompositeMapTagCreator;
-import uncertain.util.template.ITagCreatorRegistry;
-import uncertain.util.template.TagCreatorRegistry;
-import uncertain.util.template.TagTemplateParser;
-import uncertain.util.template.TextTemplate;
 
 /**
  * Directly output tag content in view config. This builder will be set as
@@ -29,25 +21,18 @@ import uncertain.util.template.TextTemplate;
  */
 public class DefaultViewBuilder implements IViewBuilder, ISingleton {
     
-    static CompositeMapTagCreator DEFAULT_CREATOR = new CompositeMapTagCreator();
+    //static CompositeMapTagCreator DEFAULT_CREATOR = new CompositeMapTagCreator();
 
-    private static String getParsedContent(BuildSession session, ITagCreatorRegistry reg, String text, CompositeMap model) 
+    private static String getParsedContent(BuildSession session, String text, CompositeMap model) 
         throws IOException
     {
-    	text = prepareText(text);
-        if (text.indexOf("$") >= 0)
-            return getParsedContent(session.getPresentationManager().getTemplateParser(), text, model, reg);
-        else
-            return text;
-    }
-    
-    private static String prepareText( String text ){
-        if(text.indexOf("$(") !=-1){
+    	if(text.indexOf("$(") !=-1){
             text = text.replaceAll("\\$\\(", "\\$\\$\\(");
         }
-        return text;
+        return session.parseString(text, model);
     }
-    
+
+    /*
     private static TagCreatorRegistry createTagRegistryFromSession(BuildSession session){
         ITagCreatorRegistry parent = session.getTagCreatorRegistry();
         TagCreatorRegistry  reg = new TagCreatorRegistry();
@@ -56,31 +41,16 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
         return reg;
     }
     
-    private static String getParsedContent(TagTemplateParser parser, String text, CompositeMap model, ITagCreatorRegistry reg )
-        throws IOException {
-        //TagTemplateParser parser = session.getPresentationManager().getTemplateParser();
-        StringReader reader = new StringReader(text);
-        TextTemplate tplt = parser.buildTemplate(reader, reg);        
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter writer = new OutputStreamWriter(baos);
-        tplt.createOutput(writer, model);
-        writer.flush();
-        baos.flush();
-        String result = baos.toString();
-        baos.close();
-        return result;        
-    }
-    
     public static String parseString( BuildSession session, String text, CompositeMap model )
         throws IOException {
         ITagCreatorRegistry reg = createTagRegistryFromSession(session);
-        return getParsedContent(session.getPresentationManager().getTemplateParser(), text, model, reg);
+        return BuildSession.getParsedContent(session.getPresentationManager().getTemplateParser(), text, model, reg);
     }
-    
+    */
 
     public void buildView(BuildSession session, ViewContext view_context)
             throws IOException, ViewCreationException {
-        TagCreatorRegistry reg = createTagRegistryFromSession(session);
+        //TagCreatorRegistry reg = createTagRegistryFromSession(session);
         
         CompositeMap view = view_context.getView();
         CompositeMap model = view_context.getModel();
@@ -98,7 +68,8 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
                     out.write("=\"");
                     Object value = entry.getValue();
                     if(value!=null)
-                        out.write(getParsedContent(session, reg, value.toString(),model));
+                        out.write(getParsedContent(session, value.toString(), model));
+                        //out.write(getParsedContent(session, reg, value.toString(),model));
                     out.write('\"');                            
                 }
             }
@@ -113,8 +84,9 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
                 out.write(close_tag);
             }else{
                 String text = view.getText();
-                if(text!=null){ 
-                    out.write(getParsedContent(session, reg, text,model));
+                if(text!=null){
+                    out.write(getParsedContent(session, text, model));
+                    //out.write(getParsedContent(session, reg, text,model));
                     out.write(close_tag);
                 }
             }
