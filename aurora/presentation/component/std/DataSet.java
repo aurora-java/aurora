@@ -44,10 +44,14 @@ public class DataSet extends Component {
 				DataSetFieldConfig sdfc = DataSetFieldConfig.getInstance(field);
 				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
 				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
-				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, uncertain.composite.TextParser.parse(sdfc.getDefaultValue(), model));
+				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
 				if(lovService!=null){
 					field.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
+				}
+				String lovTitle = field.getString(Lov.PROPERTITY_TITLE);
+				if(lovTitle!=null){
+					field.putString(Lov.PROPERTITY_TITLE, session.parseString(lovTitle, model));
 				}
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
@@ -58,7 +62,7 @@ public class DataSet extends Component {
 					Iterator mit = mapping.getChildIterator();
 					while(mit.hasNext()){
 						CompositeMap mapfield = (CompositeMap)mit.next();
-						if(returnField!=null && returnField.equals(mapfield.getString("to"))){
+						if(returnField!=null && returnField.equals(mapfield.getString("to"))) {
 							addReturn = false;
 						}
 						JSONObject mj = new JSONObject(mapfield);
