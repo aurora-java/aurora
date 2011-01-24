@@ -6,6 +6,8 @@ package aurora.database.actions.config;
 
 import java.util.Map;
 
+import aurora.database.service.ServiceOption;
+
 import uncertain.composite.DynamicObject;
 
 public class AbstractQueryActionConfig extends DynamicObject {
@@ -17,7 +19,7 @@ public class AbstractQueryActionConfig extends DynamicObject {
     private static final String KEY_FETCHALL = "fetchall";
     public static final String KEY_PARAMETER = "parameter";
     
-    static final String[] POPULATABLE_PARAMETERS = {KEY_ROOTPATH, KEY_RECORDNAME, KEY_AUTOCOUNT, KEY_FETCHALL };
+    static final String[] POPULATABLE_PARAMETERS = {KEY_ROOTPATH, KEY_RECORDNAME, KEY_AUTOCOUNT, KEY_FETCHALL,ServiceOption.KEY_QUERY_ORDER_BY };
 
     public String getParameter() {
         return getString(KEY_PARAMETER);
