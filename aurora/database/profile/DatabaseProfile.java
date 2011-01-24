@@ -24,7 +24,7 @@ public class DatabaseProfile implements IDatabaseProfile {
         if(obj==null)
             return default_value;
         String str = obj.toString();
-        return Boolean.parseBoolean(str);        
+        return (str != null) && str.equalsIgnoreCase("true");        
     }
     
     public static boolean isUseJoinKeyword( IDatabaseProfile profile ){
