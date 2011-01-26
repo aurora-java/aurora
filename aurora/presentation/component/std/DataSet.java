@@ -51,7 +51,7 @@ public class DataSet extends Component {
 				}
 				String lovTitle = field.getString(Lov.PROPERTITY_TITLE);
 				if(lovTitle!=null){
-					field.putString(Lov.PROPERTITY_TITLE, session.parseString(lovTitle, model));
+					field.putString(Lov.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
 				}
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);

@@ -65,6 +65,7 @@ public class JSONServiceInterpreter {
             if (root == null)
                 return EventModel.HANDLE_STOP;
             CompositeMap param = root.getChild("parameter");
+            param.putAll(root);
             if (param != null)
                 service_context.setParameter(param);
             return EventModel.HANDLE_STOP;
