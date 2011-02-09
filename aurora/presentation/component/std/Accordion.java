@@ -23,7 +23,6 @@ public class Accordion extends Component {
 	private static final String PROPERTITY_SELECTED = "selected";
 
 	private int bodyHeight;
-	private int bodyWidth;
 	private int stripHeight = 25;
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
@@ -65,8 +64,6 @@ public class Accordion extends Component {
 						.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - numAccordions
 						* stripHeight)
 						/ (singleMode ? 1 : numAccordions);
-				bodyWidth = ((Integer) map
-						.get(ComponentConfig.PROPERTITY_WIDTH)).intValue();
 				Iterator it = childs.iterator();
 				addConfig(SINGLE_MODE, new Boolean(singleMode));
 				while (it.hasNext()) {
@@ -96,14 +93,14 @@ public class Accordion extends Component {
 		String stripClass = isSelected ? "item-accordion selected"
 				: "item-accordion";
 		StringBuffer sb = new StringBuffer();
-		sb.append("<TR><TD><DIV class='" + stripClass + "' style='height:"
+		sb.append("<DIV class='" + stripClass + "' style='height:"
 				+ accordionHeight + "px'><DIV class='strip' style='height:"
-				+ stripHeight + "px;width:" + bodyWidth + "px;line-height:"
+				+ stripHeight + "px;line-height:"
 				+ stripHeight + "px'>");
 		sb.append(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)));
 		sb.append("</DIV><DIV class='item-accordion-body' style='height:"
-				+ bodyHeight + "px;width:" + bodyWidth + "px'>");
+				+ bodyHeight + "px;'>");
 		String ref = accordion.getString(PROPERTITY_REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
@@ -124,7 +121,7 @@ public class Accordion extends Component {
 		}
 		accordion.putString(PROPERTITY_REF, uncertain.composite.TextParser
 				.parse(ref, model));
-		sb.append("</DIV></DIV></TD></TR>");
+		sb.append("</DIV></DIV>");
 		return sb.toString();
 	}
 }

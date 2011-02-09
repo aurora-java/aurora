@@ -10,6 +10,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_EDITORS = "editors";
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
+	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 	
 	public static TableConfig getInstance(){
 		TableConfig model = new TableConfig();
@@ -29,7 +30,12 @@ public class TableConfig extends ComponentConfig {
 	public void setRowRenderer(String renderer){
 		putString(PROPERTITY_ROW_RENDERER,renderer);
 	}
-	
+	public String getPercentWidth(){
+		return getString(PROPERTITY_PERCENT_WIDTH);
+	}
+	public void setPercentWidth(String percentWidth){
+		putString(PROPERTITY_PERCENT_WIDTH,percentWidth);
+	}
 	public String getDataSet(){
 		return getString(PROPERTITY_DATASET);	
 	}

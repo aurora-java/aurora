@@ -25,7 +25,6 @@ public class Table extends Component {
 	private static final String HEADS = "heads";
 	private static final String FOOTS = "foots";
 	private static final String TITLE = "title";
-	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
@@ -45,18 +44,19 @@ public class Table extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getContextMap();
 		CompositeMap view = context.getView();
-		TableConfig gc = TableConfig.getInstance(view);
+		TableConfig tc = TableConfig.getInstance(view);
 		
-		String rowRenderer = gc.getRowRenderer();
+		String rowRenderer = tc.getRowRenderer();
+		String percentWidth = tc.getPercentWidth();
 		if (rowRenderer != null)
 			addConfig(TableConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(null!=view.getString(ComponentConfig.PROPERTITY_WIDTH))
-			map.put(PROPERTITY_PERCENT_WIDTH, view.getString(ComponentConfig.PROPERTITY_WIDTH)+"px");
-		else if(null!=view.getString(PROPERTITY_PERCENT_WIDTH))
-			map.put(PROPERTITY_PERCENT_WIDTH, view.getString(PROPERTITY_PERCENT_WIDTH)+"%");
+			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth+"px");
+		else if(null!=percentWidth)
+			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth+"%");
 		List cols = new ArrayList();
 		createHeads(map, view, session, cols);
-		generateColumns(map,cols,hasFooterBar(gc.getColumns()));
+		generateColumns(map,cols,hasFooterBar(tc.getColumns()));
 		createGridEditors(session, context);
 		String title = session.getLocalizedPrompt(view.getString(TITLE,""));
 		if(null!=title&&!"".equals(title)){
@@ -222,9 +222,10 @@ public class Table extends Component {
 	private String createColumn(CompositeMap column, BuildSession session,
 			String dataset) {
 		StringBuffer sb = new StringBuffer();
+		TableColumnConfig tcc=TableColumnConfig.getInstance(column);
 		String pw="";
-		if(null!=column.getString(PROPERTITY_PERCENT_WIDTH))
-			pw = column.getString(PROPERTITY_PERCENT_WIDTH)+"%";
+		if(null!=tcc.getPercentWidth())
+			pw = tcc.getPercentWidth()+"%";
 		if(null!=column.getString(ComponentConfig.PROPERTITY_WIDTH))
 			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH)+"px";
 		sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
