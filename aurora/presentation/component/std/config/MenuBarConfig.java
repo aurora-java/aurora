@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class MenuBarConfig extends ComponentConfig {
 
-	public static final String TAG_NAME = "tree";
+	public static final String TAG_NAME = "menuBar";
 
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_FIELD_ID = "idfield";
