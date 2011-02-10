@@ -50,8 +50,8 @@ public class Tab extends Component {
 		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
 		map.put(VALID_SCRIPT, sb.toString());
-		map.put(PROPERTITY_SELECTED, new Integer(0));
-		addConfig(PROPERTITY_SELECTED, new Integer(0));
+		//map.put(PROPERTITY_SELECTED, new Integer(0));
+		//addConfig(PROPERTITY_SELECTED, new Integer(0));
 		map.put(CONFIG, getConfigString());
 	}
 	
