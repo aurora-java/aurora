@@ -4,7 +4,11 @@
 		<!--
 		<a:sql-query service="testcase.HR.EmpQueryMatrix" rootPath="EMPLOYEES" fetchAll="true" autoCount="true" fieldNameCase="lower"/>
 		-->
-		<a:model-query model="testcase.HR.EMP" rootPath="emp" queryOrderBy="e.ename asc, e.deptno desc" defaultWhereClause="e.ename like 'S%'" fetchAll="true" autoCount="true" />
+		<a:model-query model="testcase.HR.EMP" rootPath="emp" queryOrderBy="e.ename asc, e.deptno desc"  fetchAll="true" autoCount="true" />
+		<!-- defaultWhereClause="e.ename like 'S%'" -->
+		<!--
+		<a:sql-query service="testcase.HR.test" rootPath="/model/emp/TEST" />
+		--> 
 	</a:init-procedure>
 	<a:service-output output="/model/emp"/>
 </a:service>

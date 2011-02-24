@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <a:screen xmlns:a="http://www.aurora-framework.org/application" trace="true" xmlns:p="uncertain.proc">
 	<a:init-procedure>
-		<sql-query service="testcase.HR.EmpQueryMatrix" rootPath="EMP-LIST"  fetchAll="true" autoCount="true" />
-		<p:echo />
+		<model-query model="testcase.HR.EMP" rootPath="EMP-LIST"  fetchAll="true" autoCount="true" />
 	</a:init-procedure>
 	
-	<a:view template="default" package="aurora.testcase.ui">
-
+	<a:view>
+<!--
 		<a:datasets>
 			<a:dataset ref="testcase.HR.EMP" />
 			<a:dataset ref="testcase.HR.DEPT" />
 		</a:datasets>
-				
+				-->
 		<template template="employee_form" package="aurora.testcase.ui" datamodel="employee">
 			<textedit name="name" dataField="/model/employee/@name"/>
 			<textedit name="address" dataField="/model/employee/@address" class="textedit.normal" enabled="false" viewObject="aaa.a.a" onclick="alert('test!');"/>
