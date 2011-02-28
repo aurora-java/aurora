@@ -16,7 +16,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 public class NavBar extends ToolBar {
 	
 	public static final String PROPERTITY_DATASET = "dataset";
-	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "pagesizeeditable";
+	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "enablepagesize";
 	
 	//TODO:多语言!
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
