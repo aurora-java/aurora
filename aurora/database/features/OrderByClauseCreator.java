@@ -74,7 +74,10 @@ public class OrderByClauseCreator  implements ISingleton {
             if(option!=null)
                 order_by = option.getQueryOrderBy();
             if(order_by!=null){
-                select.addOrderByField(new RawSqlExpression(order_by));
+            	if(order_by.indexOf("$")!=-1){
+            		order_by = uncertain.composite.TextParser.parse(order_by,bmsc.getModel());        		
+            	}
+                if(!"".equals(order_by))select.addOrderByField(new RawSqlExpression(order_by));
             }else{
                 String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
                 if(order_field!=null){
