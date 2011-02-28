@@ -16,6 +16,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 public class NavBar extends ToolBar {
 	
 	public static final String PROPERTITY_DATASET = "dataset";
+	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "pagesizeeditable";
 	
 	//TODO:多语言!
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
@@ -54,12 +55,26 @@ public class NavBar extends ToolBar {
 			String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 			view.addChild(totalpage);
+			
 			view.addChild(createSeparator());
 			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
 			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
 			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
 			view.addChild(createSeparator());
 			
+			if(view.getBoolean(PROPERTITY_PAGE_SIZE_EDITABLE, true)){
+				view.addChild(createSeparator());
+				String comboBoxId = IDGenerator.getInstance().generate();
+				map.put("comboBoxId", comboBoxId);
+				CompositeMap comboBox = new CompositeMap("comboBox");
+				comboBox.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+				comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
+				comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
+				view.addChild(comboBox);
+				String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
+				CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
+				view.addChild(pagesize);
+			}
 			String pageInfoText = "<div atype='displayInfo' class='item-label' style='float:right;'></div>";
 			CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");
 			view.addChild(pageInfo);
