@@ -63,7 +63,6 @@ public class NavBar extends ToolBar {
 			view.addChild(createSeparator());
 			
 			if(view.getBoolean(PROPERTITY_PAGE_SIZE_EDITABLE, true)){
-				view.addChild(createSeparator());
 				String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
 				CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
 				view.addChild(pagesize);
@@ -77,6 +76,7 @@ public class NavBar extends ToolBar {
 				String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='margin-left:5px;margin-right:5px;'>    </div>";
 				CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");
 				view.addChild(pagesize2);
+				view.addChild(createSeparator());
 			}
 			String pageInfoText = "<div atype='displayInfo' class='item-label' style='float:right;'></div>";
 			CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");
