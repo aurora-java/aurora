@@ -492,7 +492,7 @@ public class Grid extends Component {
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
-			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true));
+			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
 			sb.append("<tr><td>");
 			try {
 				sb.append(session.buildViewAsString(model, navbar));
