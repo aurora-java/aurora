@@ -64,6 +64,9 @@ public class NavBar extends ToolBar {
 			
 			if(view.getBoolean(PROPERTITY_PAGE_SIZE_EDITABLE, true)){
 				view.addChild(createSeparator());
+				String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
+				CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
+				view.addChild(pagesize);
 				String comboBoxId = IDGenerator.getInstance().generate();
 				map.put("comboBoxId", comboBoxId);
 				CompositeMap comboBox = new CompositeMap("comboBox");
@@ -71,9 +74,9 @@ public class NavBar extends ToolBar {
 				comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
 				comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
 				view.addChild(comboBox);
-				String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
-				CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
-				view.addChild(pagesize);
+				String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='margin-left:5px;margin-right:5px;'>    </div>";
+				CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");
+				view.addChild(pagesize2);
 			}
 			String pageInfoText = "<div atype='displayInfo' class='item-label' style='float:right;'></div>";
 			CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");
