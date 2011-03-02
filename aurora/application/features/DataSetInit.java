@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import uncertain.composite.CompositeMap;
-import uncertain.proc.ProcedureRunner;
+import uncertain.event.Configuration;
+import uncertain.event.EventModel;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
@@ -22,25 +24,53 @@ import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.IDGenerator;
-import aurora.presentation.component.std.Lov;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
+import aurora.service.IService;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
+import aurora.events.E_PrepareServiceConfig;
 
-public class DataSetInit implements IViewBuilder {
-	IModelFactory mFactory;
+public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 
+    IModelFactory mFactory;
+		
     public DataSetInit(IModelFactory factory) {
         this.mFactory = factory;
     }
-	
+    
+    public int onPrepareServiceConfig( IService service ) throws Exception {
+        
+        ServiceContext sc = service.getServiceContext();
+        CompositeMap model = sc.getModel();
+        ServiceInstance svc = (ServiceInstance)service;
+        CompositeMap screen_config_map = svc.getServiceConfigData();
+        if(!"screen".equals(screen_config_map.getName()))
+            return EventModel.HANDLE_NORMAL;
+        ScreenConfig screen = ScreenConfig.createScreenConfig(screen_config_map);
+        CompositeMap datasets = screen.getDataSetsConfig();
+        if(datasets==null)
+            return EventModel.HANDLE_NORMAL;
+        List list = datasets.getChildsNotNull();
+        List dslist = new ArrayList();
+        Iterator it = list.iterator();
+        while(it.hasNext()){
+            CompositeMap dataset = (CompositeMap)it.next();
+            processDataSet(dataset,model,dslist,screen);
+        }
+        datasets.getChilds().addAll(dslist);
+        return EventModel.HANDLE_NORMAL;
+    
+    }
+    
+    /*
     public void onInitService( ProcedureRunner runner ) throws Exception{
         CompositeMap context = runner.getContext();
+        mConfig = runner.getConfiguration();
         ServiceContext sc = ServiceContext.createServiceContext(runner.getContext());
         CompositeMap model = sc.getModel();
         ServiceInstance svc = ServiceInstance.getInstance(context);
-        ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());
+        ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData(), svc.getConfig());
         CompositeMap datasets = screen.getDataSetsConfig();
         List list = datasets.getChildsNotNull();
         List dslist = new ArrayList();
@@ -51,7 +81,8 @@ public class DataSetInit implements IViewBuilder {
         }
         datasets.getChilds().addAll(dslist);
     }
-    
+    */
+
     private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
     	DataSetConfig dsc = DataSetConfig.getInstance(ds);
 //		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
@@ -69,6 +100,7 @@ public class DataSetInit implements IViewBuilder {
 			mqc.setAutoCount(false);//ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false)
 			mqc.setFetchAll(true);//ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true)
 			screen.addInitProcedureAction(mqc.getObjectContext());
+			//mConfig.loadConfig(mqc.getObjectContext());
 			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
 			if(datas == null){
 				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
