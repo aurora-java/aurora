@@ -4,23 +4,32 @@
  */
 package aurora.application.config;
 
-import aurora.application.Namespace;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
+import uncertain.event.Configuration;
+import aurora.application.Namespace;
 
 public class BaseServiceConfig extends DynamicObject {
 
     public static final String KEY_PARAMETER = "parameter";
     private static final String KEY_INIT_PROCEDURE = "init-procedure";
     
+    Configuration       mServiceConfig;
+    
+    /*
     public static BaseServiceConfig createServiceConfig(CompositeMap map) {
         BaseServiceConfig cfg = new BaseServiceConfig();
         cfg.initialize(map);
         return cfg;
     }
+    */
+    
+    public void setConfiguration( Configuration config ){
+        mServiceConfig = config;
+    }
 
     public CompositeMap getInitProcedureConfig() {
-        return object_context.getChild(KEY_INIT_PROCEDURE);
+        return getChildNotNull(Namespace.AURORA_FRAMEWORK_NAMESPACE,KEY_INIT_PROCEDURE);
     }
     
     public CompositeMap getParameterConfig(){
@@ -28,12 +37,15 @@ public class BaseServiceConfig extends DynamicObject {
     }
     
     public void addInitProcedureAction( CompositeMap config ){
-        CompositeMap init_config = getInitProcedureConfig();
+        CompositeMap init_config = getObjectContext().getChild(KEY_INIT_PROCEDURE);
         if(init_config==null){
             init_config = object_context.createChild(KEY_INIT_PROCEDURE);
             init_config.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+            if(mServiceConfig!=null)
+                mServiceConfig.loadConfig(init_config);
         }
         init_config.addChild(config);
+        return;
     }
 
 }
