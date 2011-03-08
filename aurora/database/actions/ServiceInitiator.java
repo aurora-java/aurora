@@ -12,6 +12,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.application.action.AuroraCookie;
 import aurora.application.action.FileUpload;
 import aurora.application.action.ImageValidate;
+import aurora.application.action.RefreshPrompts;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class ServiceInitiator {
@@ -47,9 +48,10 @@ public class ServiceInitiator {
 
         /** @todo move into optional package */
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
+        reg.addClassMapping( "import-csv", DataImport.class);
         reg.addClassMapping("img-validate", ImageValidate.class);
         reg.addClassMapping("file-upload", FileUpload.class);
-        
+        reg.addClassMapping("refresh-prompts", RefreshPrompts.class);
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
 
