@@ -77,6 +77,10 @@ public class DatabaseBasedMessageProvider implements IMessageProvider,IGlobalIns
 		}
 	}
 	
+	public void reload() throws Exception{
+		this.invalid();
+		this.init();
+	}
 	private void cacheMessage(CompositeMap map){
 		if(map !=null){
 			List list = map.getChildsNotNull();
