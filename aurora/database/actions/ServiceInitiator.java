@@ -48,7 +48,7 @@ public class ServiceInitiator {
 
         /** @todo move into optional package */
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
-        reg.addClassMapping( "import-csv", DataImport.class);
+//        reg.addClassMapping( "import-csv", DataImport.class);
         reg.addClassMapping("img-validate", ImageValidate.class);
         reg.addClassMapping("file-upload", FileUpload.class);
         reg.addClassMapping("refresh-prompts", RefreshPrompts.class);
