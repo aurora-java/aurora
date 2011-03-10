@@ -22,7 +22,17 @@ public class QueryField extends DynamicObject {
     public static final String KEY_NAME = "name";
     
     public static final String KEY_QUERY_OPERATOR = "queryoperator";
-
+    
+    public static final String KEY_MATCH_ANY="matchany";
+    
+    public boolean getMatchAny(){
+    	return getBoolean(KEY_MATCH_ANY, false);
+    }
+    
+    public void setMatchAny(boolean value){
+    	putBoolean(KEY_MATCH_ANY, value);
+    }
+    
     public String getQueryOperator(){
         return getString(KEY_QUERY_OPERATOR);
     }
@@ -86,8 +96,12 @@ public class QueryField extends DynamicObject {
             if(op_id<0) throw new ConfigurationError("queryOperator '"+op+"' is invalid in query field config:"+getObjectContext().toXML());
             if(CompareExpression.isSingleOperator(op_id))
                 stmt = new CompareExpression( left_field, op_id, null);
-            else
-                stmt = new CompareExpression( left_field, op_id, new RawSqlExpression( Field.defaultParamExpression(param_path) ));            
+            else{
+            	String sqlExpression=Field.defaultParamExpression(param_path);
+            	if(getMatchAny()&&"like".equalsIgnoreCase(op))
+            		sqlExpression="'%'||"+sqlExpression+"||'%'";            	
+            	stmt = new CompareExpression( left_field, op_id, new RawSqlExpression(sqlExpression));
+            }
         }else{
             String exp = getQueryExpression();
             if(exp!=null) stmt = new RawSqlExpression(exp);
