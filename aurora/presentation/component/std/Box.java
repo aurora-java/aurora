@@ -27,8 +27,15 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
-		if(!"".equals(label))
-		out.write("<th class='"+DEFAULT_TH_CLASS+"' width="+labelWidth+"><div>"+label+":</div></th>");
+		if(!"".equals(label)) {
+			StringBuffer str = new StringBuffer();
+			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
+			String ps = field.getString(ComponentConfig.PROPERTITY_PROMPT_STYLE);
+			if(!"".equals(ps))str.append(" style='"+ps+"' ");
+			str.append("width="+labelWidth+"><div>");
+			str.append(label+":</div></th>");
+			out.write(str.toString());
+		}
 	}
 	
 //	private String getComponentLabel(BuildSession session, CompositeMap field){

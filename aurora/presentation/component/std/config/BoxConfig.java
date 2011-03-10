@@ -11,6 +11,7 @@ public class BoxConfig extends ComponentConfig {
 	public static final String PROPERTITY_CELLSPACING = "cellspacing";
 	public static final String PROPERTITY_VALIDALIGN = "validalign";
 	public static final String PROPERTITY_PADDING = "padding";
+	public static final String PROPRRTITY_SHOWBORDER = "showborder";
 	
 	
 	public int getRows() {
@@ -54,5 +55,11 @@ public class BoxConfig extends ComponentConfig {
 		context.addChild(item);
 	}
 	
+	public Boolean isShowBorder(){
+        return getBoolean(PROPRRTITY_SHOWBORDER);
+    }
+    public void setShowBorder(boolean show){
+        putBoolean(PROPRRTITY_SHOWBORDER, show);
+    }
 	
 }

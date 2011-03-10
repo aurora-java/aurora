@@ -12,6 +12,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 /**
@@ -119,6 +120,8 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
+		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		
 		
 //		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
 //		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
@@ -133,12 +136,18 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		String className = DEFAULT_TABLE_CLASS;
 		className += " " + cls;
 		
+		if(showBorder) {
+			cellspacing = 1;
+			className += " layout-border";
+		}
+		
 		out.write("<table border=0 class='"+className+"' id='"+id+"'");
 		if(width != 0) out.write(" width=" + width);
 		if(height != 0) out.write(" height=" + height);
 		if(!"".equals(style)) {
 			out.write(" style='"+style+"'");
 		}
+		
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);
 		afterBuildTop(session,model,view);
