@@ -62,7 +62,7 @@ public class FieldSet extends Box {
 		
 		out.write(">");
 		buildHead(session,model,view, rows, columns);
-		out.write("<table border=0");
+		out.write("<table width='100%' border=0");
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		afterBuildTop(session,model,view);
 	}

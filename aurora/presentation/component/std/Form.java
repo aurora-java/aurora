@@ -5,6 +5,7 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FormConfig;
 
@@ -27,7 +28,8 @@ public class Form extends Box {
 		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
 		
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
+		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td></td></tr>");
 		super.afterBuildTop(session, model, view);
 	}
 	
@@ -47,12 +49,18 @@ public class Form extends Box {
 //		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
-		
+		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
 		
 		String className = DEFAULT_TABLE_CLASS + " layout-form";
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
 		if(!"".equals(title)) className += " " + TITLE_CLASS;
 		className += " " + cls;
+		if(showBorder) {
+			cellspacing = 1;
+			className += " layout-border";
+			style += " border:none;";
+		}
+		
 		
 		out.write("<table border=0 class='"+className+"' id='"+id+"'");
 		if(width != 0) out.write(" width=" + width);
@@ -69,7 +77,8 @@ public class Form extends Box {
 		super.afterBuildTop(session, model, view);
 		Writer out = session.getWriter();
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
+		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td></td></tr>");
 	}
 
 }

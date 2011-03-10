@@ -210,7 +210,8 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 								CompositeMap field = (CompositeMap)it.next();
 								buildCell(session,model,view, field);	
 							}else{
-								break;
+								out.write("<th class='layout-th'></th><td class='layout-td-cell'></td>");
+//								break;
 							}
 						}
 						out.write("</tr>");
