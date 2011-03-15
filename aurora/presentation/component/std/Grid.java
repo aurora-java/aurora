@@ -56,7 +56,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid.js");
+		addJavaScript(session, context, "grid/Grid-min.js");
 	}
 	
 	
@@ -89,6 +89,7 @@ public class Grid extends Component {
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
+		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		
 		processSelectable(map,view);
 		createGridColumns(map,view,session);
