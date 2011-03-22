@@ -26,6 +26,7 @@ public class ViewPartTagCreator implements ITagCreator {
     Map                 mContentMap;
     BuildSession        mBuildSession;
     ViewContext         mViewContext;
+    String              mIndexField = "id";
     
     public ViewPartTagCreator( BuildSession session, ViewContext context )
     {
@@ -45,6 +46,7 @@ public class ViewPartTagCreator implements ITagCreator {
         mChilds = null;
     }    
 
+    /* TODO: mIndexField */
     public void addChilds( Collection childs ){
         clear();
         if(childs==null) return;
@@ -53,7 +55,7 @@ public class ViewPartTagCreator implements ITagCreator {
         Iterator it = mChilds.iterator();
         while(it.hasNext()){
             CompositeMap item = (CompositeMap)it.next();
-            String name = item.getString("name");
+            String name = item.getString(mIndexField);
             if(name==null) 
                 throw new ViewPartConfigError("view part doesn't has 'name' property:"+item.toXML());
             if(mContentMap.containsKey(name))

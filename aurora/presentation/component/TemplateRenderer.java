@@ -25,6 +25,7 @@ import aurora.presentation.ViewCreationException;
 /**
  * Implements &lt;template&gt; tag
  * TemplateRenderer
+ * <a:template template="employeeUpdate" package="HEC" indexField="id" /> 
  * @author Zhou Fan
  *
  */
@@ -72,6 +73,7 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
     protected ITagCreatorRegistry createTagCreatorRegistry( BuildSession session, ViewContext view_context )
     {
         TagCreatorRegistry reg = new TagCreatorRegistry();
+        /* TODO: add indexField */
         ViewPartTagCreator creator = new ViewPartTagCreator(session, view_context);
         reg.setDefaultCreator(creator);
         reg.setParent(session.getTagCreatorRegistry());
