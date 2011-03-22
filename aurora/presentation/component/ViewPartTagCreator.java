@@ -26,10 +26,11 @@ public class ViewPartTagCreator implements ITagCreator {
     Map                 mContentMap;
     BuildSession        mBuildSession;
     ViewContext         mViewContext;
-    String              mIndexField = "id";
+    String              mIndexField;
     
-    public ViewPartTagCreator( BuildSession session, ViewContext context )
+    public ViewPartTagCreator( BuildSession session, ViewContext context ,String indexField)
     {
+    	mIndexField = indexField;
         mBuildSession = session;
         mViewContext = context;
         CompositeMap view = mViewContext.getView();
@@ -72,5 +73,13 @@ public class ViewPartTagCreator implements ITagCreator {
             return EMPTY_TAG;
         return new ViewPartTag( mBuildSession, mViewContext, view);
     }
+
+	public String getIndexField() {
+		return mIndexField;
+	}
+
+	public void setIndexField(String indexField) {
+		mIndexField = indexField;
+	}
 
 }

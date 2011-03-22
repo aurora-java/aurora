@@ -34,6 +34,9 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
     public static final String KEY_PACKAGE = "package";
     public static final String KEY_TEMPLATE = "template";
     public static final String KEY_TITLE = "title";
+    public static final String KEY_INDEX_FIELD = "indexfield";
+    
+    private static final String DEFAULT_INDEX_FIELD = "id";
     
     //ResourceTemplateFactory     mFactory;
     TagTemplateParser             mTemplateParser;
@@ -73,8 +76,10 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
     protected ITagCreatorRegistry createTagCreatorRegistry( BuildSession session, ViewContext view_context )
     {
         TagCreatorRegistry reg = new TagCreatorRegistry();
+        CompositeMap view = view_context.getView();
+        String indexField = view.getString(KEY_INDEX_FIELD, DEFAULT_INDEX_FIELD);
         /* TODO: add indexField */
-        ViewPartTagCreator creator = new ViewPartTagCreator(session, view_context);
+        ViewPartTagCreator creator = new ViewPartTagCreator(session, view_context, indexField);
         reg.setDefaultCreator(creator);
         reg.setParent(session.getTagCreatorRegistry());
         return reg;
