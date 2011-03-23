@@ -13,11 +13,14 @@ import uncertain.core.ConfigurationError;
 import uncertain.ocm.ISingleton;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
+import aurora.application.IApplicationConfig;
+import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.service.IServiceFactory;
 import aurora.service.ServiceInstance;
 import aurora.service.controller.ControllerProcedures;
 import aurora.service.http.AbstractFacadeServlet;
@@ -36,12 +39,27 @@ import aurora.service.http.HttpServiceInstance;
  */
 public class ScreenInclude implements IViewBuilder, ISingleton {
     
+    public static final String DEFAULT_INCLUDED_SCREEN_TEMPLATE = "defaultincludedscreentemplate";
     HttpServiceFactory      mServiceFactory;
     IProcedureManager       mProcedureManager;
+    ApplicationConfig       mApplicationConfig;
+    String                  mDefaultPackage = "aurora.ui.std";
+    String                  mDefaultIncludedScreenTemplate = "defaultIncludedScreen";
     
-    public ScreenInclude( HttpServiceFactory fact, IProcedureManager pm ){
-        mServiceFactory = (HttpServiceFactory)fact;
+    public ScreenInclude( HttpServiceFactory fact, IProcedureManager pm, IApplicationConfig config ){
+        mServiceFactory = fact;
         mProcedureManager = pm;
+        mApplicationConfig = (ApplicationConfig)config;
+        if (mApplicationConfig != null) {
+            ApplicationViewConfig view_config = mApplicationConfig
+                    .getApplicationViewConfig();
+            if (view_config != null) {
+                mDefaultPackage = view_config.getDefaultPackage();
+                mDefaultIncludedScreenTemplate = view_config.getString(DEFAULT_INCLUDED_SCREEN_TEMPLATE);
+                if(mDefaultIncludedScreenTemplate==null)
+                    mDefaultIncludedScreenTemplate = "defaultIncludedScreen";
+            }
+        }
     }
     
     public HttpServiceInstance createSubInstance( String name, ViewContext view_context)
@@ -50,7 +68,13 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         CompositeMap context = view_context.getModel().getRoot();
         HttpServiceInstance parent = (HttpServiceInstance)ServiceInstance.getInstance(context);
         HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent);
+        
         final CompositeMap config = mServiceFactory.loadServiceConfig(name);
+        ScreenConfig scc = ScreenConfig.createScreenConfig(config);
+        CompositeMap view_config = scc.getViewConfig();
+        view_config.put("template", mDefaultIncludedScreenTemplate);
+        view_config.put("package", mDefaultPackage);
+        
         svc.setServiceConfigData(config);
         svc.getController().setProcedureName(ControllerProcedures.RUN_INCLUDED_SCREEN);
         return svc;
