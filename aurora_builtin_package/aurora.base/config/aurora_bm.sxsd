@@ -35,12 +35,12 @@
                 <ss:attribute name="required" document="是否必须" type="ss:boolean"/>
                 <ss:attribute name="defaultValue" document="缺省值"/>
                 <ss:attribute name="parameterPath" document="执行DML时，输入参数的路径"/>
+                <ss:attribute name="expression" document="如果是计算类字段，对应的表达式，"/>
                 <ss:attribute name="forDisplay" document="是否在界面中显示" type="ss:boolean"/>
                 <ss:attribute name="forQuery" document="是否查询Form字段" type="ss:boolean"/>
                 <ss:attribute name="forSelect" document="该字段是否出现在select的字段列表中" type="ss:boolean"/>
                 <ss:attribute name="forInsert" type="ss:boolean"/>
                 <ss:attribute name="forUpdate" type="ss:boolean"/>
-                <ss:attribute name="expression" document="如果是计算类字段，对应的表达式，"/>
                 <ss:attribute name="insertExpression"/>
                 <ss:attribute name="updateExpression"/>
                 <ss:attribute name="queryExpression"/>
@@ -133,6 +133,9 @@
                 <ss:attribute name="extend" document="父对象" type="bm:ModelReference"/>
                 <ss:attribute name="extendMode" default="override" document="继承方式" type="bm:ExtendModeType"/>
             </ss:attributes>
+            <ss:elements>
+                <ss:element name="bm:description" document="描述本BM功能"/>
+            </ss:elements>
             <ss:arrays>
                 <ss:array name="bm:fields" type="bm:field"/>
                 <ss:array name="bm:ref-fields" type="bm:ref-field"/>
