@@ -8,10 +8,10 @@
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:columns" type="a:column"/>
+                <ss:array name="a:editors" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
-                <ss:element maxOccurs="1" minOccurs="0" ref="a:editors"/>
             </ss:elements>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
@@ -40,7 +40,6 @@
                 <ss:element ref="a:BaseViewComponent"/>
             </ss:elements>
         </ss:element>
-        <ss:element name="a:editors" type="a:Component"/>
     </ss:elements>
     <ss:categories/>
     <ss:types>
