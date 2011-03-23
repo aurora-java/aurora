@@ -53,7 +53,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	protected abstract void cleanUp(IService service);
 
-	protected Procedure getProcedureToRun(IService service) throws Exception {
+	public static Procedure getProcedureToRun(IProcedureManager procManager ,IService service) throws Exception {
 		String procedure_name = null;
 		Configuration config = service.getConfig();
 		config
@@ -65,7 +65,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		procedure_name = controller.getProcedureName();
 		if (procedure_name == null)
 			;
-		Procedure proc = mProcManager.loadProcedure(procedure_name);
+		Procedure proc = procManager.loadProcedure(procedure_name);
 		return proc;
 	}
 
@@ -89,7 +89,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				is_success = svc.invoke(mPreServiceProc);
 
 			if (is_success) {
-				Procedure proc = getProcedureToRun(svc);
+				Procedure proc = getProcedureToRun(mProcManager, svc);
 				is_success = svc.invoke(proc);
 			}
 			if (is_success) {
