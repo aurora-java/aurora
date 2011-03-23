@@ -8,6 +8,11 @@
                 <ss:attribute document="组件的ID,在同一个screen中ID不能重复" name="id"/>
             </ss:attributes>
         </ss:complexType>
+        <ss:complexType name="a:HasPrompt">
+            <ss:attributes>
+                <ss:attribute document="组件的标签" name="prompt"/>
+            </ss:attributes>
+        </ss:complexType>
         <ss:complexType document="具有尺寸的特性" name="a:RectangleComponent">
             <ss:attributes>
                 <ss:attribute document="组件的宽度,单位是像素(px)" name="width" type="ss:int"/>
@@ -46,6 +51,7 @@
                 <ss:extension base="a:BaseViewComponent"/>
                 <ss:extension base="a:HasName"/>
                 <ss:extension base="a:BindTarget"/>
+                <ss:extension base="a:HasPrompt"/>
             </ss:extensions>
             <ss:arrays>
                 <ss:array name="a:events" type="a:event"/>
