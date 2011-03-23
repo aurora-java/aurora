@@ -20,9 +20,11 @@ public class CheckBox extends Component {
 //		addConfig(PROPERTITY_UNCHECKEDVALUE, view.getString(PROPERTITY_UNCHECKEDVALUE,"N"));
 		String label = view.getString(CheckBoxConfig.PROPERTITY_LABEL, "");
 		label = session.getLocalizedPrompt(label);
+		/*
 		if(!"".equals(label)){
 			label = label;
 		}
+		*/
 		map.put(CheckBoxConfig.PROPERTITY_LABEL, label);
 		map.put(CONFIG, getConfigString());
 	}
