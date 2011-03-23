@@ -31,7 +31,7 @@ public class BMAuthority {
 		boolean write_result = context.getBoolean("write_result", true);
 		if (write_result) {
 
-			CompositeMap result = null;
+			//CompositeMap result = null;
 			JSONObject error = new JSONObject();
 			error.put("message", svc.getName() +cm.getString("error_msg"));
 			error.put("code", cm.getString("error_msg"));
