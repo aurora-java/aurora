@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procedure xmlns="uncertain.proc">
+	<action Name="CreateModel" />
+	<action Name="CreateView" />
+	<action Name="BuildOutputContent" />
+</procedure>

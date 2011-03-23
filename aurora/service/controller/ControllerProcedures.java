@@ -11,5 +11,7 @@ public class ControllerProcedures {
     public static final String INVOKE_SERVICE = ControllerProcedures.class.getPackage().getName() + '.' + "InvokeService";
     
     public static final String UPLOAD_SERVICE = ControllerProcedures.class.getPackage().getName() + '.' + "UploadService";
+    
+    public static final String RUN_INCLUDED_SCREEN = ControllerProcedures.class.getPackage().getName() + '.' + "RunIncludedScreen";
 
 }
