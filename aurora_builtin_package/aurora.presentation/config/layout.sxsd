@@ -30,6 +30,9 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
             </ss:extensions>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
         </ss:element>
         <ss:element document="横向box" name="a:hBox">
             <ss:attributes>
@@ -42,6 +45,9 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
             </ss:extensions>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
         </ss:element>
         <ss:element document="form布局" name="a:form">
             <ss:extensions>
