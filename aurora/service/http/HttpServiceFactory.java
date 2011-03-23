@@ -71,6 +71,14 @@ public class HttpServiceFactory {
         return service_config;
     }
     
+    /**
+     * Create instance by specify name of server
+     * @param name
+     * @param request
+     * @param response
+     * @param servlet
+     * @return
+     */
     public HttpServiceInstance createHttpService( String name, HttpServletRequest request, HttpServletResponse response, HttpServlet servlet )
     {
         HttpServiceInstance svc = new HttpServiceInstance( name, mUncertainEngine.getProcedureManager() );
@@ -82,6 +90,24 @@ public class HttpServiceFactory {
         return svc;
     }
     
+    public HttpServiceInstance createHttpService( String name, HttpServiceInstance parent )
+    {
+        HttpServiceInstance svc = new HttpServiceInstance( name, mUncertainEngine.getProcedureManager() );
+        svc.setRequest(parent.getRequest());
+        svc.setResponse(parent.getResponse());
+        svc.setServlet(parent.getServlet());
+        svc.setRootConfig(mServiceParentConfig);
+        svc.setContextMap(parent.getContextMap());
+        return svc;
+    }
+    
+    /**
+     * Add mapping between file extension and procedure to run
+     * @param config A CompositeMap with childs containing mapping config, such as
+     * <code>
+     *   <mapping extension="screen" procedure="RunScreen" />
+     * </code>
+     */
     public void addProcedureMapping( CompositeMap config ){
         mProcedureMapping = new CompositeMap(KEY_PROCEDURE_MAPPING);
         Iterator it = config.getChildIterator();
