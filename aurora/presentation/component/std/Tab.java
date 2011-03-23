@@ -27,6 +27,7 @@ public class Tab extends Component {
 	protected static final String PROPERTITY_BODY_STYLE = "bodystyle";
 	protected static final String PROPERTITY_REF = "ref";
 	protected static final String PROPERTITY_SELECTED = "selected";
+	protected static final String PROPERTITY_CLOSEABLE = "closeable";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -46,9 +47,13 @@ public class Tab extends Component {
 		Integer bodyWidth = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_WIDTH)).intValue() - 2);
 		Integer bodyHeight = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - 25);
 		map.put("bodywidth", bodyWidth);
+		map.put("headwidth", bodyWidth-36);
 		map.put("bodyheight", bodyHeight);
 		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
+		if((Integer)map.get("stripswidth") <= bodyWidth-36){
+			map.put("display", "none");
+		}
 		map.put(VALID_SCRIPT, sb.toString());
 		//map.put(PROPERTITY_SELECTED, new Integer(0));
 		//addConfig(PROPERTITY_SELECTED, new Integer(0));
@@ -106,6 +111,7 @@ public class Tab extends Component {
 		JSONArray jsons = new JSONArray(); 
 		StringBuffer sb = new StringBuffer();
 		CompositeMap tabs = view.getChild(TABS);
+		int stripswidth=0;
 		if(tabs!=null){
 		List childs = tabs.getChilds();
 			if(childs!=null){
@@ -117,6 +123,7 @@ public class Tab extends Component {
 					String prompt = tab.getString(ComponentConfig.PROPERTITY_PROMPT, "");
 					prompt = session.getLocalizedPrompt(prompt);
 					int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);
+					stripswidth+=width+6;
 					String id = tab.getString(ComponentConfig.PROPERTITY_ID, "");
 					String target = tab.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
 					if(!"".equals(target)){
@@ -135,12 +142,17 @@ public class Tab extends Component {
 					}
 					String tabClass = tab.getString(PROPERTITY_TAB_CLASS, "");
 					String tabStyle = tab.getString(PROPERTITY_TAB_STYLE, "");
+					boolean closeable = tab.getBoolean(PROPERTITY_CLOSEABLE, false);
 					if(!"".equals(tabStyle)){
 						tabStyle = "style='"+tabStyle+"'";
 					}
 					sb.append("<div class='strip unactive' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
 					sb.append("<div class='strip-left "+tabClass+"'></div>");
-					sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>"+prompt+"</div>");
+					sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>");
+					if(closeable){
+						sb.append("<div class='tab-close'></div>");
+					}
+					sb.append(prompt+"</div>");
 					sb.append("<div class='strip-right "+tabClass+"'></div>");
 					sb.append("</div>");
 					
@@ -154,6 +166,7 @@ public class Tab extends Component {
 				}
 			}
 		}
+		map.put("stripswidth", new Integer(stripswidth));
 		addConfig("items", jsons);
 		map.put("items", jsons.toString());
 		return sb.toString();
