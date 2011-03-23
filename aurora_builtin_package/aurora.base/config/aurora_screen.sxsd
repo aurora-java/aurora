@@ -3,30 +3,44 @@
     <ss:elements>
         <ss:element name="a:dataSet" wizard="a:dataSetWizard">
             <ss:attributes>
-                <ss:attribute document="DataSet的ID" name="id" use="required"/>
-                <ss:attribute document="DataSet关联的BM" name="model"/>
-                <ss:attribute default="false" document="是否服务端加载数据" name="loadData" type="ss:boolean"/>
-                <ss:attribute default="false" document="是否创建一条数据" name="autoCreate" type="ss:boolean"/>
-                <ss:attribute default="false" document="是否客户端自动发起ajax查询" name="autoQuery" type="ss:boolean"/>
-                <ss:attribute default="false" document="查询是否进行统计" name="autoCount" type="ss:boolean"/>
-                <ss:attribute default="false" document="是否查询所有数据" editor="" name="fetchAll" type="ss:boolean"/>
-                <ss:attribute default="true" document="是否可查询" editor="" name="canQuery" type="ss:boolean"/>
-                <ss:attribute default="true" document="是否可以提交" name="canSubmit" type="ss:boolean"/>
-                <ss:attribute document="值列表的CODE" name="lookupCode"/>
-                <ss:attribute document="查询的分页大小" name="pageSize" type="ss:int"/>
-                <ss:attribute document="查询的URL地址" name="queryUrl"/>
-                <ss:attribute document="提交的url地址" name="submitUrl"/>
-                <ss:attribute default="false" document="是否可选择" name="selectable" type="ss:boolean"/>
-                <ss:attribute document="选择模式" name="selectionModel" type="a:selectType"/>
-                <ss:attribute document="查询的DataSet的id" name="queryDataSet" type="a:String"/>
+                <ss:attribute name="id" document="DataSet的ID" use="required"/>
+                <ss:attribute name="model" document="DataSet关联的BM"/>
+                <ss:attribute name="loadData" default="false" document="是否服务端加载数据" type="ss:boolean"/>
+                <ss:attribute name="autoCreate" default="false" document="是否创建一条数据" type="ss:boolean"/>
+                <ss:attribute name="autoQuery" default="false" document="是否客户端自动发起ajax查询" type="ss:boolean"/>
+                <ss:attribute name="autoCount" default="false" document="查询是否进行统计" type="ss:boolean"/>
+                <ss:attribute name="fetchAll" default="false" document="是否查询所有数据" editor="" type="ss:boolean"/>
+                <ss:attribute name="canQuery" default="true" document="是否可查询" editor="" type="ss:boolean"/>
+                <ss:attribute name="canSubmit" default="true" document="是否可以提交" type="ss:boolean"/>
+                <ss:attribute name="lookupCode" document="值列表的CODE"/>
+                <ss:attribute name="pageSize" document="查询的分页大小" type="ss:int"/>
+                <ss:attribute name="queryUrl" document="查询的URL地址"/>
+                <ss:attribute name="submitUrl" document="提交的url地址"/>
+                <ss:attribute name="selectable" default="false" document="是否可选择" type="ss:boolean"/>
+                <ss:attribute name="selectionModel" document="选择模式" type="a:selectType"/>
+                <ss:attribute name="queryDataSet" document="查询的DataSet的id" type="ss:string"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
             </ss:elements>
             <ss:arrays>
-                <ss:array document="DataSet的field配置" minOccurs="" name="a:fields" type="a:field"/>
+                <ss:array name="a:fields" document="DataSet的field配置" type="a:field" wizard="a:fieldsWizard"/>
                 <ss:array name="a:events" type="a:event"/>
             </ss:arrays>
+        </ss:element>
+        <ss:element name="a:model-query" document="数据查询">
+            <ss:attributes>
+                <ss:attribute name="autoCount" default="false" document="查询是否进行统计" type="ss:boolean"/>
+                <ss:attribute name="defaultWhereClause" document="默认查询条件" type="ss:string"/>
+                <ss:attribute name="fetchAll" default="false" document="是否查询所有数据" type="ss:boolean"/>
+                <ss:attribute name="model" document="关联的BM"/>
+                <ss:attribute name="rootPath" document="返回路径" type="ss:string"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:init-procedure" document="页面数据初始化">
+            <ss:elements>
+                <ss:element ref="a:model-query"/>
+            </ss:elements>
         </ss:element>
         <ss:element name="a:view">
             <ss:elements>
@@ -34,59 +48,59 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:screenBody"/>
             </ss:elements>
             <ss:attributes>
-                <ss:attribute document="页面使用的模板" name="template"/>
-                <ss:attribute document="页面模板所在的package" name="package"/>
+                <ss:attribute name="template" document="页面使用的模板"/>
+                <ss:attribute name="package" document="页面模板所在的package"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:dataSets" type="a:dataSet" wizard="a:dataSetsWizard"/>
             </ss:arrays>
         </ss:element>
-        <ss:element document="UI界面的基础单元" name="a:screen">
+        <ss:element name="a:screen" document="UI界面的基础单元">
             <ss:elements>
-                <ss:element name="a:init-procedure"/>
+                <ss:element ref="a:init-procedure"/>
                 <ss:element ref="a:view"/>
             </ss:elements>
             <ss:attributes>
-                <ss:attribute document="是否启用trace" name="trace" type="ss:boolean"/>
+                <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
-        <ss:element document="DataSet的数据" name="a:datas">
+        <ss:element name="a:datas" document="DataSet的数据">
             <ss:elements>
                 <ss:element ref="a:record"/>
             </ss:elements>
             <ss:attributes>
-                <ss:attribute document="DataSet的数据源" name="dataSource" type="ss:string"/>
+                <ss:attribute name="dataSource" document="DataSet的数据源" type="ss:string"/>
             </ss:attributes>
         </ss:element>
-        <ss:element document="DataSet的数据项" name="a:record"/>
-        <ss:element document="DataSet的field" name="a:field">
+        <ss:element name="a:record" document="DataSet的数据项"/>
+        <ss:element name="a:field" document="DataSet的field">
             <ss:attributes>
-                <ss:attribute document="field的name" name="name" type=""/>
-                <ss:attribute default="false" document="是否必输" name="required" type="ss:boolean"/>
-                <ss:attribute default="false" document="是否只读" name="readOnly" type="ss:boolean"/>
-                <ss:attribute document="ComboBox选中值的返回name" name="returnField"/>
-                <ss:attribute document="ComboBox的options,对应DataSet的id" name="options"/>
-                <ss:attribute document="ComboBox的displayField" name="displayField"/>
-                <ss:attribute document="ComboBox的valueField" name="valueField"/>
-                <ss:attribute document="field的prompt" name="prompt"/>
-                <ss:attribute document="Lov弹出窗口的title" name="title"/>
-                <ss:attribute document="Lov对应的model" name="lovService"/>
-                <ss:attribute document="lov弹出窗口的宽度" name="lovWidth" type="ss:int"/>
-                <ss:attribute document="lov弹出窗口的高度" name="lovHeight" type="ss:int"/>
-                <ss:attribute document="Lov窗口中grid的高度" name="lovGridHeight" type="ss:int"/>
-                <ss:attribute document="默认值" name="defaultValue"/>
-                <ss:attribute document="checkbox选中的值" name="checkedValue"/>
-                <ss:attribute document="checkbox未选中的值" name="uncheckedValue"/>
-                <ss:attribute document="自定义URL" name="lovUrl"/>
+                <ss:attribute name="name" document="field的name" type=""/>
+                <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
+                <ss:attribute name="readOnly" default="false" document="是否只读" type="ss:boolean"/>
+                <ss:attribute name="returnField" document="ComboBox选中值的返回name"/>
+                <ss:attribute name="options" document="ComboBox的options,对应DataSet的id"/>
+                <ss:attribute name="displayField" document="ComboBox的displayField"/>
+                <ss:attribute name="valueField" document="ComboBox的valueField"/>
+                <ss:attribute name="prompt" document="field的prompt"/>
+                <ss:attribute name="title" document="Lov弹出窗口的title"/>
+                <ss:attribute name="lovService" document="Lov对应的model"/>
+                <ss:attribute name="lovWidth" document="lov弹出窗口的宽度" type="ss:int"/>
+                <ss:attribute name="lovHeight" document="lov弹出窗口的高度" type="ss:int"/>
+                <ss:attribute name="lovGridHeight" document="Lov窗口中grid的高度" type="ss:int"/>
+                <ss:attribute name="defaultValue" document="默认值"/>
+                <ss:attribute name="checkedValue" document="checkbox选中的值"/>
+                <ss:attribute name="uncheckedValue" document="checkbox未选中的值"/>
+                <ss:attribute name="lovUrl" document="自定义URL"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:mapping" type="a:map"/>
             </ss:arrays>
         </ss:element>
-        <ss:element document="lov或者combobox和当前dataSet的映射关系" name="a:map">
+        <ss:element name="a:map" document="lov或者combobox和当前dataSet的映射关系">
             <ss:attributes>
-                <ss:attribute document="映射关系从,一般对应lov或者combobox的dataset的field" name="from"/>
-                <ss:attribute document="映射关系到,对应当前dataset的field" name="to"/>
+                <ss:attribute name="from" document="映射关系从,一般对应lov或者combobox的dataset的field"/>
+                <ss:attribute name="to" document="映射关系到,对应当前dataset的field"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:event">
@@ -95,8 +109,14 @@
                 <ss:attribute name="handler"/>
             </ss:attributes>
         </ss:element>
-        <ss:element document="screenBody" name="a:screenBody">
+        <ss:element name="a:screen-include" document="screenBody">
+            <ss:attributes>
+                <ss:attribute name="screen" document="screen文件的路径"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:screenBody" document="screenBody">
             <ss:elements>
+                <ss:element ref="a:screen-include"/>
                 <ss:element ref="a:BaseViewComponent"/>
             </ss:elements>
         </ss:element>
@@ -113,7 +133,8 @@
     </ss:types>
     <ss:editors/>
     <ss:wizards>
-        <ss:wizard instanceClass="uncertain.ide.eclipse.action.DataSetWizardAction" name="a:dataSetWizard"/>
-        <ss:wizard instanceClass="uncertain.ide.eclipse.action.DataSetsWizardAction" name="a:dataSetsWizard"/>
+        <ss:wizard name="a:fieldsWizard" instanceClass="uncertain.ide.eclipse.component.wizard.FieldsWizardAction"/>
+        <ss:wizard name="a:dataSetWizard" instanceClass="uncertain.ide.eclipse.component.wizard.DataSetWizardAction"/>
+        <ss:wizard name="a:dataSetsWizard" instanceClass="uncertain.ide.eclipse.component.wizard.DataSetsWizardAction"/>
     </ss:wizards>
 </ss:schema>
