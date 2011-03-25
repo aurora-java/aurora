@@ -28,6 +28,7 @@ public class Tab extends Component {
 	protected static final String PROPERTITY_REF = "ref";
 	protected static final String PROPERTITY_SELECTED = "selected";
 	protected static final String PROPERTITY_CLOSEABLE = "closeable";
+	protected static final String PROPERTITY_DISABLED = "disabled";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -143,10 +144,15 @@ public class Tab extends Component {
 					String tabClass = tab.getString(PROPERTITY_TAB_CLASS, "");
 					String tabStyle = tab.getString(PROPERTITY_TAB_STYLE, "");
 					boolean closeable = tab.getBoolean(PROPERTITY_CLOSEABLE, false);
+					boolean disabled = tab.getBoolean(PROPERTITY_DISABLED, false);
 					if(!"".equals(tabStyle)){
 						tabStyle = "style='"+tabStyle+"'";
 					}
-					sb.append("<div class='strip unactive' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
+					sb.append("<div class='strip unactive");
+					if(disabled){
+						sb.append(" scroll-disabled");
+					}
+					sb.append("' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
 					sb.append("<div class='strip-left "+tabClass+"'></div>");
 					sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>");
 					if(closeable){
