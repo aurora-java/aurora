@@ -14,6 +14,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.service.ServiceThreadLocal;
 
 public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalInstance{
 
@@ -45,7 +46,14 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 	
 	private List getListFromDataBase(String language,String lookup_code) throws Exception {
 		List result = new ArrayList();
-		BusinessModelService service = factory.getModelService(getLookupModel());
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		if(context==null)
+		    throw new IllegalStateException("No service context set in ThreadLocal yet");
+        //ILogger logger = LoggingContext.getLogger(context, "aurora.database");
+        //logger.info("getting lookup "+lookup_code);
+        
+		BusinessModelService service = factory.getModelService(getLookupModel(), context);
+
 		Map map = new HashMap();
 		map.put("code", lookup_code);
 		map.put("language", language);
@@ -55,6 +63,10 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider ,IGlobalIn
 			if(result!=null)
 			sorList(result);
 		}
+		
+		//SqlServiceContext sct = SqlServiceContext.createSqlServiceContext(context);
+		//Connection conn = sct.getConnection();
+		//logger.info("Connection used:"+conn);
 		return result;
 	}
 	
