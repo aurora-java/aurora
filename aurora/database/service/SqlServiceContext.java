@@ -184,12 +184,14 @@ public class SqlServiceContext extends ServiceContext {
     public void freeConnection()
         throws SQLException
     {
+        //ILogger logger = LoggingContext.getLogger(object_context, "aurora.database");
     	Connection conn;
     	Set databaseAllConnection=getAllConnection();
     	if(databaseAllConnection!=null){
     		Iterator it=databaseAllConnection.iterator();
     		while(it.hasNext()){
     			conn=(Connection)it.next();
+    			//logger.info("Close connection:"+conn);
     			DBUtil.closeConnection(conn);
     		}
     	}        
