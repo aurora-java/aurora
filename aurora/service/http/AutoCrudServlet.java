@@ -9,13 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uncertain.composite.CompositeMap;
-import uncertain.event.Configuration;
 import aurora.application.config.ScreenConfig;
+import aurora.bm.BusinessModel;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
-import aurora.database.service.BusinessModelService;
 import aurora.database.service.ServiceOption;
-import aurora.events.E_CheckBMAccess;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
 import aurora.service.controller.ControllerProcedures;
@@ -65,11 +63,10 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
 		String object_name = args[(start_index + 1)];
 		String operation_name = args[(start_index + 2)];
         
-        
-        
-        BusinessModelService msvc = super.mDatabaseServiceFactory.getModelService(object_name);
-        if(msvc==null)
+        BusinessModel bm = mDatabaseServiceFactory.getModelFactory().getModel(object_name);
+        if(bm==null)
             throw new ServletException("Can't load model:"+object_name);
+
         CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
         svc.setName(object_name + "_" + operation_name);
         ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
