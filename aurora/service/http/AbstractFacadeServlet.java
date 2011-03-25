@@ -5,6 +5,7 @@
 package aurora.service.http;
 
 import java.io.IOException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ import uncertain.proc.Procedure;
 import aurora.events.E_DetectProcedure;
 import aurora.service.IService;
 import aurora.service.ServiceController;
+import aurora.service.ServiceThreadLocal;
 import aurora.transaction.ITransactionService;
 import aurora.transaction.UserTransactionImpl;
 
@@ -84,6 +86,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		try {
 			trans.begin();
 			svc = createServiceInstance(request, response);
+			ServiceThreadLocal.setCurrentThreadContext(svc.getServiceContext().getObjectContext());
 			populateService(request, response, svc);
 			if (mPreServiceProc != null)
 				is_success = svc.invoke(mPreServiceProc);
@@ -120,7 +123,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 							"Error when rollback service "
 									+ request.getRequestURI(), e);
 				}
-			}			
+			}
+			ServiceThreadLocal.remove();
 			cleanUp(svc);
 			ts.stop();
 		}		
