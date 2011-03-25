@@ -169,11 +169,14 @@ public class ScreenRenderer {
             
             // register instance in current context
             ctx.setInstanceOfType(BuildSession.class, session);
-
+            
+            session.buildView(mService.getServiceContext().getModel(), mScreen);
+            
+        }else{
+            session.buildViewFromBegin(mService.getServiceContext().getModel(), mScreen);
         }
-        session.buildView(mService.getServiceContext().getModel(), mScreen);
+
         session.getWriter().flush();
-        // out.flush();
         return EventModel.HANDLE_NO_SAME_SEQUENCE;
     }
 
