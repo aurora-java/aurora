@@ -123,6 +123,21 @@ public class BuildSession {
          * if(mSessionContext!=null) mSessionContext.clear();
          */
     }
+    
+    public void buildViewFromBegin( CompositeMap model, CompositeMap view )
+        throws Exception
+    {
+        Configuration config = mCurrentConfig;
+        ViewComponentPackage pkg = mCurrentPackage;
+        mCurrentConfig = null;
+        mCurrentPackage = null;
+        try{
+            buildView( model, view );
+        }finally{
+            mCurrentConfig = config;
+            mCurrentPackage = pkg;
+        }
+    }
 
     /**
      * Create output content, from given data model and view config
