@@ -47,11 +47,11 @@ public class Tab extends Component {
 		Integer bodyWidth = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_WIDTH)).intValue() - 2);
 		Integer bodyHeight = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - 25);
 		map.put("bodywidth", bodyWidth);
-		map.put("headwidth", bodyWidth-36);
+		map.put("headwidth", new Integer(bodyWidth.intValue()-36));
 		map.put("bodyheight", bodyHeight);
 		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
-		if((Integer)map.get("stripswidth") <= bodyWidth-36){
+		if(((Integer)map.get("stripswidth")).intValue() <= bodyWidth.intValue()-36){
 			map.put("display", "none");
 		}
 		map.put(VALID_SCRIPT, sb.toString());
