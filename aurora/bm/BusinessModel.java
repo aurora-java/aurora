@@ -356,7 +356,7 @@ public class BusinessModel extends DynamicObject {
             // revised
             fieldTypeArray[i] = registry.getDataType(datatype);
             if(fieldTypeArray[i]==null) throw new IllegalArgumentException("Unknown data type "+datatype);
-            i++;
+            //i++;
       }        
       return fieldTypeArray;
     }
