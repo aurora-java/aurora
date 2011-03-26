@@ -78,8 +78,8 @@ public class ResultSetLoader {
                     value = type.getObject(rs, rs.findColumn(physical_name));
                 else
                     value = rs.getObject(physical_name);
-            }catch(Exception ex){
-                throw new RuntimeException("can't load value for field No. "+(i+1)+", named '"+fld.getName()+"'", ex);
+            }catch(Throwable ex){
+                throw new SQLException("can't load value for field No. "+(i+1)+", named '"+fld.getName()+"':"+ex.getClass().getName()+" "+ex.getMessage());
             }
             consumer.loadField(name, value);
         }  
