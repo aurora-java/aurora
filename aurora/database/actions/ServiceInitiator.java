@@ -42,8 +42,8 @@ public class ServiceInitiator {
         reg.addClassMapping( "model-delete", ModelDelete.class );
         reg.addClassMapping( "model-execute", ModelExecute.class );
         reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
-        reg.addClassMapping( "sql-execute", SqlExecute.class);
-        reg.addClassMapping( "sql-query", SqlQuery.class);
+        //reg.addClassMapping( "sql-execute", SqlExecute.class);
+        //reg.addClassMapping( "sql-query", SqlQuery.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
 
         /** @todo move into optional package */
