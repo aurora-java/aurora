@@ -25,73 +25,74 @@ public class DataSourceConfig {
 	ILogger mLogger;
 	OCManager mOCManager;
 	public DataSourceConfig(IObjectRegistry reg,OCManager ocManager) {
-		mLogger =LoggingContext.getLogger("aurora.database", reg);		
+		mLogger =LoggingContext.getLogger("aurora.datasource", reg);		
 		mObjectRegistry = reg;
 		mOCManager=ocManager;
-	}
-	
-	public boolean getUseTransactionManager(){
-		return useTransactionManager;
-	}
-	public void setUseTransactionManager(boolean useTransactionManager){
-		this.useTransactionManager=useTransactionManager;
-	}
-	public DatabaseConnection[] getDatabaseConnections() {
-		return mDatabaseConnections;
-	}    
-	public void setDatabaseConnections(DatabaseConnection[] DataBases) {
-		mDatabaseConnections = DataBases;
 	}	
+		
 	public void onInitialize() throws Exception {
-		int length = mDatabaseConnections.length;
-		DataSource ds=null;	
-		DatabaseConnection dbConfig=null;
-		TransactionManager tm=null;		
-		INamedDataSourceProvider dsProvider = new NamedDataSourceProvider();
+		int length=mDatabaseConnections.length;
+		DataSource ds=null;			
 		ITransactionService ts =null;
-		if(useTransactionManager){
-			ts = new TransactionService(true);
+		INamedDataSourceProvider dsProvider = new NamedDataSourceProvider();		
+		DatabaseConnection dbConfig=null;
+		if(useTransactionManager){//xapool			
+			TransactionManager tm=null;				
+			ts = new TransactionService(true);			
 			tm = ts.getTransactionManager();
-		}else{
-			ts = new TransactionService(false);
-			boolean is_error=false;
-			if(length==1){
-				if(mDatabaseConnections[0].getName()!=null){
-					is_error=true;					
-				}
-			}else{
-				is_error=true;				
-			}			
-			if(is_error){
-				mLogger.log(Level.SEVERE, "TransactionManager is disabled,please use default database");
-				throw new ServletException("TransactionManager is disabled,please use default database");
-			}		
-		}			
-		for (int i = 0;i<length; i++) {
-			dbConfig = mDatabaseConnections[i];
-			if(useTransactionManager){
+			for(int i=0;i<length;i++){
+				dbConfig = mDatabaseConnections[i];
 				ds=XADataSources.unpooledXADataSource(dbConfig.getUrl(), dbConfig.getUserName(), dbConfig.getPassword(), dbConfig.getDriverClass(), tm);
 				if (dbConfig.getPool()) {
 					ds = XADataSources.pooledXADataSource((XADataSource)ds);
 					mOCManager.populateObject(dbConfig.config, (StandardXAPoolDataSource)ds);					
 				}
-			}else{
-				ds = DataSources.unpooledDataSource(dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getPassword());
-				((DriverManagerDataSource)ds).setDriverClass(dbConfig.getDriverClass());
-				if(dbConfig.getPool())
-					ds=DataSources.pooledDataSource(ds);
+				registryDataSource(ds,dbConfig,dsProvider);
 			}			
-			if (dbConfig.getName() == null) {
-				mObjectRegistry.registerInstance(DataSource.class, ds);
-				mLogger.log(Level.CONFIG,"Setting up dataSource url:{0},user:{1}",
-						new Object[]{dbConfig.getUrl(),dbConfig.getUserName()});
-			} else {
-				((NamedDataSourceProvider) dsProvider).putDataSource(dbConfig.getName(), ds);
-				mLogger.log(Level.CONFIG,"Setting up namedDataSource url:{0},user:{1},name:{2}",
-						new Object[]{dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getName()});
+		}else{//c3p0
+			if(length!=1){
+				mLogger.log(Level.SEVERE, "TransactionManager is disabled,please use only one datasource");
+				throw new ServletException("TransactionManager is disabled,please use only one datasource");
 			}
+			ts = new TransactionService(false);	
+			dbConfig=mDatabaseConnections[0];			
+			ds = DataSources.unpooledDataSource(dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getPassword());
+			((DriverManagerDataSource)ds).setDriverClass(dbConfig.getDriverClass());
+			if(dbConfig.getPool()){
+				ds=DataSources.pooledDataSource(ds);
+			}
+			registryDataSource(ds,dbConfig,dsProvider);
 		}		
-		mObjectRegistry.registerInstance(INamedDataSourceProvider.class,dsProvider);		
-		mObjectRegistry.registerInstance(ITransactionService.class, ts);
+		mObjectRegistry.registerInstance(INamedDataSourceProvider.class,dsProvider);			
+		mObjectRegistry.registerInstance(ITransactionService.class, ts);			
+	}
+	
+	private void registryDataSource(DataSource ds,DatabaseConnection dbConfig,INamedDataSourceProvider dsProvider){
+		String dataSourceName=dbConfig.getName();		
+		if(dataSourceName==null){
+			mLogger.log(Level.CONFIG,"Setting up dataSource url:{0},user:{1}",
+					new Object[]{dbConfig.getUrl(),dbConfig.getUserName()});			
+			mObjectRegistry.registerInstance(DataSource.class, ds);
+		}else{
+			((NamedDataSourceProvider) dsProvider).putDataSource(dbConfig.getName(), ds);
+			mLogger.log(Level.CONFIG,"Setting up dataSource url:{0},user:{1},name:{2}",
+					new Object[]{dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getName()});			
+		}
+	}
+	
+	public boolean getUseTransactionManager(){
+		return useTransactionManager;
+	}
+	
+	public void setUseTransactionManager(boolean useTransactionManager){
+		this.useTransactionManager=useTransactionManager;
+	}
+	
+	public DatabaseConnection[] getDatabaseConnections() {
+		return mDatabaseConnections;
+	}
+	
+	public void setDatabaseConnections(DatabaseConnection[] DataBases) {
+		mDatabaseConnections = DataBases;
 	}	
 }
