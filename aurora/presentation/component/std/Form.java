@@ -18,9 +18,12 @@ public class Form extends Box {
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
 		title = session.getLocalizedPrompt(title);
 		if(!"".equals(title)) {
-			out.write("<CAPTION class='"+DEFAULT_HEAD_CLASS+"'>");
+			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
 			out.write(title);
-			out.write("</CAPTION>");
+			out.write("</th></tr></thead>");
+//			out.write("<CAPTION class='"+DEFAULT_HEAD_CLASS+"'>");
+//			out.write(title);
+//			out.write("</CAPTION>");
 		}
 	}
 	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
