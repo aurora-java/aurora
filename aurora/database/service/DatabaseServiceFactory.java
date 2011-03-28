@@ -293,6 +293,7 @@ public class DatabaseServiceFactory {
         return getModelService(model, context_map);
     }
 
+    /*
     public RawSqlService getSqlService(String name) throws IOException,
             SAXException {
         CompositeMap config = uncertainEngine.loadCompositeMap(name);
@@ -309,6 +310,7 @@ public class DatabaseServiceFactory {
         service.mConfiguration.loadConfig(config);
         return service;
     }
+   
 
     public RawSqlService getSqlService(String name, CompositeMap context_map)
             throws IOException, SAXException {
@@ -316,6 +318,7 @@ public class DatabaseServiceFactory {
         return getSqlService(name, svc);
     }
 
+    
     public RawSqlService getSqlService(String name, RuntimeContext context)
             throws IOException, SAXException {
         RawSqlService service = getSqlService(name);
@@ -324,6 +327,7 @@ public class DatabaseServiceFactory {
             service.mConfiguration.setParent(conf);
         return service;
     }
+    */
 
     public IDatabaseFactory getDatabaseFactory() {
         return databaseFactory;
