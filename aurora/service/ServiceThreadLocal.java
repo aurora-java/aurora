@@ -19,7 +19,7 @@ public class ServiceThreadLocal {
     }
     
     public static void remove(){
-        mThreadLocal.remove();
+        mThreadLocal.set(null);
     }
 
 }
