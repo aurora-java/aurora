@@ -9,13 +9,7 @@ public class DatabaseConnection implements IConfigurable {
 	String url;
 	String userName;
 	String password;	
-	boolean pool=true;
-	Long expirationTime;
-	Long sleepTime;
-	Integer maxConn;
-	Integer minConn;
-	Integer deadlockMaxWait;
-	Integer deadlockRetryWait;
+	boolean pool=true;	
 	CompositeMap config;
 	public DatabaseConnection(){
 		
@@ -57,43 +51,7 @@ public class DatabaseConnection implements IConfigurable {
 	public void setPool(boolean pool) {
 		this.pool = pool;
 	}
-	public Long getExpirationTime() {
-		return expirationTime;
-	}
-	public void setExpirationTime(Long expirationTime) {
-		this.expirationTime = expirationTime;
-	}
-	public Long getSleepTime() {
-		return sleepTime;
-	}
-	public void setSleepTime(Long sleepTime) {
-		this.sleepTime = sleepTime;
-	}
-	public Integer getMaxConn() {
-		return maxConn;
-	}
-	public void setMaxConn(Integer maxConn) {
-		this.maxConn = maxConn;
-	}
-	public Integer getMinConn() {
-		return minConn;
-	}
-	public void setMinConn(Integer minConn) {
-		this.minConn = minConn;
-	}
-	public Integer getDeadlockMaxWait() {
-		return deadlockMaxWait;
-	}
-	public void setDeadlockMaxWait(Integer deadlockMaxWait) {
-		this.deadlockMaxWait = deadlockMaxWait;
-	}
-	public Integer getDeadlockRetryWait() {
-		return deadlockRetryWait;
-	}
-	public void setDeadlockRetryWait(Integer deadlockRetryWait) {
-		this.deadlockRetryWait = deadlockRetryWait;
-	}
-
+	
 	public void beginConfigure(CompositeMap config) {		
 		this.config=config;
 	}

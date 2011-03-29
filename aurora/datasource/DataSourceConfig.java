@@ -14,6 +14,7 @@ import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
+import aurora.plugin.c3p0.PoolConfig;
 import aurora.plugin.xapool.TransactionService;
 import aurora.plugin.xapool.XADataSources;
 import aurora.transaction.ITransactionService;
@@ -44,7 +45,8 @@ public class DataSourceConfig {
 				dbConfig = mDatabaseConnections[i];
 				ds=XADataSources.unpooledXADataSource(dbConfig.getUrl(), dbConfig.getUserName(), dbConfig.getPassword(), dbConfig.getDriverClass(), tm);
 				if (dbConfig.getPool()) {
-					ds = XADataSources.pooledXADataSource((XADataSource)ds);
+					ds = XADataSources.pooledXADataSource((XADataSource)ds);		
+//					((StandardXAPoolDataSource)ds).getMaxSize()
 					mOCManager.populateObject(dbConfig.config, (StandardXAPoolDataSource)ds);					
 				}
 				registryDataSource(ds,dbConfig,dsProvider);
@@ -58,8 +60,10 @@ public class DataSourceConfig {
 			dbConfig=mDatabaseConnections[0];			
 			ds = DataSources.unpooledDataSource(dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getPassword());
 			((DriverManagerDataSource)ds).setDriverClass(dbConfig.getDriverClass());
-			if(dbConfig.getPool()){
-				ds=DataSources.pooledDataSource(ds);
+			if(dbConfig.getPool()){					
+				PoolConfig poolConfig=new PoolConfig();
+				mOCManager.populateObject(dbConfig.config, poolConfig);
+				ds=DataSources.pooledDataSource(ds, poolConfig.getConfig());				
 			}
 			registryDataSource(ds,dbConfig,dsProvider);
 		}		
