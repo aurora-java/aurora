@@ -33,6 +33,8 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalIn
     private String lookupModel;
     
     private String sortField;
+    
+    private String needCache;
 
     private DatabaseServiceFactory factory;
     private IObjectRegistry registry;
@@ -80,6 +82,7 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalIn
             if (result != null)
                 sorList(result);
         }
+        if("true".equalsIgnoreCase(this.getNeedCache()))
         cacheMap.put(lookup_code, result);
         return result;
     }
@@ -177,6 +180,14 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalIn
 
 	public void setSortField(String sortField) {
 		this.sortField = sortField;
+	}
+
+	public String getNeedCache() {
+		return needCache;
+	}
+
+	public void setNeedCache(String needCache) {
+		this.needCache = needCache;
 	}
 
 }
