@@ -17,14 +17,22 @@ import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceThreadLocal;
 
-public class DefaultLookupCodeProvider implements ILookupCodeProvider,
-        IGlobalInstance {
+/**
+ * 
+ * @version $Id: DefaultLookupCodeProvider.java v 1.0 2011-3-29 下午01:57:45 IBM Exp $
+ * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
+ * 
+ * TODO:缓存需要重构!!
+ */
+public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalInstance {
 
     private String lookupType = "sql";
 
     private String lookupSql;
 
     private String lookupModel;
+    
+    private String sortField;
 
     private DatabaseServiceFactory factory;
     private IObjectRegistry registry;
@@ -32,14 +40,16 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
     private boolean inited = false;
 
     private List cache = new ArrayList();
-
+    private Map cacheMap = new HashMap();
+    
+    private static final String DEFAULT_SORT_FIELD = "code_value_id";
+    
     public DefaultLookupCodeProvider(IObjectRegistry registry) {
         super();
         this.registry = registry;
     }
 
-    public List getLookupList(String language, String lookup_code)
-            throws Exception {
+    public List getLookupList(String language, String lookup_code) throws Exception {
         if ("sql".equals(lookupType)) {
             return getListFromDataBase(language, lookup_code);
         } else {
@@ -47,35 +57,30 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
         }
     }
 
-    private List getListFromDataBase(String language, String lookup_code)
-            throws Exception {
-        List result = new ArrayList();
+    private List getListFromDataBase(String language, String lookup_code) throws Exception {
+    	List result = null;
+        result = (List)cacheMap.get(lookup_code);
+        if(result != null) {
+        	return result;
+        }
+        result = new ArrayList();
+        
         CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
         if (context == null)
-            throw new IllegalStateException(
-                    "No service context set in ThreadLocal yet");
-        // ILogger logger = LoggingContext.getLogger(context,
-        // "aurora.database");
-        // logger.info("getting lookup "+lookup_code);
+            throw new IllegalStateException("No service context set in ThreadLocal yet");
 
-        BusinessModelService service = factory.getModelService(
-                getLookupModel(), context);
-
+       
+        BusinessModelService service = factory.getModelService(getLookupModel(), context);        
         Map map = new HashMap();
         map.put("code", lookup_code);
         map.put("language", language);
-        CompositeMap resultMap = service.queryAsMap(map,
-                FetchDescriptor.fetchAll());
+        CompositeMap resultMap = service.queryAsMap(map,FetchDescriptor.fetchAll());
         if (resultMap != null) {
             result = resultMap.getChilds();
             if (result != null)
                 sorList(result);
         }
-
-        // SqlServiceContext sct =
-        // SqlServiceContext.createSqlServiceContext(context);
-        // Connection conn = sct.getConnection();
-        // logger.info("Connection used:"+conn);
+        cacheMap.put(lookup_code, result);
         return result;
     }
 
@@ -102,8 +107,8 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
             public int compare(Object arg0, Object arg1) {
                 CompositeMap r1 = (CompositeMap) arg0;
                 CompositeMap r2 = (CompositeMap) arg1;
-                Integer id1 = r1.getInt("code_value_id");
-                Integer id2 = r2.getInt("code_value_id");
+                Integer id1 = r1.getInt(getSortField());
+                Integer id2 = r2.getInt(getSortField());
                 return id1.compareTo(id2);
             }
         });
@@ -115,8 +120,7 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
     }
 
     public void onInitialize() throws Exception {
-        factory = (DatabaseServiceFactory) registry
-                .getInstanceOfType(DatabaseServiceFactory.class);
+        factory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
         init();
     }
 
@@ -130,10 +134,8 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
         if (!"sql".equals(lookupType) && !inited) {
             SqlServiceContext context = factory.createContextWithConnection();
             try {
-                BusinessModelService service = factory.getModelService(
-                        getLookupModel(), context.getObjectContext());
-                CompositeMap resultMap = service.queryAsMap(new HashMap(),
-                        FetchDescriptor.fetchAll());
+                BusinessModelService service = factory.getModelService(getLookupModel(), context.getObjectContext());
+                CompositeMap resultMap = service.queryAsMap(new HashMap(),FetchDescriptor.fetchAll());
                 if (resultMap != null) {
                     cache = resultMap.getChilds();
                 }
@@ -168,5 +170,13 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider,
     public void setLookupModel(String lookupModel) {
         this.lookupModel = lookupModel;
     }
+
+	public String getSortField() {
+		return sortField == null ? DEFAULT_SORT_FIELD : sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
 
 }
