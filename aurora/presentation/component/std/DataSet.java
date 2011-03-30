@@ -2,9 +2,11 @@ package aurora.presentation.component.std;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,12 +111,14 @@ public class DataSet extends Component {
 		List list = null;
 		if(datas != null){
 			String ds = datas.getString(DataSetConfig.PROPERTITY_DATASOURCE, "");
+			Set dataHead = new HashSet();
 			if(ds.equals("")){
 				list = datas.getChilds();
 				Iterator dit = list.iterator();
 				while(dit.hasNext()){
 					CompositeMap item = (CompositeMap)dit.next();
 					Iterator it = item.keySet().iterator();
+					dataHead.addAll(item.keySet());
 					while(it.hasNext()){
 						String key = (String)it.next();
 						Object valueKey = item.get(key);
@@ -134,19 +138,26 @@ public class DataSet extends Component {
 					list = data.getChilds();
 				}				
 			}
-			if(list != null){
+			if(list != null&&!list.isEmpty()){
+				dataHead.addAll(((CompositeMap)list.get(0)).keySet());
+				addConfig(DataSetConfig.PROPERTITY_DATA_HEAD, new JSONArray(dataHead));
 				Iterator dit = list.iterator();
 				while(dit.hasNext()){
 					CompositeMap item = (CompositeMap)dit.next();
-					Iterator it = new ArrayList(item.keySet()).iterator();
+					JSONArray json = new JSONArray();
+					Iterator it = dataHead.iterator();
+					int index=0;
 					while(it.hasNext()){
-						String key = (String)it.next();
-						Object valueKey = item.get(key);
-						if(valueKey==null){
-							item.remove(key);
+						Object valueKey = item.get(it.next());
+						if(valueKey!=null){
+							try {
+								json.put(index,valueKey);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
 						}
+						index++;
 					}
-					JSONObject json = new JSONObject(item);
 					dataList.put(json);
 				}						
 			}

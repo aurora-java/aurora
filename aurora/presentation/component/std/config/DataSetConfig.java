@@ -18,6 +18,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_CAN_QUERY = "canquery";
 	public static final String PROPERTITY_CAN_SUBMIT = "cansubmit";
 	public static final String PROPERTITY_DATAS = "datas";
+	public static final String PROPERTITY_DATA_HEAD = "datahead";
 	public static final String PROPERTITY_DATASOURCE = "datasource";
 	public static final String PROPERTITY_FETCHALL = "fetchall";
 	public static final String PROPERTITY_FIELDS = "fields";
