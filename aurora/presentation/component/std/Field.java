@@ -26,6 +26,7 @@ public class Field extends Component {
 	
 	protected static final String PROPERTITY_REQUIRED = "required";
 	protected static final String PROPERTITY_READONLY = "readonly";
+	protected static final String PROPERTITY_MAX_LENGHT = "maxlength";
 	protected static final String PROPERTITY_RENDERER = "renderer";
 
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
@@ -68,6 +69,11 @@ public class Field extends Component {
 		String renderer = view.getString(PROPERTITY_RENDERER);
 		if(renderer != null)
 		addConfig(PROPERTITY_RENDERER, renderer);
+		
+		/** Renderer **/
+		String maxlength = view.getString(PROPERTITY_MAX_LENGHT);
+		if(maxlength != null)
+		addConfig(PROPERTITY_MAX_LENGHT, maxlength);
 		
 		/** 是否只读 **/
 		boolean readOnly = view.getBoolean(PROPERTITY_READONLY, false);
