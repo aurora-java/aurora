@@ -55,6 +55,12 @@ public class DataSet extends Component {
 				}
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
+				
+				//删除不必要的信息
+				field.remove("databasetype");
+				String datatype = field.getString("datatype");
+				if("java.lang.String".equals(datatype)) field.remove("datatype");
+				
 				JSONObject json = new JSONObject(field);
 				CompositeMap mapping = sdfc.getMapping();//field.getChild(DataSetConfig.PROPERTITY_MAPPING);
 				List maplist = new ArrayList();
