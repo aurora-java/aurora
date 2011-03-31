@@ -109,9 +109,9 @@ public class DataSet extends Component {
 		CompositeMap datas = dsc.getDatas();
 		JSONArray dataList = new JSONArray(); 
 		List list = null;
+		Set dataHead = new HashSet();
 		if(datas != null){
 			String ds = datas.getString(DataSetConfig.PROPERTITY_DATASOURCE, "");
-			Set dataHead = new HashSet();
 			if(ds.equals("")){
 				list = datas.getChilds();
 				Iterator dit = list.iterator();
@@ -138,50 +138,40 @@ public class DataSet extends Component {
 					list = data.getChilds();
 				}				
 			}
-			if(list != null&&!list.isEmpty()){
-				dataHead.addAll(((CompositeMap)list.get(0)).keySet());
-				addConfig(DataSetConfig.PROPERTITY_DATA_HEAD, new JSONArray(dataHead));
-				Iterator dit = list.iterator();
-				while(dit.hasNext()){
-					CompositeMap item = (CompositeMap)dit.next();
-					JSONArray json = new JSONArray();
-					Iterator it = dataHead.iterator();
-					int index=0;
-					while(it.hasNext()){
-						Object valueKey = item.get(it.next());
-						if(valueKey!=null){
-							try {
-								json.put(index,valueKey);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-						index++;
-					}
-					dataList.put(json);
-				}						
-			}
 		}
 		String lcode = dsc.getLookupCode();
 		if(lcode!=null){
 			ILookupCodeProvider provider = session.getLookupProvider();
 			if(provider!=null){
-				List llist = new ArrayList();
+				list = new ArrayList();
 				try {
-					llist = provider.getLookupList(session.getLanguage(), lcode);
+					list = provider.getLookupList(session.getLanguage(), lcode);
 				} catch (Exception e) {
 					throw new IOException(e.getMessage());
 				}
-				if(llist!=null){
-					Iterator it = llist.iterator();
-					while(it.hasNext()){
-						JSONObject json = new JSONObject((CompositeMap)it.next());
-						dataList.put(json);					
-					}
-				}
+//				if(llist!=null){
+//					Iterator it = llist.iterator();
+//					while(it.hasNext()){
+//						JSONObject json = new JSONObject((CompositeMap)it.next());
+//						dataList.put(json);					
+//					}
+//				}
 			}
 		}
-		
+		if(list != null&&!list.isEmpty()){
+			dataHead.addAll(((CompositeMap)list.get(0)).keySet());
+			addConfig(DataSetConfig.PROPERTITY_DATA_HEAD, new JSONArray(dataHead));
+			Iterator dit = list.iterator();
+			while(dit.hasNext()){
+				CompositeMap item = (CompositeMap)dit.next();
+				JSONArray json = new JSONArray();
+				Iterator it = dataHead.iterator();
+				while(it.hasNext()){
+					json.put(item.get(it.next()));
+				}
+				dataList.put(json);
+			}						
+		}
 		if(fieldList.length()!=0)addConfig(DataSetConfig.PROPERTITY_FIELDS, fieldList);
 		if(dataList.length()!=0)addConfig(DataSetConfig.PROPERTITY_DATAS, dataList);
 		if(!"".equals(dsc.getQueryDataSet()))addConfig(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
