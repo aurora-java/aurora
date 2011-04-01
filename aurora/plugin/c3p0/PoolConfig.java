@@ -51,22 +51,8 @@ public class PoolConfig {
 	
 	public Boolean getTestConnectionOnCheckin(){
 		return (Boolean)config.get("testConnectionOnCheckin");
-	}
-	
-//	public Long getExpirationTime() {
-//		return (Long)config.get("expirationTime");
-//	}
-//	public void setExpirationTime(Long expirationTime) {
-//		if(expirationTime!=null)
-//			config.put("expirationTime", expirationTime);		
-//	}
-//	public Long getSleepTime() {
-//		return (Long)config.get("sleepTime");		
-//	}
-//	public void setSleepTime(Long sleepTime) {
-//		if(sleepTime!=null)
-//			config.put("sleepTime", sleepTime);		
-//	}
+	}	
+
 	public Integer getMaxSize() {
 		return (Integer)config.get("maxPoolSize");		
 	}
@@ -80,16 +66,7 @@ public class PoolConfig {
 	public void setMinSize(Integer minSize) {
 		if(minSize!=null)
 			config.put("minPoolSize", minSize);			
-	}
-	
-	public void setAutomaticTestTable(String table){
-		if(table!=null)
-			config.put("automaticTestTable", table);		
-	}
-	
-	public String getAutomaticTestTable(){
-		return (String)config.get("automaticTestTable");	
-	}
+	}	
 	
 	public String getPreferredTestQuery(){
 		return (String)config.get("preferredTestQuery");
@@ -102,20 +79,7 @@ public class PoolConfig {
 			config.put("preferredTestQuery", mPreferredTestQuery);
 		
 	}
-//	public Integer getDeadlockMaxWait() {		
-//		return (Integer)config.get("deadlockMaxWait");		
-//	}
-//	public void setDeadlockMaxWait(Integer deadlockMaxWait) {
-//		if(deadlockMaxWait!=null)
-//			config.put("deadlockMaxWait", deadlockMaxWait);		
-//	}
-//	public Integer getDeadlockRetryWait() {
-//		return (Integer)config.get("deadlockRetryWait");			
-//	}
-//	public void setDeadlockRetryWait(Integer deadlockRetryWait) {
-//		if(deadlockRetryWait!=null)
-//			config.put("deadlockRetryWait", deadlockRetryWait);		
-//	}
+
 	public HashMap getConfig(){
 		return this.config;
 	}
