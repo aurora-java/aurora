@@ -37,6 +37,15 @@ public class PoolConfig {
 		if(minSize!=null)
 			config.put("minPoolSize", minSize);			
 	}
+	
+	public void setAutomaticTestTable(String table){
+		if(table!=null)
+			config.put("automaticTestTable", table);		
+	}
+	
+	public String getAutomaticTestTable(){
+		return (String)config.get("automaticTestTable");	
+	}
 //	public Integer getDeadlockMaxWait() {		
 //		return (Integer)config.get("deadlockMaxWait");		
 //	}
