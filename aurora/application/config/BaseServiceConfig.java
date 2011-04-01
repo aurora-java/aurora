@@ -12,7 +12,7 @@ import aurora.application.Namespace;
 public class BaseServiceConfig extends DynamicObject {
 
     public static final String KEY_PARAMETER = "parameter";
-    private static final String KEY_INIT_PROCEDURE = "init-procedure";
+    public static final String KEY_INIT_PROCEDURE = "init-procedure";
     
     Configuration       mServiceConfig;
     
