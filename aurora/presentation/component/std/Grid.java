@@ -343,6 +343,8 @@ public class Grid extends Component {
 							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
+						}else if("clear".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}
 					}
 				}
