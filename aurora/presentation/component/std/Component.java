@@ -42,9 +42,9 @@ public class Component {
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 
-		addStyleSheet(session, context, "core/Aurora-all.css");
+		addStyleSheet(session, context, "core/Aurora-all-min.css");
 		addJavaScript(session, context, "core/ext-core-min.js");
-		addJavaScript(session, context, "core/Aurora-all.js");
+		addJavaScript(session, context, "core/Aurora-all-min.js");
 		addJavaScript(session, context, "locale/aurora-lang-" + session.getLanguage() + ".js");
 
 	}
