@@ -46,6 +46,8 @@
                 <ss:attribute name="queryExpression"/>
                 <ss:attribute name="displayWidth" document="显示字段的宽度"/>
                 <ss:attribute name="queryWidth" document="查询字段的宽度"/>
+                <ss:attribute name="multiLanguage" document="是否属于多语言字段"/>
+                <ss:attribute name="multiLanguageDescField" document="多语言关联的字段"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:ref-field">
