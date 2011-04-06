@@ -56,7 +56,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid-min.js");
+		addJavaScript(session, context, "grid/Grid.js");
 	}
 	
 	
@@ -247,6 +247,7 @@ public class Grid extends Component {
 					if(isCheckBoxEditor(editor, view)){
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
 					}
+					toJSONForParentColumn(column);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);
 				}
@@ -270,7 +271,16 @@ public class Grid extends Component {
 		addConfig(ComponentConfig.PROPERTITY_HEIGHT, map.get(ComponentConfig.PROPERTITY_HEIGHT));
 		map.put(CONFIG, getConfigString());
 	}
-	
+	private void toJSONForParentColumn(CompositeMap column){
+		CompositeMap parent=null;
+		if(column.get("_parent") instanceof CompositeMap){
+			parent=(CompositeMap) column.get("_parent");
+			if(parent!=null){
+				toJSONForParentColumn(parent);
+				column.put("_parent", new JSONObject(parent));
+			}
+		}
+	}
 	private void createGridEditors(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -345,6 +355,8 @@ public class Grid extends Component {
 							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
+						}else if("excel".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
 						}
 					}
 				}
