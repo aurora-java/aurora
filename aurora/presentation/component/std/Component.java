@@ -258,6 +258,10 @@ public class Component {
 	protected String getConfigString() {
 		return config.toString();
 	}
+	
+	protected JSONObject getConfig(){
+		return config;
+	}
 
 	protected String getFieldPrompt(BuildSession session, CompositeMap field, String dataset) {
 		String label = field.getString(ComponentConfig.PROPERTITY_PROMPT, "");

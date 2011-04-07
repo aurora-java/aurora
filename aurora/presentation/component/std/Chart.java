@@ -24,9 +24,29 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_CHART_TYPE = "type";
 	private static final String PROPERTITY_CHART_BORDERWIDTH = "borderWidth";//
-	private static final String PROPERTITY_CHART_BORDERRADIUS = "borderRadius";//
 	private static final String PROPERTITY_CHART_BORDERCOLOR = "borderColor";//
-	private static final String PROPERTITY_CHART_SHADOW = "shadow";//
+	private static final String PROPERTITY_CHART_BORDERRADIUS = "borderRadius";//
+	private static final String PROPERTITY_CHART_CLASS_NAME = "className";
+	private static final String PROPERTITY_CHART_IGNORE_HIDDEN_SERIES = "ignoreHiddenSeries"; 
+	private static final String PROPERTITY_CHART_INVERTED = "inverted";
+	private static final String PROPERTITY_CHART_MARGIN_TOP = "marginTop"; 
+	private static final String PROPERTITY_CHART_MARGIN_RIGHT = "marginRight"; 
+	private static final String PROPERTITY_CHART_MARGIN_LEFT = "marginLeft"; 
+	private static final String PROPERTITY_CHART_MARGIN_BOTTOM = "marginBottom"; 
+	private static final String PROPERTITY_CHART_PLOT_BACKGROUND_COLOR = "plotBackgroundColor"; 
+	private static final String PROPERTITY_CHART_PLOT_BACKGROUND_IMAGE = "plotBackgroundImage";
+	private static final String PROPERTITY_CHART_PLOT_BORDER_COLOR = "plotBorderColor";
+	private static final String PROPERTITY_CHART_PLOT_BORDER_WIDTH = "plotBorderWidth";  
+	private static final String PROPERTITY_CHART_PLOT_SHADOW = "plotShadow";
+	private static final String PROPERTITY_CHART_REFLOW = "reflow";
+	private static final String PROPERTITY_CHART_SHADOW = "shadow";
+	private static final String PROPERTITY_CHART_SHOW_AXES = "showAxes"; 
+	private static final String PROPERTITY_CHART_SPACING_TOP = "spacingTop"; 
+	private static final String PROPERTITY_CHART_SPACING_RIGHT = "spacingRight"; 
+	private static final String PROPERTITY_CHART_SPACING_BOTTOM = "spacingBottom";
+	private static final String PROPERTITY_CHART_SPACING_LEFT = "spacingLeft";
+	private static final String PROPERTITY_CHART_STYLE = "chartStyle"; 
+	private static final String PROPERTITY_CHART_ZOOM_TYP = "zoomType";  
 	
 	private static final String PROPERTITY_LABELS = "labels";
 	private static final String PROPERTITY_LABELS_STYLE = "style";
@@ -178,7 +198,7 @@ public class Chart extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addJavaScript(session, context, "chart/Adapter-min.js");
-		addJavaScript(session, context, "chart/Chart-min.js");
+		addJavaScript(session, context, "chart/BaseChart-min.js");
 		addJavaScript(session, context, "chart/themes/grid.js");
 		addJavaScript(session, context, "chart/Exporting-min.js");
 	}
@@ -188,6 +208,7 @@ public class Chart extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();	
+		CompositeMap view = context.getView();
 		
 		processChartConfig(context);
 		processTitle(context);
@@ -198,6 +219,13 @@ public class Chart extends Component {
 		createAxis(context,PROPERTITY_AXIS_X);
 		createAxis(context,PROPERTITY_AXIS_Y);
 		
+		JSONObject config = getConfig();
+		config.remove(ComponentConfig.PROPERTITY_ID);
+		if(view.getString(ComponentConfig.PROPERTITY_HEIGHT) == null)
+		config.remove(ComponentConfig.PROPERTITY_HEIGHT);
+		if(view.getString(ComponentConfig.PROPERTITY_WIDTH) == null)
+		config.remove(ComponentConfig.PROPERTITY_WIDTH);
+		config.remove("listeners");
 		map.put(CONFIG, getConfigString());
 	}
 	
@@ -265,7 +293,27 @@ public class Chart extends Component {
 		putIntCfg(view,PROPERTITY_CHART_BORDERWIDTH,chart);
 		putIntCfg(view,PROPERTITY_CHART_BORDERRADIUS,chart);
 		putStringCfg(view,PROPERTITY_CHART_BORDERCOLOR,chart);
+		putStringCfg(view, PROPERTITY_CHART_CLASS_NAME, chart);
+		putBooleanCfg(view, PROPERTITY_CHART_IGNORE_HIDDEN_SERIES, chart);
+		putBooleanCfg(view, PROPERTITY_CHART_INVERTED, chart);
+		putIntCfg(view,PROPERTITY_CHART_MARGIN_TOP,chart);
+		putIntCfg(view,PROPERTITY_CHART_MARGIN_RIGHT,chart);
+		putIntCfg(view,PROPERTITY_CHART_MARGIN_LEFT,chart);
+		putIntCfg(view,PROPERTITY_CHART_MARGIN_BOTTOM,chart);
+		putStringCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_COLOR, chart);
+		putStringCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_IMAGE, chart);
+		putStringCfg(view, PROPERTITY_CHART_PLOT_BORDER_COLOR, chart);
+		putIntCfg(view,PROPERTITY_CHART_PLOT_BORDER_WIDTH,chart);
+		putBooleanCfg(view, PROPERTITY_CHART_PLOT_SHADOW, chart);
+		putBooleanCfg(view, PROPERTITY_CHART_REFLOW, chart);
 		putBooleanCfg(view, PROPERTITY_CHART_SHADOW, chart);
+		putBooleanCfg(view, PROPERTITY_CHART_SHOW_AXES, chart);
+		putIntCfg(view,PROPERTITY_CHART_SPACING_TOP,chart);
+		putIntCfg(view,PROPERTITY_CHART_SPACING_RIGHT,chart);
+		putIntCfg(view,PROPERTITY_CHART_SPACING_BOTTOM,chart);
+		putIntCfg(view,PROPERTITY_CHART_SPACING_LEFT,chart);
+		putStyleCfg(view,PROPERTITY_CHART_STYLE,chart);
+		putStringCfg(view, PROPERTITY_CHART_ZOOM_TYP, chart);
 		putEvents(context,view,chart);
 		
 		addConfig("chart", new JSONObject(chart));
