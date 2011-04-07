@@ -36,6 +36,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_SELECTION_MODEL = "selectionmodel";
 	public static final String PROPERTITY_SELECT_FUNCTION = "selectfunction";
 	public static final String PROPERTITY_VALID_LISTENER = "validlistener";
+	public static final String PROPERTITY_AUTO_PAGE_SIZE = "autopagesize";
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
 	public static final int DEFAULT_PAGE_SIZE = 10;
@@ -165,7 +166,12 @@ public class DataSetConfig extends ComponentConfig {
     public void setValidListener(String listener){
     	putString(PROPERTITY_VALID_LISTENER, listener);
     }
-    
+    public void setAutoPageSize(boolean autoPageSize){
+		putBoolean(PROPERTITY_AUTO_PAGE_SIZE, autoPageSize);
+	}
+	public boolean isAutoPageSize(){
+		return getBoolean(PROPERTITY_AUTO_PAGE_SIZE, false);
+	}    
     public void setCanQuery(boolean canquery){
 		putBoolean(PROPERTITY_CAN_QUERY, canquery);
 	}
