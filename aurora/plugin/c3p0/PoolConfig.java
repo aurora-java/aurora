@@ -11,10 +11,24 @@ public class PoolConfig {
 	int mIdleConnectionTestPeriod=120;
 	//定义所有连接测试都执行的测试语句
 	String mPreferredTestQuery="select 1 from dual";
+	//最大空闲时间,180秒内未使用则连接被丢弃，单位秒
+	int mMaxIdleTime=180;
 	HashMap config;
 	
 	public PoolConfig(){
 		config=new HashMap();
+	}
+	
+	public void setMaxIdleTime(Integer value){
+		if(value!=null){
+			config.put("maxIdleTime", value);
+		}else{
+			config.put("maxIdleTime", new Integer(mMaxIdleTime));
+		}
+	}
+	
+	public Integer getMaxIdleTime(){
+		return (Integer)config.get("maxIdleTime");
 	}
 	
 	public void setIdleConnectionTestPeriod(Integer value){
