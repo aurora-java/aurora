@@ -1,0 +1,4 @@
+1.1.6
+=====
+
+1.screen/svc源文件，BM，UI控件的缺省template现在支持缓存
