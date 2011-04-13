@@ -1,9 +1,13 @@
+1.1.6
+=====
+
+2011-04-12
+------------------------------------
+screen/svc源文件，BM，UI控件的缺省template现在支持缓存 － 周凡
+
 2011-04-13
 ------------------------------------
 * 增加了导出JPG,PNG,PDF的导出类ExportChartServlet
 * 增加了Chart标签
 
-1.1.6
-=====
-
-1.screen/svc源文件，BM，UI控件的缺省template现在支持缓存 － 周凡
+* 修正screen-include时，无法显示BM带来的prompt的bug － 周凡
