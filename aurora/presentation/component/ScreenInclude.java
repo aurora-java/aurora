@@ -88,13 +88,19 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         if(screen_name==null)
             throw new ConfigurationError("'screen' property must be set for <screen-include>");
         screen_name = session.parseString(screen_name, view_context.getModel());
+        
+        CompositeMap root = view_context.getModel().getRoot();
+        ServiceInstance old_inst = ServiceInstance.getInstance(root);
         // Run service
         try{
             HttpServiceInstance sub_instance = createSubInstance(screen_name, view_context);
+            ServiceInstance.setInstance(root, sub_instance);
             Procedure proc = AbstractFacadeServlet.getProcedureToRun(mProcedureManager, sub_instance);
             sub_instance.invoke(proc);
         }catch(Exception ex){
             throw new ViewCreationException("Error when invoking screen config file +" + screen_name,ex);            
+        }finally{
+            ServiceInstance.setInstance(root, old_inst);
         }
     }
 
