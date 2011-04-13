@@ -238,6 +238,7 @@ public class Grid extends Component {
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
 					if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
+					if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
 					
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
@@ -276,6 +277,7 @@ public class Grid extends Component {
 		if(column.get("_parent") instanceof CompositeMap){
 			parent=(CompositeMap) column.get("_parent");
 			if(parent!=null){
+				if(!parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))parent.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
 				toJSONForParentColumn(parent);
 				column.put("_parent", new JSONObject(parent));
 			}

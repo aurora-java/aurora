@@ -17,6 +17,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_FOOTER_RENDERER = "footerrenderer";
 	public static final String PROPERTITY_SORTABLE = "sortable";
 	public static final String PROPERTITY_SORTABLE_FIELD = "sortfield";
+	public static final String PROPERTITY_FOR_EXPORT = "forexport";
 	
 	private static final String DEFAULT_ALIGN = "left";
 	
@@ -87,6 +88,14 @@ public class GridColumnConfig extends ComponentConfig {
 	
 	public void setSortField(String field){
 		putString(PROPERTITY_SORTABLE_FIELD, field);
+	}
+	
+	public boolean isForExport(){
+		return getBoolean(PROPERTITY_FOR_EXPORT,true);		
+	}
+	
+	public void setForExport(boolean forExport){
+		putBoolean(PROPERTITY_FOR_EXPORT, forExport);
 	}
 	
 	public boolean isResizable(){
