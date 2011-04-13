@@ -14,13 +14,15 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
 
 public class Chart extends Component {
 	
 	public static String INPUT_TYPE = "inputtype";
 	public static String DEFAULT_INPUT_TYPE = "input";
-	
+	private static final String PROPERTITY_SERIES_NAME = "seriesName";
+	private static final String PROPERTITY_THEME = "chartTheme";
 	
 	private static final String PROPERTITY_CHART_TYPE = "type";
 	private static final String PROPERTITY_CHART_BORDERWIDTH = "borderWidth";//
@@ -46,7 +48,8 @@ public class Chart extends Component {
 	private static final String PROPERTITY_CHART_SPACING_BOTTOM = "spacingBottom";
 	private static final String PROPERTITY_CHART_SPACING_LEFT = "spacingLeft";
 	private static final String PROPERTITY_CHART_STYLE = "chartStyle"; 
-	private static final String PROPERTITY_CHART_ZOOM_TYP = "zoomType";  
+	private static final String PROPERTITY_CHART_ZOOM_TYP = "zoomType";
+	
 	
 	private static final String PROPERTITY_LABELS = "labels";
 	private static final String PROPERTITY_LABELS_STYLE = "style";
@@ -197,10 +200,14 @@ public class Chart extends Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
+		CompositeMap view = context.getView();
+		String theme = view.getString(PROPERTITY_THEME.toLowerCase());
+		if(theme==null)theme = "grid";
+		
 		addJavaScript(session, context, "chart/Adapter-min.js");
-		addJavaScript(session, context, "chart/BaseChart-min.js");
-		addJavaScript(session, context, "chart/themes/grid.js");
-		addJavaScript(session, context, "chart/Exporting-min.js");
+		addJavaScript(session, context, "chart/Chart-min.js");
+		addJavaScript(session, context, "chart/themes/"+theme+".js");
+		addJavaScript(session, context, "chart/Exporting.js");
 	}
 	
 	protected void addEvent(String id, String eventName, String handler){}
@@ -209,6 +216,16 @@ public class Chart extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();	
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
+		
+		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+		
+		String value = view.getString(PROPERTITY_SERIES_NAME.toLowerCase());
+		if(value==null)value = "name";
+		addConfig(PROPERTITY_SERIES_NAME, value);
+		map.put("contextPath", model.getObject("/request/@context_path").toString());
+		
 		
 		processChartConfig(context);
 		processTitle(context);
@@ -220,7 +237,7 @@ public class Chart extends Component {
 		createAxis(context,PROPERTITY_AXIS_Y);
 		
 		JSONObject config = getConfig();
-		config.remove(ComponentConfig.PROPERTITY_ID);
+		
 		if(view.getString(ComponentConfig.PROPERTITY_HEIGHT) == null)
 		config.remove(ComponentConfig.PROPERTITY_HEIGHT);
 		if(view.getString(ComponentConfig.PROPERTITY_WIDTH) == null)
@@ -233,6 +250,7 @@ public class Chart extends Component {
 		String value = view.getString(key.toLowerCase());
 		if(value!=null) map.put(key, value);		
 	}
+	
 	
 	private void putIntCfg(CompositeMap view,String key, Map map){
 		Integer value = view.getInt(key.toLowerCase());
@@ -287,7 +305,7 @@ public class Chart extends Component {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();	
 		
-		chart.put("renderTo", (String)map.get(ComponentConfig.PROPERTITY_ID));
+		chart.put("renderTo", (String)map.get(ComponentConfig.PROPERTITY_ID) + "_c");
 		
 		putStringCfg(view,PROPERTITY_CHART_TYPE,chart);
 		putIntCfg(view,PROPERTITY_CHART_BORDERWIDTH,chart);
@@ -314,6 +332,8 @@ public class Chart extends Component {
 		putIntCfg(view,PROPERTITY_CHART_SPACING_LEFT,chart);
 		putStyleCfg(view,PROPERTITY_CHART_STYLE,chart);
 		putStringCfg(view, PROPERTITY_CHART_ZOOM_TYP, chart);
+		
+		
 		putEvents(context,view,chart);
 		
 		addConfig("chart", new JSONObject(chart));
