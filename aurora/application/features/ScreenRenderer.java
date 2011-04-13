@@ -173,7 +173,10 @@ public class ScreenRenderer {
             session.buildView(mService.getServiceContext().getModel(), mScreen);
             
         }else{
+            IService oldService = (IService)session.getInstanceOfType(IService.class);
+            session.setInstanceOfType(IService.class, mService);
             session.buildViewFromBegin(mService.getServiceContext().getModel(), mScreen);
+            session.setInstanceOfType(IService.class, oldService);
         }
 
         session.getWriter().flush();
