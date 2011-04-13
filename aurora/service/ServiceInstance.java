@@ -34,10 +34,15 @@ public class ServiceInstance implements IService {
     protected ProcedureRunner mRunner;
 
     private Object[] mEventArgs = { this };
+    
+    static final String INSTANCE_KEY = RuntimeContext.getTypeKey(IService.class);
 
     public static ServiceInstance getInstance(CompositeMap context) {
-        return (ServiceInstance) context.get(RuntimeContext
-                .getTypeKey(IService.class));
+        return (ServiceInstance) context.get(INSTANCE_KEY);
+    }
+    
+    public static void setInstance( CompositeMap context, IService inst ){
+        context.put(INSTANCE_KEY, inst);
     }
 
     public ServiceInstance(String name, IProcedureManager proc_manager) {
