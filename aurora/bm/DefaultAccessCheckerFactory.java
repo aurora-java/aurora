@@ -20,6 +20,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.service.ServiceThreadLocal;
 
 public class DefaultAccessCheckerFactory implements
 		IBusinessModelAccessCheckerFactory, IGlobalInstance {
@@ -72,8 +73,9 @@ public class DefaultAccessCheckerFactory implements
 	public IBusinessModelAccessChecker getChecker(String model_name,
 			CompositeMap session_context) throws Exception {
 		Set hs = new HashSet();
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		BusinessModelService service = mServiceFactory
-				.getModelService(getCheckServiceName());
+				.getModelService(getCheckServiceName(),context);
 		session_context.put("bm_name", model_name);
 		CompositeMap resultMap = service.queryAsMap(session_context,
 				FetchDescriptor.fetchAll());
