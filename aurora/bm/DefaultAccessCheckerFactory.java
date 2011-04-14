@@ -20,11 +20,11 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceThreadLocal;
 
-public class DefaultAccessCheckerFactory implements
-		IBusinessModelAccessCheckerFactory, IGlobalInstance {
-
+public class DefaultAccessCheckerFactory implements IBusinessModelAccessCheckerFactory, IGlobalInstance {
+	private DatabaseServiceFactory factory;
 	/**
 	 * @param serviceFactory
 	 */
@@ -73,28 +73,32 @@ public class DefaultAccessCheckerFactory implements
 	public IBusinessModelAccessChecker getChecker(String model_name,
 			CompositeMap session_context) throws Exception {
 		Set hs = new HashSet();
-		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
-		BusinessModelService service = mServiceFactory
-				.getModelService(getCheckServiceName(),context);
-		session_context.put("bm_name", model_name);
-		CompositeMap resultMap = service.queryAsMap(session_context,
-				FetchDescriptor.fetchAll());
-		if (resultMap != null) {
-			Iterator it = resultMap.getChildIterator();
-			if(it==null)
-				return new DefaultAccessChecker(hs);
-			while (it.hasNext()) {
-				CompositeMap record = (CompositeMap) it.next();
-				for (int i = 0, l = optionFieldarryay.length; i < l; i++) {
-					if (record.getString(optionFieldarryay[i]).equals(
-							getValueFlag())) {
-						hs.add(valueFieldarryay[i]);
+		SqlServiceContext context = factory.createContextWithConnection();
+		try{
+	//		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+			BusinessModelService service = mServiceFactory.getModelService(getCheckServiceName(),context.getObjectContext());
+			session_context.put("bm_name", model_name);
+			CompositeMap resultMap = service.queryAsMap(session_context,FetchDescriptor.fetchAll());
+			if (resultMap != null) {
+				Iterator it = resultMap.getChildIterator();
+				if(it==null)
+					return new DefaultAccessChecker(hs);
+				while (it.hasNext()) {
+					CompositeMap record = (CompositeMap) it.next();
+					for (int i = 0, l = optionFieldarryay.length; i < l; i++) {
+						if (record.getString(optionFieldarryay[i]).equals(
+								getValueFlag())) {
+							hs.add(valueFieldarryay[i]);
+						}
 					}
 				}
 			}
-		}
-	
-		return new DefaultAccessChecker(hs);
+			return new DefaultAccessChecker(hs);
+		} finally {
+            if (context != null)
+                context.freeConnection();
+        }
+		
 	}
 
 	public String getCheckServiceName() {
@@ -106,7 +110,7 @@ public class DefaultAccessCheckerFactory implements
 	}
 
 	public void onInitialize() throws Exception {
-
+		factory = (DatabaseServiceFactory)registry.getInstanceOfType(DatabaseServiceFactory.class);
 		mServiceFactory = (DatabaseServiceFactory) registry
 				.getInstanceOfType(DatabaseServiceFactory.class);
 	}
