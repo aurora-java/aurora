@@ -59,7 +59,7 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 				map.put("lineId", errLineId);
 	            
 				DatabaseServiceFactory svcFactory = (DatabaseServiceFactory) engine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
-				BusinessModelService sqlService = svcFactory.getModelService(SERVICE_NAME);//(name, context_map)getSqlService
+				BusinessModelService sqlService = svcFactory.getModelService(SERVICE_NAME,context.getObjectContext());//(name, context_map)getSqlService
 				CompositeMap resultMap = sqlService.queryAsMap(map, FetchDescriptor.getDefaultInstance());
 	
 				CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);

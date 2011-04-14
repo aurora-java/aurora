@@ -14,7 +14,6 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
 
 public class Chart extends Component {
@@ -198,6 +197,68 @@ public class Chart extends Component {
 	private static final String PROPERTITY_AXIS_LABELS_X = "x";	
 	private static final String PROPERTITY_AXIS_LABELS_Y = "y";	
 	
+	
+	private static final String PROPERTITY_PLOTOPTIONS = "plotOptions";
+	
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER = "marker";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_ENABLED = "enabled";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR = "fillColor";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR = "lineColor";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH = "lineWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_RADIUS = "radius";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_STATES = "states";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL = "symbol";
+	
+	
+	private static final String PROPERTITY_PLOTOPTIONS_DASHSTYLE = "dashStyle"; 
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS = "dataLabels";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN = "align";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR = "color";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED = "enabled";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER = "formatter";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION = "rotation"; 
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE = "style"; 
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_X = "x";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_Y = "y";	
+	
+	private static final String PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT = "allowPointSelect";
+	private static final String PROPERTITY_PLOTOPTIONS_ANIMATION = "animation";
+	private static final String PROPERTITY_PLOTOPTIONS_COLOR = "color"; 
+	private static final String PROPERTITY_PLOTOPTIONS_CURSOR = "cursor";
+	private static final String PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING = "enableMouseTracking"; 
+	//events 
+	private static final String PROPERTITY_PLOTOPTIONS_ID = "id"; 
+	private static final String PROPERTITY_PLOTOPTIONS_LINEWIDTH = "lineWidth"; 	
+	private static final String PROPERTITY_PLOTOPTIONS_POINT = "point";
+	private static final String PROPERTITY_PLOTOPTIONS_POINTSTART = "pointStart";
+	private static final String PROPERTITY_PLOTOPTIONS_POINTINTERVAL = "pointInterval";
+	private static final String PROPERTITY_PLOTOPTIONS_SELECTED = "selected";
+	private static final String PROPERTITY_PLOTOPTIONS_SHADOW = "shadow";
+	private static final String PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX = "showCheckbox";
+	private static final String PROPERTITY_PLOTOPTIONS_SHOWINLEGEND = "showInLegend";
+	private static final String PROPERTITY_PLOTOPTIONS_STACKING = "stacking";
+	private static final String PROPERTITY_PLOTOPTIONS_STATES = "states";
+	private static final String PROPERTITY_PLOTOPTIONS_STICKYTRACKING = "stickyTracking";
+	private static final String PROPERTITY_PLOTOPTIONS_VISIBLE = "visible";
+	private static final String PROPERTITY_PLOTOPTIONS_ZINDEX = "zIndex";
+	private static final String PROPERTITY_PLOTOPTIONS_STEP = "step";
+	
+	
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_ALLOWPOINTSELECT = "allowPointSelect";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_ANIMATION = "animation";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLOR = "color"; 
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_CURSOR = "cursor"; 
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DASHSTYLE = "dashStyle"; 
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS = "dataLabels";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ALIGN = "align";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_COLOR = "color";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ENABLED = "enabled";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_FORMATTER = "formatter";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ROTATION = "rotation"; 
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_STYLE = "style"; 
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_X = "x";
+//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_Y = "y";
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		CompositeMap view = context.getView();
@@ -231,6 +292,7 @@ public class Chart extends Component {
 		processTitle(context);
 		processSubTitle(context);
 		processLegend(context);
+		processPlotOptions(context);
 		processTooltip(context);
 		processLabels(context);
 		createAxis(context,PROPERTITY_AXIS_X);
@@ -428,6 +490,90 @@ public class Chart extends Component {
 		}
 		if(!cfg.isEmpty())
 		addConfig("legend", new JSONObject(cfg));
+	}
+	
+	private void processPlotOptions(ViewContext context) {
+		Map cfg = new HashMap();
+		CompositeMap cview = context.getView();
+		CompositeMap view = cview.getChild(PROPERTITY_PLOTOPTIONS);
+		
+		if(view !=null) {
+			List children = view.getChilds();
+			if(children!=null){
+				Iterator it = children.iterator();
+				while(it.hasNext()){
+					CompositeMap option = (CompositeMap)it.next();
+					String name = option.getName().toLowerCase();
+					if("line".equals(name)){
+						cfg.put(name, processPlotLine(option, context));
+					}
+					
+				}
+				
+			}
+		}
+		if(!cfg.isEmpty())
+		addConfig(PROPERTITY_PLOTOPTIONS, new JSONObject(cfg));
+	}
+	
+	private JSONObject processPlotLine(CompositeMap view, ViewContext context){
+		Map cfg = new HashMap();		
+		
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg); 
+		processPlotDataLabels(view,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
+		processPlotMarker(view,cfg);
+		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg);
+		//TODO:PROPERTITY_PLOTOPTIONS_LINE_STATES
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_STEP, cfg);
+		return new JSONObject(cfg);
+	}
+	
+	private void processPlotMarker(CompositeMap parent, Map map){
+		Map cfg = new HashMap();	
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_MARKER);
+		if(view != null){
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_ENABLED, cfg);			
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR, cfg);
+			putIntCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH, cfg);			
+			putIntCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_RADIUS, cfg);
+			//TODO:PROPERTITY_PLOTOPTIONS_MARKER_STATES
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg);
+			map.put(PROPERTITY_PLOTOPTIONS_MARKER, new JSONObject(cfg));
+		}
+	}
+	
+	private void processPlotDataLabels(CompositeMap parent, Map map){
+		Map cfg = new HashMap();	
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_DATALABELS);
+		if(view != null){
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN,cfg);
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR,cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED, cfg);
+			putFunctionCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER, cfg);
+			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION, cfg);
+			putStyleCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE, cfg);
+			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_X, cfg);
+			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_Y, cfg);
+			map.put(PROPERTITY_PLOTOPTIONS_DATALABELS, new JSONObject(cfg));
+		}
 	}
 	
 	private void processTooltip(ViewContext context){

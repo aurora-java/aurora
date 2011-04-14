@@ -10,6 +10,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.service.ServiceThreadLocal;
 
 /**
  * 
@@ -70,7 +71,8 @@ public class DatabaseBasedMessageProvider implements IMessageProvider,IGlobalIns
 	
 	private void init() throws Exception{
 		if(!inited){
-			BusinessModelService service = factory.getModelService(getDescModel());
+			CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+			BusinessModelService service = factory.getModelService(getDescModel(),context);
 			CompositeMap resultMap = service.queryAsMap(new HashMap(), FetchDescriptor.fetchAll());
 			cacheMessage(resultMap);
 			inited = true;
