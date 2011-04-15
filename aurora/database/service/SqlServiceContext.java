@@ -61,13 +61,19 @@ public class SqlServiceContext extends ServiceContext {
     public Set getAllConnection(){
         return (HashSet)super.get(KEY_DATABASE_ALL_CONNECTION);
     }
+    
+    private void addConnection( Connection conn ){
+        Set databaseAllConnection=getAllConnection();  
+        if(databaseAllConnection==null){
+            databaseAllConnection=new HashSet();  
+            super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
+        }
+        databaseAllConnection.add(conn);        
+    }
+    
     public void setConnection(Connection conn){
     	setInstanceOfType(Connection.class, conn);
-    	Set databaseAllConnection=getAllConnection();  
-    	if(databaseAllConnection==null)
-    		databaseAllConnection=new HashSet();    	
-    	databaseAllConnection.add(conn);    	  
-    	super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);
+    	addConnection(conn);
     }
    
     public Connection getConnection(){ 
@@ -76,11 +82,14 @@ public class SqlServiceContext extends ServiceContext {
     public void setNamedConnection(String name,Connection conn){
     	 String key = KEY_DATABASE_CONNECTION + "." + name;
     	 super.put(key, conn);
+    	 addConnection(conn);
+    	 /*
     	 Set databaseAllConnection=getAllConnection();    	
     	 if(databaseAllConnection==null)
      		databaseAllConnection=new HashSet();
     	 databaseAllConnection.add(conn);     	    
-     	 super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);  	
+     	 super.put(KEY_DATABASE_ALL_CONNECTION, databaseAllConnection);  
+     	 */	
     }
     
     public Connection getNamedConnection(String name) throws SQLException{
@@ -194,6 +203,7 @@ public class SqlServiceContext extends ServiceContext {
     			//logger.info("Close connection:"+conn);
     			DBUtil.closeConnection(conn);
     		}
-    	}        
+    	}
+    	setInstanceOfType(Connection.class, null);
     }
 }
