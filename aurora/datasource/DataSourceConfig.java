@@ -14,7 +14,6 @@ import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
-import aurora.plugin.c3p0.PoolConfig;
 import aurora.plugin.xapool.TransactionService;
 import aurora.plugin.xapool.XADataSources;
 import aurora.transaction.ITransactionService;
