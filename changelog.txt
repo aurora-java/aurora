@@ -10,7 +10,7 @@
 		minSize=1
 		maxSize=2
 		testConnectionOnCheckin=true
-		checkoutTimeout=100
+		checkoutTimeout=3000
 		idleConnectionTestPeriod=120
 		mMaxIdleTime=180
 		preferredTestQuery=select 1 from dual
