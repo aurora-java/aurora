@@ -1,19 +1,20 @@
 package aurora.datasource;
 
-import uncertain.composite.CompositeMap;
-import uncertain.ocm.IConfigurable;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
 
-public class DatabaseConnection implements IConfigurable {
+import uncertain.composite.CompositeMap;
+
+public class DatabaseConnection{
 	String name;
 	String driverClass;
 	String url;
 	String userName;
 	String password;	
 	boolean pool=true;	
-	CompositeMap config;
-	public DatabaseConnection(){
-		
-	}
+	CompositeMap config=null;	
 
 	public String getName() {
 		return name;
@@ -50,13 +51,25 @@ public class DatabaseConnection implements IConfigurable {
 	}
 	public void setPool(boolean pool) {
 		this.pool = pool;
-	}
-	
-	public void beginConfigure(CompositeMap config) {		
-		this.config=config;
-	}
-
-	public void endConfigure() {	
-		
 	}	
+	
+	public void addProperties(CompositeMap config){
+		String key;
+		String text=config.getText();		
+		Properties properties=new Properties();			
+		try {		
+			ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes("UTF-8"));			
+			properties.load(stream);
+		} catch (IOException e) {		
+			e.printStackTrace();
+		}
+		Enumeration enum=properties.propertyNames();
+		if(enum!=null){
+			this.config=new CompositeMap();	
+			while (enum.hasMoreElements()) {
+				key = (String) enum.nextElement();
+				this.config.put(key, properties.getProperty(key).trim());
+			}
+		}
+	}
 }

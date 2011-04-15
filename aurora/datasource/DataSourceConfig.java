@@ -45,8 +45,7 @@ public class DataSourceConfig {
 				dbConfig = mDatabaseConnections[i];
 				ds=XADataSources.unpooledXADataSource(dbConfig.getUrl(), dbConfig.getUserName(), dbConfig.getPassword(), dbConfig.getDriverClass(), tm);
 				if (dbConfig.getPool()) {
-					ds = XADataSources.pooledXADataSource((XADataSource)ds);		
-//					((StandardXAPoolDataSource)ds).getMaxSize()
+					ds = XADataSources.pooledXADataSource((XADataSource)ds);
 					mOCManager.populateObject(dbConfig.config, (StandardXAPoolDataSource)ds);					
 				}
 				registryDataSource(ds,dbConfig,dsProvider);
@@ -60,10 +59,8 @@ public class DataSourceConfig {
 			dbConfig=mDatabaseConnections[0];			
 			ds = DataSources.unpooledDataSource(dbConfig.getUrl(),dbConfig.getUserName(),dbConfig.getPassword());
 			((DriverManagerDataSource)ds).setDriverClass(dbConfig.getDriverClass());
-			if(dbConfig.getPool()){					
-				PoolConfig poolConfig=new PoolConfig();
-				mOCManager.populateObject(dbConfig.config, poolConfig);
-				ds=DataSources.pooledDataSource(ds, poolConfig.getConfig());				
+			if(dbConfig.getPool()&&dbConfig.config!=null){		
+				ds=DataSources.pooledDataSource(ds, dbConfig.config);				
 			}
 			registryDataSource(ds,dbConfig,dsProvider);
 		}		
