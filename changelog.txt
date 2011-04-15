@@ -5,6 +5,18 @@
 修改了datasource pool参数配置方式，取消默认值，一切参数默认值均为c3p0默认值。    - 邹磊
 参数值需要符合java properties规范，可以直接添加c3p0 pool参数到下面，和架构无关。
 修改后的方式如下：
+<!--
+	pool parameter:    		
+	maxSize;最大连接数
+	minSize;最小连接数			
+	建议属性：
+	testConnectionOnCheckin如果为true在取得连接的同时将校验连接的有效性，为true			
+	checkoutTimeout获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒，3000			
+	idleConnectionTestPeriod每隔多少时间检查一下pool中的空闲连接，单位秒，120			
+	preferredTestQuery=;定义所有连接测试都执行的测试语句,"select 1 from dual"
+	//最大空闲时间,180秒内未使用则连接被丢弃，单位秒
+	maxIdleTime=180;
+--> 
 <dc:database-connection driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.65:1521:masdev" userName="xxx" password="xxx" pool="true">
 	<dc:properties>
 		minSize=1
