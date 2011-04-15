@@ -1,5 +1,21 @@
 1.1.6
 =====
+2011-04-15
+--------------------------------------------
+修改了datasource pool参数配置方式，取消默认值，一切参数默认值均为c3p0默认值。    - 邹磊
+参数值需要符合java properties规范，可以直接添加c3p0 pool参数到下面，和架构无关。
+修改后的方式如下：
+<dc:database-connection driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.65:1521:masdev" userName="xxx" password="xxx" pool="true">
+	<dc:properties>
+		minSize=1
+		maxSize=2
+		testConnectionOnCheckin=true
+		checkoutTimeout=100
+		idleConnectionTestPeriod=120
+		mMaxIdleTime=180
+		preferredTestQuery=select 1 from dual
+	</dc:properties>
+</dc:database-connection>	
 
 2011-04-14
 ------------------------------------
