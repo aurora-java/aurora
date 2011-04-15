@@ -24,7 +24,7 @@
 		testConnectionOnCheckin=true
 		checkoutTimeout=3000
 		idleConnectionTestPeriod=120
-		mMaxIdleTime=180
+		maxIdleTime=180
 		preferredTestQuery=select 1 from dual
 	</dc:properties>
 </dc:database-connection>	
