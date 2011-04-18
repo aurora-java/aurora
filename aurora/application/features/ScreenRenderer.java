@@ -183,7 +183,7 @@ public class ScreenRenderer {
         return EventModel.HANDLE_NO_SAME_SEQUENCE;
     }
 
-    // TODO *** ABSOLUTELY FOOLISH ***
+    // TODO *** REFACTOR NEEDED ***
     private String getLanguageCode(ProcedureRunner runner,
             HttpServiceInstance service, String langPath, String defaultLange) {
         String langCode = "";
@@ -203,7 +203,7 @@ public class ScreenRenderer {
         return langCode;
     }
 
-    // TODO *** REALLY NECESSARY??? ***
+    // TODO *** REFACTOR NEEDED ***
     private String translateLanguageCode(String acceptLanguage) {
         String code = DEFAULT_LANG_CODE;
         if (acceptLanguage.indexOf("zh-cn") != -1) {
