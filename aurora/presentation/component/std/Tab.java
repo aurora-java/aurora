@@ -32,8 +32,8 @@ public class Tab extends Component {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "tab/Tab-min.css");
-		addJavaScript(session, context, "tab/Tab-min.js");
+		addStyleSheet(session, context, "tab/Tab.css");
+		addJavaScript(session, context, "tab/Tab.js");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
@@ -152,7 +152,7 @@ public class Tab extends Component {
 					if(disabled){
 						sb.append(" scroll-disabled");
 					}
-					sb.append("' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
+					sb.append("' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'><div style='height:26px;width:"+(width+6)+"px'>");
 					sb.append("<div class='strip-left "+tabClass+"'></div>");
 					sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>");
 					if(closeable){
@@ -160,7 +160,7 @@ public class Tab extends Component {
 					}
 					sb.append(prompt+"</div>");
 					sb.append("<div class='strip-right "+tabClass+"'></div>");
-					sb.append("</div>");
+					sb.append("</div></div>");
 					
 					tab.putBoolean(PROPERTITY_SELECTED, tab.getBoolean(PROPERTITY_SELECTED, false));
 					String ref = tab.getString(PROPERTITY_REF, "");
