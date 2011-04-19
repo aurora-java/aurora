@@ -38,7 +38,7 @@ public class ModelAccessChecker implements E_CheckBMAccess {
             throw new ConfigurationError("Must set 'BMCheckService' property in 'access-control-config' element in application config file");
 
         //BusinessModelService bmsc = mDbSvcFactory.getModelService(mBMCheckService);
-        BusinessModel bm_check = mDbSvcFactory.getModelFactory().getModel(mBMCheckService);
+        BusinessModel bm_check = mDbSvcFactory.getModelFactory().getModelForRead(mBMCheckService);
         if(bm_check==null)
             throw new ConfigurationError("Can't load BM check service "+mBMCheckService);            
     }
