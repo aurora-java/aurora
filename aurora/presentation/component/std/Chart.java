@@ -244,20 +244,20 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_STEP = "step";
 	
 	
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_ALLOWPOINTSELECT = "allowPointSelect";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_ANIMATION = "animation";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLOR = "color"; 
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_CURSOR = "cursor"; 
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DASHSTYLE = "dashStyle"; 
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS = "dataLabels";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ALIGN = "align";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_COLOR = "color";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ENABLED = "enabled";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_FORMATTER = "formatter";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_ROTATION = "rotation"; 
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_STYLE = "style"; 
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_X = "x";
-//	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_DATALABELS_Y = "y";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERCOLOR = "borderColor";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS = "borderRadius";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH = "borderWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT = "colorByPoint";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING = "groupPadding";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH = "minPointLength";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING = "pointPadding";
+	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTWIDTH = "pointWidth";
+	
+	
+	private static final String PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR = "fillColor";
+	private static final String PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY = "fillOpacity";
+	private static final String PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR = "lineColor";
+	private static final String PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD = "threshold";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -506,6 +506,14 @@ public class Chart extends Component {
 					String name = option.getName().toLowerCase();
 					if("line".equals(name)){
 						cfg.put(name, processPlotLine(option, context));
+					}else if("spline".equals(name)){
+						cfg.put(name, processPlotLine(option, context));
+					}else if("column".equals(name)){
+						cfg.put(name, processPlotColumn(option, context));
+					}else if("area".equals(name)){
+						cfg.put(name, processPlotArea(option, context));
+					}else if("areaspline".equals(name)){
+						cfg.put(name, processPlotArea(option, context));
 					}
 					
 				}
@@ -536,13 +544,121 @@ public class Chart extends Component {
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
 		//TODO:PROPERTITY_PLOTOPTIONS_LINE_STATES
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_STEP, cfg);
 		return new JSONObject(cfg);
+	}
+	
+	private JSONObject processPlotColumn(CompositeMap view, ViewContext context){
+		Map cfg = new HashMap();		
+		
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg); 
+		processPlotDataLabels(view,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
+		processPlotMarker(view,cfg);
+		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
+		//TODO:PROPERTITY_PLOTOPTIONS_LINE_STATES
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERCOLOR, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTWIDTH, cfg);
+		return new JSONObject(cfg);
+	}
+	
+	private JSONObject processPlotArea(CompositeMap view, ViewContext context){
+		Map cfg = new HashMap();		
+		
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg); 
+		processPlotDataLabels(view,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
+		processPlotMarker(view,cfg);
+		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
+		//TODO:PROPERTITY_PLOTOPTIONS_LINE_STATES
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
+		processFillColor(view,cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);		
+		return new JSONObject(cfg);
+	}
+	
+	private void processFillColor(CompositeMap parent, Map map){
+		Map cfg = new HashMap();	
+		String linearGradient = "linearGradient";
+		String stops = "stops";
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR);
+		if(view != null){
+			CompositeMap lg = view.getChild(linearGradient);
+			if(lg != null) {
+				List list = lg.getChilds();
+				if(list != null){
+					JSONArray array = new JSONArray();
+					Iterator it = list.iterator();
+					while(it.hasNext()){
+						CompositeMap v = (CompositeMap)it.next();
+						array.put(v.getInt("value"));
+					}
+					cfg.put(linearGradient, array);
+				}
+			}
+			
+			CompositeMap stps = view.getChild(stops);
+			if(stps != null){
+				List list = stps.getChilds();
+				if(list != null){
+					JSONArray array = new JSONArray();
+					Iterator it = list.iterator();
+					while(it.hasNext()){
+						CompositeMap v = (CompositeMap)it.next();
+						JSONArray item = new JSONArray();
+						item.put(v.getInt("name"));
+						item.put(v.getString("value"));
+						array.put(item);
+					}
+					cfg.put(stops, array);
+				}
+			}
+			map.put(PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR, new JSONObject(cfg));
+		}
 	}
 	
 	private void processPlotMarker(CompositeMap parent, Map map){
