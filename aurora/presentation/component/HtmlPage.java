@@ -88,6 +88,7 @@ public class HtmlPage implements IViewBuilder, ISingleton {
     public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
     	try{
         	String pageid = IDGenerator.getInstance().generate();
+        	//TODO Change title creation method
         	String title = session.getTitle();
         	title = session.getLocalizedPrompt(title);
         	view_context.getContextMap().put(TemplateRenderer.KEY_TITLE, title);
@@ -101,7 +102,8 @@ public class HtmlPage implements IViewBuilder, ISingleton {
         ITagCreatorRegistry reg = createTagCreatorRegistry(session, view_context );
         TextTemplate template = TemplateRenderer.getViewTemplate(session, view_context, reg);
         try{
-            template.createOutput(session.getWriter(), view_context.getContextMap());
+            //template.createOutput(session.getWriter(), view_context.getContextMap());
+            template.createOutput(session.getWriter(), view_context.getModel());
         }finally{
             template.clear();
         } 
