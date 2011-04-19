@@ -91,7 +91,8 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
         ITagCreatorRegistry reg = createTagCreatorRegistry(session, view_context );
         TextTemplate template = getViewTemplate(session, view_context, reg);
         try{
-            template.createOutput(session.getWriter(), view_context.getContextMap());
+            //template.createOutput(session.getWriter(), view_context.getContextMap());
+            template.createOutput(session.getWriter(), view_context.getModel());
         }finally{
             template.clear();
         }
