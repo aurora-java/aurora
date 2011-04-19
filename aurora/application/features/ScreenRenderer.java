@@ -131,7 +131,7 @@ public class ScreenRenderer {
             session.setContextPath(request.getContextPath());
 
             // set localized message provider for i18n
-            // TODO *** MUST BE REMOVED! ***
+            // TODO *** REFACTOR NEEDED ***
             CompositeMap dbProperties = databaseFactory.getProperties();
             if (dbProperties == null)
                 throw new Exception("Database Properties undifined");
@@ -144,7 +144,7 @@ public class ScreenRenderer {
                     .getLocalizedMessageProvider(language_code);
             session.setMessageProvider(lp);
 
-            // TODO *** MUST BE REMOVED! ***
+            // TODO *** REFACTOR NEEDED ***
             lookupProvider = (ILookupCodeProvider) mRegistry
                     .getInstanceOfType(ILookupCodeProvider.class);
             session.setLookupProvider(lookupProvider);
