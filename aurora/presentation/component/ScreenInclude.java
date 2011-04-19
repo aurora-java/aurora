@@ -10,12 +10,14 @@ import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.ConfigurationError;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
+import aurora.application.Namespace;
 import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
@@ -39,6 +41,14 @@ import aurora.service.http.HttpServiceInstance;
  */
 public class ScreenInclude implements IViewBuilder, ISingleton {
     
+    public static final String KEY_SCREEN = "screen";
+
+    public static CompositeMap  createScreenIncludeConfig( String screen_name ){
+        CompositeMap config = new CompositeMap("a", Namespace.AURORA_FRAMEWORK_NAMESPACE, "screen-include");
+        config.put(KEY_SCREEN, screen_name);
+        return config;
+    }
+    
     public static final String DEFAULT_INCLUDED_SCREEN_TEMPLATE = "defaultincludedscreentemplate";
     HttpServiceFactory      mServiceFactory;
     IProcedureManager       mProcedureManager;
@@ -46,7 +56,18 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
     String                  mDefaultPackage = "aurora.ui.std";
     String                  mDefaultIncludedScreenTemplate = "defaultIncludedScreen";
     
+    public ScreenInclude( IObjectRegistry reg ){
+        HttpServiceFactory fact = (HttpServiceFactory)reg.getInstanceOfType(HttpServiceFactory.class);
+        IProcedureManager  pm = (IProcedureManager)reg.getInstanceOfType(IProcedureManager.class);
+        IApplicationConfig config = (IApplicationConfig)reg.getInstanceOfType(IApplicationConfig.class);
+        init(fact, pm, config);
+    }
+    
     public ScreenInclude( HttpServiceFactory fact, IProcedureManager pm, IApplicationConfig config ){
+        init(fact, pm, config);
+    }
+    
+    private void init(HttpServiceFactory fact, IProcedureManager pm, IApplicationConfig config ){
         mServiceFactory = fact;
         mProcedureManager = pm;
         mApplicationConfig = (ApplicationConfig)config;
@@ -61,11 +82,12 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
             }
         }
     }
+
     
-    public HttpServiceInstance createSubInstance( String name, ViewContext view_context)
+    public HttpServiceInstance createSubInstance( String name, CompositeMap context)
         throws SAXException, IOException
     {
-        CompositeMap context = view_context.getModel().getRoot();
+        //CompositeMap context = view_context.getModel().getRoot();
         HttpServiceInstance parent = (HttpServiceInstance)ServiceInstance.getInstance(context);
         HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent);
         
@@ -79,28 +101,34 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         svc.getController().setProcedureName(ControllerProcedures.RUN_INCLUDED_SCREEN);
         return svc;
     }
-
-    public void buildView(BuildSession session, ViewContext view_context)
-            throws IOException, ViewCreationException {
-        // Get screen name
-        CompositeMap view = view_context.getView();
-        String screen_name = view.getString("screen");
+    
+    public void doScreenInclude( BuildSession session, CompositeMap view, CompositeMap root)
+        throws Exception
+    {
+        String screen_name = view.getString(KEY_SCREEN);
         if(screen_name==null)
             throw new ConfigurationError("'screen' property must be set for <screen-include>");
-        screen_name = session.parseString(screen_name, view_context.getModel());
+        screen_name = session.parseString(screen_name, root );
         
-        CompositeMap root = view_context.getModel().getRoot();
         ServiceInstance old_inst = ServiceInstance.getInstance(root);
         // Run service
         try{
-            HttpServiceInstance sub_instance = createSubInstance(screen_name, view_context);
+            HttpServiceInstance sub_instance = createSubInstance(screen_name, root);
             ServiceInstance.setInstance(root, sub_instance);
             Procedure proc = AbstractFacadeServlet.getProcedureToRun(mProcedureManager, sub_instance);
-            sub_instance.invoke(proc);
-        }catch(Exception ex){
-            throw new ViewCreationException("Error when invoking screen config file +" + screen_name,ex);            
+            sub_instance.invoke(proc);          
         }finally{
             ServiceInstance.setInstance(root, old_inst);
+        }        
+    }
+
+    public void buildView(BuildSession session, ViewContext view_context)
+            throws IOException, ViewCreationException {
+        CompositeMap view = view_context.getView();
+        try{
+            doScreenInclude(session, view_context.getView(), view_context.getModel().getRoot());
+        }catch(Exception ex){
+            throw new ViewCreationException("Error when invoking screen config file +" + view.toXML(),ex);
         }
     }
 
