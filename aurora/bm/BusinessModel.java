@@ -24,7 +24,7 @@ import aurora.service.validation.IParameter;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.Parameter;
 
-public class BusinessModel extends DynamicObject {
+public class BusinessModel extends DynamicObject implements Cloneable {
 
     public static final String KEY_CASCADE_OPERATIONS = "cascade-operations";
 
@@ -714,6 +714,10 @@ public class BusinessModel extends DynamicObject {
     
     public void setAccessControlMode( String mode ){
         putString(KEY_ACCESS_CONTROL_MODE, mode);
+    }
+    
+    public CompositeMap getExceptionDescriptorConfig(){
+        return getObjectContext().getChild("exception-descriptor-config");
     }
 
 

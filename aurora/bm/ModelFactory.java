@@ -4,12 +4,11 @@
 package aurora.bm;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
@@ -30,19 +29,41 @@ public class ModelFactory implements IModelFactory {
     boolean mUseCache = false;
 
     // name -> BusinessModel
-    Map mModelCache;
+    ICache mModelCache;
+
+    public boolean getUseCache() {
+        return mUseCache;
+    }
+
+    public void setUseCache(boolean useCache) {
+        this.mUseCache = useCache;
+        if(!mUseCache)
+            if(mModelCache!=null)
+                mModelCache.clear();
+    }
+    
+    public ICache getCache() {
+        return mModelCache;
+    }
+
+    public void setCache(ICache mModelCache) {
+        this.mModelCache = mModelCache;
+    }
+    
+    private String getCacheKey( String name, String ext ){
+        return name+'['+ext+']';
+    }
 
     public ModelFactory(OCManager ocm) {
         // mUncertainEngine = engine;
         mOcManager = ocm;
         mCompositeLoader = CompositeLoader.createInstanceForOCM();
         mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
-        mModelCache = new HashMap();
     }
     
     private void saveCachedModel( String name, BusinessModel model ){
-        if(mUseCache)
-            mModelCache.put(name, model);
+        if(mUseCache && mModelCache!=null)
+            mModelCache.setValue(name, model);
     }
 
     /**
@@ -58,8 +79,8 @@ public class ModelFactory implements IModelFactory {
             throws IOException {
         if(!mUseCache)
             return getNewModelInstance(name, ext);
-        String full_name = name + '.' + ext;
-        BusinessModel model = (BusinessModel) mModelCache.get(full_name);
+        String full_name = getCacheKey(name,ext);
+        BusinessModel model = (BusinessModel) mModelCache.getValue(full_name);
         if (model == null) {
             model = getNewModelInstance(name, ext);
             saveCachedModel(full_name, model);
@@ -142,7 +163,7 @@ public class ModelFactory implements IModelFactory {
                 throw new IOException("Can't load resource " + name);
             BusinessModel model = createBusinessModelInternal(config);
             model.setName(name);
-            saveCachedModel(name, model);
+            //saveCachedModel(name, model);
             return model;
         } catch (SAXException ex) {
             throw new RuntimeException("Error when parsing " + name, ex);
@@ -164,22 +185,12 @@ public class ModelFactory implements IModelFactory {
     }
 
     public BusinessModel getModel(String name) throws IOException {
-        return getNewModelInstance(name, mCompositeLoader.getDefaultExt());
+        return getModel(name, mCompositeLoader.getDefaultExt());
     }
 
     public CompositeLoader getCompositeLoader() {
         return mCompositeLoader;
     }
 
-    public boolean getUseCache() {
-        return mUseCache;
-    }
-
-    public void setUseCache(boolean useCache) {
-        this.mUseCache = useCache;
-        if(!mUseCache)
-            if(mModelCache!=null)
-                mModelCache.clear();
-    }
 
 }
