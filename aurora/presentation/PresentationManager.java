@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import aurora.presentation.component.ScreenIncludeTagCreator;
+
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
@@ -36,7 +38,7 @@ public class PresentationManager implements IGlobalInstance {
 
     public static final String LOGGING_TOPIC = "aurora.presentation.manager";
 
-    static final TemplateBasedView TEMPLATE_BASED_VIEW = new TemplateBasedView();
+    //static final TemplateBasedView TEMPLATE_BASED_VIEW = new TemplateBasedView();
 
     OCManager mOcManager;
     ParticipantRegistry mRegistry;
@@ -85,6 +87,8 @@ public class PresentationManager implements IGlobalInstance {
         mLoggerProvider = LoggingContext.getLoggerProvider(engine
                 .getObjectRegistry());
         mLogger = mLoggerProvider.getLogger(LOGGING_TOPIC);
+        //TODO refactor to config files
+        mTagCreatorRegistry.registerTagCreator("screen", new ScreenIncludeTagCreator(engine.getObjectRegistry()));
         mLogger.info("Aurora Presentation Framework Startup... ");
     }
 
