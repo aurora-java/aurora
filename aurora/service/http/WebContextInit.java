@@ -12,6 +12,8 @@ import javax.servlet.ServletContextListener;
 import uncertain.core.DirectoryConfig;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.mbean.MBeanRegister;
+import uncertain.mbean.UncertainEngineWrapper;
 import aurora.application.Version;
 
 public class WebContextInit implements ServletContextListener {
@@ -27,6 +29,14 @@ public class WebContextInit implements ServletContextListener {
 
     public WebContextInit() {
 
+    }
+    
+    public void registerMBean()
+        throws Exception
+    {
+        String name = uncertainEngine.getMBeanName(null,"name=Engine");
+        UncertainEngineWrapper wrapper = new UncertainEngineWrapper(uncertainEngine);
+        MBeanRegister.resiterMBean(name, wrapper);
     }
 
     public void initUncertain(ServletContext servletContext) throws Exception {
@@ -77,6 +87,12 @@ public class WebContextInit implements ServletContextListener {
         initUncertain(servlet_context);
 
         servlet_context.setAttribute(KEY_UNCERTAIN_ENGINE,uncertainEngine);
+        
+        try{
+            registerMBean();
+        }catch(Exception ex){
+            uncertainEngine.logException("Unable to register JMX MBean for uncertain engine", ex);
+        }
 
     }
 
