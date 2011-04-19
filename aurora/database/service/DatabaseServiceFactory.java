@@ -14,10 +14,10 @@ import javax.sql.DataSource;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
-import uncertain.event.RuntimeContext;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
@@ -117,7 +117,13 @@ public class DatabaseServiceFactory {
         modelFactory = (IModelFactory) os
                 .getInstanceOfType(IModelFactory.class);
         if (modelFactory == null) {
-            modelFactory = new ModelFactory(uncertainEngine.getOcManager());
+            ModelFactory fact = new ModelFactory(uncertainEngine.getOcManager());
+            ICache cache = uncertainEngine.createNamedCache("BusinessModel");
+            if(cache!=null){
+                fact.setUseCache(true);
+                fact.setCache(cache);
+            }
+            modelFactory = fact;
             os.registerInstance(IModelFactory.class, modelFactory);
         }
 
