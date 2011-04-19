@@ -63,7 +63,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
 		String object_name = args[(start_index + 1)];
 		String operation_name = args[(start_index + 2)];
         
-        BusinessModel bm = mDatabaseServiceFactory.getModelFactory().getModel(object_name);
+        BusinessModel bm = mDatabaseServiceFactory.getModelFactory().getModelForRead(object_name);
         if(bm==null)
             throw new ServletException("Can't load model:"+object_name);
 

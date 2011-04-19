@@ -24,6 +24,8 @@ import aurora.service.controller.ControllerProcedures;
 
 public class HttpServiceFactory {
     
+    public static final String KEY_WEB_RESOURCE_CACHE = "WebResource";
+
     public static final String KEY_PROCEDURE_MAPPING = "procedure-mapping";
 
     public static final String KEY_PROCEDURE = "procedure";
@@ -39,14 +41,23 @@ public class HttpServiceFactory {
         BUILTIN_MAPPING.put("svc", ControllerProcedures.INVOKE_SERVICE);
     }
     
+    private CompositeLoader createCompositeLoader(){
+        CompositeLoader l = new CompositeLoader();
+        l.ignoreAttributeCase();
+        boolean cache = mUncertainEngine.getCacheConfigFiles();
+        if(cache){
+            mUncertainEngine.prepareCacheSettings(l, KEY_WEB_RESOURCE_CACHE);
+        }
+        return l;
+    }
+    
     /**
      * @param uncertainEngine
      */
     public HttpServiceFactory(UncertainEngine uncertainEngine) {
         super();
         mUncertainEngine = uncertainEngine;
-        mCompositeLoader = new CompositeLoader();
-        mCompositeLoader.ignoreAttributeCase();
+        mCompositeLoader = createCompositeLoader();
         mParticipantManager = (IParticipantManager)mUncertainEngine.getObjectRegistry().getInstanceOfType(IParticipantManager.class);
         if(mParticipantManager!=null){
             mServiceParentConfig = mParticipantManager.getParticipantsAsConfig(IParticipantManager.SERVICE_SCOPE);
