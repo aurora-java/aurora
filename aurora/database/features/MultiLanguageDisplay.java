@@ -80,7 +80,7 @@ public class MultiLanguageDisplay {
         if (sequence == null)
             throw new ConfigurationError(
                     "multi-language-storage sequence undifined");
-        mlModel = modelFactory.getModel(mlModelString);
+        mlModel = modelFactory.getModelForRead(mlModelString);
         mlTable = mlModel.getBaseTable();
     }
 
