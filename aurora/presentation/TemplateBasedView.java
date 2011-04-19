@@ -4,9 +4,11 @@
 package aurora.presentation;
 
 import java.io.IOException;
-import java.util.Map;
 
+import uncertain.cache.ICache;
+import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
 import uncertain.ocm.ISingleton;
 import uncertain.util.template.TextTemplate;
 
@@ -14,7 +16,51 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
     
     public static final String     TEMPLATE_EXT = ".tplt";
     public static final String     KEY_TEMPLATE = "template";
-    static final String[]          TEMPLATE_BASED_SEQUENCE = {"LoadTemplate", "CreateViewContent" };    
+    static final String[]          TEMPLATE_BASED_SEQUENCE = {"LoadTemplate", "CreateViewContent" };  
+    
+    ICache      mCache;
+    boolean     mIsCacheEnabled = false;
+    String      mCacheName;
+    /*
+    public TemplateBasedView(){
+        
+    }
+    */
+    
+    public TemplateBasedView( UncertainEngine engine ){
+        initCache(engine);
+    }
+    
+    private void initCache( UncertainEngine engine ){
+        mCache = engine.createNamedCache("ViewComponentTemplates");
+        mIsCacheEnabled = mCache!=null;
+        /*
+        mIsCacheEnabled = engine.getCacheConfigFiles();
+        if( mIsCacheEnabled ){
+            INamedCacheFactory cf = engine.getNamedCacheFactory();
+            if(cf!=null){
+                mCache = cf.getNamedCache(engine.getMBeanName("cache","name=ViewComponentTemplates"));
+            }
+        }
+        */
+    }
+    
+    // if cached is enabled, try to get cached template
+    private TextTemplate getTemplate(String name, BuildSession session )
+        throws IOException
+    {
+        if(!mIsCacheEnabled || mCache==null)
+            return session.getTemplateByName(name);
+        String pkg_name  = session.getCurrentPackage()==null?"":session.getCurrentPackage().getName();
+        String theme_name = session.getTheme(); 
+        String key_name = pkg_name+"."+name+"."+theme_name;
+        TextTemplate tplt = (TextTemplate)mCache.getValue(key_name);
+        if(tplt==null){
+            tplt = session.getTemplateByName(name);
+            mCache.setValue(key_name, tplt);
+        }
+        return tplt;
+    }
 
     public void buildView(BuildSession session, ViewContext view_context) 
         throws IOException, ViewCreationException
@@ -26,7 +72,8 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
             String template_name = cpnt==null?null:cpnt.getDefaultTemplate();
             if(template_name==null)
                 template_name = view_context.getView().getName() + TEMPLATE_EXT;
-            template = session.getTemplateByName(template_name);
+            //template = session.getTemplateByName(template_name);
+            template = getTemplate(template_name, session);
         }
         if(template==null){
             CompositeMap view = view_context.getView();
