@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
+import uncertain.util.template.CompositeMapTagCreator;
 import uncertain.util.template.ITagContent;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
@@ -79,6 +80,7 @@ public class HtmlPage implements IViewBuilder, ISingleton {
     {
         HtmlPageTagCreator creator = new HtmlPageTagCreator( session, view_context );
         TagCreatorRegistry reg = new TagCreatorRegistry();
+        reg.setDefaultCreator(CompositeMapTagCreator.DEFAULT_INSTANCE);
         
         reg.registerTagCreator("page", creator);
         reg.setParent(session.getPresentationManager().getTagCreatorRegistry());
