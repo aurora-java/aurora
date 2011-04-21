@@ -268,7 +268,7 @@ public class Chart extends Component {
 		addJavaScript(session, context, "chart/Adapter-min.js");
 		addJavaScript(session, context, "chart/Chart-min.js");
 		addJavaScript(session, context, "chart/themes/"+theme+".js");
-		addJavaScript(session, context, "chart/Exporting.js");
+		addJavaScript(session, context, "chart/Exporting-min.js");
 	}
 	
 	protected void addEvent(String id, String eventName, String handler){}
@@ -316,6 +316,11 @@ public class Chart extends Component {
 	
 	private void putIntCfg(CompositeMap view,String key, Map map){
 		Integer value = view.getInt(key.toLowerCase());
+		if(value!=null) map.put(key, value);		
+	}
+	
+	private void putLongCfg(CompositeMap view,String key, Map map){
+		Long value = view.getLong(key.toLowerCase());
 		if(value!=null) map.put(key, value);		
 	}
 	
@@ -538,7 +543,7 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
 		processPlotMarker(view,cfg);
 		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putLongCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
@@ -567,7 +572,7 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
 		processPlotMarker(view,cfg);
 		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putLongCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
@@ -603,7 +608,7 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
 		processPlotMarker(view,cfg);
 		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putLongCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
