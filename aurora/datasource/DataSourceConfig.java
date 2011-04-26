@@ -67,8 +67,13 @@ public class DataSourceConfig {
 		mObjectRegistry.registerInstance(ITransactionService.class, ts);			
 	}
 	
-	private void registryDataSource(DataSource ds,DatabaseConnection dbConfig,INamedDataSourceProvider dsProvider){
-		String dataSourceName=dbConfig.getName();		
+	private void registryDataSource(DataSource ds,DatabaseConnection dbConfig,INamedDataSourceProvider dsProvider) throws ServletException{
+		String dataSourceName=dbConfig.getName();
+		if(ds==null){
+			mLogger.log(Level.SEVERE, "dataSource not initialized");
+			throw new ServletException(dataSourceName+" dataSource not initialized");
+		}			
+				
 		if(dataSourceName==null){
 			mLogger.log(Level.CONFIG,"Setting up dataSource url:{0},user:{1}",
 					new Object[]{dbConfig.getUrl(),dbConfig.getUserName()});			
