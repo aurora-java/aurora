@@ -2,6 +2,7 @@ package aurora.datasource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -53,21 +54,19 @@ public class DatabaseConnection{
 		this.pool = pool;
 	}	
 	
-	public void addProperties(CompositeMap config){
+	public void addProperties(CompositeMap config) throws Exception{
 		String key;
 		String text=config.getText();		
-		Properties properties=new Properties();			
-		try {		
-			ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes("UTF-8"));			
-			properties.load(stream);
-		} catch (IOException e) {		
-			e.printStackTrace();
-		}
-		Enumeration enum=properties.propertyNames();
-		if(enum!=null){
+		Properties properties=new Properties();		
+				
+		ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes("UTF-8"));			
+		properties.load(stream);
+		
+		Enumeration enumn=properties.propertyNames();
+		if(enumn!=null){
 			this.config=new CompositeMap();	
-			while (enum.hasMoreElements()) {
-				key = (String) enum.nextElement();
+			while (enumn.hasMoreElements()) {
+				key = (String) enumn.nextElement();
 				this.config.put(key, properties.getProperty(key).trim());
 			}
 		}
