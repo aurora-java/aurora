@@ -15,6 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HttpForward extends HttpServlet{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static String KEY_ADDRESS="address"; 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response){
@@ -31,9 +35,9 @@ public class HttpForward extends HttpServlet{
 		StringBuffer params=new StringBuffer();
 		int i,length;
 		boolean isFirst=true;
-		Enumeration enum=request.getParameterNames();
-		while (enum.hasMoreElements()) {
-			paramName = (String) enum.nextElement();
+		Enumeration enumn=request.getParameterNames();
+		while (enumn.hasMoreElements()) {
+			paramName = (String) enumn.nextElement();
 			paramValues=request.getParameterValues(paramName);
 			for(i=0,length=paramValues.length;i<length;i++){
 				if(isFirst){
