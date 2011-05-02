@@ -10,7 +10,10 @@ import uncertain.composite.DynamicObject;
 
 public class ScreenConfig extends BaseServiceConfig {
 
+    public static final String KEY_CONTENT_TYPE = "contenttype";
+    public static final String KEY_CACHE_KEY = "cachekey";
     public static final String KEY_VIEW = "view";
+    public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=utf-8";
     
     public static ScreenConfig createScreenConfig(CompositeMap map) {
         ScreenConfig cfg = new ScreenConfig();
@@ -33,6 +36,22 @@ public class ScreenConfig extends BaseServiceConfig {
     
     public CompositeMap getDataSetsConfig(){
         return CompositeUtil.findChild(object_context, "dataSets");
+    }
+    
+    public String getCacheKey(){
+        return getString(KEY_CACHE_KEY);
+    }
+    
+    public void setCacheKey(String key){
+        putString(KEY_CACHE_KEY, key);
+    }
+    
+    public String getContentType(){
+        return getString(KEY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
+    }
+    
+    public void setContentType(String type){
+        putString(KEY_CONTENT_TYPE, type);
     }
 
 }
