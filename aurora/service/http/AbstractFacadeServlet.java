@@ -64,9 +64,9 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		ServiceController controller = ServiceController
 				.createServiceController(service.getServiceContext()
 						.getObjectContext());
+		if(!controller.getContinueFlag())
+		    return null;
 		procedure_name = controller.getProcedureName();
-		if (procedure_name == null)
-			;
 		Procedure proc = procManager.loadProcedure(procedure_name);
 		return proc;
 	}
@@ -93,7 +93,9 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 			if (is_success) {
 				Procedure proc = getProcedureToRun(mProcManager, svc);
-				is_success = svc.invoke(proc);
+				if(proc!=null){
+				    is_success = svc.invoke(proc);
+				}
 			}
 			if (is_success) {
 				if (mPostServiceProc != null)
