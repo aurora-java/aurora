@@ -657,7 +657,13 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     public void setModelType( String type ){
         putString(KEY_MODEL_TYPE, type);
     }
+    public String getDefaultorderby(){
+        return getString(KEY_DEFAULT_ORDER_BY);
+    }
     
+    public void SetDefaultorderby( String defaultorderby ){
+        putString(KEY_DEFAULT_ORDER_BY, defaultorderby);
+    }
     public String getFieldPrompt( Field field, String default_prompt_pattern ){
         String prompt = field.getPrompt();
         if(prompt!=null)
