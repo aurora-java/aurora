@@ -66,6 +66,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     
     public static final String KEY_ACCESS_CONTROL_MODE = "accesscontrolmode";
     
+    public static final String KEY_DEFAULT_ORDER_BY = "defaultorderby";
+    
     public static final String ACCESS_CONTROL_MODE_DEFAULT = "default";
     
     public static final String ACCESS_CONTROL_MODE_NONE = "none";
