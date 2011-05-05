@@ -119,7 +119,7 @@ public class ServiceInstance implements IService {
     public boolean invoke(Procedure proc) throws Exception {
         initContext();
         initProcedureRunner(proc);
-        mController.setContinueFlag(false);
+        //mController.setContinueFlag(false);
         mRunner.run();
             if (mRunner.getException() != null){
                 mServiceContext.setSuccess(false);
