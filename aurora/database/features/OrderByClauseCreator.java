@@ -99,9 +99,10 @@ public class OrderByClauseCreator  implements ISingleton {
                         }
                     }
                 }else{
+                	 String defaultorderyby=model.getDefaultorderby();
                     // model.getDefaultOrderBy();
-                    // if !=null
-                    // select.addOrderByField(new RawSqlExpression());
+                     if (defaultorderyby!=null)
+                     select.addOrderByField(new RawSqlExpression(defaultorderyby));
                 }
             }
         }
