@@ -80,8 +80,9 @@ public class OrderByClauseCreator  implements ISingleton {
                 if(!"".equals(order_by))select.addOrderByField(new RawSqlExpression(order_by));
             }else{
                 String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
+                BusinessModel model = bmsc.getBusinessModel();
+                
                 if(order_field!=null){
-                    BusinessModel model = bmsc.getBusinessModel();
                     Field model_field = model.getField(order_field); 
                     if( model_field!=null){
                         String order_type = getField(ORDER_TYPE_PARAM_NAME, ORDER_TYPE, param);
@@ -97,7 +98,11 @@ public class OrderByClauseCreator  implements ISingleton {
                             select.addOrderByField( new RawSqlExpression(qe), order_type);
                         }
                     }
-                }                
+                }else{
+                    // model.getDefaultOrderBy();
+                    // if !=null
+                    // select.addOrderByField(new RawSqlExpression());
+                }
             }
         }
     }
