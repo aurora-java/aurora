@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:types>
         <ss:complexType name="bm:feature" document="所有可以放置在bm的features部分的tag，必须继承此类型"/>
         <ss:simpleType name="bm:ExtendModeType">
@@ -23,6 +23,11 @@
         <ss:simpleType name="bm:ModelReference" base="ss:string" document="对其他BM的引用" editor="bm:ModelReferenceEditor"/>
         <ss:simpleType name="bm:LocalFieldReference" base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor"/>
         <ss:simpleType name="bm:ForeignFieldReference" base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor"/>
+        <ss:complexType name="bm:AbstractOperation">
+            <ss:attributes>
+                <ss:attribute name="name" use="required"/>
+            </ss:attributes>
+        </ss:complexType>
     </ss:types>
     <ss:elements>
         <ss:element name="bm:field">
@@ -116,9 +121,6 @@
         <ss:element name="bm:query-sql" type="a:RawSql"/>
         <ss:element name="bm:update-sql" type="a:RawSql"/>
         <ss:element name="bm:operation">
-            <ss:attributes>
-                <ss:attribute name="name"/>
-            </ss:attributes>
             <ss:arrays>
                 <ss:array name="bm:parameters" type="bm:parameter"/>
             </ss:arrays>
@@ -126,6 +128,24 @@
                 <ss:element ref="bm:query-sql"/>
                 <ss:element ref="bm:update-sql"/>
             </ss:elements>
+            <ss:extensions>
+                <ss:extension base="bm:AbstractOperation"/>
+            </ss:extensions>
+        </ss:element>
+        <!--
+        <ss:element name="bm:operation-in-procedure" document="通过执行一个流程，来完成指定的操作">
+            <ss:extensions>
+                <ss:extension base="p:procedure"/>
+                <ss:extension base="bm:AbstractOperation"/>
+            </ss:extensions>
+        </ss:element>
+        -->
+        <ss:element name="bm:cascade-operation" document="定义一个级联操作，对主记录进行更新后，再将参数中的子记录提交到对应的BM，执行级联更新">
+            <ss:attributes>
+                <ss:attribute name="inputPath" document="detail记录在主记录中的访问路径，如&quot;EMPLOYEE-LIST&quot;"/>
+                <ss:attribute name="model" document="detail记录对应的BM"/>
+                <ss:attribute name="operations" document="detail记录允许的操作，如insert,update,delete,execute等，用逗号分隔"/>
+            </ss:attributes>
         </ss:element>
         <ss:element name="bm:model">
             <ss:attributes>
@@ -134,6 +154,7 @@
                 <ss:attribute name="dataSourceName" document="对应的数据源的名称"/>
                 <ss:attribute name="extend" document="父对象" type="bm:ModelReference"/>
                 <ss:attribute name="extendMode" default="override" document="继承方式" type="bm:ExtendModeType"/>
+                <ss:attribute name="defaultOrderBy" document="缺省的排序子句"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element name="bm:description" document="描述本BM功能"/>
@@ -147,7 +168,8 @@
                 <ss:array name="bm:data-filters" type="bm:data-filter"/>
                 <ss:array name="bm:query-fields" type="bm:query-field"/>
                 <ss:array name="bm:features" type="bm:feature"/>
-                <ss:array name="bm:operations" type="bm:operation"/>
+                <ss:array name="bm:operations" type="bm:AbstractOperation"/>
+                <ss:array name="bm:cascade-operations" type="bm:cascade-operation"/>
             </ss:arrays>
         </ss:element>
     </ss:elements>
