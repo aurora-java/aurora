@@ -11,6 +11,8 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
+	public static final String PROPERTITY_SHOW_HEAD = "showhead";
+	
 	
 	public static TableConfig getInstance(){
 		TableConfig model = new TableConfig();
@@ -24,6 +26,13 @@ public class TableConfig extends ComponentConfig {
         return model;
     }
 	
+	public boolean isShowHead(){
+		return getBoolean(PROPERTITY_SHOW_HEAD, true);
+	}
+	
+	public void setShowHead(boolean isShow){
+		putBoolean(PROPERTITY_SHOW_HEAD, isShow);
+	}
 	public String getRowRenderer(){
 		return getString(PROPERTITY_ROW_RENDERER);
 	}

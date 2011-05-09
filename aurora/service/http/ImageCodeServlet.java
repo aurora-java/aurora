@@ -29,7 +29,6 @@ public class ImageCodeServlet extends HttpServlet {
 	private static int LENGTH = 5;
 
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
-		
 		HttpSession session = request.getSession();
 		response.setContentType("image/jpeg");
 		ServletOutputStream sos = response.getOutputStream();

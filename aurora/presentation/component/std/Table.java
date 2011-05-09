@@ -89,12 +89,12 @@ public class Table extends Component {
 		map.put(TableConfig.PROPERTITY_EDITORS, sb.toString());
 	}
 
-	private void createHeads(Map map, CompositeMap view, BuildSession session,
-			List cols) {
+	private void createHeads(Map map, CompositeMap view, BuildSession session,List cols) {
 		CompositeMap columns = view.getChild(TableConfig.PROPERTITY_COLUMNS);
-		String bindTarget = view
-				.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+		TableConfig tc = TableConfig.getInstance(view);
+		
 		if (null == columns)
 			return;
 		List children = columns.getChilds();
@@ -114,19 +114,21 @@ public class Table extends Component {
 				addRowSpan(column);
 			}
 		}
-
-		for (int i = 1; i <= rows.intValue(); i++) {
-			List list = (List) pro.get("l" + i);
-			if (null != list) {
-				sb.append("<TR height='25px'>");
-				Iterator cit = list.iterator();
-				if (null != cit) {
-					while (cit.hasNext()) {
-						sb.append(createColumn((CompositeMap) cit.next(),
-								session, bindTarget));
+		
+		if(tc.isShowHead()){
+			for (int i = 1; i <= rows.intValue(); i++) {
+				List list = (List) pro.get("l" + i);
+				if (null != list) {
+					sb.append("<TR height='25px'>");
+					Iterator cit = list.iterator();
+					if (null != cit) {
+						while (cit.hasNext()) {
+							sb.append(createColumn((CompositeMap) cit.next(),
+									session, bindTarget));
+						}
 					}
+					sb.append("</TR>");
 				}
-				sb.append("</TR>");
 			}
 		}
 		map.put(HEADS, sb.toString());
