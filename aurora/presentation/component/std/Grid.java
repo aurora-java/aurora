@@ -638,9 +638,9 @@ public class Grid extends Component {
 						CompositeMap column = (CompositeMap)lit.next();
 						String ct =  column.getString(COLUMN_TYPE);
 						if(TYPE_ROW_CHECKBOX.equals(ct)){
-							hsb.append("<TD class='grid-hc' atype='grid.rowcheck'><center><div atype='grid.headcheck' class='grid-ckb item-ckb-u'></div></center></TD>");
+							hsb.append("<TD class='grid-hc' atype='grid.rowcheck' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='grid.headcheck' class='grid-ckb item-ckb-u'></div></center></TD>");
 						}else if(TYPE_ROW_RADIO.equals(ct)) {
-							hsb.append("<TD class='grid-hc' atype='grid.rowradio'><div>&nbsp;</div></TD>");
+							hsb.append("<TD class='grid-hc' atype='grid.rowradio' rowspan='"+column.getInt(ROW_SPAN)+"'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 							if(!hidden){

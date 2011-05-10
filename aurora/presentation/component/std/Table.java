@@ -11,9 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.CompositeUtil;
+import aurora.application.Namespace;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
@@ -25,6 +28,10 @@ public class Table extends Component {
 	private static final String HEADS = "heads";
 	private static final String FOOTS = "foots";
 	private static final String TITLE = "title";
+	
+	private static final String COLUMN_TYPE = "type";
+	private static final String TYPE_ROW_CHECKBOX = "rowcheck";
+	private static final String TYPE_ROW_RADIO = "rowradio";
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
@@ -65,7 +72,44 @@ public class Table extends Component {
 		}
 		map.put(CONFIG, getConfigString());
 	}
-
+	private void processSelectable(Map map,CompositeMap view,CompositeMap cols){
+		Boolean selectable = new Boolean(false);
+		String selectionmodel = "multiple";
+		CompositeMap root = view.getRoot();
+		List list = CompositeUtil.findChilds(root, "dataSet");
+		if(list!=null){
+			String dds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+			Iterator it = list.iterator();
+			while(it.hasNext()){
+				CompositeMap ds = (CompositeMap)it.next();
+				String id = ds.getString(ComponentConfig.PROPERTITY_ID, "");
+				if("".equals(id)) {
+					id= IDGenerator.getInstance().generate();
+				}
+				if(id.equals(dds)){
+					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
+					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL, "multiple");
+					break;
+				}
+			}
+			
+		}
+		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
+		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
+		addConfig(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
+		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
+		if(selectable.booleanValue()) {
+			CompositeMap column = new CompositeMap("column");
+			column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			column.putInt(ComponentConfig.PROPERTITY_WIDTH, 25);
+			if("multiple".equals(selectionmodel)) {
+				column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
+			}else{
+				column.putString(COLUMN_TYPE,TYPE_ROW_RADIO);
+			}
+			cols.addChild(0, column);
+		}
+	}
 	private void createGridEditors(BuildSession session, ViewContext context)
 			throws IOException {
 		CompositeMap view = context.getView();
@@ -94,9 +138,9 @@ public class Table extends Component {
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		TableConfig tc = TableConfig.getInstance(view);
-		
 		if (null == columns)
 			return;
+		processSelectable(map,view,columns);
 		List children = columns.getChilds();
 		if (null == children || children.isEmpty())
 			return;
@@ -225,18 +269,26 @@ public class Table extends Component {
 			String dataset) {
 		StringBuffer sb = new StringBuffer();
 		TableColumnConfig tcc=TableColumnConfig.getInstance(column);
+		String ct =  column.getString(COLUMN_TYPE);
 		String pw="";
 		if(null!=tcc.getPercentWidth())
 			pw = tcc.getPercentWidth()+"%";
 		if(null!=column.getString(ComponentConfig.PROPERTITY_WIDTH))
 			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH)+"px";
-		sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
-				+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
-				+ (pw == null ? "" : (" width='" + pw + "'")) + ">");
-		String text = session.getLocalizedPrompt(getFieldPrompt(session,
-				column, dataset));
-		sb.append("".equals(text) ? "&#160;" : text);
-		sb.append("</TD>");
+		
+		if(TYPE_ROW_CHECKBOX.equals(ct)){
+			sb.append("<TD class='table-hc' atype='table.rowcheck' style='padding:6px' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
+		}else if(TYPE_ROW_RADIO.equals(ct)) {
+			sb.append("<TD class='table-hc' atype='table.rowradio' style='padding:6px' rowspan='"+column.getInt(ROW_SPAN)+"'><div style='width:13px'>&nbsp;</div></TD>");
+		}else{
+			sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
+					+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
+					+ (pw == null ? "" : (" width='" + pw + "'")) + ">");
+			String text = session.getLocalizedPrompt(getFieldPrompt(session,
+					column, dataset));
+			sb.append("".equals(text) ? "&#160;" : text);
+			sb.append("</TD>");
+		}
 		return sb.toString();
 	}
 
