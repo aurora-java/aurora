@@ -526,8 +526,11 @@ public class Grid extends Component {
 	
 	private void processColumns(CompositeMap parent, List children, List cols, Map pro){
 		Iterator it = children.iterator();
+		boolean plock =parent!=null? parent.getBoolean(GridColumnConfig.PROPERTITY_LOCK).booleanValue():false;
 		while(it.hasNext()){
 			CompositeMap column = (CompositeMap)it.next();
+			if(plock)
+				column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, true);
 			int level;
 			if(parent == null){
 				level = 1;				
