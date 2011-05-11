@@ -691,7 +691,7 @@ public class Grid extends Component {
 			}
 		}
 		
-		sb.append("<TABLE cellSpacing='0' atype='grid.uht' cellPadding='0' border='0' style='margin-right:20px;padding-right:20px;width:"+unlockWidth+"px'><TBODY>");
+		sb.append("<TABLE cellSpacing='0' atype='grid.uht' cellPadding='0' border='0' style='width:"+unlockWidth+"px'><TBODY>");//margin-right:20px;padding-right:20px;
 		sb.append("<TR class='grid-hl'>");
 		sb.append(th.toString());
 		sb.append("</TR>");
