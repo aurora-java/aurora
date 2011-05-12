@@ -53,6 +53,7 @@
                 <ss:attribute name="queryWidth" document="查询字段的宽度"/>
                 <ss:attribute name="multiLanguage" document="是否属于多语言字段"/>
                 <ss:attribute name="multiLanguageDescField" document="多语言关联的字段"/>
+                <ss:attribute name="forceUpdate" document="如果设置为true，即使客户端没有传递该参数，该字段也会被拼接到update语句中"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:ref-field">
