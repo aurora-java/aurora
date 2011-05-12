@@ -32,6 +32,7 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_FOR_QUERY = "forquery";
     public static final String KEY_FOR_INSERT = "forinsert";    
     public static final String KEY_FOR_UPDATE = "forupdate";
+    public static final String KEY_FORCE_UPDATE = "forceupdate";
     public static final String KEY_FOR_DISPLAY = "fordisplay";
     public static final String REF_FIELD = "ref-field";
     public static final String KEY_PROMPT = "prompt";
@@ -413,6 +414,14 @@ public class Field extends DynamicObject implements IParameter {
     public Field createCopy(){
         CompositeMap m = (CompositeMap)object_context.clone();
         return getInstance(m);
+    }
+    
+    public boolean isForceUpdate(){
+        return getBoolean(KEY_FORCE_UPDATE, false);
+    }
+    
+    public void setForceUpdate( boolean b){
+        putBoolean(KEY_FORCE_UPDATE, b);
     }
 
 }
