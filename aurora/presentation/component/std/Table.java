@@ -277,9 +277,9 @@ public class Table extends Component {
 			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH)+"px";
 		
 		if(TYPE_ROW_CHECKBOX.equals(ct)){
-			sb.append("<TD class='table-hc' atype='table.rowcheck' style='padding:6px' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
+			sb.append("<TD class='table-hc' atype='table.rowcheck' style='width:25px;' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
 		}else if(TYPE_ROW_RADIO.equals(ct)) {
-			sb.append("<TD class='table-hc' atype='table.rowradio' style='padding:6px' rowspan='"+column.getInt(ROW_SPAN)+"'><div style='width:13px'>&nbsp;</div></TD>");
+			sb.append("<TD class='table-hc' atype='table.rowradio' style='width:25px;' rowspan='"+column.getInt(ROW_SPAN)+"'><div style='width:13px'>&nbsp;</div></TD>");
 		}else{
 			sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
 					+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
