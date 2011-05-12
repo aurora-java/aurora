@@ -61,18 +61,23 @@ public class StandardWho {
         CREATED_BY.setForUpdate(false);
         CREATED_BY.setForInsert(true);
         CREATED_BY.setForSelect(false);
+        
         CREATION_DATE.setDataType(java.sql.Date.class.getName());
         CREATION_DATE.setForUpdate(false);
         CREATION_DATE.setForInsert(true);
         CREATION_DATE.setForSelect(false);
+        
         LAST_UPDATED_BY.setDataType(Long.class.getName());
         LAST_UPDATED_BY.setForUpdate(true);
         LAST_UPDATED_BY.setForInsert(true);
         LAST_UPDATED_BY.setForSelect(false);
+        LAST_UPDATED_BY.setForceUpdate(true);
+        
         LAST_UPDATED_DATE.setDataType(java.sql.Date.class.getName());
         LAST_UPDATED_DATE.setForUpdate(true);
         LAST_UPDATED_DATE.setForInsert(true);
         LAST_UPDATED_DATE.setForSelect(false);
+        LAST_UPDATED_DATE.setForceUpdate(true);
     }
     
     IDatabaseFactory mFactory;
