@@ -36,9 +36,11 @@ public class UpdateSqlCreator extends AbstractSqlCreator {
             Field field = fields[i];
             if(field.isForUpdate()){
                 if(update_passed_param){
-                    //String path = field.getInputPath();
-                    if(!param.containsKey(field.getName()))
-                        continue;
+                    String path = field.getInputPath();
+                    if(!field.isForceUpdate())
+                        if(param.getObject(path)==null)
+                            if(!param.containsKey(field.getName()))
+                                continue;
                 }
                 stmt.addUpdateField(field.getPhysicalName(), field.getUpdateExpression());
             }
