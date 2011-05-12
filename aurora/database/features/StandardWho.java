@@ -14,6 +14,7 @@ import aurora.database.profile.IDatabaseProfile;
  */
 public class StandardWho {
     
+    public static final String KEY_STANDARD_WHO_ADDED = "_standard_who_added";
     String  userIdPath = "/session/@user_id";
     String  createdByField = "CREATED_BY";
     String  creationDateField = "CREATION_DATE";
@@ -97,6 +98,10 @@ public class StandardWho {
     }
     
     public void onPrepareBusinessModel( BusinessModel model ){
+        Boolean standard_who_added = model.getObjectContext().getBoolean(KEY_STANDARD_WHO_ADDED);
+        if(standard_who_added!=null)
+            return;
+        
         IDatabaseProfile profile = model.getDatabaseProfile(mFactory);
         String sysdate = profile.getKeyword(IDatabaseProfile.KEY_CURRENT_TIME);
         
@@ -123,6 +128,8 @@ public class StandardWho {
         
         // do remember to call this!
         model.makeReady();
+        
+        model.getObjectContext().putBoolean(KEY_STANDARD_WHO_ADDED, true);
     }
 
 }
