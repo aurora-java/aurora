@@ -8,12 +8,20 @@
         	<action name="ParseParameter" input="service" />
         	<action name="ValidateInput"  input="service" />
         	<action name="InvokeService" input="service" />
-        	<action name="CreateSuccessResponse" input="service"/>
+        	<switch test="@success">
+    			<case Value="true">
+        			<action name="CreateSuccessResponse" input="service"/>
+  				</case>
+  				<case>
+  					<action name="CreateFailResponse" input="service"/>
+  				</case>
+  			</switch>      	
         	<action Name="ServiceEnd" />
         	<exception-handles>
         		<catch Exception="*">
         			<action name="HandleException" />		
         			<action name="CreateFailResponse" input="service"/>
+        			<action Name="ServiceEnd" />
         		</catch>
         	</exception-handles>
     	</case>
