@@ -11,8 +11,9 @@ import java.util.ResourceBundle;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
-import aurora.application.util.AppUtil;
+import aurora.application.util.LanguageUtil;
 import aurora.service.ServiceContext;
+import aurora.service.exception.BaseExceptionDescriptor;
 import aurora.service.exception.IExceptionDescriptor;
 import aurora.service.validation.ErrorMessage;
 
@@ -40,7 +41,7 @@ public class SQLExceptionDescriptor implements IExceptionDescriptor {
         if(! (exception instanceof SQLException)){
             return null;
         }
-        ResourceBundle bundle = AppUtil.getResourceBundle(context);
+        //ResourceBundle bundle = AppUtil.getResourceBundle(context);
         SQLException sex = (SQLException)exception;
         if(sex.getCause()!=null && sex.getCause() instanceof SQLException){
             sex = (SQLException)sex.getCause();
@@ -49,15 +50,14 @@ public class SQLExceptionDescriptor implements IExceptionDescriptor {
         ErrorMessage msgObj = getErrorMessage(sex);
         if(msgObj!=null){
             error_msg = msgObj.getMessage();
-            if(bundle!=null)
-                error_msg = bundle.getString(error_msg);
         }
         if( error_msg==null ){
             if( mDefaultMessage != null )
                 error_msg = mDefaultMessage;
-            else
-                error_msg = sex.getMessage();
         }
+        if(error_msg==null)
+            return null;
+        error_msg = BaseExceptionDescriptor.getTranslatedMessage(error_msg, context);
         
         CompositeMap error = new CompositeMap(ErrorMessage.ERROR_MESSAGE);
         if(msgObj!=null)
