@@ -6,7 +6,8 @@ package aurora.service.exception;
 import java.util.ResourceBundle;
 
 import uncertain.composite.CompositeMap;
-import aurora.application.util.AppUtil;
+import aurora.application.util.LanguageUtil;
+import aurora.i18n.ILocalizedMessageProvider;
 import aurora.service.ServiceContext;
 import aurora.service.validation.DatatypeMismatchException;
 import aurora.service.validation.ErrorMessage;
@@ -25,7 +26,7 @@ public class FieldExceptionDescriptor extends BaseExceptionDescriptor {
             return input;
     }
     
-    void processDataType( ErrorMessage message, DatatypeMismatchException ex,  ResourceBundle bundle){
+    void processDataType( ErrorMessage message, DatatypeMismatchException ex,  ILocalizedMessageProvider msgProvider ){
         Class cls = ex.getExpectedClass();
         String msg = mMessage;
         if(cls!=null){
@@ -33,19 +34,20 @@ public class FieldExceptionDescriptor extends BaseExceptionDescriptor {
             if( mMessage != null ) 
                 msg = replaceQuick( mMessage, "${datatype}", name );
         }
-        if( bundle != null)
-            msg = bundle.getString(msg);
+        if( msgProvider != null)
+            msg = msgProvider.getMessage(msg);
         message.setMessage(msg);        
     }
 
     public CompositeMap process( ServiceContext context, Throwable exception) {
         ErrorMessage message = super.getErrorMessage(context, exception);      
-        ResourceBundle bundle = AppUtil.getResourceBundle(context);        
+        ILocalizedMessageProvider lp = (ILocalizedMessageProvider)context.getInstanceOfType(ILocalizedMessageProvider.class);
         if( exception instanceof FieldValidationException){
             FieldValidationException fvex = (FieldValidationException) exception;
             message.setField(fvex.getFieldName());            
             if( exception instanceof DatatypeMismatchException)
-                processDataType( message, (DatatypeMismatchException)exception, bundle );
+                //TODO pass ILocalizedMessageProvider
+                processDataType( message, (DatatypeMismatchException)exception, lp );
         }
         return message.getObjectContext();
     }

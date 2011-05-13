@@ -11,6 +11,8 @@ import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.util.LanguageUtil;
+import aurora.i18n.ILocalizedMessageProvider;
 import aurora.service.ServiceContext;
 
 public class ExceptionDescriptorConfig implements IExceptionDescriptor {
@@ -28,8 +30,19 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
         mDefaultDescriptor = new DefaultExceptionDescriptor();
         registerInstance();
     }
+    
+    private void prepareMessageProvider(ServiceContext context){
+        ILocalizedMessageProvider mp = (ILocalizedMessageProvider)context.getInstanceOfType(ILocalizedMessageProvider.class);
+        if(mp==null){
+            mp = LanguageUtil.getLocalizedMessageProvider(mUncertainEngine.getObjectRegistry(), context.getObjectContext());
+            if(mp!=null){
+                context.setInstanceOfType(ILocalizedMessageProvider.class, mp);
+            }
+        }
+    }
 
     public CompositeMap process(ServiceContext context, Throwable exception) {
+        prepareMessageProvider(context);
         IExceptionDescriptor desc = (IExceptionDescriptor)mClassMap.get(exception.getClass().getName());
         if(desc!=null)
             return desc.process(context, exception);

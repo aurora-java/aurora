@@ -6,12 +6,19 @@ package aurora.service.exception;
 import java.util.ResourceBundle;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IConfigurable;
-import aurora.application.util.AppUtil;
+import aurora.application.util.LanguageUtil;
+import aurora.i18n.ILocalizedMessageProvider;
 import aurora.service.ServiceContext;
 import aurora.service.validation.ErrorMessage;
 
 public class BaseExceptionDescriptor implements IExceptionDescriptor, IConfigurable {
+    
+    public static String getTranslatedMessage( String msg_text, ServiceContext context ){
+        ILocalizedMessageProvider lp = (ILocalizedMessageProvider)context.getInstanceOfType(ILocalizedMessageProvider.class);
+        return LanguageUtil.getTranslatedMessage(lp, msg_text, context.getObjectContext());
+    }
     
     public String mMessage;
     
@@ -29,9 +36,7 @@ public class BaseExceptionDescriptor implements IExceptionDescriptor, IConfigura
         if(msg_text==null)
             msg_text = exception.getMessage();
         if(msg_text!=null){
-            ResourceBundle bundle = AppUtil.getResourceBundle(context);
-            if(bundle!=null)
-                msg_text = bundle.getString(msg_text);
+            msg_text = getTranslatedMessage(msg_text, context);
         }
         ErrorMessage msg = new ErrorMessage( c, msg_text, null);
         msg.getObjectContext().putAll(mConfig);
