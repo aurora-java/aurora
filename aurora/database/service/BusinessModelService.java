@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.core.ConfigurationError;
 import uncertain.event.Configuration;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.ocm.OCManager;
+import uncertain.proc.IExceptionHandle;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
@@ -26,7 +29,8 @@ import aurora.database.SqlRunner;
 import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IStatementWithParameter;
 import aurora.service.ServiceContext;
-import aurora.service.validation.IParameter;
+import aurora.service.exception.ExceptionDescriptorConfig;
+import aurora.service.validation.ErrorMessage;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.ParameterParser;
 import aurora.service.validation.ValidationException;
@@ -41,6 +45,9 @@ public class BusinessModelService {
     
     // source BM
     BusinessModel mBusinessModel;
+    
+    // exception descriptor
+    ExceptionDescriptorConfig   mExceptionProcessor;
     
     // Configuration associated with BusinessModel
     Configuration mConfig;
@@ -63,6 +70,9 @@ public class BusinessModelService {
     // object registry to get instances
     IObjectRegistry     mObjectRegistry;
     
+    // OCManager
+    OCManager           mOcManager;
+    
     // logger
     ILogger mLogger;  
 
@@ -73,10 +83,18 @@ public class BusinessModelService {
         this.mBusinessModel = model;
         this.mServiceFactory = factory;
         this.mObjectRegistry = factory.getObjectRegistry();
+        this.mOcManager = (OCManager)mObjectRegistry.getInstanceOfType(OCManager.class);
         setContextMap(context_map);
         mLogger = LoggingContext.getLogger(mServiceContext
                 .getObjectContext(),
                 DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);  
+        
+        CompositeMap cfg = model.getExceptionDescriptorConfig();
+        if(cfg!=null){
+            mExceptionProcessor = (ExceptionDescriptorConfig)mOcManager.createObject(cfg);
+            if(mExceptionProcessor==null)
+                throw new ConfigurationError("Can't create "+ExceptionDescriptorConfig.class.getName()+" instance from config:"+cfg.toXML());
+        }
     }
 
     protected void prepareForRun(String proc_name) throws ValidationException, SQLException {
@@ -90,6 +108,27 @@ public class BusinessModelService {
         mServiceContext.prepareForRun();
         mServiceContext.initConnection(mObjectRegistry, mBusinessModel.getDataSourceName());
         mServiceContext.put("BusinessModel", mBusinessModel);
+        
+        if(mExceptionProcessor!=null){
+            mRunner.addExceptionHandle( new IExceptionHandle() {
+                
+                public boolean handleException(ProcedureRunner runner, Throwable exception) {
+                    CompositeMap msg = mExceptionProcessor.process(mServiceContext, exception);
+                    if(msg!=null){
+                        mServiceContext.setError(msg);
+                        mServiceContext.putBoolean("success", false);
+                        mRunner.setResumeAfterException(true);
+                        mServiceContext.setSuccess(true);
+                        return true;
+                    }
+                    return false;
+                }
+            });            
+        }
+        
+        /*
+
+         */
     }
 
     public void setServiceContext(ServiceContext context) {
@@ -198,9 +237,10 @@ public class BusinessModelService {
             if (parameters != null)
                 mServiceContext.setCurrentParameter(parameters);
             prepareForRun(proc_name);
+           
             mRunner.run();
             mRunner.checkAndThrow();
-        } finally {
+        }finally {
             popConfig();
             printTraceInfo();
         }
