@@ -101,7 +101,8 @@ public class WebContextInit implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        uncertainEngine.shutdown();
+        if(uncertainEngine!=null)
+            uncertainEngine.shutdown();
     }
 
     public void contextInitialized(ServletContextEvent event) {
