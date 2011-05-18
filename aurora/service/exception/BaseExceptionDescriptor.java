@@ -17,7 +17,7 @@ public class BaseExceptionDescriptor implements IExceptionDescriptor, IConfigura
     
     public static String getTranslatedMessage( String msg_text, ServiceContext context ){
         ILocalizedMessageProvider lp = (ILocalizedMessageProvider)context.getInstanceOfType(ILocalizedMessageProvider.class);
-        return LanguageUtil.getTranslatedMessage(lp, msg_text, context.getObjectContext());
+        return LanguageUtil.getTranslatedMessage(lp, msg_text, context.getCurrentParameter());
     }
     
     public String mMessage;
