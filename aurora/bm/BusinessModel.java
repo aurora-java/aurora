@@ -503,11 +503,13 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         else{
             List params = null;
             Operation op = getOperation(operation);
-            if(op!=null)
+            if(op!=null){
                 params = op.getParameters();
-            if(params!=null)
-                return new PredefinedParameterIterator(params);
-            else{
+                if(params!=null)
+                    return new PredefinedParameterIterator(params);
+                else
+                    return null;
+            }else{
                 if("delete".equalsIgnoreCase(operation)){
                     return new PrimaryKeyParameterIterator();
                 }
