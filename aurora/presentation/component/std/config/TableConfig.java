@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class TableConfig extends ComponentConfig {
 	
-	public static final String TAG_NAME = "grid";
+	public static final String TAG_NAME = "table";
 	
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITORS = "editors";
