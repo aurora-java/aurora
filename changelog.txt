@@ -26,8 +26,8 @@ bm文件上增加defaultOrderBy 用于bm查询时默认排序
 修改后的方式如下：
 <!--
 	pool parameter:    		
-	maxSize;最大连接数
-	minSize;最小连接数			
+	maxPoolSize;最大连接数
+	minPoolSize;最小连接数			
 	建议属性：
 	testConnectionOnCheckin如果为true在取得连接的同时将校验连接的有效性，为true			
 	checkoutTimeout获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒，3000			
@@ -38,8 +38,8 @@ bm文件上增加defaultOrderBy 用于bm查询时默认排序
 --> 
 <dc:database-connection driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.65:1521:masdev" userName="xxx" password="xxx" pool="true">
 	<dc:properties>
-		minSize=1
-		maxSize=2
+		minPoolSize=1
+		maxPoolSize=2
 		testConnectionOnCheckin=true
 		checkoutTimeout=3000
 		idleConnectionTestPeriod=120
