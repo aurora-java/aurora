@@ -22,6 +22,7 @@ public class Lov extends TextField {
 	public static final String PROPERTITY_LOV_HEIGHT = "lovheight";
 	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	public static final String PROPERTITY_LOV_FETCH_REMOTE = "fetchremote";
+	public static final String PROPERTITY_LOV_AUTOCOMPLETE_RENDERER = "autocompleterenderer";
 	
 	private static final String CONFIG_CONTEXT = "context";
 	
@@ -45,6 +46,8 @@ public class Lov extends TextField {
 		addConfig(PROPERTITY_LOV_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_HEIGHT,400)));
 		addConfig(PROPERTITY_LOV_GRID_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_GRID_HEIGHT,350)));
 		addConfig(PROPERTITY_LOV_FETCH_REMOTE, new Boolean(view.getBoolean(PROPERTITY_LOV_FETCH_REMOTE, true)));
+		String renderer = view.getString(PROPERTITY_LOV_AUTOCOMPLETE_RENDERER);
+		if(renderer != null)addConfig(PROPERTITY_LOV_AUTOCOMPLETE_RENDERER, renderer);
 		map.put(CONFIG, getConfigString());
 	}
 }
