@@ -38,6 +38,7 @@ public class Field extends DynamicObject implements IParameter {
     public static final String KEY_PROMPT = "prompt";
     public static final String KEY_QUERY_WIDTH = "querywidth";
     public static final String KEY_DISPLAY_WIDTH = "displaywidth";
+    public static final String KEY_DISPLAY_ALIGN = "displayalign";
     public static final String KEY_EDITOR_TYPE = "editortype";
     public static final String KEY_OPTIONS = "options";
     public static final String KEY_LOOKUP_FIELD = "lookupfield";
@@ -231,6 +232,13 @@ public class Field extends DynamicObject implements IParameter {
     }
     public void setDisplayWidth(int width){
     	putInt(KEY_DISPLAY_WIDTH, width);
+    }
+    
+    public String getDisplayAlign(){
+    	return getString(KEY_DISPLAY_ALIGN,"left");    	
+    }
+    public void setDisplayAlign(String align){
+    	putString(KEY_DISPLAY_ALIGN, align);
     }
     
     public String getOptions(){
