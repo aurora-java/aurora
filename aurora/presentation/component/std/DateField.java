@@ -18,6 +18,7 @@ public class DateField extends Component {
 
 	private static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
 	private static final String PROPERTITY_ENABLE_MONTH_BTN = "enablemonthbtn";
+	private static final String PROPERTITY_ENABLE_YEAR_BTN = "enableyearbtn";
 	private static final String PROPERTITY_ENABLE_BESIDE_DAYS = "enablebesidedays";
 	private static final String DEFAULT_CLASS = "item-dateField";
 
@@ -39,6 +40,8 @@ public class DateField extends Component {
 		if(null!=view.getString(PROPERTITY_DAY_RENDERER))addConfig(PROPERTITY_DAY_RENDERER, view.getString(PROPERTITY_DAY_RENDERER));
 		addConfig(PROPERTITY_ENABLE_MONTH_BTN, view.getString(
 				PROPERTITY_ENABLE_MONTH_BTN, "both"));
+		addConfig(PROPERTITY_ENABLE_YEAR_BTN, view.getString(
+				PROPERTITY_ENABLE_YEAR_BTN, "both"));
 		addConfig(PROPERTITY_ENABLE_BESIDE_DAYS, view.getString(
 				PROPERTITY_ENABLE_BESIDE_DAYS, "both"));
 		map.remove(ComponentConfig.PROPERTITY_HEIGHT);

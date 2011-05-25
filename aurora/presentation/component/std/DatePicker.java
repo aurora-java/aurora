@@ -20,6 +20,7 @@ public class DatePicker extends TextField {
 	private static final String PROPERTITY_VIEW_SIZE = "viewsize";
 	private static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
 	private static final String PROPERTITY_ENABLE_MONTH_BTN = "enablemonthbtn";
+	private static final String PROPERTITY_ENABLE_YEAR_BTN = "enableyearbtn";
 	private static final String PROPERTITY_ENABLE_BESIDE_DAYS = "enablebesidedays";
 	private static final String BODY="body";
 
@@ -40,6 +41,8 @@ public class DatePicker extends TextField {
 		if(null!=view.getString(PROPERTITY_DAY_RENDERER))addConfig(PROPERTITY_DAY_RENDERER, view.getString(PROPERTITY_DAY_RENDERER));
 		addConfig(PROPERTITY_ENABLE_MONTH_BTN, view.getString(
 				PROPERTITY_ENABLE_MONTH_BTN, "both"));
+		addConfig(PROPERTITY_ENABLE_YEAR_BTN, view.getString(
+				PROPERTITY_ENABLE_YEAR_BTN, "both"));
 		addConfig(PROPERTITY_ENABLE_BESIDE_DAYS, view.getString(
 				PROPERTITY_ENABLE_BESIDE_DAYS, "both"));
 		map.put(CONFIG, getConfigString());
