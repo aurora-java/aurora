@@ -77,6 +77,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_LEGEND_BORDERCOLOR = "borderColor";
 	private static final String PROPERTITY_LEGEND_BORDERRADIUS = "borderRadius";
 	private static final String PROPERTITY_LEGEND_BORDERWIDTH = "borderWidth";
+	private static final String PROPERTITY_LEGEND_ENABLED = "enabled";
 	private static final String PROPERTITY_LEGEND_FLOATING = "floating";
 	private static final String PROPERTITY_LEGEND_ITEMSTYLE = "itemStyle";
 	private static final String PROPERTITY_LEGEND_LAYOUT = "layout";
@@ -137,6 +138,7 @@ public class Chart extends Component {
 	//minorTickWidth 
 	private static final String PROPERTITY_AXIS_OFFSET = "offset";
 	private static final String PROPERTITY_AXIS_OPPOSITE = "opposite"; 
+	private static final String PROPERTITY_AXIS_NAME = "name"; 
 	
 	private static final String PROPERTITY_AXIS_PLOTBANDS = "plotBands"; 
 	private static final String PROPERTITY_AXIS_PLOTBANDS_COLOR = "color";
@@ -480,6 +482,7 @@ public class Chart extends Component {
 			putStringCfg(view,PROPERTITY_LEGEND_BORDERCOLOR,cfg);
 			putIntCfg(view,PROPERTITY_LEGEND_BORDERWIDTH,cfg);
 			putIntCfg(view,PROPERTITY_LEGEND_BORDERRADIUS,cfg);
+			putBooleanCfg(view,PROPERTITY_LEGEND_ENABLED,cfg);
 			putBooleanCfg(view, PROPERTITY_LEGEND_FLOATING, cfg);
 			putStringCfg(view,PROPERTITY_LEGEND_LAYOUT,cfg);
 			putFunctionCfg(view,PROPERTITY_LEGEND_LABELFORMATTER,cfg);
@@ -519,6 +522,8 @@ public class Chart extends Component {
 						cfg.put(name, processPlotArea(option, context));
 					}else if("areaspline".equals(name)){
 						cfg.put(name, processPlotArea(option, context));
+					}else if("pie".equals(name)){
+						cfg.put(name, processPlotPie(option, context));
 					}
 					
 				}
@@ -595,6 +600,37 @@ public class Chart extends Component {
 	}
 	
 	private JSONObject processPlotArea(CompositeMap view, ViewContext context){
+		Map cfg = new HashMap();		
+		
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg); 
+		processPlotDataLabels(view,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
+		processPlotMarker(view,cfg);
+		//TODO: PROPERTITY_PLOTOPTIONS_LINE_POINT
+		putLongCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
+		//TODO:PROPERTITY_PLOTOPTIONS_LINE_STATES
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
+		processFillColor(view,cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);		
+		return new JSONObject(cfg);
+	}
+	private JSONObject processPlotPie(CompositeMap view, ViewContext context){
 		Map cfg = new HashMap();		
 		
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
@@ -793,6 +829,7 @@ public class Chart extends Component {
 					putIntCfg(axi, PROPERTITY_AXIS_MINPADDING, cfg);
 					putIntCfg(axi, PROPERTITY_AXIS_OFFSET, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_OPPOSITE, cfg);
+					putStringCfg(axi, PROPERTITY_AXIS_NAME, cfg);
 					creatPlotBands(axi,cfg);
 					creatPlotLines(axi,cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_REVERSED, cfg);
