@@ -229,11 +229,11 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
             if (!field.isReferenceField())
                 if (field.getMultiLanguage()) {
                     if ("insert".equalsIgnoreCase(operation.toLowerCase())
-                            && field.isForInsert()) {
+                            && field.isForInsert() && model.getOperation("insert")==null) {
                         createMultiLanguageSql(context, field, "update");
                     } else if ("update".equalsIgnoreCase(operation
                             .toLowerCase())
-                            && field.isForUpdate()) {
+                            && field.isForUpdate()  && model.getOperation("update")==null) {
                         createMultiLanguageSql(context, field, "update");
                     } else {
                         createMultiLanguageSql(context, field, "delete");
