@@ -1,10 +1,16 @@
 package aurora.application.action;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -13,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import oracle.sql.BLOB;
 
@@ -23,51 +31,165 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
 import uncertain.composite.CompositeMap;
-import uncertain.event.EventModel;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.database.DBUtil;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
-import aurora.events.E_DetectProcedure;
 import aurora.presentation.component.std.IDGenerator;
-import aurora.service.IService;
 import aurora.service.ServiceContext;
-import aurora.service.ServiceController;
 import aurora.service.ServiceInstance;
-import aurora.service.controller.ControllerProcedures;
 import aurora.service.http.HttpServiceInstance;
 
-public class FileUpload implements E_DetectProcedure {
+public class AttachmentManager extends AbstractEntry{
+	public static final String PROPERTITY_ACTION_TYPE = "actiontype";
 	public static final String PROPERTITY_SAVE_TYPE = "savetype";
 	public static final String PROPERTITY_SAVE_PATH = "savepath";
-	public static final String PROPERTITY_URL = "_url";
+	public static final String PROPERTITY_URL = "url";
 	
 	private static final String SAVE_TYPE_DATABASE = "db";
 	private static final String SAVE_TYPE_FILE = "file";
 	
+	public int Buffer_size = 500 * 1024;
+	
 	
 	private static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
-	private CompositeMap params;
 	
 	private String saveType;
 	private String savePath;
+	private String actionType;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
 	private DatabaseServiceFactory databasefactory;
 
-	public FileUpload(IObjectRegistry registry) {
+	public AttachmentManager(IObjectRegistry registry) {
 		databasefactory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
 	}
-
-	public void onDoUpload(ProcedureRunner runner) throws Exception {
+	
+	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
-		ServiceContext service = ServiceContext.createServiceContext(runner.getContext());
+		String actionType = getActionType();
+		if("upload".equalsIgnoreCase(actionType)){
+			doUpload(context);
+		}else if("delete".equalsIgnoreCase(actionType)){
+			doDelete(context);
+		}else if("download".equalsIgnoreCase(actionType)){
+			doDownload(context);
+		}
+	}
+	
+	private void doDownload(CompositeMap context) throws Exception{
+		ServiceContext service = ServiceContext.createServiceContext(context);
+		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
+		CompositeMap params = service.getParameter();
+		Object aid = (Object)params.getObject("@attachment_id");
+		if(aid!=null){
+			SqlServiceContext ssc = databasefactory.createContextWithConnection();
+			Connection conn = ssc.getConnection();
+			Statement st = conn.createStatement();
+			ResultSet rs = null;
+			InputStream is = null;
+			OutputStream os = null;
+			ReadableByteChannel rbc = null;
+	        WritableByteChannel wbc = null;
+			try {
+				rs = st.executeQuery("select file_name,file_size,mime_type, file_path, content from fnd_atm_attachment t where t.attachment_id = " + aid);
+				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
+				String path = rs.getString(4);
+				String fileName = rs.getString(1);
+				int fileSize = rs.getInt(2);
+				String mimeType = rs.getString(3);
+				HttpServletResponse response = serviceInstance.getResponse();
+				response.setHeader("Content-Type", mimeType);
+				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
+				response.setContentLength(fileSize);
+				if(path!=null){
+					File file = new File(path);
+					if(file.exists()){
+				        os = response.getOutputStream();
+				        is = new FileInputStream(path);
+		                rbc = Channels.newChannel(is);
+		                wbc = Channels.newChannel(os);
+		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
+		                int size=-1;
+		                while( (size = rbc.read(buf))>0){
+		                    buf.position(0);
+		                    wbc.write(buf);
+		                    buf.clear();
+		                    os.flush();
+		                }
+					}
+				}else{
+					Blob content = rs.getBlob(5);
+		            if (content != null) { 
+		                
+		                os = response.getOutputStream();
+		                is = content.getBinaryStream();
+		                rbc = Channels.newChannel(is);
+		                wbc = Channels.newChannel(os);
+		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
+		                int size = -1;
+		                while ((size = rbc.read(buf)) > 0) {
+		                    buf.position(0);
+		                    wbc.write(buf);
+		                    buf.clear();
+		                    os.flush();
+		                }
+		            }
+				}
+			} finally{
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+				if (ssc != null)
+					ssc.freeConnection();
+				try{if(is!=null) is.close();
+                }catch(Exception ex){}
+                try{if(os!=null) os.close();
+                }catch(Exception ex){}
+			}
+		}
+	}
+	
+	private void doDelete(CompositeMap context) throws Exception{
+		ServiceContext service = ServiceContext.createServiceContext(context);
+		CompositeMap params = service.getParameter();
+		Object aid = (Object)params.getObject("/parameter/record/@attachment_id");
+		if(aid!=null){
+			SqlServiceContext ssc = databasefactory.createContextWithConnection();
+			Connection conn = ssc.getConnection();
+			Statement st = conn.createStatement();
+			ResultSet rs = null;
+			try {
+				rs = st.executeQuery("select file_path from fnd_atm_attachment t where t.attachment_id = " + aid);
+				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
+				String path = rs.getString(1);
+				if(path!=null){
+					File file = new File(path);
+					if(file.exists()){
+						file.delete();
+					}
+				}
+			} finally{
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+				if (ssc != null)
+					ssc.freeConnection();
+			}
+		}
+	}
+	
+	private void doUpload(CompositeMap context) throws Exception{
+		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		
-		params = service.getParameter();
+		CompositeMap params = service.getParameter();
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload up = new ServletFileUpload(factory);
 		List items = null;
@@ -82,8 +204,10 @@ public class FileUpload implements E_DetectProcedure {
 				if (fileItem.isFormField()) {
 					String name = fileItem.getFieldName();
 					String value = fileItem.getString("UTF-8");
-					if("_url".equalsIgnoreCase(name)){
+					if(PROPERTITY_URL.equalsIgnoreCase(name)){
 						url = value;
+					}else if(PROPERTITY_ACTION_TYPE.equalsIgnoreCase(name)){
+						actionType = value;
 					}else{
 						params.put(name, value);
 					}
@@ -133,11 +257,12 @@ public class FileUpload implements E_DetectProcedure {
         }
 	}
 	
-	public void writeFile(Connection conn,InputStream instream, String aid) throws Exception    {
+	
+	private void writeFile(Connection conn,InputStream instream, String aid) throws Exception    {
 		String fileName = IDGenerator.getInstance().generate();
     	String datePath = sdf.format(new Date());	
-    	String path = getSavePath();
-    	if(path.lastIndexOf("/") == -1) path += "/";
+    	String path = getSavePath().replaceAll("\\\\", "/");
+    	if(path.charAt(path.length()-1)!='/') path += "/";
     	path += datePath;
     	FileUtils.forceMkdir(new File(path));
         Statement stmt = null;
@@ -162,7 +287,7 @@ public class FileUpload implements E_DetectProcedure {
         }
 	}
 
-	public long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
+	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
 		conn.setAutoCommit(false);
 		long size = 0;
 		Statement st = null;
@@ -203,14 +328,6 @@ public class FileUpload implements E_DetectProcedure {
 		}
 	}
 
-	public int onDetectProcedure(IService service) throws Exception {
-		ServiceController controller = ServiceController
-				.createServiceController(service.getServiceContext()
-						.getObjectContext());
-		controller.setProcedureName(ControllerProcedures.UPLOAD_SERVICE);
-		return EventModel.HANDLE_NORMAL;
-	}
-
 	public String getSaveType() {
 		return saveType == null ? SAVE_TYPE_DATABASE : saveType;
 	}
@@ -225,6 +342,40 @@ public class FileUpload implements E_DetectProcedure {
 
 	public void setSavePath(String savePath) {
 		this.savePath = savePath;
+	}
+
+	public String getActionType() {
+		return actionType == null ? "upload" : actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+	
+	public static String toUtf8String(String s) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if ((c >= 0) && (c <= 255)) {
+				sb.append(c);
+			} else {
+				byte[] b;
+				try {
+					b = Character.toString(c).getBytes("utf-8");
+				} catch (Exception ex) {
+					System.out.println(ex);
+					b = new byte[0];
+				}
+				for (int j = 0; j < b.length; j++) {
+					int k = b[j];
+					if (k < 0) {
+						k += 256;
+					}
+					sb.append("%" + Integer.toHexString(k).toUpperCase());
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 }

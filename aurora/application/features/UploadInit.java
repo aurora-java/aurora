@@ -90,6 +90,8 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
     				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
     			}
     			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+id);
+    			String context_path = model.getObject("/request/@context_path").toString();
+    			ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, view.getString(Upload.PROPERTITY_UPLOAD_URL, context_path + "/atm_delete.svc"));
         		screen.addDataSet(ds);
         	}
         }

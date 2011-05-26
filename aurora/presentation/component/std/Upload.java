@@ -30,7 +30,9 @@ public class Upload extends Component {
 	public static final String PROPERTITY_FILE_SIZE = "filesize";
 	public static final String PROPERTITY_FILE_TYPE = "filetype";
 	public static final String PROPERTITY_BUTTON_WIDTH = "buttonwidth";
-
+	public static final String PROPERTITY_UPLOAD_URL = "uploadurl";
+	public static final String PROPERTITY_DELETE_URL = "deleteurl";
+	public static final String PROPERTITY_DOWNLOAD_URL = "downloadurl";
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -78,10 +80,14 @@ public class Upload extends Component {
 		String pk = view.getString(PROPERTITY_PK_VALUE, "pkvalue");
 		pk = uncertain.composite.TextParser.parse(pk, model);
 		map.put(PROPERTITY_PK_VALUE, pk);
-		map.put("context_path", model.getObject("/request/@context_path").toString());
+		String context_path = model.getObject("/request/@context_path").toString();
+		map.put("context_path", context_path);
 		
 		map.put(PROPERTITY_BUTTON_WIDTH, new Integer(view.getInt(PROPERTITY_BUTTON_WIDTH, 50)));
 		map.put(PROPERTITY_FILE_SIZE, new Integer(view.getInt(PROPERTITY_FILE_SIZE, 0)));
 		map.put(PROPERTITY_FILE_TYPE, view.getString(PROPERTITY_FILE_TYPE, "*.*"));
+		map.put(PROPERTITY_UPLOAD_URL, view.getString(PROPERTITY_UPLOAD_URL, context_path + "/atm_upload.svc"));
+		map.put(PROPERTITY_DELETE_URL, view.getString(PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc"));
+		map.put(PROPERTITY_DOWNLOAD_URL, view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc"));
 	}
 }
