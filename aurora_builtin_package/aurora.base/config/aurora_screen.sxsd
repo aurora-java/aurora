@@ -133,8 +133,8 @@
     </ss:types>
     <ss:editors/>
     <ss:wizards>
-        <ss:wizard name="a:fieldsWizard" instanceClass="uncertain.ide.eclipse.component.wizard.FieldsWizardAction"/>
-        <ss:wizard name="a:dataSetWizard" instanceClass="uncertain.ide.eclipse.component.wizard.DataSetWizardAction"/>
-        <ss:wizard name="a:dataSetsWizard" instanceClass="uncertain.ide.eclipse.component.wizard.DataSetsWizardAction"/>
+        <ss:wizard name="a:fieldsWizard" instanceClass="component.wizard.FieldsWizardAction"/>
+        <ss:wizard name="a:dataSetWizard" instanceClass="component.wizard.DataSetWizardAction"/>
+        <ss:wizard name="a:dataSetsWizard" instanceClass="component.wizard.DataSetsWizardAction"/>
     </ss:wizards>
 </ss:schema>
