@@ -175,8 +175,8 @@
         </ss:element>
     </ss:elements>
     <ss:editors>
-        <ss:editor name="bm:ModelReferenceEditor" instanceClass="uncertain.ide.eclipse.celleditor.ModelReferenceCellEditor"/>
-        <ss:editor name="bm:LocalFieldReferenceEditor" instanceClass="uncertain.ide.eclipse.celleditor.LocalFieldReferenceCellEditor"/>
-        <ss:editor name="bm:ForeignFieldReferenceEditor" instanceClass="uncertain.ide.eclipse.celleditor.ForeignFieldReferenceCellEditor"/>
+        <ss:editor name="bm:ModelReferenceEditor" instanceClass="celleditor.ModelReferenceCellEditor"/>
+        <ss:editor name="bm:LocalFieldReferenceEditor" instanceClass="celleditor.LocalFieldReferenceCellEditor"/>
+        <ss:editor name="bm:ForeignFieldReferenceEditor" instanceClass="celleditor.ForeignFieldReferenceCellEditor"/>
     </ss:editors>
 </ss:schema>
