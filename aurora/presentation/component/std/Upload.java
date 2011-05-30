@@ -86,8 +86,11 @@ public class Upload extends Component {
 		map.put(PROPERTITY_BUTTON_WIDTH, new Integer(view.getInt(PROPERTITY_BUTTON_WIDTH, 50)));
 		map.put(PROPERTITY_FILE_SIZE, new Integer(view.getInt(PROPERTITY_FILE_SIZE, 0)));
 		map.put(PROPERTITY_FILE_TYPE, view.getString(PROPERTITY_FILE_TYPE, "*.*"));
-		map.put(PROPERTITY_UPLOAD_URL, view.getString(PROPERTITY_UPLOAD_URL, context_path + "/atm_upload.svc"));
-		map.put(PROPERTITY_DELETE_URL, view.getString(PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc"));
-		map.put(PROPERTITY_DOWNLOAD_URL, view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc"));
+		String uplloadUrl = view.getString(PROPERTITY_UPLOAD_URL, context_path + "/atm_upload.svc");
+		map.put(PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uplloadUrl, model));
+		String deleteUrl = view.getString(PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc");
+		map.put(PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(deleteUrl, model));
+		String downloadUrl = view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc");
+		map.put(PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(downloadUrl, model));
 	}
 }
