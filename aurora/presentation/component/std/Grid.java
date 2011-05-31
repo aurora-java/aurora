@@ -358,7 +358,9 @@ public class Grid extends Component {
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls')}");
+						}else if("txt".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-txt","background-position:0px -87px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt')}");
 						}
 					}
 				}
@@ -509,6 +511,8 @@ public class Grid extends Component {
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
+			navbar.put(NavBar.PROPERTITY_NAVBAR_TYPE, view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex"));
+			navbar.put(NavBar.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBar.PROPERTITY_MAX_PAGE_COUNT,10)));
 			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
 			sb.append("<tr><td>");
 			try {
