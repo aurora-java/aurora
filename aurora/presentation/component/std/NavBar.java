@@ -38,6 +38,7 @@ public class NavBar extends ToolBar {
 			map.put(PROPERTITY_NAVBAR_TYPE, type);
 			map.put(PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(PROPERTITY_MAX_PAGE_COUNT,10)));
 			if("simple".equalsIgnoreCase(type)){
+				view.put(ComponentConfig.PROPERTITY_CLASSNAME, view.getString(ComponentConfig.PROPERTITY_CLASSNAME)+" simple-navbar");
 				createSimpleNavBar(session, context);
 			}else{
 				createComplexNavBar(session, context);
