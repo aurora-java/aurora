@@ -33,11 +33,14 @@ import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class ScreenRenderer {
+	
 
     public static final String HTML_PAGE = "html-page";
 
     private static final String DEFAULT_LANG_CODE = "ZHS";
 
+    private String contentType = "text/html;charset=utf-8";
+    
     /**
      * @param prtManager
      */
@@ -99,6 +102,8 @@ public class ScreenRenderer {
                 mScreen.putString(TemplateRenderer.KEY_PACKAGE, mDefaultPackage);
             if (mScreen.getString(TemplateRenderer.KEY_TITLE) != null)
                 mDefaultTitle = mScreen.getString(TemplateRenderer.KEY_TITLE);
+            if (mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE) != null)
+                setContentType(mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE));
             mContext.addChild(mScreen);
             mContext.putBoolean("output", true);
         }
@@ -123,8 +128,10 @@ public class ScreenRenderer {
             HttpServletResponse response = mService.getResponse();
             HttpServletRequest request = mService.getRequest();
 
+            
             // create BuildSession
-            response.setContentType("text/html;charset=utf-8");
+//            response.setContentType("text/html;charset=utf-8");
+            response.setContentType(getContentType());
             Writer out = response.getWriter();
             session = mPrtManager.createSession(out);
 
@@ -213,4 +220,12 @@ public class ScreenRenderer {
         }
         return code;
     }
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
 }
