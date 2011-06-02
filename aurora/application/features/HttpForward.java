@@ -4,10 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
+
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServlet;
@@ -15,10 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HttpForward extends HttpServlet{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	public static String KEY_ADDRESS="address"; 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response){
@@ -56,39 +49,28 @@ public class HttpForward extends HttpServlet{
 		
 	public void	writeResponse(HttpServletResponse response,String url) throws Exception{
 		OutputStream os = null;
-		InputStream is = null;
-		ReadableByteChannel rbc = null;
-		WritableByteChannel wbc = null;
+		InputStream is = null;		
 		HttpURLConnection connection=null;
-		int Buffer_size = 500 * 1024;
+		int Buffer_size = 50 * 1024;
 		try{	
 			URL postUrl = new URL(url);
 			connection = (HttpURLConnection)postUrl.openConnection();
-			connection.connect();
+			connection.setReadTimeout(0);
+			connection.connect();			
 			response.setContentType(connection.getContentType());			
 			response.setContentLength(connection.getContentLength());
-			response.addHeader("Content-Disposition",connection.getHeaderField("Content-Disposition"));
-			
+			response.addHeader("Content-Disposition",connection.getHeaderField("Content-Disposition"));			
 			os = response.getOutputStream();
-			is = connection.getInputStream();
-			rbc = Channels.newChannel(is);
-			wbc = Channels.newChannel(os);
-			ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
-			while ((rbc.read(buf)) > 0) {
-				buf.position(0);
-				wbc.write(buf);
-				buf.clear();
-				os.flush();
+			try{
+				is = connection.getInputStream();
+			}catch(Exception e){
+				is= connection.getErrorStream();
 			}
-		}finally{
-			if (rbc != null){
-				try {
-					rbc.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
+			byte buf[]=new byte[Buffer_size];
+			int len;
+			while((len=is.read(buf))>0)
+				os.write(buf,0,len);			
+		}finally{			
 			if (is != null){
 				try {
 					is.close();
