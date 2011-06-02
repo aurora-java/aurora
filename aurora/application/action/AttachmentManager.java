@@ -60,6 +60,7 @@ public class AttachmentManager extends AbstractEntry{
 	private String saveType;
 	private String savePath;
 	private String actionType;
+	private String useSubFolder = null;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
@@ -263,7 +264,7 @@ public class AttachmentManager extends AbstractEntry{
     	String datePath = sdf.format(new Date());	
     	String path = getSavePath().replaceAll("\\\\", "/");
     	if(path.charAt(path.length()-1)!='/') path += "/";
-    	path += datePath;
+    	if("true".equalsIgnoreCase(getUseSubFolder())) path += datePath;
     	FileUtils.forceMkdir(new File(path));
         Statement stmt = null;
         try{
@@ -376,6 +377,14 @@ public class AttachmentManager extends AbstractEntry{
 			}
 		}
 		return sb.toString();
+	}
+
+	public String getUseSubFolder() {
+		return useSubFolder == null ? "true" : useSubFolder;
+	}
+
+	public void setUseSubFolder(String useSubFolder) {
+		this.useSubFolder = useSubFolder;
 	}
 
 }
