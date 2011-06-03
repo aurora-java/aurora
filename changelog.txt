@@ -1,6 +1,13 @@
 1.1.6
 =====
 
+
+2011-06003-马超
+
+BatchConfig 中空指针错误
+bm options如果有insert 不去考虑bm:fields上mulilanguage标签
+screen include 增加参数解析功能
+
 2011-05-12 － 周凡
 ------------------------------------
 修正stardard who字段在update时不生效的bug
