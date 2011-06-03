@@ -49,22 +49,24 @@ public class BatchConfig extends Procedure implements IConfigurable {
 			if (datas == null)
 				return;
 			Iterator dit = datas.getChildIterator();
-			while (dit.hasNext()) {
-				CompositeMap item = (CompositeMap) dit.next();
-				Iterator cit = childs.iterator();
-				while (cit.hasNext()) {
-					CompositeMap iconfig = (CompositeMap) cit.next();
-					CompositeMap ic = new CompositeMap(iconfig);
-					Set set = ic.keySet();
-					if (set != null) {
-						Iterator sit = set.iterator();
-						while (sit.hasNext()) {
-							String key = (String) sit.next();
-							ic.put(key, TextParser.parse((String) ic.get(key),
-									item));
+			if (dit != null) {
+				while (dit.hasNext()) {
+					CompositeMap item = (CompositeMap) dit.next();
+					Iterator cit = childs.iterator();
+					while (cit.hasNext()) {
+						CompositeMap iconfig = (CompositeMap) cit.next();
+						CompositeMap ic = new CompositeMap(iconfig);
+						Set set = ic.keySet();
+						if (set != null) {
+							Iterator sit = set.iterator();
+							while (sit.hasNext()) {
+								String key = (String) sit.next();
+								ic.put(key, TextParser.parse((String) ic
+										.get(key), item));
+							}
 						}
+						result.add(ic);
 					}
-					result.add(ic);
 				}
 			}
 		}
