@@ -4,12 +4,15 @@
  */
 package aurora.service.http;
 
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uncertain.composite.CompositeMap;
 import aurora.application.config.ScreenConfig;
+import aurora.application.util.ThreadLocalUtil;
 import aurora.bm.BusinessModel;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
@@ -110,5 +113,18 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         crudSvcContext.setRequestedBM(object_name);
         crudSvcContext.setRequestedOperation(operation_name);
     }
+
+    protected void handleException(HttpServletRequest request,
+            HttpServletResponse response, Exception ex) throws IOException,
+            ServletException {
+        Object obj = ThreadLocalUtil.get("CURRENT_CONFIG");
+        if(obj!=null)
+            System.out.println(obj);
+        else
+            System.out.println("NO trace info");
+        super.handleException(request, response, ex);
+    }
+    
+    
 
 }

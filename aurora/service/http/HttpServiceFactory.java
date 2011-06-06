@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.CacheFactoryConfig;
+import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
@@ -44,9 +46,10 @@ public class HttpServiceFactory {
     private CompositeLoader createCompositeLoader(){
         CompositeLoader l = new CompositeLoader();
         l.ignoreAttributeCase();
-        boolean cache = mUncertainEngine.getCacheConfigFiles();
-        if(cache){
-            mUncertainEngine.prepareCacheSettings(l, KEY_WEB_RESOURCE_CACHE);
+        ICache c = CacheFactoryConfig.getNamedCache(mUncertainEngine.getObjectRegistry(), KEY_WEB_RESOURCE_CACHE);
+        if(c!=null){
+            l.setCache(c);
+            l.setCacheEnabled(true);
         }
         return l;
     }
