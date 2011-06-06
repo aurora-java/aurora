@@ -54,6 +54,14 @@ public class ScreenConfig extends BaseServiceConfig {
         return CompositeUtil.findChild(object_context, "dataSets");
     }
     
+    public boolean isCacheEnabled(){
+        return getBoolean("cacheenabled", false);
+    }
+    
+    public void setCacheEnabled(boolean e){
+        putBoolean("cacheenabled", e);
+    }
+    
     public String getCacheKey(){
         return getString(KEY_CACHE_KEY);
     }
