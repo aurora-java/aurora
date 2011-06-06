@@ -5,15 +5,17 @@ package aurora.presentation;
 
 import java.io.IOException;
 
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
-import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
 import uncertain.util.template.TextTemplate;
 
 public class TemplateBasedView implements IViewBuilder, ISingleton {
     
+    public static final String CACHE_NAME = "ViewComponentTemplates";
     public static final String     TEMPLATE_EXT = ".tplt";
     public static final String     KEY_TEMPLATE = "template";
     static final String[]          TEMPLATE_BASED_SEQUENCE = {"LoadTemplate", "CreateViewContent" };  
@@ -32,7 +34,8 @@ public class TemplateBasedView implements IViewBuilder, ISingleton {
     }
     
     private void initCache( UncertainEngine engine ){
-        mCache = engine.createNamedCache("ViewComponentTemplates");
+        IObjectRegistry reg = engine.getObjectRegistry();
+        mCache = CacheFactoryConfig.getNamedCache(reg, CACHE_NAME);
         mIsCacheEnabled = mCache!=null;
         /*
         mIsCacheEnabled = engine.getCacheConfigFiles();
