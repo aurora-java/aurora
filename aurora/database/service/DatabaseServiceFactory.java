@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
@@ -118,11 +119,7 @@ public class DatabaseServiceFactory {
                 .getInstanceOfType(IModelFactory.class);
         if (modelFactory == null) {
             ModelFactory fact = new ModelFactory(uncertainEngine.getOcManager());
-            ICache cache = uncertainEngine.createNamedCache("BusinessModel");
-            if(cache!=null){
-                fact.setUseCache(true);
-                fact.setCache(cache);
-            }
+
             modelFactory = fact;
             os.registerInstance(IModelFactory.class, modelFactory);
         }
@@ -131,6 +128,16 @@ public class DatabaseServiceFactory {
 
         globalConfig = uncertainEngine.createConfig();
 
+    }
+    
+    public void onInitialize(){
+        IObjectRegistry os = uncertainEngine.getObjectRegistry();
+        ModelFactory fact = (ModelFactory)modelFactory;
+        ICache cache = CacheFactoryConfig.getNamedCache(os, "BusinessModel");
+        if(cache!=null){
+            fact.setUseCache(true);
+            fact.setCache(cache);
+        }
     }
 
     public Object getGlobalParticipant(Class type) {

@@ -86,6 +86,8 @@ public class BusinessModelServiceContext extends SqlServiceContext {
         setSqlRunner(null);
         setSqlString(null);
         setBusinessModel(null);
+        setSqlGenerationMode(null);
+        setStatementType(null);
         setStatement(null);
     }    
 }

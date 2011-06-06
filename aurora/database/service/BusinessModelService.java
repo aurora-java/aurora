@@ -17,6 +17,7 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.IExceptionHandle;
 import uncertain.proc.ProcedureRunner;
+import aurora.application.util.ThreadLocalUtil;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
 import aurora.database.CompositeMapCreator;
@@ -125,10 +126,7 @@ public class BusinessModelService {
                 }
             });            
         }
-        
-        /*
 
-         */
     }
 
     public void setServiceContext(ServiceContext context) {
@@ -308,6 +306,9 @@ public class BusinessModelService {
     }
     
     public void onCreateSqlRunner( StringBuffer sql ) {
+        ThreadLocalUtil.put("CURRENT_CONFIG", mServiceContext.getObjectContext().toXML());
+        if(sql==null)
+            throw new IllegalStateException("No SQL created in context");
         BusinessModelServiceContext bmsc = mServiceContext;
         Collection parameters = null;
         ISqlStatement stmt = bmsc.getStatement();
