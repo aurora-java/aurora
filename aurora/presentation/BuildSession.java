@@ -225,6 +225,25 @@ public class BuildSession {
             buildView(model, view);
         }
     }
+    
+    public String buildViewsAsString( CompositeMap model, Collection view_list )
+        throws Exception
+    {
+        Writer old_writer = mWriter;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            PrintWriter out = new PrintWriter(bos);
+            setWriter(out);
+            buildViews(model, view_list);
+            out.flush();
+            String str = bos.toString();
+            out.close();
+            bos.close();
+            return str;
+        } finally {
+            mWriter = old_writer;
+        }        
+    }
 
     public TextTemplate getTemplateByName(String name) throws IOException {
         if (mCurrentPackage == null)
