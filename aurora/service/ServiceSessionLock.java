@@ -112,25 +112,19 @@ public class ServiceSessionLock implements Serializable, IServiceSessionLock, IG
     public static String getKey( String session_id, String resource ){
         return session_id + "." + resource;
     }
-    
-    private void log(String msg){
-        System.out.println(new Date()+" "+ Thread.currentThread().getName()+" "+msg);
-    }
+
     
     public void lock( String session_id, String resource, long timeout){
         ResourceLock lock = new ResourceLock( getKey(session_id, resource), (timeout>0?System.currentTimeMillis() + timeout:0));
         mResourceLockMap.put(lock.mKey, lock);
-        //log(lock.mKey+"===>>>lock");
     }
     
     public void unlock( String session_id, String resource){
         mResourceLockMap.remove( getKey(session_id, resource));
-        //log(getKey(session_id, resource) + "<<<===unlock");
     }
     
     public boolean islocked( String session_id, String resource){
         boolean locked = mResourceLockMap.containsKey( getKey(session_id, resource) );
-        //log(getKey(session_id, resource)+" islocked="+locked);
         return locked;
     }
     
