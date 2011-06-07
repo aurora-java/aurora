@@ -65,6 +65,7 @@ public class ServiceInitiator {
             factory.setDataSource(ds);
         }
         logger.info("Using DataSource:"+ds);
+        factory.onInitialize();
     }
     
 
