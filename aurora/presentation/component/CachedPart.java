@@ -18,6 +18,15 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.cache.IResponseCacheProvider;
 
+/*
+ *         <!--
+        <a:cached-part cacheKey="InitialScripts">
+            ...
+            any view content
+            ...
+        </a:cached-part>
+        -->
+ */
 public class CachedPart implements IViewBuilder {
     
     IResponseCacheProvider  mCacheProvider;
