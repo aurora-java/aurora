@@ -3,12 +3,16 @@
  */
 package aurora.application.features;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
 import uncertain.event.RuntimeContext;
@@ -26,6 +30,7 @@ import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.PresentationManager;
+import aurora.presentation.cache.IResponseCacheProvider;
 import aurora.presentation.component.TemplateRenderer;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
@@ -50,6 +55,8 @@ public class ScreenRenderer {
         mPrtManager = prtManager;
         mRegistry = registry;
         databaseFactory = factory;
+        
+        mCacheProvider = (IResponseCacheProvider)mRegistry.getInstanceOfType(IResponseCacheProvider.class);
 
         mMessageProvider = (IMessageProvider) mRegistry
                 .getInstanceOfType(IMessageProvider.class);
@@ -73,16 +80,23 @@ public class ScreenRenderer {
     HttpServiceInstance mService;
     CompositeMap mContext;
     CompositeMap mScreen;
+    IResponseCacheProvider  mCacheProvider;
+    
+    
     IDatabaseFactory databaseFactory;
     IObjectRegistry mRegistry;
     ILookupCodeProvider lookupProvider;
     IMessageProvider mMessageProvider;
+    
+    
 
     // String mLangPath = "/session/@lang";
     ApplicationConfig mApplicationConfig;
     String mDefaultPackage;
     String mDefaultTemplate;
     String mDefaultTitle = "";
+//    String      mScreenCacheKey;
+    boolean     mIsCache = false;
 
     // DatabaseServiceFactory mServiceFactory;
 
@@ -91,6 +105,16 @@ public class ScreenRenderer {
         mService = (HttpServiceInstance) ServiceInstance.getInstance(mContext);
         ScreenConfig cfg = ScreenConfig.createScreenConfig(mService
                 .getServiceConfigData());
+        mIsCache = cfg.isCacheEnabled();
+/*
+        mScreenCacheKey = cfg.getCacheKey();
+        if(mScreenCacheKey!=null){
+            if(mCacheProvider==null)
+                throw new IllegalStateException("cacheKey is set in screen, but no IResponseCacheProvider found");
+            mScreenCacheKey = mCacheProvider.getFullCacheKey(mScreenCacheKey);
+            mScreenCacheKey = TextParser.parse(mScreenCacheKey, mContext);
+        }
+*/        
         mScreen = cfg.getViewConfig();
         if (mScreen != null) {
             mScreen.setName(HTML_PAGE);
@@ -121,20 +145,24 @@ public class ScreenRenderer {
         RuntimeContext ctx = ServiceContext.getInstance(context);
         BuildSession session = (BuildSession) ctx
                 .getInstanceOfType(BuildSession.class);
-        
+       
         // check if BuildSession is created, if not yet then create one
         if (session == null) {
-
+            ByteArrayOutputStream   baos = null;
+            Writer out = null;
+ 
             HttpServletResponse response = mService.getResponse();
             HttpServletRequest request = mService.getRequest();
 
-            
-            // create BuildSession
-//            response.setContentType("text/html;charset=utf-8");
             response.setContentType(getContentType());
-            Writer out = response.getWriter();
-            session = mPrtManager.createSession(out);
+            if(mIsCache){
+                baos = new ByteArrayOutputStream();
+                out = new OutputStreamWriter(baos);
+            }else{
+                out = response.getWriter();
+            }
 
+            session = mPrtManager.createSession(out);
             session.setContextPath(request.getContextPath());
 
             // set localized message provider for i18n
@@ -178,15 +206,29 @@ public class ScreenRenderer {
             ctx.setInstanceOfType(BuildSession.class, session);
             
             session.buildView(mService.getServiceContext().getModel(), mScreen);
+            out.flush();
             
+            // write cache if necessary
+            if(mIsCache){
+                String output = baos.toString();
+                ICache cache = mCacheProvider.getCacheForResponse();
+                //String key = CachedScreenListener.getFullKey(mCacheProvider, mService, mScreenCacheKey);
+                String key = CachedScreenListener.getCacheKey(context);
+                if(key!=null)
+                    cache.setValue(key, output);
+                PrintWriter response_writer = response.getWriter();
+                response_writer.write(output);
+                response_writer.flush();
+            }
         }else{
             IService oldService = (IService)session.getInstanceOfType(IService.class);
             session.setInstanceOfType(IService.class, mService);
             session.buildViewFromBegin(mService.getServiceContext().getModel(), mScreen);
             session.setInstanceOfType(IService.class, oldService);
+            session.getWriter().flush();
         }
 
-        session.getWriter().flush();
+        
         return EventModel.HANDLE_NO_SAME_SEQUENCE;
     }
 
