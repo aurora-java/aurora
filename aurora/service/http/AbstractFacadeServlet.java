@@ -73,6 +73,15 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+	    if(!mUncertainEngine.isRunning()){
+	        StringBuffer msg = new StringBuffer("Application failed to initialize");
+	        Throwable thr = mUncertainEngine.getInitializeException();
+	        if(thr!=null)
+	            msg.append(":").append(thr.getMessage());
+	        response.sendError(500, msg.toString());
+	        return;
+	    }
+	    
 		request.setCharacterEncoding("UTF-8");//form post encoding
 		IService svc = null;
 		boolean is_success = true;
