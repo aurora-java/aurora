@@ -28,12 +28,42 @@ import aurora.service.ServiceController;
 import aurora.service.http.HttpServiceInstance;
 
 public class CachedScreenListener implements E_DetectProcedure {
-    
+
+    public static class CacheResult {
+        String key;
+        Object content;
+        boolean hit = false;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public Object getContent() {
+            return content;
+        }
+
+        public void setContent(Object content) {
+            this.content = content;
+        }
+
+        public boolean isHit() {
+            return hit;
+        }
+
+        public void setHit(boolean hit) {
+            this.hit = hit;
+        }
+
+    }
+
     public static final String CACHE_KEY = "__screen_cache_key";
 
     IResponseCacheProvider mCacheProvider;
     ICache mCache;
-
 
     public static String getFullKey(IResponseCacheProvider provider,
             HttpServiceInstance svc, String key) {
@@ -52,12 +82,12 @@ public class CachedScreenListener implements E_DetectProcedure {
 
         return key;
     }
-    
-    public static void setCacheKey( CompositeMap context, String key ){
+
+    public static void setCacheKey(CompositeMap context, String key) {
         context.put(CACHE_KEY, key);
     }
-    
-    public static String getCacheKey( CompositeMap context ){
+
+    public static String getCacheKey(CompositeMap context) {
         return context.getString(CACHE_KEY);
     }
 
@@ -79,21 +109,26 @@ public class CachedScreenListener implements E_DetectProcedure {
         Writer out = response.getWriter();
         out.write(result);
         out.flush();
+        out.close();
     }
 
-    public String getCachedContent(IService service) {
+    public CacheResult getCachedContent(IService service) {
+        CacheResult result = new CacheResult();
         HttpServiceInstance svc = (HttpServiceInstance) service;
         ScreenConfig screen = ScreenConfig.createScreenConfig(svc
                 .getServiceConfigData());
         String key = screen.getCacheKey();
+        key = getFullKey(mCacheProvider, svc, key);
+        result.key = key;
         if (key != null) {
-            key = mCacheProvider.getFullCacheKey(key);
-            key = TextParser.parse(key, svc.getContextMap());
-            Object result = mCache.getValue(key);
-            if (result != null)
-                return result.toString();
+            setCacheKey(svc.getContextMap(), key);
+            Object content = mCache.getValue(key);
+            if (content != null) {
+                result.content = content;
+                result.hit = true;
+            }
         }
-        return null;
+        return result;
     }
 
     public int preDetectProcedure(IService service) throws Exception {
@@ -105,33 +140,25 @@ public class CachedScreenListener implements E_DetectProcedure {
             if (cacheEnabled) {
                 ILogger logger = LoggingContext.getLogger(svc.getContextMap(),
                         PresentationManager.LOGGING_TOPIC);
-                String key = screen.getCacheKey();
-                key = getFullKey(mCacheProvider, svc, key);
-                if (key != null) {
-                    setCacheKey(svc.getContextMap(), key);
-                    Object result = mCache.getValue(key);
-                    if (result != null) {
-                        try {
-                            writeCachedResponse(screen.getContentType(), svc,
-                                    result.toString());
-                            logger.log(
-                                    Level.FINE,
-                                    "Write cached result to client using key {0}",
-                                    new Object[] { key });
-                        } finally {
-                            ServiceController controller = svc.getController();
-                            controller.setContinueFlag(false);
-                            svc.getServiceContext().setSuccess(true);
-                        }
-                        return EventModel.HANDLE_STOP;
-                    } else {
-                        logger.log(
-                                Level.FINE,
-                                "Cache miss for key {0}, running normal screen render procedure",
-                                new Object[] { key });
+                CacheResult result = getCachedContent(svc);
+                if (result.isHit()) {
+                    try {
+                        writeCachedResponse(screen.getContentType(), svc,
+                                result.getContent().toString());
+                        logger.log(Level.FINE,
+                                "Write cached result to client using key {0}",
+                                new Object[] { result.getKey() });
+                    } finally {
+                        ServiceController controller = svc.getController();
+                        controller.setContinueFlag(false);
+                        svc.getServiceContext().setSuccess(true);
                     }
-                }else{
-                    logger.warning("screen cache key is null, check configuration");
+                    return EventModel.HANDLE_STOP;
+                } else {
+                    logger.log(
+                            Level.FINE,
+                            "Cache miss for key {0}, running normal screen render procedure",
+                            new Object[] { result.getKey() });
                 }
 
             }
