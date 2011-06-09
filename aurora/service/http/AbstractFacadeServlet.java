@@ -38,8 +38,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	ServletContext mContext;
 	IProcedureRegistry mProcRegistry;
 
-	Procedure mPreServiceProc;
-	Procedure mPostServiceProc;
+	//Procedure mPreServiceProc;
+	//Procedure mPostServiceProc;
 	
 	Configuration  mGlobalServiceConfig;
 
@@ -82,6 +82,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	        return;
 	    }
 	    
+	    
 		request.setCharacterEncoding("UTF-8");//form post encoding
 		IService svc = null;
 		boolean is_success = true;
@@ -97,8 +98,17 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			svc = createServiceInstance(request, response);
 			ServiceThreadLocal.setCurrentThreadContext(svc.getServiceContext().getObjectContext());
 			populateService(request, response, svc);
-			if (mPreServiceProc != null)
-				is_success = svc.invoke(mPreServiceProc);
+
+			Procedure pre_service_proc=null, post_service_proc=null;
+	        
+	        if (mProcRegistry != null) {
+	            pre_service_proc = mProcRegistry.getProcedure(PRE_SERVICE);
+	            post_service_proc = mProcRegistry.getProcedure(POST_SERVICE);
+	        }
+
+			
+			if (pre_service_proc != null)
+				is_success = svc.invoke(pre_service_proc);
 
 			if (is_success) {
 				Procedure proc = getProcedureToRun(mProcManager, svc);
@@ -107,8 +117,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				}
 			}
 			if (is_success) {
-				if (mPostServiceProc != null)
-					is_success = svc.invoke(mPostServiceProc);
+				if (post_service_proc != null)
+					is_success = svc.invoke(post_service_proc);
 			}
 		} catch (Exception ex) {
 			is_success = false;
@@ -153,10 +163,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		mProcRegistry = (IProcedureRegistry) mUncertainEngine
 				.getObjectRegistry()
 				.getInstanceOfType(IProcedureRegistry.class);
-		if (mProcRegistry != null) {
-			mPreServiceProc = mProcRegistry.getProcedure(PRE_SERVICE);
-			mPostServiceProc = mProcRegistry.getProcedure(POST_SERVICE);
-		}
 		
 		// get global service config
 		IObjectRegistry reg = getObjectRegistry();
