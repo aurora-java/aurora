@@ -20,6 +20,8 @@
                 <ss:attribute document="是否选中(默认选中第一个tab)" name="selected" type="ss:boolean"/>
                 <ss:attribute document="tab的body的className" name="bodyClassName"/>
                 <ss:attribute document="tab的body的style" name="bodyStyle"/>
+                <ss:attribute document="标签是否可关闭" name="closeable" default="false" type="ss:boolean"/>
+                <ss:attribute document="标签是否不可用" name="disabled" default="false" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent" type=""/>

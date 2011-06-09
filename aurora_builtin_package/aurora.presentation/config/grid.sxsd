@@ -5,6 +5,8 @@
         <ss:element name="a:grid">
             <ss:attributes>
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
+                <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
+                <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:columns" type="a:column"/>
@@ -45,6 +47,9 @@
             <ss:attributes>
                 <ss:attribute name="percenWidth" document="组件的百分比宽度,单位是(%)" type="ss:int"/>
                 <ss:attribute name="title" document="表的标题" type="ss:String"/>
+                <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
+                <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
+                <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:columns" type="a:column"/>
@@ -66,6 +71,14 @@
                     <ss:enumeration value="left"/>
                     <ss:enumeration value="center"/>
                     <ss:enumeration value="right"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:navBarType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="complex"/>
+                    <ss:enumeration value="simple"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>

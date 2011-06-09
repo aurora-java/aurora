@@ -9,6 +9,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITORS = "editors";
 	public static final String PROPERTITY_DATASET = "dataset";
+	public static final String PROPERTITY_NAVBAR = "navbar";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 	public static final String PROPERTITY_SHOW_HEAD = "showhead";
@@ -80,5 +81,12 @@ public class TableConfig extends ComponentConfig {
 	public void addEditor(ComponentConfig editor){
 		CompositeMap editors = getEditors();
 		editors.addChild(editor.getObjectContext());
+	}
+	
+	public boolean hasNavBar(){
+		return getBoolean(PROPERTITY_NAVBAR, false);
+	}
+	public void setNavBar(boolean nb){
+		putBoolean(PROPERTITY_NAVBAR, nb);
 	}
 }

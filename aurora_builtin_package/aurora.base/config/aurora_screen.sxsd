@@ -94,6 +94,8 @@
                 <ss:attribute name="checkedValue" document="checkbox选中的值"/>
                 <ss:attribute name="uncheckedValue" document="checkbox未选中的值"/>
                 <ss:attribute name="lovUrl" document="自定义URL"/>
+                <ss:attribute name="autoComplete" default="false" document="是否开启lov的autoComplete功能" type="ss:boolean"/>
+                <ss:attribute name="autoCompleteField" document="autoComplete的查询字段,如果没有设定，默认取mapping中等于field的name属性的to属性对应的from属性的字段。"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:mapping" type="a:map"/>

@@ -65,6 +65,7 @@ public class Table extends Component {
 		createHeads(map, view, session, cols);
 		generateColumns(map,cols,hasFooterBar(tc.getColumns()));
 		createGridEditors(session, context);
+		createNavgationToolBar(session,context);
 		String title = session.getLocalizedPrompt(view.getString(TITLE,""));
 		if(null!=title&&!"".equals(title)){
 			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
@@ -188,7 +189,7 @@ public class Table extends Component {
 			if (null == column.getChilds()) {
 				JSONObject json = new JSONObject(column);
 				jsons.put(json);
-				sb.append("<TD dataindex='"+column.getString("name")+"' align='"+column.getString("align")+"'></TD>");
+				sb.append("<TD dataindex='"+column.getString("name")+"' align='"+column.getString("align")+"'>&#160;</TD>");
 			}
 		}
 		sb.append("</TR></TFOOT>");
@@ -309,5 +310,43 @@ public class Table extends Component {
 			}
 		}
 		return false;
+	}
+	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
+		boolean hasNavBar = false;
+		CompositeMap view = context.getView();
+		Map map = context.getMap();
+		CompositeMap model = context.getModel();
+		StringBuffer sb = new StringBuffer();
+		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		
+		String nav = view.getString(TableConfig.PROPERTITY_NAVBAR,"");
+		if("true".equalsIgnoreCase(nav)){
+			hasNavBar = true;
+			CompositeMap navbar = new CompositeMap("navBar");
+			navbar.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+//			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+//			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+			
+			
+//			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
+			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
+			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
+			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-navbar");
+//			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
+			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
+			navbar.put(NavBar.PROPERTITY_NAVBAR_TYPE, view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex"));
+			navbar.put(NavBar.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBar.PROPERTITY_MAX_PAGE_COUNT,10)));
+			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
+			sb.append("<caption align='bottom'>");
+			try {
+				sb.append(session.buildViewAsString(model, navbar));
+			} catch (Exception e) {
+				throw new IOException(e.getMessage());
+			}
+			sb.append("</caption>");
+			map.put("navbar", sb.toString());
+		}
+		return hasNavBar;
 	}
 }

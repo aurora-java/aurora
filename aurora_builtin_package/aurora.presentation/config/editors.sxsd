@@ -100,6 +100,7 @@
                 <ss:attribute document="Lov窗口中grid的高度" name="lovGridHeight" type="ss:int"/>
                 <ss:attribute document="自定义URL" name="lovUrl"/>
                 <ss:attribute document="Lov弹出窗口的title" name="title"/>
+                <ss:attribute document="autoComplete的渲染函数" name="autoCompleteRenderer"/>
             </ss:attributes>
         </ss:element>
         <ss:element document="TextArea" name="a:textArea">
