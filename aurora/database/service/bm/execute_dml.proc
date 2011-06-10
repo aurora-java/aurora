@@ -7,9 +7,7 @@
 	</fields>
 	<action name="Decide${@SqlStatementType}Statement" input="SqlStatementType,BusinessModel"/>
 	<invoke procedure="aurora.database.service.bm.create_sql" />
+	<assert field="@SqlString" operator="not null" message="Finally No SQL created" />
 	<action name="CreateSqlRunner" input="SqlString,BusinessModel" output="SqlRunner"/>
 	<action name="ExecuteDmlStatement" input="SqlRunner,BusinessModel" />
-	<!--
-	<action name="Execute${@SqlStatementType}" input="SqlString,BusinessModel" />
-	-->
 </procedure>
