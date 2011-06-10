@@ -77,5 +77,13 @@ public class ScreenConfig extends BaseServiceConfig {
     public void setContentType(String type){
         putString(KEY_CONTENT_TYPE, type);
     }
+    
+    public void setTrace(boolean trace){
+        putBoolean("trace", trace);
+    }
+    
+    public boolean isTrace(){
+        return getBoolean("trace", false);
+    }
 
 }
