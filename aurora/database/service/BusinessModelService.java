@@ -17,7 +17,8 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.IExceptionHandle;
 import uncertain.proc.ProcedureRunner;
-import aurora.application.util.ThreadLocalUtil;
+import uncertain.util.ConcurrentAccessChecker;
+import uncertain.util.ThreadLocalUtil;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
 import aurora.database.CompositeMapCreator;
@@ -31,12 +32,13 @@ import aurora.database.sql.ISqlStatement;
 import aurora.database.sql.IStatementWithParameter;
 import aurora.service.ServiceContext;
 import aurora.service.exception.ExceptionDescriptorConfig;
-import aurora.service.validation.ErrorMessage;
 import aurora.service.validation.IParameterIterator;
 import aurora.service.validation.ParameterParser;
 import aurora.service.validation.ValidationException;
 
 public class BusinessModelService {
+    
+    //ConcurrentAccessChecker checker = new ConcurrentAccessChecker();
 
     public static final String PROC_EXECUTE_DML = "aurora.database.service.bm.execute_dml";
 
@@ -245,6 +247,7 @@ public class BusinessModelService {
     }
 
     public void executeDml(Map parameters, String operation) throws Exception {
+        //checker.checkThread();
         /*
          * Operation op = mBusinessModel.getOperation(operation); if(op!=null);
          */
@@ -306,7 +309,8 @@ public class BusinessModelService {
     }
     
     public void onCreateSqlRunner( StringBuffer sql ) {
-        ThreadLocalUtil.put("CURRENT_CONFIG", mServiceContext.getObjectContext().toXML());
+        //ThreadLocalUtil.appendDebugInfo(mServiceContext.getObjectContext().toXML());
+        //ThreadLocalUtil.put("CURRENT_CONFIG", mServiceContext.getObjectContext().toXML());
         if(sql==null)
             throw new IllegalStateException("No SQL created in context");
         BusinessModelServiceContext bmsc = mServiceContext;
@@ -355,5 +359,6 @@ public class BusinessModelService {
             mServiceContext.setStatementType(operation);
             mServiceContext.setSqlString(null);
         }
+
     }
 }
