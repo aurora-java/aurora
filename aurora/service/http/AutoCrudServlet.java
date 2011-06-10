@@ -4,13 +4,13 @@
  */
 package aurora.service.http;
 
-import java.io.IOException;
-
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uncertain.composite.CompositeMap;
+import aurora.application.IApplicationConfig;
 import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.database.actions.config.ActionConfigManager;
@@ -22,8 +22,19 @@ import aurora.service.controller.ControllerProcedures;
 
 public class AutoCrudServlet extends AbstractAutoServiceServlet {
     
+    boolean     enableBMTrace = false;
+    
     public static final String KEY_UPDATE_PASSED_FIELD_ONLY = "_"+ServiceOption.KEY_UPDATE_PASSED_FIELD_ONLY;
     
+    
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        IApplicationConfig appConfig =  (IApplicationConfig)mUncertainEngine.getObjectRegistry().getInstanceOfType(IApplicationConfig.class);
+        if(appConfig!=null){
+            enableBMTrace = appConfig.getApplicationConfig().getBoolean("enablebmtrace", enableBMTrace);
+        }
+    }
+
     private void prepareUpdateAction(ServiceContext context, CompositeMap action_config ){
         boolean is_update_passed_fields = true;
         if("false".equalsIgnoreCase(context.getParameter().getString(KEY_UPDATE_PASSED_FIELD_ONLY)))
@@ -72,6 +83,8 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         CompositeMap service_config = (CompositeMap) mServiceConfig.clone();
         svc.setName(object_name + "_" + operation_name);
         ScreenConfig screen = ScreenConfig.createScreenConfig(service_config);
+        if(enableBMTrace)
+            screen.setTrace(true);
         CompositeMap action_config = null;
         /*
         // begin check access
