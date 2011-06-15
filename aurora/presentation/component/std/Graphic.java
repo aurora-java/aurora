@@ -34,39 +34,41 @@ public class Graphic extends Component {
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		List childs=view.getChilds();
-		Iterator it = childs.iterator();
 		StringBuffer create=new StringBuffer("");
-		while (it.hasNext()) {
-			CompositeMap child = (CompositeMap) it.next();
-			CompositeMap events = child.getChild(ComponentConfig.PROPERTITY_EVENTS);
-			if (events != null) {
-				List list = events.getChilds();
-				if (list != null) {
-					Iterator it2 = list.iterator();
-					JSONObject listeners = new JSONObject();
-					while (it2.hasNext()) {
-						CompositeMap event = (CompositeMap) it2.next();
-						EventConfig eventConfig = EventConfig.getInstance(event);
-						String eventName = eventConfig.getEventName();// event.getString(ComponentConfig.PROPERTITY_EVENT_NAME,// "");
-						String handler = eventConfig.getHandler();// event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER,// "");
-						if (!"".equals(eventName) && !"".equals(handler)){
-							try {
-								listeners.put(eventName, new JSONFunction(handler));
-							} catch (JSONException e) {
+		if(null != childs){
+			Iterator it = childs.iterator();
+			while (it.hasNext()) {
+				CompositeMap child = (CompositeMap) it.next();
+				CompositeMap events = child.getChild(ComponentConfig.PROPERTITY_EVENTS);
+				if (events != null) {
+					List list = events.getChilds();
+					if (list != null) {
+						Iterator it2 = list.iterator();
+						JSONObject listeners = new JSONObject();
+						while (it2.hasNext()) {
+							CompositeMap event = (CompositeMap) it2.next();
+							EventConfig eventConfig = EventConfig.getInstance(event);
+							String eventName = eventConfig.getEventName();// event.getString(ComponentConfig.PROPERTITY_EVENT_NAME,// "");
+							String handler = eventConfig.getHandler();// event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER,// "");
+							if (!"".equals(eventName) && !"".equals(handler)){
+								try {
+									listeners.put(eventName, new JSONFunction(handler));
+								} catch (JSONException e) {
+								}
 							}
 						}
+						child.put("listeners", listeners);
 					}
-					child.put("listeners", listeners);
 				}
+				create.append(".createGElement('");
+				create.append(child.getName());
+				create.append("',");
+				JSONObject object=new JSONObject(child);
+				create.append(object.toString());
+				create.append(")");
 			}
-			create.append(".createGElement('");
-			create.append(child.getName());
-			create.append("',");
-			JSONObject object=new JSONObject(child);
-			create.append(object.toString());
-			create.append(")");
+			map.put("creates", create.toString());
 		}
-		map.put("creates", create.toString());
 		map.put(CONFIG, getConfigString());
 	}
 }
