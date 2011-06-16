@@ -13,6 +13,14 @@ public class AuroraCookie extends AbstractEntry {
 
 	private String name;
 	private String value;
+    private int maxAge=-1;
+	public int getMaxAge() {
+		return maxAge;
+	}
+
+	public void setMaxAge(int maxAge) {
+		this.maxAge = maxAge;
+	}
 
 	public String getName() {
 		return name;
@@ -39,6 +47,7 @@ public class AuroraCookie extends AbstractEntry {
 		HttpServletResponse response = mService.getResponse();
 		this.setValue  (TextParser.parse(this.getValue(), mContext));
 		Cookie cookie = new Cookie(name, value);
+		cookie.setMaxAge(maxAge);
 		response.addCookie(cookie);
 
 	}
