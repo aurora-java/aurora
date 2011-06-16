@@ -39,6 +39,8 @@ public class Graphic extends Component {
 			Iterator it = childs.iterator();
 			while (it.hasNext()) {
 				CompositeMap child = (CompositeMap) it.next();
+				if(ComponentConfig.PROPERTITY_EVENTS.equalsIgnoreCase(child.getName()))
+					continue;
 				CompositeMap events = child.getChild(ComponentConfig.PROPERTITY_EVENTS);
 				if (events != null) {
 					List list = events.getChilds();
