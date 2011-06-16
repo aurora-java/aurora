@@ -22,8 +22,11 @@ public class ImageValidate extends AbstractEntry {
 		if(session!=null){
 			String imageCode = (String) session.getAttribute(ImageCodeServlet.VALIDATE_CODE);
 			String checkCode = TextParser.parse(this.getCode(), mContext);
-			if(imageCode!=null && !imageCode.equalsIgnoreCase(checkCode))
-			throw new ImageValidationException("验证码不正确");//TODO:多语言
+			if(imageCode!=null && !imageCode.equalsIgnoreCase(checkCode)) {
+				throw new ImageValidationException("验证码不正确");//TODO:多语言
+			}else{
+				session.setAttribute(ImageCodeServlet.VALIDATE_CODE, null);
+			}
 		}
 	}
 
