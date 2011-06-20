@@ -20,6 +20,9 @@ public class NavBar extends ToolBar {
 	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "enablepagesize";
 	public static final String PROPERTITY_MAX_PAGE_COUNT = "maxpagecount";
 	
+	protected int getDefaultWidth() {
+		return -1;
+	}
 	//TODO:多语言!
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		try {

@@ -331,7 +331,6 @@ public class Table extends Component {
 			
 //			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
 			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
-			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
