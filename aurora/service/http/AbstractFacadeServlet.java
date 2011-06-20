@@ -84,6 +84,10 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	    
 	    
 		request.setCharacterEncoding("UTF-8");//form post encoding
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "0");
+		
 		IService svc = null;
 		boolean is_success = true;
 		UserTransaction trans = null;
