@@ -40,6 +40,7 @@ public class ServiceInitiator {
         reg.addClassMapping( "model-update", ModelUpdate.class );
         reg.addClassMapping( "model-insert", ModelInsert.class );
         reg.addClassMapping( "model-delete", ModelDelete.class );
+        reg.addClassMapping("model-join",ModelJoin.class);
         reg.addClassMapping( "model-execute", ModelExecute.class );
         reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
         //reg.addClassMapping( "sql-execute", SqlExecute.class);
