@@ -48,6 +48,8 @@ public class AttachmentManager extends AbstractEntry{
 	public static final String PROPERTITY_SAVE_TYPE = "savetype";
 	public static final String PROPERTITY_SAVE_PATH = "savepath";
 	public static final String PROPERTITY_URL = "url";
+	public static final String PROPERTITY_RANDOM_NAME = "random_name";
+	
 	
 	private static final String SAVE_TYPE_DATABASE = "db";
 	private static final String SAVE_TYPE_FILE = "file";
@@ -61,6 +63,7 @@ public class AttachmentManager extends AbstractEntry{
 	private String savePath;
 	private String actionType;
 	private String useSubFolder = null;
+	private String randomName = "true";
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
@@ -158,9 +161,12 @@ public class AttachmentManager extends AbstractEntry{
 	
 	private void doDelete(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
+		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
+		
 		CompositeMap params = service.getParameter();
-		Object aid = (Object)params.getObject("/parameter/record/@attachment_id");
-		if(aid!=null){
+		Object aid = serviceInstance.getRequest().getAttribute("attachment_id");
+		if(aid ==null) aid = (Object)params.getObject("/parameter/record/@attachment_id");
+		if(aid!=null && !"".equals(aid)){
 			SqlServiceContext ssc = databasefactory.createContextWithConnection();
 			Connection conn = ssc.getConnection();
 			Statement st = conn.createStatement();
@@ -175,6 +181,8 @@ public class AttachmentManager extends AbstractEntry{
 						file.delete();
 					}
 				}
+				st.execute("delete from fnd_atm_attachment at where at.attachment_id = " + aid);
+				st.execute("delete from fnd_atm_attachment_multi atm where atm.attachment_id = " + aid);
 			} finally{
 				if (rs != null)
 					rs.close();
@@ -211,6 +219,8 @@ public class AttachmentManager extends AbstractEntry{
 						actionType = value;
 					}else{
 						params.put(name, value);
+						if("attachment_id".equalsIgnoreCase(name))
+						serviceInstance.getRequest().setAttribute("attachment_id", value);
 					}
 				} else {
 					files.add(fileItem);
@@ -233,7 +243,7 @@ public class AttachmentManager extends AbstractEntry{
 	            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
 	            	writeBLOB(conn, in, attach_id);	            	
 	            }else if(SAVE_TYPE_FILE.equalsIgnoreCase(getSaveType())){
-	            	writeFile(conn,in, attach_id);
+	            	writeFile(conn, in, attach_id, file_name);
 	            }
 	            
 	            fileItem.delete();
@@ -253,14 +263,19 @@ public class AttachmentManager extends AbstractEntry{
 			ex.printStackTrace();
 			throw ex;
 		} finally {
-            if (conn != null)
-                conn.close();
+			//关闭连接,那么svc中其他的动作例如<a:model-update 就会报连接关闭.
+			//不关闭连接,不确定是否会有内存泄露...
+			//头大....
+//            if (conn != null)
+//                conn.close();
         }
 	}
 	
 	
-	private void writeFile(Connection conn,InputStream instream, String aid) throws Exception    {
-		String fileName = IDGenerator.getInstance().generate();
+	private void writeFile(Connection conn,InputStream instream, String aid,String fileName) throws Exception    {
+		if("true".equals(getRandomName())) {
+			fileName = IDGenerator.getInstance().generate();
+		}
     	String datePath = sdf.format(new Date());	
     	String path = getSavePath().replaceAll("\\\\", "/");
     	if(path.charAt(path.length()-1)!='/') path += "/";
@@ -385,6 +400,14 @@ public class AttachmentManager extends AbstractEntry{
 
 	public void setUseSubFolder(String useSubFolder) {
 		this.useSubFolder = useSubFolder;
+	}
+
+	public String getRandomName() {
+		return randomName;
+	}
+
+	public void setRandomName(String randomName) {
+		this.randomName = randomName;
 	}
 
 }
