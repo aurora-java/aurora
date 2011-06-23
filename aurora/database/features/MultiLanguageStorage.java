@@ -250,8 +250,8 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
         }
         CompositeMap currentParameter = context.getCurrentParameter();
         BusinessModel bm = context.getBusinessModel();
-        currentParameter.putString(refTable, bm.getBaseTable());
-        currentParameter.putString(refField, mlFiled.getName());
+        currentParameter.putString(refTable, bm.getBaseTable().toUpperCase());
+        currentParameter.putString(refField, mlFiled.getName().toUpperCase());
         currentParameter.putString(mlDescription, currentParameter
                 .getString(mlFiled.getMultiLanguageDescField()));
         currentParameter.putString(pkId, currentParameter.getString(mlFiled
