@@ -231,6 +231,7 @@ public class AttachmentManager extends AbstractEntry{
 				FileItem fileItem = (FileItem) it.next();
 				File file = new File(fileItem.getName());
 				String file_name = file.getName();
+				if("".equals(file_name)) continue;
 				params.put("file_name", file_name);
 				params.put("file_size", new Long(fileItem.getSize()));
 				BusinessModelService modelService = databasefactory.getModelService(FND_UPLOAD_FILE_TYPE, context);
@@ -272,7 +273,8 @@ public class AttachmentManager extends AbstractEntry{
 	}
 	
 	
-	private void writeFile(Connection conn,InputStream instream, String aid,String fileName) throws Exception    {
+	private void writeFile(Connection conn,InputStream instream, String aid,String fileName) throws Exception {
+		if("".equals(fileName)) return;
 		if("true".equals(getRandomName())) {
 			fileName = IDGenerator.getInstance().generate();
 		}
