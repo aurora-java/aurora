@@ -135,13 +135,16 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         // Run service
         try{
             HttpServiceInstance sub_instance = createSubInstance(screen_name, root);
-            if(mCacheListener!=null){
-                CachedScreenListener.CacheResult result = mCacheListener.getCachedContent(sub_instance);
-                if(result.isHit()){
-                    Writer out = session.getWriter();
-                    out.write(result.getContent().toString());
-                    out.flush();
-                    return;
+            ScreenConfig sub_config = ScreenConfig.createScreenConfig(sub_instance.getServiceConfigData());
+            if(sub_config.isCacheEnabled()){
+                if(mCacheListener!=null){
+                    CachedScreenListener.CacheResult result = mCacheListener.getCachedContent(sub_instance);
+                    if(result.isHit()){
+                        Writer out = session.getWriter();
+                        out.write(result.getContent().toString());
+                        out.flush();
+                        return;
+                    }
                 }
             }
             ServiceInstance.setInstance(root, sub_instance);
