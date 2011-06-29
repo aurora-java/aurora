@@ -180,7 +180,15 @@ public class DataSet extends Component {
 		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
 		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
 		if(dsc.isFetchAll())addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
-		if(dsc.isAutoQuery())addConfig(DataSetConfig.PROPERTITY_AUTO_QUERY, new Boolean(dsc.isAutoQuery()));
+		String autoQuery = dsc.getString(DataSetConfig.PROPERTITY_AUTO_QUERY,"false");
+		Boolean isAutoQuery = Boolean.FALSE;
+		if(!"false".equals(autoQuery)){
+			autoQuery = uncertain.composite.TextParser.parse(autoQuery, model);
+			if("true".equalsIgnoreCase(autoQuery)){
+				isAutoQuery = Boolean.TRUE;
+			}
+		}
+		if(isAutoQuery.booleanValue())addConfig(DataSetConfig.PROPERTITY_AUTO_QUERY, isAutoQuery);
 		if(dsc.isAutoPageSize())addConfig(DataSetConfig.PROPERTITY_AUTO_PAGE_SIZE, new Boolean(dsc.isAutoPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
