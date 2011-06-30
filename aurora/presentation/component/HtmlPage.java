@@ -89,10 +89,12 @@ public class HtmlPage implements IViewBuilder, ISingleton {
     
     public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
     	try{
+    		CompositeMap model = view_context.getModel();
         	String pageid = IDGenerator.getInstance().generate();
         	//TODO Change title creation method
         	String title = session.getTitle();
         	title = session.getLocalizedPrompt(title);
+        	title = uncertain.composite.TextParser.parse(title, model);
         	view_context.getContextMap().put(TemplateRenderer.KEY_TITLE, title);
         	view_context.getContextMap().put("pageid", pageid);
         	view_context.getContextMap().put("contextPath", session.getContextPath());
