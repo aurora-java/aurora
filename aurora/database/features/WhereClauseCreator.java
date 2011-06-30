@@ -101,6 +101,17 @@ public class WhereClauseCreator {
                     qf.addToWhereClause(where, "@"+qf.getName());
             }
         }
+
+    }
+    
+    public void addDefaultWhereClause(BusinessModelServiceContext bmsc, ConditionList where){
+        // Add data filter from query operation config
+        ServiceOption option = bmsc.getServiceOption();
+        if(option!=null){
+            String operation_defined_where = option.getDefaultWhereClause();
+            if(operation_defined_where!=null)
+            where.addCondition( new RawSqlExpression(operation_defined_where) );
+        }
     }
 
     public void doPopulateStatement( BusinessModelServiceContext bmsc){
@@ -113,13 +124,8 @@ public class WhereClauseCreator {
             if(model==null) return;
             String operation = bmsc.getOperation();
             addDataFilterConditions(operation, where, model.getDataFilters());
-            // Add data filter from query operation config
-            ServiceOption option = bmsc.getServiceOption();
-            if(option!=null){
-                String operation_defined_where = option.getDefaultWhereClause();
-                if(operation_defined_where!=null)
-                where.addCondition( new RawSqlExpression(operation_defined_where) );
-            }
+            // Add defaultWhereClause
+            addDefaultWhereClause(bmsc, where);
             // Add queriable fields
             if( s instanceof SelectStatement ){
                 addQueryConditions( bmsc.getCurrentParameter(), (SelectStatement)s, model);
@@ -151,6 +157,7 @@ public class WhereClauseCreator {
         ConditionList where = select.getWhereClause();
         addDataFilterConditions(bmsc.getOperation(), where, model.getDataFilters());
         addQueryConditions( bmsc.getCurrentParameter(), select, model  );
+        addDefaultWhereClause(bmsc, where);
         String db_type = model.getDatabaseType();
         IDatabaseProfile profile = db_type==null?mFactory.getDefaultDatabaseProfile():mFactory.getDatabaseProfile(db_type);
         if(profile==null)
