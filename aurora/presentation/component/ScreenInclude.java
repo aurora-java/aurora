@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.ConfigurationError;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
 import uncertain.proc.IProcedureManager;
@@ -114,7 +115,8 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
     {
         String screen_name = view.getString(KEY_SCREEN);
         if(screen_name==null)
-            throw new ConfigurationError("'screen' property must be set for <screen-include>");
+            throw BuiltinExceptionFactory.createAttributeMissing(view.asLocatable(), "screen"); 
+            //new ConfigurationError("'screen' property must be set for <screen-include>");
         screen_name = session.parseString(screen_name, root );
         // Added by mark.ma -- parse parameter
         int parameterpositiion = screen_name.lastIndexOf("?");
