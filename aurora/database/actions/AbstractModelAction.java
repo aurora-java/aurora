@@ -6,6 +6,7 @@ package aurora.database.actions;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
 import uncertain.ocm.IConfigurable;
 import uncertain.proc.AbstractEntry;
@@ -44,7 +45,7 @@ public abstract class AbstractModelAction extends AbstractEntry implements IConf
         throws Exception
     {
         if(mModel==null)
-            throw new IllegalArgumentException("Must set 'model' property");
+            throw BuiltinExceptionFactory.createAttributeMissing(this, "model");
         //CompositeMap context = runner.getContext();
         //CompositeMap context_map = runner.getContext();
         SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);        
