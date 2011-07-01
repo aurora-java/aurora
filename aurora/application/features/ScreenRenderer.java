@@ -4,6 +4,7 @@
 package aurora.application.features;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -117,6 +118,9 @@ public class ScreenRenderer {
 */        
         mScreen = cfg.getViewConfig();
         if (mScreen != null) {
+            File source = mScreen.getSourceFile();
+            if(source!=null)
+                mScreen.setSourceFile(source);
             mScreen.setName(HTML_PAGE);
             mScreen.setNameSpaceURI(null);
             if (mScreen.getString(TemplateRenderer.KEY_TEMPLATE) == null)
