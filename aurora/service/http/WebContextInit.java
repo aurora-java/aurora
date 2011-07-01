@@ -4,10 +4,17 @@
 package aurora.service.http;
 
 import java.io.File;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.sql.DataSource;
+
+import com.mchange.v2.c3p0.PooledDataSource;
 
 import uncertain.core.DirectoryConfig;
 import uncertain.core.UncertainEngine;
@@ -101,8 +108,33 @@ public class WebContextInit implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        if(uncertainEngine!=null)
+    	if(uncertainEngine!=null)
             uncertainEngine.shutdown();
+    	
+    	IObjectRegistry os = uncertainEngine.getObjectRegistry();
+    	if(os!=null){
+    		DataSource ds = (DataSource) os.getInstanceOfType(DataSource.class);
+    		if(ds!=null){
+    			if(ds instanceof PooledDataSource) {
+					try {
+						((PooledDataSource)ds).close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}					
+				}
+    		}
+    	}
+    	Enumeration drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver driver = (Driver)drivers.nextElement();
+            try {
+                DriverManager.deregisterDriver(driver);
+            } catch (SQLException e) {
+            	e.printStackTrace();
+            }
+        }
+        
+        
     }
 
     public void contextInitialized(ServletContextEvent event) {
