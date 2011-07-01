@@ -30,6 +30,7 @@ public abstract class AbstractProcedureInvoker {
             throws Exception {
         CompositeMap proc_config = ProcedureConfigManager.createConfigNode("procedure");
         proc_config.copy(config);
+        proc_config.setSourceFile(config.getSourceFile());
         /*
         Procedure proc = (Procedure)mOcManager.createObject(proc_config);   
         parent_runner.call(proc);
