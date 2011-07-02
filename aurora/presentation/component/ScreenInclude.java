@@ -164,7 +164,10 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         try{
             doScreenInclude(session, view_context.getView(), view_context.getModel().getRoot());
         }catch(Exception ex){
-            throw new ViewCreationException("Error when invoking screen config file +" + view.toXML(),ex);
+            throw new ViewCreationException("aurora.presentation.component.screen_include_invoke_error", 
+                    new Object[]{view.toXML()}, 
+                    ex,
+                    view);
         }
     }
 

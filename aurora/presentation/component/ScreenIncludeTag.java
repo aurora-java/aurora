@@ -5,6 +5,7 @@
 package aurora.presentation.component;
 
 import uncertain.composite.CompositeMap;
+import uncertain.exception.GeneralException;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.util.template.ITagContent;
 import aurora.presentation.BuildSession;
@@ -42,7 +43,9 @@ public class ScreenIncludeTag implements ITagContent {
         try{
             sc.doScreenInclude(session, view, root);
         }catch(Exception ex){
-            throw new RuntimeException("Error when invoking screen include for "+mScreenName, ex);
+            throw  new GeneralException("aurora.presentation.component.screen_include_invoke_error", 
+                    new Object[]{view.toXML()}, 
+                    ex);
         }
         
         return null;
