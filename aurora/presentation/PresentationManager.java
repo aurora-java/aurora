@@ -16,6 +16,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.exception.MessageFactory;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.DummyLoggerProvider;
 import uncertain.logging.ILogger;
@@ -35,6 +36,11 @@ import uncertain.util.template.TextTemplate;
  * @author Zhou Fan
  */
 public class PresentationManager implements IGlobalInstance {
+    
+    // load builtin exceptions
+    static {
+        MessageFactory.loadResource("resources.aurora_presentation_exceptions");
+    }
 
     public static final String LOGGING_TOPIC = "aurora.presentation.manager";
 
