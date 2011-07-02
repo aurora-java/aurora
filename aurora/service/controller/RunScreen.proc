@@ -6,7 +6,6 @@
 			<action Name="ParseParameter" />
 			<action Name="CreateModel" />
 			<action Name="CreateView" />
-			<action Name="BuildDispatch" />
 			<switch Test="@output">
 				<case Value="true">
 					<action Name="BuildOutputContent" />
