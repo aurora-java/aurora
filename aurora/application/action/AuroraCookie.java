@@ -49,8 +49,10 @@ public class AuroraCookie extends AbstractEntry {
 		HttpServletRequest request = mService.getRequest();
 		this.setValue  (TextParser.parse(this.getValue(), mContext));
 		Cookie cookie = new Cookie(name, value);
+		String path = request.getContextPath();
+		path = (path == null || path.length()==0) ? "/" : path;
+		cookie.setPath(path);
 		cookie.setMaxAge(maxAge);
-		cookie.setPath(request.getContextPath());
 		response.addCookie(cookie);
 
 	}
