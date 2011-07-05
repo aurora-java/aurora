@@ -1,6 +1,7 @@
 package aurora.application.action;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
@@ -45,9 +46,11 @@ public class AuroraCookie extends AbstractEntry {
 		HttpServiceInstance mService = (HttpServiceInstance) ServiceInstance
 				.getInstance(mContext);
 		HttpServletResponse response = mService.getResponse();
+		HttpServletRequest request = mService.getRequest();
 		this.setValue  (TextParser.parse(this.getValue(), mContext));
 		Cookie cookie = new Cookie(name, value);
 		cookie.setMaxAge(maxAge);
+		cookie.setPath(request.getContextPath());
 		response.addCookie(cookie);
 
 	}
