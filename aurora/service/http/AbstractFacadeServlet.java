@@ -101,6 +101,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			trans.begin();
 			svc = createServiceInstance(request, response);
 			ServiceThreadLocal.setCurrentThreadContext(svc.getServiceContext().getObjectContext());
+			ServiceThreadLocal.setSource(request.getRequestURI());
 			populateService(request, response, svc);
 
 			Procedure pre_service_proc=null, post_service_proc=null;
@@ -150,6 +151,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				}
 			}
 			ServiceThreadLocal.remove();
+			ServiceThreadLocal.setSource(null);
 			cleanUp(svc);
 			ts.stop();
 		}		
