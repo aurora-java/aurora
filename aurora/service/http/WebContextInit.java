@@ -108,33 +108,33 @@ public class WebContextInit implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-    	if(uncertainEngine!=null)
+    	
+//    	IObjectRegistry os = uncertainEngine.getObjectRegistry();
+//    	if(os!=null){
+//    		DataSource ds = (DataSource) os.getInstanceOfType(DataSource.class);
+//    		if(ds!=null){
+//    			if(ds instanceof PooledDataSource) {
+//					try {
+//						((PooledDataSource)ds).close();
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}					
+//				}
+//    		}
+//    	}
+//    	Enumeration drivers = DriverManager.getDrivers();
+//        while (drivers.hasMoreElements()) {
+//            Driver driver = (Driver)drivers.nextElement();
+//            try {
+//                DriverManager.deregisterDriver(driver);
+//            } catch (SQLException e) {
+//            	e.printStackTrace();
+//            }
+//        }
+        
+        if(uncertainEngine!=null)
             uncertainEngine.shutdown();
     	
-    	IObjectRegistry os = uncertainEngine.getObjectRegistry();
-    	if(os!=null){
-    		DataSource ds = (DataSource) os.getInstanceOfType(DataSource.class);
-    		if(ds!=null){
-    			if(ds instanceof PooledDataSource) {
-					try {
-						((PooledDataSource)ds).close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}					
-				}
-    		}
-    	}
-    	Enumeration drivers = DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            Driver driver = (Driver)drivers.nextElement();
-            try {
-                DriverManager.deregisterDriver(driver);
-            } catch (SQLException e) {
-            	e.printStackTrace();
-            }
-        }
-        
-        
     }
 
     public void contextInitialized(ServletContextEvent event) {
