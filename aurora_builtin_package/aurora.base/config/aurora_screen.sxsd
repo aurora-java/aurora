@@ -88,8 +88,10 @@
                 <ss:attribute name="title" document="Lov弹出窗口的title"/>
                 <ss:attribute name="lovService" document="Lov对应的model"/>
                 <ss:attribute name="lovWidth" document="lov弹出窗口的宽度" type="ss:int"/>
+                <ss:attribute name="lovLabelWidth" document="lov弹出窗口查询条件字段描述的宽度" type="ss:int"/>
                 <ss:attribute name="lovHeight" document="lov弹出窗口的高度" type="ss:int"/>
                 <ss:attribute name="lovGridHeight" document="Lov窗口中grid的高度" type="ss:int"/>
+                <ss:attribute name="lovAutoQuery" default="true" document="Lov窗口是否自动查询" type="ss:boolean"/>
                 <ss:attribute name="defaultValue" document="默认值"/>
                 <ss:attribute name="checkedValue" document="checkbox选中的值"/>
                 <ss:attribute name="uncheckedValue" document="checkbox未选中的值"/>

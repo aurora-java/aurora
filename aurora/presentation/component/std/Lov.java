@@ -20,6 +20,7 @@ public class Lov extends TextField {
 	public static final String PROPERTITY_LOV_SERVICE = "lovservice";
 	public static final String PROPERTITY_LOV_WIDTH = "lovwidth";
 	public static final String PROPERTITY_LOV_AUTO_QUERY = "lovautoquery";
+	public static final String PROPERTITY_LOV_LABEL_WIDTH = "lovlabelwidth";
 	public static final String PROPERTITY_LOV_HEIGHT = "lovheight";
 	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	public static final String PROPERTITY_LOV_FETCH_REMOTE = "fetchremote";
@@ -45,6 +46,7 @@ public class Lov extends TextField {
 		addConfig(PROPERTITY_LOV_SERVICE, view.getString(PROPERTITY_LOV_SERVICE,""));
 		addConfig(PROPERTITY_LOV_WIDTH, new Integer(view.getInt(PROPERTITY_LOV_WIDTH,400)));
 		addConfig(PROPERTITY_LOV_AUTO_QUERY, new Boolean(view.getBoolean(PROPERTITY_LOV_AUTO_QUERY,true)));
+		addConfig(PROPERTITY_LOV_LABEL_WIDTH, new Integer(view.getInt(PROPERTITY_LOV_LABEL_WIDTH,75)));
 		addConfig(PROPERTITY_LOV_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_HEIGHT,400)));
 		addConfig(PROPERTITY_LOV_GRID_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_GRID_HEIGHT,350)));
 		addConfig(PROPERTITY_LOV_FETCH_REMOTE, new Boolean(view.getBoolean(PROPERTITY_LOV_FETCH_REMOTE, true)));

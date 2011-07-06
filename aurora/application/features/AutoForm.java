@@ -32,7 +32,8 @@ public class AutoForm implements IFeature{
 		formConfig.setCellspacing(0);
 		
 		String target = view.getString(ComponentConfig.PROPERTITY_BINDTARGET,"");
-		
+		String labelWidth = uncertain.composite.TextParser.parse(view.getString("labelwidth"), model);
+		formConfig.put("labelwidth","".equals(labelWidth)?null:labelWidth);
 		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
