@@ -107,37 +107,44 @@ public class DataSourceConfig {
 		mDatabaseConnections = DataBases;
 	}
 	
-	public void onShutdown(){
+	public void onShutdown(){		
 		DataSource ds=(DataSource)mObjectRegistry.getInstanceOfType(DataSource.class);
 		INamedDataSourceProvider dsProvider=(INamedDataSourceProvider)mObjectRegistry.getInstanceOfType(INamedDataSourceProvider.class);
+		
 		try {
-			if(ds!=null){
-				//c3p0 pool
-				if(ds instanceof PooledDataSource)					
-					((PooledDataSource)ds).close();
-				//xa unpool
-				if(ds instanceof StandardXADataSource)
-					((StandardXADataSource)ds).shutdown(true);
-				//xa pool
-				if(ds instanceof StandardXAPoolDataSource){
-					((StandardXAPoolDataSource)ds).stopPool();					
+			cleanDataSource(ds);
+		}
+		catch (SQLException e) {	
+			e.printStackTrace(System.err);
+		}
+		
+		if(dsProvider!=null){
+			Map dsMap=dsProvider.getAllDataSources();
+			Iterator iterator=dsMap.keySet().iterator();			
+			while(iterator.hasNext()){				
+				ds=(DataSource)dsMap.get(iterator.next());
+				try {
+					cleanDataSource(ds);
+				}
+				catch (SQLException e) {
+					e.printStackTrace(System.err);
 				}
 			}
-			if(dsProvider!=null){
-				Map dsMap=dsProvider.getAllDataSources();
-				Iterator iterator=dsMap.keySet().iterator();
-				while(iterator.hasNext()){
-					//xa
-					ds=(DataSource)dsMap.get(iterator.next());
-					if(ds instanceof StandardXADataSource)
-						((StandardXADataSource)ds).shutdown(true);
-					if(ds instanceof StandardXAPoolDataSource){
-						((StandardXAPoolDataSource)ds).stopPool();					
-					}
-				}
+		}
+		 
+	}
+	void cleanDataSource(DataSource ds) throws SQLException{
+		//c3p0 pool
+		if(ds!=null){
+			if(ds instanceof PooledDataSource)					
+				((PooledDataSource)ds).close();
+			//xa unpool
+			if(ds instanceof StandardXADataSource)
+				((StandardXADataSource)ds).shutdown(true);
+			//xa pool
+			if(ds instanceof StandardXAPoolDataSource){
+				((StandardXAPoolDataSource)ds).stopPool();					
 			}
-		} catch (SQLException e) {			
-			throw new RuntimeException(e);
 		}
 	}
 }
