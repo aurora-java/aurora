@@ -1,5 +1,8 @@
 package aurora.datasource;
 
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -7,8 +10,11 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 import org.enhydra.jdbc.pool.StandardXAPoolDataSource;
+import org.enhydra.jdbc.standard.StandardXADataSource;
+
 import com.mchange.v2.c3p0.DataSources;
 import com.mchange.v2.c3p0.DriverManagerDataSource;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
@@ -99,5 +105,39 @@ public class DataSourceConfig {
 	
 	public void setDatabaseConnections(DatabaseConnection[] DataBases) {
 		mDatabaseConnections = DataBases;
-	}	
+	}
+	
+	public void onShutdown(){
+		DataSource ds=(DataSource)mObjectRegistry.getInstanceOfType(DataSource.class);
+		INamedDataSourceProvider dsProvider=(INamedDataSourceProvider)mObjectRegistry.getInstanceOfType(INamedDataSourceProvider.class);
+		try {
+			if(ds!=null){
+				//c3p0 pool
+				if(ds instanceof PooledDataSource)					
+					((PooledDataSource)ds).close();
+				//xa unpool
+				if(ds instanceof StandardXADataSource)
+					((StandardXADataSource)ds).shutdown(true);
+				//xa pool
+				if(ds instanceof StandardXAPoolDataSource){
+					((StandardXAPoolDataSource)ds).stopPool();					
+				}
+			}
+			if(dsProvider!=null){
+				Map dsMap=dsProvider.getAllDataSources();
+				Iterator iterator=dsMap.keySet().iterator();
+				while(iterator.hasNext()){
+					//xa
+					ds=(DataSource)dsMap.get(iterator.next());
+					if(ds instanceof StandardXADataSource)
+						((StandardXADataSource)ds).shutdown(true);
+					if(ds instanceof StandardXAPoolDataSource){
+						((StandardXAPoolDataSource)ds).stopPool();					
+					}
+				}
+			}
+		} catch (SQLException e) {			
+			throw new RuntimeException(e);
+		}
+	}
 }
