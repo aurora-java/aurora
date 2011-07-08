@@ -17,7 +17,7 @@ public class Switch implements IViewBuilder, ISingleton {
 	private static final String KEY_VALUE = "value";
 
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, aurora.presentation.ViewCreationException {
-		CompositeMap model = view_context.getModel().getParent();
+		CompositeMap model = view_context.getModel();//.getParent();
 		CompositeMap view = view_context.getView();
 		
 		if (model == null) return;

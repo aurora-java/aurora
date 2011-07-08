@@ -43,8 +43,7 @@ public class AuroraCookie extends AbstractEntry {
 	public void run(ProcedureRunner runner) throws Exception {
 
 		CompositeMap mContext = runner.getContext();
-		HttpServiceInstance mService = (HttpServiceInstance) ServiceInstance
-				.getInstance(mContext);
+		HttpServiceInstance mService = (HttpServiceInstance) ServiceInstance.getInstance(mContext);
 		HttpServletResponse response = mService.getResponse();
 		HttpServletRequest request = mService.getRequest();
 		this.setValue  (TextParser.parse(this.getValue(), mContext));
