@@ -12,9 +12,16 @@ import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
+import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.MessageFactory;
 import uncertain.ocm.OCManager;
+import uncertain.util.resource.ILocatable;
 
 public class ModelFactory implements IModelFactory {
+    
+    static {
+        MessageFactory.loadResource("resources/aurora_bm_exceptions");
+    }
 
     // public static final String PROC_GENERATE_SQL =
     // "aurora.database.sql.GenerateSqlStatement";
@@ -145,18 +152,20 @@ public class ModelFactory implements IModelFactory {
                 model.initialize(final_config);
                 model.setParent(parent_model);
             } catch (IOException ex) {
-                throw new RuntimeException("Error when loading base model "
-                        + base, ex);
+                  throw BmBuiltinExceptionFactory.createParentBMLoadException(base, config, ex );
+//                throw new RuntimeException("Error when loading base model "
+//                        + base, ex);
             }
         }
         model.makeReady();
         return model;
     }
 
-    protected BusinessModel getNewModelInstance(String name, String ext)
+    protected BusinessModel getNewModelInstance( String name, String ext )
             throws IOException {
         if (name == null)
             throw new IllegalArgumentException("model name is null");
+            //throw BuiltinExceptionFactory.createAttributeMissing(source, "name");
         try {
             CompositeMap config = mCompositeLoader.loadFromClassPath(name, ext);
             if (config == null)

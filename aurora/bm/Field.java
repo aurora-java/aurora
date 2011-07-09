@@ -8,6 +8,8 @@ import java.io.IOException;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
+import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.ProgrammingException;
 import aurora.application.Namespace;
 import aurora.service.validation.IParameter;
 
@@ -352,16 +354,22 @@ public class Field extends DynamicObject implements IParameter {
     
     public String getReferredModelName(){
         if(!isReferenceField())
-            throw new IllegalArgumentException("this field is not a reference field");
-        if(owner==null) throw new IllegalStateException("BusinessModel that owns this field is not set");
+            throw new ProgrammingException("this field is not a reference field");
+        if(owner==null) throw new ProgrammingException("BusinessModel that owns this field is not set");
         String model = getSourceModel();
         if(model==null){            
             String name = this.getRelationName();
-            if(name==null) throw new IllegalStateException("Must set 'sourceModel' or 'relationName' for this referrence field");
+            if(name==null) 
+                //throw new IllegalStateException("Must set 'sourceModel' or 'relationName' for this referrence field");
+                throw BuiltinExceptionFactory.createOneAttributeMissing(object_context.asLocatable(), "sourceModel,relationName");
             Relation r = owner.getRelation(name);
-            if(r==null) throw new IllegalStateException("Can't find relation "+name);
+            if(r==null) 
+                //throw new IllegalStateException("Can't find relation "+name);
+                throw BuiltinExceptionFactory.createUnknownNodeWithName(object_context.asLocatable(), "relation", "name", name);
             model = r.getReferenceModel();
-            if(model==null) throw new IllegalStateException("'referenceModel' is not set for relation "+r.getObjectContext().toXML());
+            if(model==null) 
+                //throw new IllegalStateException("'referenceModel' is not set for relation "+r.getObjectContext().toXML());
+                throw BuiltinExceptionFactory.createAttributeMissing(r.getObjectContext().asLocatable(), "referenceModel");
         }
         return model;
     }
@@ -370,7 +378,7 @@ public class Field extends DynamicObject implements IParameter {
     {
         ModelFactory factory = owner.getModelFactory();
         if(factory==null)
-            throw new IllegalStateException("ModelFactory instance is not set for BusinessModel");
+            throw new ProgrammingException("ModelFactory instance is not set for BusinessModel");
         String name = getReferredModelName();
         try{
             return factory.getModelForRead(name);
@@ -382,10 +390,14 @@ public class Field extends DynamicObject implements IParameter {
     public Field getReferredField()
     {
         String sf = getSourceField();
-        if(sf==null) throw new ConfigurationError("'sourceField' is not set for this referrence field");
+        if(sf==null) 
+            //throw new ConfigurationError("'sourceField' is not set for this referrence field");
+            throw BuiltinExceptionFactory.createAttributeMissing(object_context.asLocatable(), "sourceField");
         BusinessModel model = getRefferedModel();        
         Field f = model.getField(sf);
-        if(f==null) throw new IllegalStateException("Can't find referred field '"+sf+"' in referred model");
+        if(f==null) 
+            //throw new IllegalStateException("Can't find referred field '"+sf+"' in referred model");
+            throw BuiltinExceptionFactory.createUnknownNodeWithName(object_context.asLocatable(), "field", "name", sf);
         return f;
     }
 
@@ -431,5 +443,14 @@ public class Field extends DynamicObject implements IParameter {
     public void setForceUpdate( boolean b){
         putBoolean(KEY_FORCE_UPDATE, b);
     }
+    
+    public void checkValidation() {
+        if(isReferenceField()){
+            getReferredModelName();
+            getReferredField();
+        }
+    }
+    
+    
 
 }

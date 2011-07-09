@@ -15,6 +15,7 @@ import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.datatype.DataType;
 import uncertain.datatype.DataTypeRegistry;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.OCManager;
 import aurora.application.Namespace;
 import aurora.database.profile.IDatabaseFactory;
@@ -105,7 +106,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     // name -> operation, name lower case
     Map         operationMap;
     // default operation without name
-    Operation   defaultOperation;
+    //Operation   defaultOperation;
     // cascade operations
     CascadeOperation[]  mCascadeOperations;
     
@@ -170,7 +171,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
             if(name!=null){
                 f = getField(name);
                 if(f==null)
-                    throw new ConfigurationError("Cant' find field '"+name+"' in BusinessModel. Make sure the 'field' property in query-field refers to a pre-defined BusinessModel field");
+                    //throw new ConfigurationError("Cant' find field '"+name+"' in BusinessModel. Make sure the 'field' property in query-field refers to a pre-defined BusinessModel field");
+                    throw BmBuiltinExceptionFactory.createNamedFieldNotFound(name, map);
                 if(f.isReferenceField()) f = f.getReferredField();
                 return new QueryFieldWrapper(f);       
             }else{
@@ -357,7 +359,9 @@ public class BusinessModel extends DynamicObject implements Cloneable {
             if(datatype==null) datatype="java.lang.String";
             // revised
             fieldTypeArray[i] = registry.getDataType(datatype);
-            if(fieldTypeArray[i]==null) throw new IllegalArgumentException("Unknown data type "+datatype);
+            if(fieldTypeArray[i]==null) 
+                //throw new IllegalArgumentException("Unknown data type "+datatype);
+                throw BuiltinExceptionFactory.createDataTypeUnknown(fld.getObjectContext().asLocatable(), datatype);
             //i++;
       }        
       return fieldTypeArray;
@@ -380,8 +384,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         	return;
         Field[] array = new Field[fieldCount];
         int i=0;
-        i = iteratorFields(array, fields, i);
-        i = iteratorFields(array, ref_fields, i);
+        i = iterateFields(array, fields, i);
+        i = iterateFields(array, ref_fields, i);
         fieldsArray = array;
         // load PK fields
         CompositeMap pk_conf = getObjectContext().getChild(SECTION_PRIMARY_KEY);
@@ -398,18 +402,22 @@ public class BusinessModel extends DynamicObject implements Cloneable {
                     while(it.hasNext()){
                         CompositeMap field = (CompositeMap) it.next();
                         String name = field.getString(Field.KEY_NAME);
-                        if(name==null) throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
+                        if(name==null) 
+                            //throw new ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
+                            throw BuiltinExceptionFactory.createAttributeMissing(field.asLocatable(), "name");
                         Field f = getField(name.toLowerCase()); 
                             //(Field)fieldMap.get(name.toLowerCase());
-                        if(f==null) throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());                    f.setPrimaryKey(true);
+                        if(f==null) 
+                            //throw new ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());
+                            throw BmBuiltinExceptionFactory.createNamedFieldNotFound( name, field );
+                        f.setPrimaryKey(true);
                         pkFieldsArray[n++] = f;
                     }
             }
         }
     }
 
-	private int iteratorFields(Field[] array, List list, int i)
-			throws ConfigurationError {
+	private int iterateFields(Field[] array, List list, int i) {
 		if(list == null)
 			return i;
 		Iterator it = list.iterator();
@@ -417,10 +425,12 @@ public class BusinessModel extends DynamicObject implements Cloneable {
             CompositeMap field_map = (CompositeMap)it.next();
             Field f = Field.getInstance(field_map);
             f.setOwner(this);
-            f.checkValidation();
             String name = f.getName();
             if(name==null)
-                throw new ConfigurationError("Field No."+(i+1)+" has no name: "+f.getObjectContext().toXML());
+                //throw new ConfigurationError("Field No."+(i+1)+" has no name: "+f.getObjectContext().toXML());
+                throw BuiltinExceptionFactory.createAttributeMissing(field_map.asLocatable(), "name");
+            if( fieldMap.containsKey(name.toLowerCase()))
+                throw BuiltinExceptionFactory.createChildDuplicate(field_map.asLocatable(), "field", "name", name);
             fieldMap.put(name.toLowerCase(), f);            
             array[i++] = f;
         }
@@ -557,6 +567,14 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         loadRelations();
         prepareOperationMap();
         prepareCascadeOperations();
+        /*
+        if(fieldsArray!=null)
+            for(int i=0; i<fieldsArray.length; i++){
+                Field f = fieldsArray[i];
+                if(f!=null)
+                    f.checkValidation();
+            }
+        */    
     }
 
     /**
@@ -580,20 +598,27 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         else{
             IDatabaseProfile profile = fact.getDatabaseProfile(db_type);
             if(profile==null)
-                throw new ConfigurationError("Unknown database type:"+db_type);
+                //throw new ConfigurationError("Unknown database type:"+db_type);
+                throw BmBuiltinExceptionFactory.createUnknownDatabaseType(db_type, object_context);
             return profile;
         }
     }
     
     public Operation getOperation( String name ){
+        /*
         if(operationMap==null)
             return defaultOperation;
+        */    
+        if(operationMap==null)
+            return null;
         return (Operation)operationMap.get(name.toLowerCase());        
     }
     
+    /*
     public Operation getDefaultOperation(){
         return defaultOperation;
     }
+    */
     
     protected void prepareOperationMap(){
         CompositeMap ops = object_context.getChild(KEY_OPERATIONS);
@@ -611,13 +636,17 @@ public class BusinessModel extends DynamicObject implements Cloneable {
             Operation op = Operation.createOperation(item);
             String name = op.getName();
             if(name==null){
+                /*
                 if(defaultOperation!=null)
                     throw new ConfigurationError("Can only have one default operation");
                 defaultOperation = op;
+                */
+                throw BuiltinExceptionFactory.createAttributeMissing(item.asLocatable(), "name");
             }else{
                 name = name.toLowerCase();
                 if(operationMap.containsKey(name))
-                    throw new ConfigurationError("Operation "+name+" already defined");
+                    //throw new ConfigurationError("Operation "+name+" already defined");
+                    throw BuiltinExceptionFactory.createChildDuplicate(item.asLocatable(), "operation", "name", name);
             }   
             operationMap.put(name, op);
         }

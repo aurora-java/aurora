@@ -64,7 +64,8 @@ public abstract class AbstractSqlCreator {
         if(databaseType!=null){
             IDatabaseProfile prof = mDatabaseFactory.getDatabaseProfile(databaseType);
             if(prof==null)
-                throw new IllegalArgumentException("Unknown database type:"+databaseType);
+                //throw new IllegalArgumentException("Unknown database type:"+databaseType);
+                throw BmBuiltinExceptionFactory.createUnknownDatabaseType(databaseType, model.getObjectContext());
             return prof.getSqlBuilderRegistry();
         }else
             return mDatabaseFactory.getDefaultDatabaseProfile().getSqlBuilderRegistry();
