@@ -10,12 +10,12 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.ocm.IConfigurable;
 import uncertain.ocm.OCManager;
-import uncertain.proc.Procedure;
+import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.features.PlaceHolder;
 import aurora.service.ServiceInstance;
 
-public class BatchConfig extends Procedure implements IConfigurable {
+public class BatchConfig extends AbstractEntry implements IConfigurable {
 
 	private String source;
 
@@ -25,10 +25,6 @@ public class BatchConfig extends Procedure implements IConfigurable {
 
 	public BatchConfig() {
 		super();
-	}
-
-	public BatchConfig(OCManager om) {
-		super(om);
 	}
 
 	public String getSource() {
