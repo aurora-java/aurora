@@ -213,7 +213,7 @@ public class ScreenRenderer {
             out.flush();
             
             // write cache if necessary
-            if(mIsCache){
+            if(mIsCache && mCacheProvider!=null){
                 String output = baos.toString();
                 ICache cache = mCacheProvider.getCacheForResponse();
                 //String key = CachedScreenListener.getFullKey(mCacheProvider, mService, mScreenCacheKey);
