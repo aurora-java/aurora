@@ -581,7 +581,7 @@ public class Grid extends Component {
 		if(column == null)return;
 		Integer rowspan = column.getInt(ROW_SPAN);
 		if(rowspan != null){
-			int cs = rowspan.intValue() -1;
+			int cs = Math.max(rowspan.intValue() -1,1);
 			column.put(ROW_SPAN, new Integer(cs));
 		}
 		CompositeMap parent = (CompositeMap)column.get("_parent");
