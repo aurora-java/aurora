@@ -126,11 +126,14 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 		if(baseModel!=null){
 			baseModel = uncertain.composite.TextParser.parse(baseModel, model);
 			BusinessModel bm = null;
-			try {
-				bm = mFactory.getModelForRead(baseModel);
+            bm = mFactory.getModelForRead(baseModel);
+/*
+            try {
+
 			}catch(Exception e){
 				bm = mFactory.getModelForRead(baseModel,"xml");
 			}
+*/			
 			Field[] bmfields = bm.getFields();
 			if(bmfields != null){
 				CompositeMap fields = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
