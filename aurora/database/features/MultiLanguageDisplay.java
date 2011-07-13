@@ -15,7 +15,6 @@ import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.bm.Operation;
 import aurora.bm.Relation;
-import aurora.database.CompositeMapCreator;
 import aurora.database.DBUtil;
 import aurora.database.DatabaseConstant;
 import aurora.database.FetchDescriptor;
@@ -23,6 +22,7 @@ import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
 import aurora.database.profile.IDatabaseFactory;
+import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
 
