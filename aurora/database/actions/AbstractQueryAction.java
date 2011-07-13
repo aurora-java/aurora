@@ -12,9 +12,10 @@ import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractDeferredEntry;
 import uncertain.proc.ProcedureRunner;
-import aurora.database.CompositeMapCreator;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
+import aurora.database.rsconsumer.CompositeMapCreator;
+import aurora.database.rsconsumer.IRootMapAcceptable;
 import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
@@ -34,6 +35,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     List        transform_list;
     
     String      connectionName;  
+    
+    IResultSetConsumer  rsConsummer;
     
     public String getConnectionName() {
 		return connectionName;
@@ -73,7 +76,7 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         context.setServiceOption(option);        
         
         IResultSetConsumer consumer = null;
-        CompositeMapCreator compositeCreator = null;
+//        CompositeMapCreator compositeCreator = null;
         try{
             // get parameter
             CompositeMap param = context.getCurrentParameter();
@@ -93,17 +96,26 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
                 desc.setPageSize(pageSize.intValue());
             
             // ResultSet consumer
-            consumer = (IResultSetConsumer)context.getInstanceOfType(IResultSetConsumer.class);            
-            if(consumer==null){
+            if(this.rsConsummer!=null)
+                consumer = this.rsConsummer;
+            else{
+                consumer = (IResultSetConsumer)context.getInstanceOfType(IResultSetConsumer.class);            
+                if(consumer==null){
+                    consumer = new CompositeMapCreator();
+                }
+            }
+            // set root path
+            if(consumer instanceof IRootMapAcceptable){
                 CompositeMap result = context.getModel();
                 if(rootPath!=null) result = result.createChildByTag(rootPath);
-                compositeCreator = new CompositeMapCreator(result);
-                consumer = compositeCreator;
+                ((IRootMapAcceptable)consumer).setRoot(result);
             }
             context.setResultsetConsumer(consumer);
             doQuery(param, consumer, desc);
-            if( transform_list != null && compositeCreator != null ) 
-                Transformer.doBatchTransform( compositeCreator.getCompositeMap(), transform_list );
+            if( transform_list != null && consumer instanceof  IRootMapAcceptable){ 
+                CompositeMap root = ((IRootMapAcceptable)consumer).getRoot();
+                Transformer.doBatchTransform( root, transform_list );
+            }
         }finally{
             context.setServiceOption(null);
             context.setResultsetConsumer(null);
@@ -248,4 +260,15 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     protected byte getFieldNameCaseValue(){
         return fieldNameCaseValue;
     }
+    
+    public void addConsumer( CompositeMap processor ){
+        List childs = processor.getChilds();
+        if(childs==null);
+        if(childs.size()!=1);
+        CompositeMap child = (CompositeMap)childs.get(0);
+        Object inst = mOCManager.createObject(child);
+        if(inst==null || !(inst instanceof IResultSetConsumer));
+        rsConsummer = (IResultSetConsumer)inst;
+    }
+    
 }
