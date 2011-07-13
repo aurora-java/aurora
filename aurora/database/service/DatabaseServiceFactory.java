@@ -176,7 +176,8 @@ public class DatabaseServiceFactory {
 
     public ProcedureRunner loadProcedure(String class_path, CompositeMap context) {
         try{
-            ProcedureRunner runner = uncertainEngine.createProcedureRunner();
+            //ProcedureRunner runner = uncertainEngine.createProcedureRunner();
+            ProcedureRunner runner = new ProcedureRunner();
             Procedure proc = mProcedureManager.loadProcedure(class_path);
             if(proc==null)
                 throw new IllegalArgumentException("Can't load procedure "+class_path);            
