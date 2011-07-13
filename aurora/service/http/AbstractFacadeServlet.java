@@ -54,6 +54,16 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			HttpServletResponse response, Exception ex) throws IOException, ServletException;
 
 	protected abstract void cleanUp(IService service);
+	
+	/**
+	 * By default, set no-cache directive to client.
+	 * Sub class can override this method to provide customized cache control.
+	 */
+	protected void writeCacheDirection( HttpServletResponse response, IService service ){
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");	
+    }
 
 	public static Procedure getProcedureToRun(IProcedureManager procManager ,IService service) throws Exception {
 		String procedure_name = null;
@@ -84,9 +94,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	    
 	    
 		request.setCharacterEncoding("UTF-8");//form post encoding
-		response.setHeader("Cache-Control", "no-cache");
-		response.setHeader("Pragma", "no-cache");
-		response.setHeader("Expires", "0");
 		
 		IService svc = null;
 		boolean is_success = true;
@@ -103,6 +110,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			ServiceThreadLocal.setCurrentThreadContext(svc.getServiceContext().getObjectContext());
 			ServiceThreadLocal.setSource(request.getRequestURI());
 			populateService(request, response, svc);
+	        writeCacheDirection(response,svc);
 
 			Procedure pre_service_proc=null, post_service_proc=null;
 	        
