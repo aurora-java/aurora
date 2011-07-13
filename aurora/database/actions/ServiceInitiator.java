@@ -9,10 +9,12 @@ import uncertain.core.UncertainEngine;
 import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.action.AuroraCookie;
+import uncertain.ocm.PackageMapping;
 import aurora.application.action.AttachmentManager;
+import aurora.application.action.AuroraCookie;
 import aurora.application.action.ImageValidate;
 import aurora.application.action.RefreshPrompts;
+import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class ServiceInitiator {
@@ -36,6 +38,7 @@ public class ServiceInitiator {
         objreg.registerInstance(DatabaseServiceFactory.class, factory);
         //objreg.registerInstance(IModelFactory.class, factory.getModelFactory());
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
+        reg.addPackageMapping( new PackageMapping(CompositeMapCreator.class.getPackage().getName(), CompositeMapCreator.class.getPackage().getName()) );
         reg.addClassMapping( "model-query", ModelQuery.class );
         reg.addClassMapping( "model-update", ModelUpdate.class );
         reg.addClassMapping( "model-insert", ModelInsert.class );
@@ -46,6 +49,7 @@ public class ServiceInitiator {
         //reg.addClassMapping( "sql-execute", SqlExecute.class);
         //reg.addClassMapping( "sql-query", SqlQuery.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
+        //reg.addClassMapping("cascade-map-creator", CascadeMapCreator.class);
 
         /** @todo move into optional package */
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
