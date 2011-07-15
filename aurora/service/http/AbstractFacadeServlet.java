@@ -159,7 +159,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				}
 			}
 			ServiceThreadLocal.remove();
-			ServiceThreadLocal.setSource(null);
 			cleanUp(svc);
 			ts.stop();
 		}		
