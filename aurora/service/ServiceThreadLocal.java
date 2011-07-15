@@ -9,7 +9,7 @@ import uncertain.composite.CompositeMap;
 public class ServiceThreadLocal {
 
 	private static ThreadLocal mThreadLocal = new ThreadLocal();
-	private static String source;
+	private static ThreadLocal sourceThreadLocal = new ThreadLocal();
 
 	public static CompositeMap getCurrentThreadContext() {
 		return (CompositeMap) mThreadLocal.get();
@@ -20,15 +20,15 @@ public class ServiceThreadLocal {
 	}
 
 	public static void remove() {
-		mThreadLocal.set(null);
+		mThreadLocal.remove();
+		sourceThreadLocal.remove();
 	}
 
 	public static String getSource() {
-		return source;
+		return (String)sourceThreadLocal.get();
 	}
 
 	public static void setSource(String source) {
-		ServiceThreadLocal.source = source;
+		sourceThreadLocal.set(source);
 	}
-
 }
