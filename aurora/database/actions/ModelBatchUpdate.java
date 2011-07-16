@@ -14,7 +14,7 @@ import uncertain.ocm.OCManager;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.CascadeOperation;
 import aurora.bm.DefaultAccessChecker;
-import aurora.bm.DisabledOperationError;
+import aurora.bm.DisabledOperationException;
 import aurora.bm.IBusinessModelAccessChecker;
 import aurora.bm.IBusinessModelAccessCheckerFactory;
 import aurora.bm.Operation;
@@ -63,7 +63,7 @@ public class ModelBatchUpdate extends AbstractModelAction {
         /** Model operation access check */
         if(mModelChecker!=null)
             if(!mModelChecker.canPerformOperation(status))
-                throw new DisabledOperationError("Can't perform operation "+status+" on BusinessModel "+getModel());
+                throw new DisabledOperationException("Can't perform operation "+status+" on BusinessModel "+getModel());
         mLogger.log(Level.CONFIG, "execute {0} on record No.{1} for model {2}", new Object[]{status,new Integer(record_no), mService.getBusinessModel().getName()} );        
         if(Operation.INSERT.equals(status)){
             mService.insert(item);
