@@ -10,7 +10,7 @@ import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ProgrammingException;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.service.validation.IParameter;
 
 public class Field extends DynamicObject implements IParameter {
@@ -71,7 +71,7 @@ public class Field extends DynamicObject implements IParameter {
     public static Field createField( String name ){
         CompositeMap m = new CompositeMap();
         m.setName("field");
-        m.setNameSpaceURI(Namespace.AURORA_BUSINESS_MODEL_NAMESPACE);
+        m.setNameSpaceURI(AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE);
         Field field = new Field();
         field.initialize(m);
         field.setName(name);

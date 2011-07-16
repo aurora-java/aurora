@@ -11,6 +11,22 @@ import java.util.Set;
  */
 public class DefaultAccessChecker implements IBusinessModelAccessChecker {
     
+    public static class ConstantChecker implements IBusinessModelAccessChecker {
+        
+        boolean result;
+        
+        public ConstantChecker(boolean b){
+            result = b;
+        }
+        
+        public boolean canPerformOperation(String operation) {
+            return result;
+        }        
+    };
+    
+    public static final IBusinessModelAccessChecker ALWAYS_ALLOW = new ConstantChecker(true);
+    public static final IBusinessModelAccessChecker ALWAYS_DENY = new ConstantChecker(false);
+    
     /**
      * @param enabledOperations
      */

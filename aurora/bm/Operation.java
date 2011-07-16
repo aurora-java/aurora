@@ -11,15 +11,15 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.QualifiedName;
 import uncertain.core.ConfigurationError;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 
 public class Operation extends DynamicObject {
 
     public static final QualifiedName UPDATE_SQL = new QualifiedName(
-            Namespace.AURORA_BUSINESS_MODEL_NAMESPACE, "update-sql");
+            AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE, "update-sql");
 
     public static final QualifiedName QUERY_SQL = new QualifiedName(
-            Namespace.AURORA_BUSINESS_MODEL_NAMESPACE, "query-sql");
+            AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE, "query-sql");
 
     public static final String KEY_PARAMETERS = "parameters";
     public static final String KEY_NAME = "name";
