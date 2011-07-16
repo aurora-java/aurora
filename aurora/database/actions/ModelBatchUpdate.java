@@ -13,6 +13,7 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.CascadeOperation;
+import aurora.bm.DefaultAccessChecker;
 import aurora.bm.DisabledOperationError;
 import aurora.bm.IBusinessModelAccessChecker;
 import aurora.bm.IBusinessModelAccessCheckerFactory;
@@ -143,8 +144,12 @@ public class ModelBatchUpdate extends AbstractModelAction {
 
     public void run(ProcedureRunner runner) throws Exception {        
         CompositeMap map = runner.getContext(); 
-        if(mModelCheckerFactory!=null)
-            mModelChecker = mModelCheckerFactory.getChecker( getModel(), map);        
+        if(mModelCheckerFactory!=null){
+            mModelChecker = mModelCheckerFactory.getChecker( getModel(), map);
+            if(mModelChecker==null){
+                mModelChecker = DefaultAccessChecker.ALWAYS_DENY;
+            }
+        }
         Collection records = SqlRunner.getSourceParameter(map, mSourcePath);
         doBatchUpdate(records, map);
     }
