@@ -8,7 +8,7 @@ import org.xml.sax.SAXException;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -74,7 +74,7 @@ public class NavBar extends ToolBar {
 		String inputId = IDGenerator.getInstance().generate();
 		map.put("inputid", inputId);
 		CompositeMap button = new CompositeMap("textField");
-		button.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.putString(ComponentConfig.PROPERTITY_ID, inputId);
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 		view.addChild(button);
@@ -96,7 +96,7 @@ public class NavBar extends ToolBar {
 			String comboBoxId = IDGenerator.getInstance().generate();
 			map.put("comboBoxId", comboBoxId);
 			CompositeMap comboBox = new CompositeMap("comboBox");
-			comboBox.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			comboBox.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
 			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
 			view.addChild(comboBox);
@@ -112,13 +112,13 @@ public class NavBar extends ToolBar {
 	
 	private CompositeMap createSeparator(){
 		CompositeMap sep = new CompositeMap("separator");
-		sep.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		sep.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		return sep;
 	}
 	
 	private CompositeMap createButton(String clz,String style, String function, String title){
 		CompositeMap button = new CompositeMap("button");
-		button.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(16));
 		button.put(Button.PROPERTITY_ICON, "null");
 		button.put(Button.BUTTON_CLASS, clz);

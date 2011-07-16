@@ -19,7 +19,7 @@ import uncertain.proc.Procedure;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.application.config.ScreenConfig;
 import aurora.application.features.CachedScreenListener;
 import aurora.presentation.BuildSession;
@@ -47,7 +47,7 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
     public static final String KEY_SCREEN = "screen";
 
     public static CompositeMap  createScreenIncludeConfig( String screen_name ){
-        CompositeMap config = new CompositeMap("a", Namespace.AURORA_FRAMEWORK_NAMESPACE, "screen-include");
+        CompositeMap config = new CompositeMap("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "screen-include");
         config.put(KEY_SCREEN, screen_name);
         return config;
     }

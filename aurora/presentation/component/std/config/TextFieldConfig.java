@@ -1,6 +1,6 @@
 package aurora.presentation.component.std.config;
 
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import uncertain.composite.CompositeMap;
 
 

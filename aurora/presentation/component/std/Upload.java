@@ -9,7 +9,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
 
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -52,17 +52,17 @@ public class Upload extends Component {
 		String id = view.getString(ComponentConfig.PROPERTITY_ID);
 		
 		CompositeMap tb = new CompositeMap(TableConfig.TAG_NAME);
-		tb.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		tb.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		tb.put(TableConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "atmList");
 		tb.put(TableConfig.PROPERTITY_SHOW_HEAD, new Boolean(false));
 		tb.put(ComponentConfig.PROPERTITY_BINDTARGET, id + "_ds");
 		tb.put(ComponentConfig.PROPERTITY_STYLE, "border:none;background-color:#fff");
 		CompositeMap tb_columns = new CompositeMap(TableConfig.PROPERTITY_COLUMNS);
-		tb_columns.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		tb_columns.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		tb.addChild(tb_columns);
 		CompositeMap tb_column = new CompositeMap(TableColumnConfig.TAG_NAME);
-		tb_column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+		tb_column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		tb_column.put(TableColumnConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb_column.put(TableColumnConfig.PROPERTITY_NAME, "file_name");
 		tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");

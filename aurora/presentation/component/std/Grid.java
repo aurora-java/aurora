@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -162,7 +162,7 @@ public class Grid extends Component {
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTION_MODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
-				column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+				column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 				column.putBoolean(GridColumnConfig.PROPERTITY_LOCK,true);
 				column.putInt(ComponentConfig.PROPERTITY_WIDTH, 25);
 				column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE,false);
@@ -334,7 +334,7 @@ public class Grid extends Component {
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
 			CompositeMap tb = new CompositeMap(GridConfig.PROPERTITY_TOOLBAR);
-			tb.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			tb.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 //			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 //			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 //			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
@@ -499,7 +499,7 @@ public class Grid extends Component {
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
-			navbar.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			navbar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 //			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 //			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);

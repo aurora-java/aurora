@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -101,7 +101,7 @@ public class Table extends Component {
 		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 		if(selectable.booleanValue()) {
 			CompositeMap column = new CompositeMap("column");
-			column.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			column.putInt(ComponentConfig.PROPERTITY_WIDTH, 25);
 			if("multiple".equals(selectionmodel)) {
 				column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
@@ -323,7 +323,7 @@ public class Table extends Component {
 		if("true".equalsIgnoreCase(nav)){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
-			navbar.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+			navbar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 //			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
 //			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);
