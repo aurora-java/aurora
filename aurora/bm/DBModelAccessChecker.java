@@ -16,13 +16,16 @@ import aurora.database.service.DatabaseServiceFactory;
 import aurora.events.E_CheckBMAccess;
 import aurora.service.ServiceInstance;
 
-public class ModelAccessChecker implements E_CheckBMAccess {
+/**
+ * @deprecated No longer use this method to check BM access
+ */
+public class DBModelAccessChecker implements E_CheckBMAccess {
 
     /**
      * @param appConfig
      * @param dbSvcFactory
      */
-    public ModelAccessChecker(IApplicationConfig appConfig,
+    public DBModelAccessChecker(IApplicationConfig appConfig,
             DatabaseServiceFactory dbSvcFactory) 
         throws IOException
     {
@@ -67,13 +70,16 @@ public class ModelAccessChecker implements E_CheckBMAccess {
     public void onCheckBMAccess( BusinessModel model, String operation_name, ServiceInstance svc )
         throws Exception
     {
-        ILogger logger = svc.getServiceLogger();
         String bm_name = model.getName();
+/*
         String mode = model.getAccessControlMode();
+        ILogger logger = svc.getServiceLogger();
+
         if(BusinessModel.ACCESS_CONTROL_MODE_NONE.equalsIgnoreCase(mode)){
             logger.log(Level.FINE,"No access control required for BM "+bm_name);
             return;
         }
+*/        
         bm_name = getModelNameForAccessCheck(model);
         CompositeMap context = svc.getContextMap();
         context.putObject("/request/@bm_name", bm_name, true);
