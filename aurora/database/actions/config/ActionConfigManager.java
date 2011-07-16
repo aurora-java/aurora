@@ -4,13 +4,13 @@
  */
 package aurora.database.actions.config;
 
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import uncertain.composite.CompositeMap;
 
 public class ActionConfigManager {
     
     public static CompositeMap createActionConfig(String name){
-        return new CompositeMap(null, Namespace.AURORA_FRAMEWORK_NAMESPACE, name);
+        return new CompositeMap(null, AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, name);
     }
     
     public static CompositeMap createModelAction( String type, String model ){
