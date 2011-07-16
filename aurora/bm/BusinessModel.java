@@ -17,7 +17,7 @@ import uncertain.datatype.DataType;
 import uncertain.datatype.DataTypeRegistry;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.OCManager;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.database.profile.IDatabaseProfile;
 import aurora.service.validation.CompositeParameterIterator;
@@ -71,7 +71,9 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     
     public static final String ACCESS_CONTROL_MODE_DEFAULT = "default";
     
-    public static final String ACCESS_CONTROL_MODE_NONE = "none";
+    //public static final String ACCESS_CONTROL_MODE_NONE = "none";
+    
+    public static final String KEY_NEED_ACCESS_CONTROL = "needaccesscontrol";
     
     public static final String ACCESS_CONTROL_MODE_SEPARATE = "separate";
     
@@ -327,7 +329,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         CompositeMap fields = object_context.getChild(section_name);
         if(fields==null){
             fields = object_context.createChild(section_name);
-            fields.setNameSpaceURI(Namespace.AURORA_BUSINESS_MODEL_NAMESPACE);
+            fields.setNameSpaceURI(AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE);
         }
         return fields;
     }
@@ -757,6 +759,30 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     
     public CompositeMap getExceptionDescriptorConfig(){
         return getObjectContext().getChild("exception-descriptor-config");
+    }
+    
+    public boolean getNeedAccessControl(){
+        return getBoolean(KEY_NEED_ACCESS_CONTROL, true);
+    }
+    
+    public void setNeedAccessControl( boolean b ){
+        putBoolean(KEY_NEED_ACCESS_CONTROL, b);
+    }
+    
+    /**
+     * According to accessControlModel property, if set to "separate", return self;
+     * else, if has parent BusinessModel, recursively reach parent until parent is null
+     * of parent's accessControlModel="separate"
+     * @return
+     */
+    public BusinessModel getModelForAccessCheck(){
+        BusinessModel parent = getParent();
+        if(parent==null)
+            return this;
+        String mode = getAccessControlMode();
+        if(ACCESS_CONTROL_MODE_SEPARATE.equals(mode))
+            return this;
+        return parent.getModelForAccessCheck();
     }
 
 
