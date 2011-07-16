@@ -7,7 +7,7 @@ package aurora.application.config;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 
 public class BaseServiceConfig extends DynamicObject {
 
@@ -29,7 +29,7 @@ public class BaseServiceConfig extends DynamicObject {
     }
 
     public CompositeMap getInitProcedureConfig() {
-        return getChildNotNull(Namespace.AURORA_FRAMEWORK_NAMESPACE,KEY_INIT_PROCEDURE);
+        return getChildNotNull(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE,KEY_INIT_PROCEDURE);
     }
     
     public CompositeMap getParameterConfig(){
@@ -40,7 +40,7 @@ public class BaseServiceConfig extends DynamicObject {
         CompositeMap init_config = getObjectContext().getChild(KEY_INIT_PROCEDURE);
         if(init_config==null){
             init_config = object_context.createChild(KEY_INIT_PROCEDURE);
-            init_config.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+            init_config.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
             if(mServiceConfig!=null)
                 mServiceConfig.loadConfig(init_config);
         }

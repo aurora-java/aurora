@@ -14,7 +14,7 @@ import uncertain.composite.CompositeUtil;
 import uncertain.event.Configuration;
 import uncertain.event.EventModel;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
@@ -82,7 +82,7 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         		
         		
         		CompositeMap ds = new CompositeMap(DataSetConfig.TAG_NAME);
-        		ds.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        		ds.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
         		ds.putString(DataSetConfig.PROPERTITY_MODEL, DEFAULT_ATM_BM);
         		ds.put(ComponentConfig.PROPERTITY_ID, id+"_ds");
         		CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);

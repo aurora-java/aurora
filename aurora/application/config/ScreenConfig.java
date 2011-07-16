@@ -6,7 +6,7 @@ package aurora.application.config;
 
 import java.awt.Component;
 
-import aurora.application.Namespace;
+import aurora.application.AuroraApplication;
 import aurora.presentation.component.std.config.DataSetsConfig;
 
 import uncertain.composite.CompositeMap;
@@ -43,7 +43,7 @@ public class ScreenConfig extends BaseServiceConfig {
     	CompositeMap datasets = getDataSetsConfig();
         if(datasets==null){
         	datasets = new CompositeMap(DataSetsConfig.TAG_NAME);
-        	datasets.setNameSpaceURI(Namespace.AURORA_FRAMEWORK_NAMESPACE);
+        	datasets.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
         	CompositeMap view = CompositeUtil.findChild(getObjectContext(), "view");
         	view.addChild(0,datasets);
         }
