@@ -7,7 +7,7 @@ package aurora.bm;
 /**
  * Thrown when user requires an BusinessModel operation that is not enabled 
  */
-public class DisabledOperationException extends RuntimeException {
+public class DisabledOperationException extends Exception {
 
     public DisabledOperationException() {
     }
