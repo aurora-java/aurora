@@ -12,6 +12,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import uncertain.composite.CompositeMap;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import aurora.database.DatabaseConstant;
@@ -22,12 +23,17 @@ public class UserTransactionImpl implements UserTransaction{
 	//Connection mConn;
     SqlServiceContext context;
     ILogger           logger;
-    
+/*    
 	public void initialize(IService svc){		
 		context = (SqlServiceContext) svc
 		.getServiceContext().castTo(SqlServiceContext.class);
 		logger = LoggingContext.getLogger(context.getObjectContext(), DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
-	}	
+	}
+*/	
+	public void setContext( CompositeMap map ){
+	    context = SqlServiceContext.createSqlServiceContext(map);
+        logger = LoggingContext.getLogger(map, DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
+	}
 	
 	public void commit() throws RollbackException, HeuristicMixedException,
 			HeuristicRollbackException, SecurityException,

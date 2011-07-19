@@ -140,7 +140,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			handleException(request, response, ex);
 		} finally {			
 			if (trans instanceof UserTransactionImpl) {				
-				((UserTransactionImpl) trans).initialize(svc);				
+				//((UserTransactionImpl) trans).initialize(svc);
+			    ((UserTransactionImpl) trans).setContext(svc.getServiceContext().getObjectContext());
 			}
 			if (is_success) {
 				try {
