@@ -110,8 +110,7 @@ public class ServiceLogging extends LoggerProvider implements
         BasicFileHandler handler = (BasicFileHandler)context.getInstanceOfType(BasicFileHandler.class);
         if(handler!=null){
             handler.flush();
-            if(!handler.getAppend())
-                handler.close();
+            handler.close();
         }
     }
 
