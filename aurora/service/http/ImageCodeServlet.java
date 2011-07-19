@@ -29,31 +29,30 @@ public class ImageCodeServlet extends HttpServlet {
 	private static int LENGTH = 5;
 
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+		
 		HttpSession session = request.getSession();
 		response.setContentType("image/jpeg");
 		ServletOutputStream sos = response.getOutputStream();
 		response.setHeader("Pragma", "No-cache");
 		response.setHeader("Cache-Control", "no-cache");
-		response.setDateHeader("Expires", 0);
+		response.setHeader("Expires", "0");
 
-		
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_RGB);
 		Graphics g = image.getGraphics();
 		char[] rands = generateCheckCode();
-		drawBackground(g);
-		drawRands(g, rands);
-		g.dispose();
-
-		
-		ImageIO.write(image, "jpg", sos);
 		try{
+			drawBackground(g);
+			drawRands(g, rands);
+			g.dispose();
+			
+			ImageIO.write(image, "jpg", sos);
+		
 			sos.flush();
 		}finally{
 			sos.close();
 		}
-
-		//TODO:改成调用统一的缓存接口,不在session中处理
 		session.setAttribute(VALIDATE_CODE, new String(rands));
+		//TODO:改成调用统一的缓存接口,不在session中处理
 	}
 
 	private static char[] generateCheckCode() {
