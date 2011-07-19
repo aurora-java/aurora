@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import javax.sql.DataSource;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.exception.BuiltinExceptionFactory;
@@ -79,13 +80,20 @@ public class ExceptionDatabaseLog implements IExceptionListener, IGlobalInstance
 		}
 		Connection conn = null;
 		PreparedStatement ps = null;
+		CompositeMap contextCM = getContext(exception);
+		String context = null;
+		if(contextCM != null){
+			sql = parseSQL(sql, contextCM);
+			context = contextCM.toXML();
+		}else{
+			sql = parseSQL(sql, new CompositeMap());
+		}
 		try {
 			conn = ds.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, exception.getClass().getCanonicalName());
 			ps.setString(2, exception.getMessage());
 			ps.setString(3, getSource());
-			String context = getContext(exception);
 			ps.setString(4, context);
 			String rootStackTrace = getRootStackTrace(exception);
 			ps.setString(5, rootStackTrace);
@@ -107,18 +115,18 @@ public class ExceptionDatabaseLog implements IExceptionListener, IGlobalInstance
 		return "";
 	}
 
-	private String getContext(Throwable exception) {
+	private CompositeMap getContext(Throwable exception) {
 		CompositeMap context;
 		if (exception instanceof IExceptionWithContext) {
 			IExceptionWithContext e = (IExceptionWithContext) exception;
 			context = e.getExceptionContext();
 			if (context != null) {
-				return context.toXML();
+				return context;
 			}
 		}
 		context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context != null)
-			return context.toXML();
+			return context;
 		return null;
 	}
 
@@ -161,7 +169,9 @@ public class ExceptionDatabaseLog implements IExceptionListener, IGlobalInstance
 			throw BuiltinExceptionFactory.createNodeMissing(config.asLocatable(), INSERT_SQL);
 		}
 	}
-
+	public String parseSQL(String sql,final CompositeMap context){
+		return TextParser.parse(sql, context);
+	}
 	public void endConfigure() {
 	}
 }
