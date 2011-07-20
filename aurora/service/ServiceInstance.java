@@ -19,6 +19,8 @@ import aurora.events.E_PrepareServiceConfig;
 
 public class ServiceInstance implements IService {
 
+    public static final String KEY_SERVICE_NAME = "service_name";
+
     public static final String LOGGING_TOPIC = "aurora.application";
 
     protected IProcedureManager mProcManager;
@@ -153,11 +155,11 @@ public class ServiceInstance implements IService {
     }
 
     public void setName(String name) {
-        mContextMap.put("service_name", name);
+        mContextMap.put(KEY_SERVICE_NAME, name);
     }
 
     public String getName() {
-        return mContextMap.getString("service_name");
+        return mContextMap.getString(KEY_SERVICE_NAME);
     }
 
     public Configuration getServiceConfig() {
