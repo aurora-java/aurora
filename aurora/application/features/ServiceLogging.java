@@ -14,12 +14,16 @@ import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.event.IContextListener;
 import uncertain.event.RuntimeContext;
+import uncertain.exception.ProgrammingException;
 import uncertain.logging.BasicFileHandler;
-import uncertain.logging.LoggerProvider;
+import uncertain.logging.DefaultPerObjectLoggingConfig;
 import uncertain.logging.ILoggerProvider;
 import uncertain.logging.ILoggerProviderGroup;
+import uncertain.logging.IPerObjectLoggingConfig;
+import uncertain.logging.LoggerProvider;
 import uncertain.logging.LoggerProviderGroup;
 import uncertain.ocm.IConfigurable;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import aurora.service.ServiceInstance;
 
@@ -29,6 +33,7 @@ public class ServiceLogging extends LoggerProvider implements
     
     private static final String SERVICE_LOGGING_FILE = "SERVICE_LOGGING_FILE";
     UncertainEngine mEngine;
+    IObjectRegistry mRegistry;
     DirectoryConfig mDirConfig;
     OCManager       mOcManager;
     String          mPattern;
@@ -36,10 +41,14 @@ public class ServiceLogging extends LoggerProvider implements
     // file name -> BasicFileHandler
     HashMap         mHandlerMap;
     boolean         mAppend;
+    boolean         mEnablePerServiceConfig = false;
+    // instance to provide service level logging config
+    IPerObjectLoggingConfig     mPerObjectLoggingConfig;
     
     public ServiceLogging(UncertainEngine   engine){
         super();
         mEngine = engine;
+        mRegistry = engine.getObjectRegistry();
         mOcManager = engine.getOcManager();
         mHandlerMap = new HashMap();
         mDirConfig = engine.getDirectoryConfig();
@@ -75,18 +84,43 @@ public class ServiceLogging extends LoggerProvider implements
         }
         return handler;
     }
+    
+    private LoggerProvider createDefaultLoggerProvider(){
+        LoggerProvider provider = new LoggerProvider(getTopicManager());
+        provider.setDefaultLogLevel(getDefaultLogLevel());     
+        return provider;
+    }
 
     public void onContextCreate( RuntimeContext context ){
+        
         ServiceInstance svc = ServiceInstance.getInstance(context.getObjectContext());
         if(svc==null)
             throw new IllegalStateException("No ServiceInstance set in context");
-        if( !svc.isTraceOn()) return;
-        LoggerProvider provider = new LoggerProvider(getTopicManager());
-        provider.setDefaultLogLevel(getDefaultLogLevel());
+        ILoggerProvider provider = null;
+        boolean is_trace = false;
         
+        if(mEnablePerServiceConfig){
+            String name = svc.getName();
+            is_trace = mPerObjectLoggingConfig.getTraceFlag(name);
+            provider = mPerObjectLoggingConfig.getLoggerProvider(name);
+            if( provider==null )
+                provider = createDefaultLoggerProvider();
+            if(! (provider instanceof LoggerProvider) )
+                throw new ProgrammingException("Must return LoggerProvider instance");
+            
+        }else{
+            is_trace = svc.isTraceOn();
+            provider = createDefaultLoggerProvider();
+        }
+
+        
+        if(!is_trace)
+            return;
+        // initialize trace file
         String file_name = getLogFilePath(svc);        
         BasicFileHandler handler = getLogHandler(file_name);
-        provider.addHandles( new Handler[]{handler});        
+        ((LoggerProvider)provider).addHandles( new Handler[]{handler});     
+
         context.setInstanceOfType(BasicFileHandler.class, handler);
         ILoggerProvider lp = (ILoggerProvider)context.getInstanceOfType(ILoggerProvider.class);
         if(lp==null){
@@ -139,6 +173,17 @@ public class ServiceLogging extends LoggerProvider implements
         
     }
     
+    public void onInitialize(){
+        // create default IPerObjectLoggingConfig instance if not set yet
+        if(mEnablePerServiceConfig){
+            mPerObjectLoggingConfig = (IPerObjectLoggingConfig)mRegistry.getInstanceOfType(IPerObjectLoggingConfig.class);
+            if(mPerObjectLoggingConfig==null){
+                mPerObjectLoggingConfig = new DefaultPerObjectLoggingConfig();
+                mRegistry.registerInstance(IPerObjectLoggingConfig.class, mPerObjectLoggingConfig);
+            }        
+        }
+    }
+    
     public void onShutdown(){
         Iterator it = mHandlerMap.values().iterator();
         while(it.hasNext()){
@@ -159,6 +204,19 @@ public class ServiceLogging extends LoggerProvider implements
      */
     public void setAppend(boolean append) {
         mAppend = append;
+    }
+    
+    /**
+     * If set to true, trace="true" flag in service config will be ignored,
+     * IPerObjectLoggingConfig instance will be created if can't get from container,
+     * trace flag will be get from IPerObjectLoggingConfig
+     */
+    public boolean getEnablePerServiceConfig() {
+        return mEnablePerServiceConfig;
+    }
+
+    public void setEnablePerServiceConfig(boolean enablePerServiceConfig) {
+        this.mEnablePerServiceConfig = enablePerServiceConfig;
     }
     
 }
