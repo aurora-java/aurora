@@ -14,6 +14,7 @@ public class TreeConfig extends ComponentConfig {
 	public static final String PROPERTITY_FIELD_EXPAND = "expandfield";
 	public static final String PROPERTITY_FIELD_CHECKED = "checkfield";
 	public static final String PROPERTITY_FIELD_SEQUENCE = "sequencefield";
+	public static final String PROPERTITY_FIELD_ICON = "iconfield";
 	
 	private static final String DEFAULT_ID_FIELD = "id";
 	private static final String DEFAULT_PARENT_FIELD = "pid";
@@ -21,6 +22,8 @@ public class TreeConfig extends ComponentConfig {
 	private static final String DEFAULT_EXPAND_FIELD ="expanded";
 	private static final String DEFAULT_SEQUENCE_FIELD = "sequence";
 	private static final String DEFAULT_CHECKED_FIELD = "checked";
+	private static final String DEFAULT_ICON_FIELD = "icon";
+	
 	
 	public static TreeConfig getInstance(){
 		TreeConfig model = new TreeConfig();
@@ -84,6 +87,13 @@ public class TreeConfig extends ComponentConfig {
     }
     public void setCheckField(String pf){
         putString(PROPERTITY_FIELD_CHECKED, pf);
+    }
+    
+    public String getIconField(){
+        return getString(PROPERTITY_FIELD_ICON, DEFAULT_ICON_FIELD);
+    }
+    public void setIconField(String pf){
+        putString(PROPERTITY_FIELD_ICON, pf);
     }
     
     public boolean isShowCheckBox(){

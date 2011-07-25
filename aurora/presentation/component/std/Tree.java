@@ -67,6 +67,7 @@ public class Tree extends Component {
 		addConfig(TreeConfig.PROPERTITY_FIELD_CHECKED, tc.getCheckField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_ICON, tc.getIconField());
 		map.put(CONFIG, getConfigString());
 	}
 	
