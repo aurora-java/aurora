@@ -110,34 +110,26 @@ public class DataSourceConfig {
 	public void onShutdown(){		
 		DataSource ds=(DataSource)mObjectRegistry.getInstanceOfType(DataSource.class);
 		INamedDataSourceProvider dsProvider=(INamedDataSourceProvider)mObjectRegistry.getInstanceOfType(INamedDataSourceProvider.class);
-		
-		try {
-			cleanDataSource(ds);
-		}
-		catch (SQLException e) {	
-			e.printStackTrace(System.err);
-		}
-		
+		cleanDataSource(ds);
 		if(dsProvider!=null){
 			Map dsMap=dsProvider.getAllDataSources();
 			Iterator iterator=dsMap.keySet().iterator();			
 			while(iterator.hasNext()){				
-				ds=(DataSource)dsMap.get(iterator.next());
-				try {
-					cleanDataSource(ds);
-				}
-				catch (SQLException e) {
-					e.printStackTrace(System.err);
-				}
+				ds=(DataSource)dsMap.get(iterator.next());				
+				cleanDataSource(ds);				
 			}
 		}
 		 
 	}
-	void cleanDataSource(DataSource ds) throws SQLException{
+	void cleanDataSource(DataSource ds){
 		//c3p0 pool
 		if(ds!=null){
-			if(ds instanceof PooledDataSource)					
-				((PooledDataSource)ds).close();
+			if(ds instanceof PooledDataSource)
+				try {
+					((PooledDataSource)ds).close();
+				} catch (SQLException e) {					
+					e.printStackTrace(System.err);
+				}
 			//xa unpool
 			if(ds instanceof StandardXADataSource)
 				((StandardXADataSource)ds).shutdown(true);
