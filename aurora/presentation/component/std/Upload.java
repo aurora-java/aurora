@@ -73,7 +73,9 @@ public class Upload extends Component {
 			throw new IOException(e.getMessage());
 		}
 		
-		map.put(PROPERTITY_TEXT, view.getString(PROPERTITY_TEXT,"upload"));
+		String text = view.getString(PROPERTITY_TEXT,"upload");
+		text = session.getLocalizedPrompt(text);
+		map.put(PROPERTITY_TEXT, text);
 		String st = view.getString(PROPERTITY_SOURCE_TYPE, "sourcetype");
 		st = uncertain.composite.TextParser.parse(st, model);
 		map.put(PROPERTITY_SOURCE_TYPE, st);
