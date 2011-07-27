@@ -30,6 +30,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
+import com.mchange.v2.c3p0.C3P0ProxyConnection;
+
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
@@ -38,6 +40,7 @@ import aurora.database.DBUtil;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
+import aurora.plugin.c3p0.C3P0NativeJdbcExtractor;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
@@ -107,7 +110,7 @@ public class AttachmentManager extends AbstractEntry{
 				int fileSize = rs.getInt(2);
 				String mimeType = rs.getString(3);
 				HttpServletResponse response = serviceInstance.getResponse();
-				response.setHeader("Content-Type", mimeType);
+				response.setHeader("Content-Type", mimeType);//application/octet-stream
 				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
 				response.setContentLength(fileSize);
 				if(path!=null){
@@ -306,6 +309,16 @@ public class AttachmentManager extends AbstractEntry{
 	}
 
 	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
+		
+		if(conn instanceof C3P0ProxyConnection){
+        	C3P0NativeJdbcExtractor nativeJdbcExtractor=new C3P0NativeJdbcExtractor();
+        	try {
+        		conn = nativeJdbcExtractor.getNativeConnection(conn);
+			} catch (Exception e) {
+				throw new Exception(e);			
+			}			
+        }
+		
 		conn.setAutoCommit(false);
 		long size = 0;
 		Statement st = null;
@@ -319,6 +332,8 @@ public class AttachmentManager extends AbstractEntry{
 			rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
 			if (!rs.next())
 				throw new IllegalArgumentException("attachment_id not set");
+			
+			
 			BLOB blob = ((oracle.jdbc.driver.OracleResultSet) rs).getBLOB(1);
 			rs.close();
 
