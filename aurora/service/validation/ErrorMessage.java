@@ -28,7 +28,12 @@ public class ErrorMessage extends DynamicObject {
     public ErrorMessage(){
         super();
     }
-
+    
+    public static ErrorMessage createErrorMessage( CompositeMap context ){
+        ErrorMessage msg = new ErrorMessage();
+        msg.initialize(context);
+        return msg;
+    }
     
     public ErrorMessage(String code, String message, String field){
         CompositeMap m = new CompositeMap(10);
