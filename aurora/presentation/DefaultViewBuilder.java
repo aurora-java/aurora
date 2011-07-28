@@ -90,6 +90,8 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
                     out.write(getParsedContent(session, text, model));
                     //out.write(getParsedContent(session, reg, text,model));
                     out.write(close_tag);
+                }else{
+                	out.write(close_tag);
                 }
             }
             out.flush();
