@@ -75,14 +75,12 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
             }
             out.write('>');
             Collection childs = view.getChilds();
-            out.flush();
             if(childs!=null){           // print childs
                 try{
                     session.buildViews(model, childs);
                 }catch(Exception ex){
                     throw new ViewCreationException(ex);
                 }
-                out.flush();
                 out.write(close_tag);
             }else{
                 String text = view.getText();
