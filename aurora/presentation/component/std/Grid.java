@@ -67,6 +67,7 @@ public class Grid extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
 		GridConfig gc = GridConfig.getInstance(view);
 		Map map = context.getMap();
 		boolean hasToolBar = creatToolBar(session,context);
@@ -92,7 +93,7 @@ public class Grid extends Component {
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		
 		processSelectable(map,view);
-		createGridColumns(map,view,session);
+		createGridColumns(map,view,session,model);
 		
 		if(hasFooterBar)creatFooterBar(session, context);
 		
@@ -130,7 +131,7 @@ public class Grid extends Component {
 		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 	}
 	
-	private void createGridColumns(Map map, CompositeMap view,BuildSession session){
+	private void createGridColumns(Map map, CompositeMap view,BuildSession session,CompositeMap model){
 		JSONArray jsons = new JSONArray(); 
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
@@ -260,8 +261,8 @@ public class Grid extends Component {
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(LOCK_COLUMNS, locks);
 		map.put(UNLOCK_COLUMNS, unlocks);
-		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session, bindTarget));
-		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session, bindTarget));
+		map.put(HTML_LOCKAREA, generateLockArea(map, locks, lkpro,session, bindTarget,model));
+		map.put(HTML_UNLOCKAREA, generateUnlockArea(map, unlocks, ukpro,session, bindTarget,model));
 		Integer lockWidth = (Integer)lkpro.get(LOCK_WIDTH);
 		map.put(LOCK_WIDTH, lockWidth);
 		map.put(UNLOCK_WIDTH, new Integer(width.intValue()-lockWidth.intValue()));
@@ -609,7 +610,7 @@ public class Grid extends Component {
 
 	
 	
-	private String generateLockArea(Map map, List columns, Map pro,BuildSession session, String dataSet){
+	private String generateLockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		boolean hasLockColumn = false;
@@ -651,8 +652,11 @@ public class Grid extends Component {
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 							if(!hidden){
-								String headTitle = getFieldPrompt(session, column, dataSet);
-								headTitle = session.getLocalizedPrompt(headTitle);
+								String prompt = getFieldPrompt(session, column, dataSet);
+								String headTitle = session.getLocalizedPrompt(prompt);
+								if(headTitle!=null && headTitle.equals(prompt)){
+									headTitle = uncertain.composite.TextParser.parse(prompt, model);
+								}
 								hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 							}
 						}
@@ -676,7 +680,7 @@ public class Grid extends Component {
 	}
 	
 	
-	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session, String dataSet){
+	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
 		
@@ -711,8 +715,11 @@ public class Grid extends Component {
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 					if(!hidden){
-						String headTitle = getFieldPrompt(session, column, dataSet);
-						headTitle = session.getLocalizedPrompt(headTitle);
+						String prompt = getFieldPrompt(session, column, dataSet);
+						String headTitle = session.getLocalizedPrompt(prompt);
+						if(headTitle!=null && headTitle.equals(prompt)){
+							headTitle = uncertain.composite.TextParser.parse(prompt, model);
+						}
 						hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 					}
 				}
