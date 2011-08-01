@@ -94,5 +94,7 @@ public class Upload extends Component {
 		map.put(PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(deleteUrl, model));
 		String downloadUrl = view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc");
 		map.put(PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(downloadUrl, model));
+		
+		map.put(CONFIG, getConfigString());
 	}
 }
