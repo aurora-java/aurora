@@ -74,10 +74,14 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
     			mqc.setAutoCount(false);
     			mqc.setFetchAll(true);
     			String st = view.getString(Upload.PROPERTITY_SOURCE_TYPE, "");
-    			st = uncertain.composite.TextParser.parse(st, model);
+    			if(st.indexOf("${") == -1) {
+    				st = "'" + st + "'";
+    			}
     			String pk = view.getString(Upload.PROPERTITY_PK_VALUE, "-1");
-    			pk = uncertain.composite.TextParser.parse(pk, model);
-    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = '" + st + "' and fam.table_pk_value = '" + pk + "'");
+    			if(pk.indexOf("${") == -1) {
+    				pk = "'" + pk + "'";
+    			}
+    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + "");
     			screen.addInitProcedureAction(mqc.getObjectContext());
         		
         		
