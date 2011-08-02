@@ -32,12 +32,14 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_QUERYURL = "queryurl";
 	public static final String PROPERTITY_QUERYDATASET = "querydataset";
 	public static final String PROPERTITY_SUBMITURL = "submiturl";
+	public static final String PROPERTITY_SHOW_CHECKALL = "showcheckall";
 	public static final String PROPERTITY_SELECTABLE = "selectable";
 	public static final String PROPERTITY_SELECTION_MODEL = "selectionmodel";
 	public static final String PROPERTITY_SELECT_FUNCTION = "selectfunction";
 	public static final String PROPERTITY_VALID_LISTENER = "validlistener";
 	public static final String PROPERTITY_AUTO_PAGE_SIZE = "autopagesize";
 	public static final String PROPERTITY_PROCESS_FUNCTION = "processfunction";
+	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
 	public static final int DEFAULT_PAGE_SIZE = 10;
@@ -148,6 +150,13 @@ public class DataSetConfig extends ComponentConfig {
 	public boolean isSelectable(){
 		return getBoolean(PROPERTITY_SELECTABLE, false);
 	}	
+	
+	public void setShowCheckAll(boolean showCheckAll){
+		putBoolean(PROPERTITY_SHOW_CHECKALL, showCheckAll);
+	}
+	public boolean isShowCheckAll(){
+		return getBoolean(PROPERTITY_SHOW_CHECKALL, true);
+	}
 	
 	public String getSelectionModel(){
 		return getString(PROPERTITY_SELECTION_MODEL, DEFAULT_SELECTION_MODEL);		

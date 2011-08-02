@@ -175,8 +175,14 @@ public class DataSet extends Component {
 		if(fieldList.length()!=0)addConfig(DataSetConfig.PROPERTITY_FIELDS, fieldList);
 		if(dataList.length()!=0)addConfig(DataSetConfig.PROPERTITY_DATAS, dataList);
 		if(!"".equals(dsc.getQueryDataSet()))addConfig(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
-		if(!"".equals(dsc.getQueryUrl()))addConfig(DataSetConfig.PROPERTITY_QUERYURL, dsc.getQueryUrl());
-		if(!"".equals(dsc.getSubmitUrl()))addConfig(DataSetConfig.PROPERTITY_SUBMITURL, dsc.getSubmitUrl());
+		if(!"".equals(dsc.getQueryUrl())){
+			String queryUrl = uncertain.composite.TextParser.parse(dsc.getQueryUrl(), model);
+			addConfig(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
+		}
+		if(!"".equals(dsc.getSubmitUrl())) {
+			String submitUrl = uncertain.composite.TextParser.parse(dsc.getSubmitUrl(), model);
+			addConfig(DataSetConfig.PROPERTITY_SUBMITURL,submitUrl);
+		}
 		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
 		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
 		if(dsc.isFetchAll())addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));

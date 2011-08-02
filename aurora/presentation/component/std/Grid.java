@@ -105,6 +105,7 @@ public class Grid extends Component {
 	
 	private void processSelectable(Map map,CompositeMap view){
 		Boolean selectable = new Boolean(false);
+		Boolean showCheckAll = new Boolean(true);
 		String selectionmodel = "multiple";
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
@@ -119,6 +120,7 @@ public class Grid extends Component {
 				}
 				if(id.equals(dds)){
 					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
+					showCheckAll = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SHOW_CHECKALL, true));
 					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL, "multiple");
 					break;
 				}
@@ -126,6 +128,7 @@ public class Grid extends Component {
 			
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
+		map.put(DataSetConfig.PROPERTITY_SHOW_CHECKALL, showCheckAll);
 		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 		addConfig(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
 		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
@@ -160,6 +163,7 @@ public class Grid extends Component {
 		
 		if(columns != null) {
 			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
+			
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTION_MODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
@@ -645,8 +649,13 @@ public class Grid extends Component {
 					while(lit.hasNext()){
 						CompositeMap column = (CompositeMap)lit.next();
 						String ct =  column.getString(COLUMN_TYPE);
+						boolean showCheckAll = ((Boolean)map.get(DataSetConfig.PROPERTITY_SHOW_CHECKALL)).booleanValue();
 						if(TYPE_ROW_CHECKBOX.equals(ct)){
-							hsb.append("<TD class='grid-hc' atype='grid.rowcheck' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='grid.headcheck' class='grid-ckb item-ckb-u'></div></center></TD>");
+							if(showCheckAll){
+								hsb.append("<TD class='grid-hc' atype='grid.rowcheck' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='grid.headcheck' class='grid-ckb item-ckb-u'></div></center></TD>");
+							}else{
+								hsb.append("<TD class='grid-hc' atype='grid.rowcheck' rowspan='"+column.getInt(ROW_SPAN)+"'></TD>");
+							}
 						}else if(TYPE_ROW_RADIO.equals(ct)) {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio' rowspan='"+column.getInt(ROW_SPAN)+"'><div>&nbsp;</div></TD>");
 						}else{
