@@ -101,6 +101,7 @@ public class ExceptionDatabaseLog implements IExceptionListener, IGlobalInstance
 			ps.setString(6, fullStackTrace);
 			ps.executeUpdate();
 			ps.close();
+			conn.commit();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
