@@ -20,6 +20,14 @@
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
+        <ss:simpleType name="bm:AccessControlModeType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="separate"/>
+                    <ss:enumeration value="default"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
         <ss:simpleType name="bm:ModelReference" base="ss:string" document="对其他BM的引用" editor="bm:ModelReferenceEditor"/>
         <ss:simpleType name="bm:LocalFieldReference" base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor"/>
         <ss:simpleType name="bm:ForeignFieldReference" base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor"/>
@@ -156,6 +164,10 @@
                 <ss:attribute name="extend" document="父对象" type="bm:ModelReference"/>
                 <ss:attribute name="extendMode" default="override" document="继承方式" type="bm:ExtendModeType"/>
                 <ss:attribute name="defaultOrderBy" document="缺省的排序子句"/>
+                <ss:attribute name="needAccessControl" default="true" document="是否需要控制访问权限" type="ss:boolean"/>
+                <ss:attribute name="accessControlMode" document="权限控制方式，如果该BM有父BM，缺省情况下该BM的权限控制方式与父BM相同，如果accessControlMode设置为separate，则该BM使用自己的权限控制设置，与父BM无关"/>
+                <ss:attribute name="allowFetchAll" document="是否允许将所有查询结果，不分页地传递给客户端" type="ss:boolean"/>
+                <ss:attribute name="maxPageSize" default="500" document="每页允许的最大记录数"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element name="bm:description" document="描述本BM功能"/>
