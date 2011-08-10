@@ -9,11 +9,16 @@ import java.util.logging.Level;
 import uncertain.composite.CompositeMap;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.AuroraApplication;
+import aurora.application.ISessionInfoProvider;
+import aurora.application.util.LanguageUtil;
 import aurora.bm.IBusinessModelAccessChecker;
 import aurora.bm.IBusinessModelAccessCheckerFactory;
+import aurora.i18n.ILocalizedMessageProvider;
+import aurora.security.IResourceAccessChecker;
 import aurora.service.ServiceContext;
 import aurora.service.http.AutoCrudServiceContext;
 import aurora.service.validation.ErrorMessage;
@@ -22,15 +27,19 @@ public class BmAccessCheck extends AbstractEntry {
     
     public static final String DEFAULT_ACCESS_CHECK_ERROR_MESSAGE = "aurora.bm.access_check_fail";
     
+    IObjectRegistry                         mRegistry;
     IBusinessModelAccessCheckerFactory      mBmAccessChecker;
+    ISessionInfoProvider                    mSessionProvider;
 
 
     String                                  mResultPath = "@success";
     String                                  mErrorMessage = DEFAULT_ACCESS_CHECK_ERROR_MESSAGE;
    
-    public BmAccessCheck(IBusinessModelAccessCheckerFactory accessChecker ) {
+    public BmAccessCheck(IObjectRegistry reg, IBusinessModelAccessCheckerFactory accessChecker, ISessionInfoProvider provider) {
         super();
         this.mBmAccessChecker = accessChecker;
+        this.mSessionProvider = provider;
+        this.mRegistry = reg;
         //this.mModelFactory = factory;
     }
 
@@ -39,6 +48,7 @@ public class BmAccessCheck extends AbstractEntry {
         CompositeMap context_map = runner.getContext();
         ILogger logger = LoggingContext.getLogger(context_map, AuroraApplication.AURORA_APP_SESSION_CHECK_LOGGING_TOPIC);
         ServiceContext sc = ServiceContext.createServiceContext(context_map);
+
         AutoCrudServiceContext acsc = AutoCrudServiceContext.createAutoCrudServiceContext(context_map);
         String operation = acsc.getRequestedOperation();
         String bm = acsc.getRequestedBM();
@@ -65,8 +75,14 @@ public class BmAccessCheck extends AbstractEntry {
             sc.setSuccess(result);
         }
         if(!result){
-            ErrorMessage msg = new ErrorMessage(null, mErrorMessage, null);
-            sc.setError(msg.getObjectContext());
+            String code = IResourceAccessChecker.RESULT_UNAUTHORIZED;
+            if(!mSessionProvider.isLoggedin(context_map))
+                code = IResourceAccessChecker.RESULT_LOGIN_REQUIRED;
+            String msg = mErrorMessage==null?code:mErrorMessage;
+            msg = LanguageUtil.getTranslatedMessage(mRegistry, msg, context_map);
+            ErrorMessage m = new ErrorMessage( code, msg, null);
+            sc.setError(m.getObjectContext());
+            return;
         }
             
     }

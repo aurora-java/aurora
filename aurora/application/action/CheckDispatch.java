@@ -1,11 +1,14 @@
 package aurora.application.action;
 
-import aurora.service.ServiceInstance;
-import aurora.service.http.HttpServiceInstance;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
+import aurora.application.util.LanguageUtil;
+import aurora.i18n.ILocalizedMessageProvider;
+import aurora.service.ServiceContext;
+import aurora.service.validation.ErrorMessage;
 
 public class CheckDispatch extends AbstractEntry {
 	String name;
@@ -13,6 +16,11 @@ public class CheckDispatch extends AbstractEntry {
 	String value;
 	String dispatchUrl;
 	String message;
+	IObjectRegistry        registry;
+	
+	public CheckDispatch(IObjectRegistry r){
+	    this.registry = r;
+	}
 
 	public String getMessage() {
 		return message;
@@ -24,14 +32,20 @@ public class CheckDispatch extends AbstractEntry {
 
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
+		ServiceContext sc = ServiceContext.createServiceContext(context);
+		
 		String fieldvalue = (String)context.getObject(this.getField());
 		String checkvalue = this.getValue();
 		if (fieldvalue!= null && fieldvalue.equals(checkvalue)) {
-			String errorMessage =context.getObject(this.getMessage()).toString();
-			context.put("success", "false");
-			context.put("error_msg",errorMessage);
-			String url = TextParser.parse(this.getDispatchUrl(), context);
+			context.putBoolean("success", false);
+            String url = TextParser.parse(this.getDispatchUrl(), context);
 			context.put("dispatch_url", url);
+			
+            String msg = message==null?checkvalue:message;
+            msg = LanguageUtil.getTranslatedMessage(registry, msg, context);
+			
+			ErrorMessage em = new ErrorMessage(checkvalue, msg, null);
+			sc.setError(em.getObjectContext());
 		} 
 	}
 

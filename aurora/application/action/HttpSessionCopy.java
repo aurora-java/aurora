@@ -26,6 +26,17 @@ import aurora.service.http.HttpServiceInstance;
  * If HttpSession is not created yet, nothing will happend.
  */
 public class HttpSessionCopy extends AbstractEntry {
+    
+    public static void copySession( CompositeMap context, HttpSession session ){
+        ServiceContext svcctx = ServiceContext.createServiceContext(context);
+        CompositeMap session_map = svcctx.getSession();
+        Enumeration e = session.getAttributeNames();
+        while(e.hasMoreElements()){
+            String name = (String)e.nextElement();
+            Object value = session.getAttribute(name);
+            session_map.put(name, value);
+        }        
+    }
 
     public void run(ProcedureRunner runner) throws Exception {
         CompositeMap context = runner.getContext();
@@ -41,15 +52,8 @@ public class HttpSessionCopy extends AbstractEntry {
             logger.config("HTTP session not created");
             return;
         }else{
-            ServiceContext svcctx = ServiceContext.createServiceContext(context);
-            CompositeMap session_map = svcctx.getSession();
-            Enumeration e = session.getAttributeNames();
-            while(e.hasMoreElements()){
-                String name = (String)e.nextElement();
-                Object value = session.getAttribute(name);
-                session_map.put(name, value);
-            }
-            logger.log(Level.CONFIG, "Session data copied to context:{0}", new Object[]{session_map});
+            copySession(context,session);
+            logger.log(Level.CONFIG, "Session data copied to context");
         }
 
     }
