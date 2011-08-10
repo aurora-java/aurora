@@ -79,6 +79,11 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     
     public static final String DEFAULT_FIELD_PROMPT_FORMAT = "bm.{0}.{1}";
     
+    //TODO page control
+    public static final String KEY_ALLOW_FETCH_ALL = "allowfetchall";
+
+    public static final String KEY_MAX_PAGE_SIZE = "maxpagesize";
+
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
     

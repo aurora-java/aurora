@@ -5,6 +5,7 @@ package aurora.bm;
 
 import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
+import uncertain.exception.BuiltinExceptionFactory;
 import aurora.database.sql.BaseField;
 import aurora.database.sql.CompareExpression;
 import aurora.database.sql.Condition;
@@ -105,6 +106,8 @@ public class QueryField extends DynamicObject {
         }else{
             String exp = getQueryExpression();
             if(exp!=null) stmt = new RawSqlExpression(exp);
+            else
+                throw BuiltinExceptionFactory.createOneAttributeMissing(getObjectContext().asLocatable(), "queryOperator,queryExpression");
         }
         String logical_op = getLogicalOperator();
         if(logical_op==null)
