@@ -9,20 +9,25 @@ import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
+
 import org.enhydra.jdbc.pool.StandardXAPoolDataSource;
 import org.enhydra.jdbc.standard.StandardXADataSource;
 
-import com.mchange.v2.c3p0.DataSources;
-import com.mchange.v2.c3p0.DriverManagerDataSource;
-import com.mchange.v2.c3p0.PooledDataSource;
-
+import uncertain.core.IContainer;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
+import uncertain.proc.IProcedureManager;
 import aurora.plugin.xapool.TransactionService;
 import aurora.plugin.xapool.XADataSources;
+import aurora.service.IServiceFactory;
+import aurora.service.ServiceFactoryImpl;
 import aurora.transaction.ITransactionService;
+
+import com.mchange.v2.c3p0.DataSources;
+import com.mchange.v2.c3p0.DriverManagerDataSource;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 public class DataSourceConfig {
 	DatabaseConnection[] mDatabaseConnections;
@@ -34,7 +39,15 @@ public class DataSourceConfig {
 		mLogger =LoggingContext.getLogger("aurora.datasource", reg);		
 		mObjectRegistry = reg;
 		mOCManager=ocManager;
-	}	
+	}
+	
+	// TODO to be refactor
+	private ServiceFactoryImpl createServiceFactory(ITransactionService ts){
+	    IProcedureManager pr = (IProcedureManager)mObjectRegistry.getInstanceOfType(IProcedureManager.class);
+	    IContainer container = (IContainer)mObjectRegistry.getInstanceOfType(IContainer.class);
+	    ServiceFactoryImpl sf = new ServiceFactoryImpl(container,ts,pr);
+	    return sf;
+	}
 		
 	public void onInitialize() throws Exception {
 		int length=mDatabaseConnections.length;
@@ -70,7 +83,10 @@ public class DataSourceConfig {
 			registryDataSource(ds,dbConfig,dsProvider);
 		}		
 		mObjectRegistry.registerInstance(INamedDataSourceProvider.class,dsProvider);			
-		mObjectRegistry.registerInstance(ITransactionService.class, ts);			
+		mObjectRegistry.registerInstance(ITransactionService.class, ts);	
+		// TODO to be refactor
+		IServiceFactory sf = createServiceFactory(ts);
+		mObjectRegistry.registerInstance(IServiceFactory.class, sf);
 	}
 	
 	private void registryDataSource(DataSource ds,DatabaseConnection dbConfig,INamedDataSourceProvider dsProvider) throws ServletException{
