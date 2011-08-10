@@ -8,6 +8,7 @@ import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.ApplicationConfig;
 import aurora.application.IApplicationConfig;
+import aurora.application.ISessionInfoProvider;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
 
@@ -21,6 +22,7 @@ public class LanguageUtil {
      * @return
      */
     public static String getLanguagePath( IObjectRegistry reg ){
+        /*
         ApplicationConfig cfg = (ApplicationConfig)reg.getInstanceOfType(IApplicationConfig.class);
         if(cfg!=null){
             CompositeMap session_config = cfg.getApplicationSessionConfig();
@@ -29,6 +31,11 @@ public class LanguageUtil {
                 if(p!=null)
                     return p;
             }
+        }
+        */
+        ISessionInfoProvider sp = (ISessionInfoProvider)reg.getInstanceOfType(ISessionInfoProvider.class);
+        if(sp!=null){
+            return sp.getUserLanguagePath();
         }
         return DEFAULT_LANG_PATH;
     }
