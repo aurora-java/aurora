@@ -9,11 +9,13 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
+import aurora.application.action.HttpSessionCopy;
 import aurora.service.IServiceFactory;
 import aurora.service.ServiceInvoker;
 import aurora.service.http.WebContextInit;
@@ -45,11 +47,14 @@ public class HttpSessionCleaner implements HttpSessionListener {
         Procedure proc = pr.getProcedure(SERVICE_NAME);
         if(proc==null)
             throw new IllegalArgumentException("Must set a procedure named "+SERVICE_NAME+" in service-procedure.config");
-        
+        CompositeMap m = new CompositeMap("context");
         try{
-            ServiceInvoker.invokeProcedureWithTransaction(SERVICE_NAME, proc, factory);
+            HttpSessionCopy.copySession(m, session);
+            ServiceInvoker.invokeProcedureWithTransaction(SERVICE_NAME, proc, factory, m);
         }catch(Exception ex){
             throw new RuntimeException(ex);
+        }finally{
+            m.clear();
         }
 
         
