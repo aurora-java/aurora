@@ -17,8 +17,6 @@ import uncertain.composite.TextParser;
 import uncertain.event.EventModel;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
-import uncertain.util.resource.ISourceFile;
-import uncertain.util.resource.ISourceFileManager;
 import aurora.application.config.ScreenConfig;
 import aurora.events.E_DetectProcedure;
 import aurora.presentation.PresentationManager;
@@ -94,8 +92,7 @@ public class CachedScreenListener implements E_DetectProcedure {
     /**
      * @param cacheFactory
      */
-    public CachedScreenListener(IResponseCacheProvider provider,
-            ISourceFileManager manager) {
+    public CachedScreenListener(IResponseCacheProvider provider) {
         this.mCacheProvider = provider;
         mCache = provider.getCacheForResponse();
         if (mCache == null)
