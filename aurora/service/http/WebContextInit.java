@@ -4,23 +4,16 @@
 package aurora.service.http;
 
 import java.io.File;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.sql.DataSource;
-
-import com.mchange.v2.c3p0.PooledDataSource;
 
 import uncertain.core.DirectoryConfig;
 import uncertain.core.UncertainEngine;
-import uncertain.ocm.IObjectRegistry;
 import uncertain.mbean.MBeanRegister;
 import uncertain.mbean.UncertainEngineWrapper;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.Version;
 
 public class WebContextInit implements ServletContextListener {
@@ -88,9 +81,6 @@ public class WebContextInit implements ServletContextListener {
     	System.out.println(sb.toString());
     	System.out.println(line.toString());
     	
-//        System.out.println("***** Aurora("+Version.getVersion()+") Application " + servlet_context.getResource("/").toExternalForm() + " starting up *****");
-//        System.out.println("Aurora core version " + Version.getVersion());
-
         initUncertain(servlet_context);
 
         servlet_context.setAttribute(KEY_UNCERTAIN_ENGINE,uncertainEngine);
@@ -108,30 +98,6 @@ public class WebContextInit implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-    	
-//    	IObjectRegistry os = uncertainEngine.getObjectRegistry();
-//    	if(os!=null){
-//    		DataSource ds = (DataSource) os.getInstanceOfType(DataSource.class);
-//    		if(ds!=null){
-//    			if(ds instanceof PooledDataSource) {
-//					try {
-//						((PooledDataSource)ds).close();
-//					} catch (SQLException e) {
-//						e.printStackTrace();
-//					}					
-//				}
-//    		}
-//    	}
-//    	Enumeration drivers = DriverManager.getDrivers();
-//        while (drivers.hasMoreElements()) {
-//            Driver driver = (Driver)drivers.nextElement();
-//            try {
-//                DriverManager.deregisterDriver(driver);
-//            } catch (SQLException e) {
-//            	e.printStackTrace();
-//            }
-//        }
-        
         if(uncertainEngine!=null)
             uncertainEngine.shutdown();
     	

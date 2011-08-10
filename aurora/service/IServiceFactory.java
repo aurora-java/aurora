@@ -4,8 +4,16 @@
  */
 package aurora.service;
 
+import uncertain.composite.CompositeMap;
+
 public interface IServiceFactory {
     
-    public IService createService( String service_name ) throws Exception;
+    public IService createService( CompositeMap context );
+    
+    public IService createService( String service_name, CompositeMap context );
+    
+    public void beginService( CompositeMap context );
 
+    public void finishService( CompositeMap context );
+    
 }
