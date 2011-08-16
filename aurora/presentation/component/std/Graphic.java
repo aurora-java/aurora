@@ -36,6 +36,9 @@ public class Graphic extends Component {
 		if(null!= gc.getDropTo()){
 			addConfig(GraphicConfig.PROPERTITY_DROP_TO, gc.getDropTo());
 		}
+		if(gc.isMoveable()){
+			addConfig(GraphicConfig.PROPERTITY_MOVEABLE, new Boolean(gc.isMoveable()));
+		}
 		if(null!= gc.getRenderer()){
 			addConfig(GraphicConfig.PROPERTITY_RENDERER, gc.getRenderer());
 		}

@@ -10,6 +10,7 @@ public class GraphicConfig extends ComponentConfig {
 	public static final String PROPERTITY_FILTERS = "filters";
 	public static final String PROPERTITY_DROP_TO = "dropto";
 	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_MOVEABLE = "moveable";
 	
 	public static GraphicConfig getInstance(){
 		GraphicConfig model = new GraphicConfig();
@@ -40,5 +41,11 @@ public class GraphicConfig extends ComponentConfig {
 	}
 	public void setRenderer(String renderer){
 		putString(PROPERTITY_RENDERER,renderer);
+	}
+	public boolean isMoveable(){
+		return getBoolean(PROPERTITY_MOVEABLE, false);
+	}
+	public void setMoveable(boolean m){
+		putBoolean(PROPERTITY_MOVEABLE, m);
 	}
 }
