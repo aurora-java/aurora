@@ -36,6 +36,9 @@ public class Graphic extends Component {
 		if(null!= gc.getDropTo()){
 			addConfig(GraphicConfig.PROPERTITY_DROP_TO, gc.getDropTo());
 		}
+		if(null!= gc.getRenderer()){
+			addConfig(GraphicConfig.PROPERTITY_RENDERER, gc.getRenderer());
+		}
 		List childs=view.getChilds();
 		StringBuffer create=new StringBuffer("");
 		if(null != childs){
