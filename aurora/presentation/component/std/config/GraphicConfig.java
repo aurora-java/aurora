@@ -9,6 +9,7 @@ public class GraphicConfig extends ComponentConfig {
 	
 	public static final String PROPERTITY_FILTERS = "filters";
 	public static final String PROPERTITY_DROP_TO = "dropto";
+	public static final String PROPERTITY_RENDERER = "renderer";
 	
 	public static GraphicConfig getInstance(){
 		GraphicConfig model = new GraphicConfig();
@@ -34,5 +35,10 @@ public class GraphicConfig extends ComponentConfig {
     public void setDropTo(String dropTo){
     	putString(PROPERTITY_DROP_TO, dropTo);
     }
-	
+    public String getRenderer(){
+		return getString(PROPERTITY_RENDERER);
+	}
+	public void setRenderer(String renderer){
+		putString(PROPERTITY_RENDERER,renderer);
+	}
 }
