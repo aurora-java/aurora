@@ -8,7 +8,7 @@ import java.util.List;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.transform.Transformer;
-import uncertain.logging.LoggingContext;
+import uncertain.event.IContextAcceptable;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractDeferredEntry;
 import uncertain.proc.ProcedureRunner;
@@ -104,6 +104,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
                     consumer = new CompositeMapCreator();
                 }
             }
+            if(consumer instanceof IContextAcceptable)
+            	((IContextAcceptable) consumer).setContext(context_map);
             // set root path
             if(consumer instanceof IRootMapAcceptable){
                 CompositeMap result = context.getModel();
