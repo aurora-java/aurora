@@ -112,7 +112,13 @@ public class AttachmentManager extends AbstractEntry{
 				HttpServletResponse response = serviceInstance.getResponse();
 				response.setHeader("Content-Type", mimeType);//application/octet-stream
 				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
-				response.setContentLength(fileSize);
+				 try{                	
+                	Class.forName("org.apache.catalina.startup.Bootstrap");
+                	if (fileSize > 0)
+                		response.setContentLength(fileSize);    
+                }catch(ClassNotFoundException e){}
+                
+//				response.setContentLength(fileSize);
 				if(path!=null){
 					File file = new File(path);
 					if(file.exists()){
