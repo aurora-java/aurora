@@ -19,12 +19,14 @@ import uncertain.logging.BasicFileHandler;
 import uncertain.logging.DefaultPerObjectLoggingConfig;
 import uncertain.logging.ILoggerProvider;
 import uncertain.logging.ILoggerProviderGroup;
+import uncertain.logging.ILoggingConifg;
 import uncertain.logging.IPerObjectLoggingConfig;
 import uncertain.logging.LoggerProvider;
 import uncertain.logging.LoggerProviderGroup;
 import uncertain.ocm.IConfigurable;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
+import aurora.application.sourcecode.LoggingConfig;
 import aurora.service.ServiceInstance;
 
 public class ServiceLogging extends LoggerProvider implements 
@@ -180,7 +182,12 @@ public class ServiceLogging extends LoggerProvider implements
             if(mPerObjectLoggingConfig==null){
                 mPerObjectLoggingConfig = new DefaultPerObjectLoggingConfig();
                 mRegistry.registerInstance(IPerObjectLoggingConfig.class, mPerObjectLoggingConfig);
-            }        
+            }
+            ILoggingConifg loggingConfig = (ILoggingConifg)mRegistry.getInstanceOfType(ILoggingConifg.class);
+            if(loggingConfig==null){
+            	loggingConfig = new LoggingConfig(mRegistry);
+                mRegistry.registerInstance(ILoggingConifg.class, loggingConfig);
+            }  
         }
     }
     
