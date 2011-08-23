@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:bm="http://www.aurora-framework.org/schema/bm">
     <ss:elements>
         <ss:element name="a:dataSet" wizard="a:dataSetWizard">
             <ss:attributes>
                 <ss:attribute name="id" document="DataSet的ID" use="required"/>
-                <ss:attribute name="model" document="DataSet关联的BM"/>
+                <ss:attribute name="model" document="DataSet关联的BM" type="bm:ModelReference"/>
                 <ss:attribute name="loadData" default="false" document="是否服务端加载数据" type="ss:boolean"/>
                 <ss:attribute name="autoCreate" default="false" document="是否创建一条数据" type="ss:boolean"/>
                 <ss:attribute name="autoQuery" default="false" document="是否客户端自动发起ajax查询" type="ss:boolean"/>
@@ -33,7 +33,7 @@
                 <ss:attribute name="autoCount" default="false" document="查询是否进行统计" type="ss:boolean"/>
                 <ss:attribute name="defaultWhereClause" document="默认查询条件" type="ss:string"/>
                 <ss:attribute name="fetchAll" default="false" document="是否查询所有数据" type="ss:boolean"/>
-                <ss:attribute name="model" document="关联的BM"/>
+                <ss:attribute name="model" document="关联的BM" type="bm:ModelReference"/>
                 <ss:attribute name="rootPath" document="返回路径" type="ss:string"/>
             </ss:attributes>
         </ss:element>
@@ -86,7 +86,7 @@
                 <ss:attribute name="valueField" document="ComboBox的valueField"/>
                 <ss:attribute name="prompt" document="field的prompt"/>
                 <ss:attribute name="title" document="Lov弹出窗口的title"/>
-                <ss:attribute name="lovService" document="Lov对应的model"/>
+                <ss:attribute name="lovService" document="Lov对应的model" type="bm:ModelReference"/>
                 <ss:attribute name="lovWidth" document="lov弹出窗口的宽度" type="ss:int"/>
                 <ss:attribute name="lovLabelWidth" document="lov弹出窗口查询条件字段描述的宽度" type="ss:int"/>
                 <ss:attribute name="lovHeight" document="lov弹出窗口的高度" type="ss:int"/>
