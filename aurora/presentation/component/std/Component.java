@@ -125,6 +125,7 @@ public class Component {
 		if ("".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}
+		id = uncertain.composite.TextParser.parse(id, model);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 

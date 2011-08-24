@@ -183,8 +183,8 @@ public class DataSet extends Component {
 			String submitUrl = uncertain.composite.TextParser.parse(dsc.getSubmitUrl(), model);
 			addConfig(DataSetConfig.PROPERTITY_SUBMITURL,submitUrl);
 		}
-		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, dsc.getBindTarget());
-		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, dsc.getBindName());
+		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, uncertain.composite.TextParser.parse(dsc.getBindTarget(), model));
+		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, uncertain.composite.TextParser.parse(dsc.getBindName(), model));
 		if(dsc.isFetchAll())addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
 		String autoQuery = dsc.getString(DataSetConfig.PROPERTITY_AUTO_QUERY,"false");
 		Boolean isAutoQuery = Boolean.FALSE;
