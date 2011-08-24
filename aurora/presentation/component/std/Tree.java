@@ -56,7 +56,7 @@ public class Tree extends Component {
 		}
 		
 		map.put("size", size);
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
+//		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view.getString(ComponentConfig.PROPERTITY_BINDTARGET));
 		
 		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
 		addConfig(TreeConfig.PROPERTITY_FIELD_DISPLAY, tc.getDisplayField());

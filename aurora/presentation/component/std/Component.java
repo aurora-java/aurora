@@ -186,6 +186,7 @@ public class Component {
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
 		if (!bindTarget.equals("")) {
 			bindTarget = uncertain.composite.TextParser.parse(bindTarget, model);
+			map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 			bsb.append("$('" + id + "').bind('" + bindTarget + "','" + name + "');\n");
 			map.put(BINDING, bsb.toString());
 		}
