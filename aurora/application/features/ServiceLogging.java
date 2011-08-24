@@ -19,14 +19,14 @@ import uncertain.logging.BasicFileHandler;
 import uncertain.logging.DefaultPerObjectLoggingConfig;
 import uncertain.logging.ILoggerProvider;
 import uncertain.logging.ILoggerProviderGroup;
-import uncertain.logging.ILoggingConifg;
 import uncertain.logging.IPerObjectLoggingConfig;
 import uncertain.logging.LoggerProvider;
 import uncertain.logging.LoggerProviderGroup;
 import uncertain.ocm.IConfigurable;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
-import aurora.application.sourcecode.LoggingConfig;
+import aurora.application.util.ILoggingConifg;
+import aurora.application.util.LoggingConfig;
 import aurora.service.ServiceInstance;
 
 public class ServiceLogging extends LoggerProvider implements 
