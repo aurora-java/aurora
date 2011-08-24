@@ -21,6 +21,7 @@ public class ComboBox extends TextField {
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();
+		CompositeMap model = view_context.getModel();
 		CompositeMap view = view_context.getView();	
 		
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
@@ -28,7 +29,7 @@ public class ComboBox extends TextField {
 		map.put(ComboBoxConfig.PROPERTITY_POPWIDTH, new Integer(width.intValue()-2));
 		
 		ComboBoxConfig cbc = ComboBoxConfig.getInstance(view);
-		if(cbc.getOptions()!=null)addConfig(ComboBoxConfig.PROPERTITY_OPTIONS, cbc.getOptions());
+		if(cbc.getOptions()!=null)addConfig(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(cbc.getOptions(), model));
 		if(cbc.getRenderer()!=null)addConfig(ComboBoxConfig.PROPERTITY_RENDERER, cbc.getRenderer());
 		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
 		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());

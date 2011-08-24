@@ -16,6 +16,7 @@ import uncertain.composite.CompositeMap;
 import aurora.application.features.ILookupCodeProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
@@ -47,6 +48,12 @@ public class DataSet extends Component {
 				if(sdfc.getRequired())field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
 				if(sdfc.getReadOnly())field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
+				
+				String options = field.getString(ComboBoxConfig.PROPERTITY_OPTIONS);
+				if(options!=null){
+					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
+				}
+				
 				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
 				if(lovService!=null){
 					field.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
