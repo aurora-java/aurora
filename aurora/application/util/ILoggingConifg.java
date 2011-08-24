@@ -6,7 +6,7 @@ import uncertain.composite.CompositeMap;
 
 public interface ILoggingConifg {
 	
-	public void setLogginConfig(CompositeMap parameter) throws IOException;
+	public void setLogginConfig(CompositeMap parameter) throws Exception;
 	
 	public void getAllLoggingConfig(CompositeMap parameter, String baseDir, String fileExt) throws Exception;
 }
