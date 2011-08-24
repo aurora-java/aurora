@@ -69,7 +69,7 @@ public class LoggingConfig implements ILoggingConifg {
 
 	}
 
-	public void getAllLoggingConfig(CompositeMap parameter, String baseDir, String fileExt) throws Exception {
+	public void getLoggingConfig(CompositeMap parameter, String baseDir, String fileExt) throws Exception {
 		mBaseDir = baseDir;
 		if (mBaseDir == null)
 			mBaseDir = "";

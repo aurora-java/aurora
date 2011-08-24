@@ -8,5 +8,5 @@ public interface ILoggingConifg {
 	
 	public void setLogginConfig(CompositeMap parameter) throws Exception;
 	
-	public void getAllLoggingConfig(CompositeMap parameter, String baseDir, String fileExt) throws Exception;
+	public void getLoggingConfig(CompositeMap parameter, String baseDir, String fileExt) throws Exception;
 }
