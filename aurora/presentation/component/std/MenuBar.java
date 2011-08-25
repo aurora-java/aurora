@@ -27,8 +27,8 @@ public class MenuBar extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "menu/Menu-all.css");
-		addJavaScript(session, context, "menu/Menu-all.js");
+		addStyleSheet(session, context, "menu/Menu.css");
+		addJavaScript(session, context, "menu/Menu.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
