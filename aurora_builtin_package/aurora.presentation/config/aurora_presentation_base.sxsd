@@ -39,7 +39,7 @@
         </ss:complexType>
         <ss:complexType name="a:BindTarget">
             <ss:attributes>
-                <ss:attribute document="需要绑定的DataSet的ID" name="bindTarget"/>
+                <ss:attribute document="需要绑定的DataSet的ID" name="bindTarget" type="a:DataSetReference"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:Component">
