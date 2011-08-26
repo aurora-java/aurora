@@ -40,7 +40,7 @@
     <ss:elements>
         <ss:element name="bm:field">
             <ss:attributes>
-                <ss:attribute name="name" document="字段的名称" use="required" type="bm:LocalFieldReference"/>
+                <ss:attribute name="name" document="字段的名称" type="bm:LocalFieldReference" use="required"/>
                 <ss:attribute name="datatype" default="string" document="数据类型"/>
                 <ss:attribute name="prompt" document="字段描述"/>
                 <ss:attribute name="physicalName" document="对应的数据库字段名称"/>
@@ -187,8 +187,8 @@
         </ss:element>
     </ss:elements>
     <ss:editors>
-        <ss:editor name="bm:ModelReferenceEditor" instanceClass="celleditor.ModelReferenceCellEditor"/>
-        <ss:editor name="bm:LocalFieldReferenceEditor" instanceClass="celleditor.LocalFieldReferenceCellEditor"/>
-        <ss:editor name="bm:ForeignFieldReferenceEditor" instanceClass="celleditor.ForeignFieldReferenceCellEditor"/>
+        <ss:editor name="bm:ModelReferenceEditor" instanceClass="aurora.ide.celleditor.ModelReferenceCellEditor"/>
+        <ss:editor name="bm:LocalFieldReferenceEditor" instanceClass="aurora.ide.celleditor.LocalFieldReferenceCellEditor"/>
+        <ss:editor name="bm:ForeignFieldReferenceEditor" instanceClass="aurora.ide.celleditor.ForeignFieldReferenceCellEditor"/>
     </ss:editors>
 </ss:schema>
