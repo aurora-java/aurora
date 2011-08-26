@@ -24,7 +24,7 @@ public class ComponentConfig extends DynamicObject {
 //	public static final String PROPERTITY_EVENT_NAME = "name";
 //	public static final String PROPERTITY_EVENT_HANDLER = "handler";
 	public static final String OLD_WIDTH = "oldwidth";
-	
+	public static final String PROPERTITY_IS_CUST = "iscust";
 	
 	public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
