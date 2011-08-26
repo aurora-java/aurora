@@ -76,6 +76,7 @@ public class NavBar extends ToolBar {
 		CompositeMap button = new CompositeMap("textField");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.putString(ComponentConfig.PROPERTITY_ID, inputId);
+		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
 		view.addChild(button);
 		
@@ -96,6 +97,7 @@ public class NavBar extends ToolBar {
 			String comboBoxId = IDGenerator.getInstance().generate();
 			map.put("comboBoxId", comboBoxId);
 			CompositeMap comboBox = new CompositeMap("comboBox");
+			comboBox.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 			comboBox.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
 			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
@@ -121,6 +123,7 @@ public class NavBar extends ToolBar {
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(16));
 		button.put(Button.PROPERTITY_ICON, "null");
+		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 		button.put(Button.BUTTON_CLASS, clz);
 		button.put(Button.PROPERTITY_TITLE, title);
 		button.put(Button.BUTTON_STYLE, style);

@@ -119,12 +119,16 @@ public class Component {
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
 		Map map = context.getMap();
-
+		
+		Boolean isCust = view.getBoolean(ComponentConfig.PROPERTITY_IS_CUST);
 		/** ID属性 * */
 		id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if ("".equals(id)) {
 			id = IDGenerator.getInstance().generate();
+		}else if(isCust==null){
+			isCust =  new Boolean(true);
 		}
+		addConfig(ComponentConfig.PROPERTITY_IS_CUST,isCust);
 		id = uncertain.composite.TextParser.parse(id, model);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);

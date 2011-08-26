@@ -512,6 +512,7 @@ public class Grid extends Component {
 			
 //			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
 			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
+			navbar.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
