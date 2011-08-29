@@ -346,7 +346,7 @@ public class AttachmentManager extends AbstractEntry{
 				throw new IllegalArgumentException("attachment_id not set");
 			
 			
-			BLOB blob = ((oracle.jdbc.driver.OracleResultSet) rs).getBLOB(1);
+			BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
 			rs.close();
 
 			if (blob == null) {
