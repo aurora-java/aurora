@@ -298,6 +298,7 @@ public class Grid extends Component {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
+				editor.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 				editor.put(ComponentConfig.PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
 				try {
 					sb.append(session.buildViewAsString(model, editor));
@@ -351,6 +352,7 @@ public class Grid extends Component {
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
+				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					if(!"".equals(type)){

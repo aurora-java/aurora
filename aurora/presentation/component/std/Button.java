@@ -47,7 +47,7 @@ public class Button extends Field {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
-//		CompositeMap model = context.getModel();
+		CompositeMap model = context.getModel();
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		String clickEvent = view.getString(PROPERTITY_CLICK, "");
@@ -64,7 +64,7 @@ public class Button extends Field {
 		String icon = view.getString(PROPERTITY_ICON, "");
 		String btnstyle = view.getString(BUTTON_STYLE, "");
 		if(!"".equals(icon)){
-			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+icon+");";
+			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+uncertain.composite.TextParser.parse(icon, model)+");";
 		}
 //		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
 		map.put(PROPERTITY_TEXT, text);
