@@ -33,6 +33,8 @@ public class Upload extends Component {
 	public static final String PROPERTITY_UPLOAD_URL = "uploadurl";
 	public static final String PROPERTITY_DELETE_URL = "deleteurl";
 	public static final String PROPERTITY_DOWNLOAD_URL = "downloadurl";
+	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
+	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -65,7 +67,18 @@ public class Upload extends Component {
 		tb_column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		tb_column.put(TableColumnConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb_column.put(TableColumnConfig.PROPERTITY_NAME, "file_name");
-		tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");
+		
+		boolean showUpload = view.getBoolean(PROPERTITY_SHOW_UPLOAD, true);
+		if(!showUpload) {
+			map.put(PROPERTITY_SHOW_UPLOAD, "none");
+		}
+		boolean showDelete = view.getBoolean(PROPERTITY_SHOW_DELETE, true);
+		if(!showDelete) {
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmNotDeleteRenderer");
+		}else {
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");
+		}
+		
 		tb_columns.addChild(tb_column);
 		try {
 			map.put("up_table", session.buildViewAsString(model, tb));
