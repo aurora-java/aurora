@@ -86,8 +86,11 @@ public class AttachmentManager extends AbstractEntry{
 		}else if("download".equalsIgnoreCase(actionType)){
 			doDownload(context);
 			runner.stop();
-			if(runner.getCaller()!=null)
-				runner.getCaller().stop();
+			ProcedureRunner preRunner=runner;
+			while(preRunner.getCaller()!=null){
+				preRunner=preRunner.getCaller();
+				preRunner.stop();
+			}				
 		}
 	}
 	
