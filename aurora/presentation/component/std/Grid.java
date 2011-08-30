@@ -261,7 +261,7 @@ public class Grid extends Component {
 		}
 		
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+//		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(LOCK_COLUMNS, locks);
 		map.put(UNLOCK_COLUMNS, unlocks);
@@ -352,7 +352,7 @@ public class Grid extends Component {
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
-				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+//				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					if(!"".equals(type)){

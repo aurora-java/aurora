@@ -58,6 +58,10 @@ public class DataSet extends Component {
 				if(lovService!=null){
 					field.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
 				}
+				String lovUrl = field.getString(Lov.PROPERTITY_LOV_URL);
+				if(lovUrl!=null){
+					field.putString(Lov.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
+				}
 				String lovTitle = field.getString(Lov.PROPERTITY_TITLE);
 				if(lovTitle!=null){
 					field.putString(Lov.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
