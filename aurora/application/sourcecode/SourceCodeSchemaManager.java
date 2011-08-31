@@ -51,7 +51,7 @@ public class SourceCodeSchemaManager {
 		for(Iterator it = arrays.iterator();it.hasNext();){
 			Array array = (Array) it.next();
 			CompositeMap record = new CompositeMap("record");
-			record.put("array_name", array.getName());
+			record.put("array_name", array.getLocalName());
 			record.put("document", array.getDocument());
 			result.addChild(record);
 		}
