@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:bm="http://www.aurora-framework.org/schema/bm">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:elements>
         <ss:element name="a:dataSet" wizard="a:dataSetWizard">
             <ss:attributes>
-                <ss:attribute name="id" document="DataSet的ID" use="required" type="a:DataSetReference"/>
+                <ss:attribute name="id" document="DataSet的ID" type="a:DataSetReference" use="required"/>
                 <ss:attribute name="model" document="DataSet关联的BM" type="bm:ModelReference"/>
                 <ss:attribute name="loadData" default="false" document="是否服务端加载数据" type="ss:boolean"/>
                 <ss:attribute name="autoCreate" default="false" document="是否创建一条数据" type="ss:boolean"/>
@@ -81,7 +81,7 @@
                 <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
                 <ss:attribute name="readOnly" default="false" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="returnField" document="ComboBox选中值的返回name"/>
-                <ss:attribute name="options" document="ComboBox的options,对应DataSet的id" type="a:DataSetReference" />
+                <ss:attribute name="options" document="ComboBox的options,对应DataSet的id" type="a:DataSetReference"/>
                 <ss:attribute name="displayField" document="ComboBox的displayField"/>
                 <ss:attribute name="valueField" document="ComboBox的valueField"/>
                 <ss:attribute name="prompt" document="field的prompt"/>
@@ -139,13 +139,12 @@
     </ss:types>
     <ss:editors/>
     <ss:wizards>
-        <ss:wizard name="a:fieldsWizard" instanceClass="component.wizard.FieldsWizardAction"/>
-        <ss:wizard name="a:dataSetWizard" instanceClass="component.wizard.DataSetWizardAction"/>
-        <ss:wizard name="a:dataSetsWizard" instanceClass="component.wizard.DataSetsWizardAction"/>
+        <ss:wizard name="a:fieldsWizard" instanceClass="aurora.ide.component.wizard.FieldsWizardAction"/>
+        <ss:wizard name="a:dataSetWizard" instanceClass="aurora.ide.component.wizard.DataSetWizardAction"/>
+        <ss:wizard name="a:dataSetsWizard" instanceClass="aurora.ide.component.wizard.DataSetsWizardAction"/>
     </ss:wizards>
     <ss:types>
-    	 <ss:simpleType name="a:DataSetReference" base="ss:string" document="对DataSet的引用"  referenceType="a:dataset"/>
-    	 <ss:simpleType name="a:ScreenReference" base="ss:string" document="对screen的引用"  referenceType="a:screen"/>
-       
+        <ss:simpleType name="a:DataSetReference" base="ss:string" document="对DataSet的引用" referenceType="a:dataset"/>
+        <ss:simpleType name="a:ScreenReference" base="ss:string" document="对screen的引用" referenceType="a:screen"/>
     </ss:types>
 </ss:schema>
