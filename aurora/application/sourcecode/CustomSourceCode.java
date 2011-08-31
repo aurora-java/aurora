@@ -14,16 +14,17 @@ import uncertain.util.resource.ILocatable;
 
 public class CustomSourceCode {
 
-	public static final String KEY_RECORD_ID = "RECORD_ID";
-	public static final String KEY_ID_VALUE = "ID_VALUE";
-	public static final String KEY_MOD_TYPE = "MOD_TYPE";
-	public static final String KEY_ARRAY_NAME = "ARRAY_NAME";
-	public static final String KEY_INDEX_FIELD = "INDEX_FIELD";
-	public static final String KEY_INDEX_VALUE = "INDEX_VALUE";
-	public static final String KEY_ATTRIB_KEY = "ATTRIB_KEY";
-	public static final String KEY_ATTRIB_VALUE = "ATTRIB_VALUE";
-	public static final String KEY_CONFIG_CONTENT = "CONFIG_CONTENT";
-	public static final String KEY_POSITION="POSITION";
+	public static final String KEY_RECORD_ID = "record_id";
+	public static final String KEY_ID_VALUE = "id_value";
+	public static final String KEY_MOD_TYPE = "mod_type";
+	public static final String KEY_ARRAY_NAME = "array_name";
+	public static final String KEY_INDEX_FIELD = "index_field";
+	public static final String KEY_INDEX_VALUE = "index_value";
+	public static final String KEY_ATTRIB_KEY = "attrib_key";
+	public static final String KEY_ATTRIB_VALUE = "attrib_value";
+	public static final String KEY_CONFIG_CONTENT = "config_content";
+	public static final String KEY_POSITION="position";
+	public static final String KEY_SOURCE_FILE="source_file";
 	
 	private static final String ILLEGAL_OPERATION_FOR_ROOT="aurora.application.sourcecode.illegal_operation_for_root";
 	private static final String ILLEGAL_POSITION_FOR_OPERATION="aurora.application.sourcecode.illegal_position_for_operation";
