@@ -54,7 +54,7 @@
                 <ss:extension base="a:HasPrompt"/>
             </ss:extensions>
             <ss:arrays>
-                <ss:array name="a:events" type="a:event" idField="name"/>
+                <ss:array name="a:events" type="a:event" idField="name" document="事件"/>
             </ss:arrays>
         </ss:complexType>
         <ss:complexType name="a:Field"/>
