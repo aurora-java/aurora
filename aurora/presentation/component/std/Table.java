@@ -43,7 +43,7 @@ public class Table extends Component {
 			throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "table/Table-min.css");
-		addJavaScript(session, context, "table/Table-min.js");
+		addJavaScript(session, context, "table/Table.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
@@ -189,7 +189,15 @@ public class Table extends Component {
 			if (null == column.getChilds()) {
 				JSONObject json = new JSONObject(column);
 				jsons.put(json);
-				sb.append("<TD dataindex='"+column.getString("name")+"' align='"+column.getString("align")+"'>&#160;</TD>");
+				sb.append("<TD dataindex='");
+				sb.append(column.getString("name"));
+				sb.append("' align='");
+				sb.append(column.getString("align"));
+				sb.append("'");
+				if(column.getBoolean(TableColumnConfig.PROPERTITY_HIDDEN, false)){
+					sb.append(" style='display:none'");
+				}
+				sb.append(">&#160;</TD>");
 			}
 		}
 		sb.append("</TR></TFOOT>");
@@ -282,9 +290,18 @@ public class Table extends Component {
 		}else if(TYPE_ROW_RADIO.equals(ct)) {
 			sb.append("<TD class='table-hc' atype='table.rowradio' style='width:25px;' rowspan='"+column.getInt(ROW_SPAN)+"'><div style='width:13px'>&nbsp;</div></TD>");
 		}else{
-			sb.append("<TD class='table-hc' colspan='" + column.getInt(COL_SPAN, 1)
-					+ "' rowspan='" + column.getInt(ROW_SPAN) + "'"
-					+ (pw == null ? "" : (" width='" + pw + "'")) + ">");
+			sb.append("<TD class='table-hc' dataindex='");
+			sb.append(tcc.getName());
+			sb.append("' colspan='");
+			sb.append(column.getInt(COL_SPAN, 1));
+			sb.append("' rowspan='");
+			sb.append(column.getInt(ROW_SPAN));
+			sb.append("'");
+			sb.append((pw == null ? "" : (" width='" + pw + "'")));
+			if(tcc.isHidden()){
+				sb.append(" style='display:none'");
+			}
+			sb.append(">");
 			String text = session.getLocalizedPrompt(getFieldPrompt(session,
 					column, dataset));
 			sb.append("".equals(text) ? "&#160;" : text);
