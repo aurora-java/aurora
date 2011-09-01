@@ -56,23 +56,7 @@ public class CustomSourceCode {
 			String mode_type = dbRecord.getString(KEY_MOD_TYPE);
 			if (mode_type == null)
 				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord.asLocatable());
-			String array_name = dbRecord.getString(KEY_ARRAY_NAME);
-			CompositeMap objectNode = currentNode;
-			if (array_name != null) {
-				String index_field = dbRecord.getString(KEY_INDEX_FIELD);
-				if (index_field == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_FIELD, dbRecord.asLocatable());
-				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
-				if (index_value == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE, dbRecord.asLocatable());
-				CompositeMap array = currentNode.getChild(array_name);
-				if(array == null)
-					throw BuiltinExceptionFactory.createNodeMissing(currentNode.asLocatable(), array_name);
-				CompositeMap child = array.getChildByAttrib(index_field, index_value);
-				if (child == null)
-					throw SourceCodeUtil.createNodeMissingException(index_field,index_value,array.asLocatable());
-				objectNode = child;
-			}
+			CompositeMap objectNode = getObjectNode(currentNode, dbRecord, record_id);
 			if ("set_attrib".equals(mode_type)) {
 				String attrib_key = dbRecord.getString(KEY_ATTRIB_KEY);
 				if (attrib_key == null)
@@ -98,35 +82,7 @@ public class CustomSourceCode {
 					}
 				}
 			}else if("insert".equals(mode_type)){
-				if (objectNode.getParent() == null) 
-					throw createIllegalOperationForRootException(mode_type,objectNode.asLocatable());
-				String key_position = dbRecord.getString(KEY_POSITION);
-				if(key_position == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_POSITION, dbRecord.asLocatable());
-				String config_content = dbRecord.getString(KEY_CONFIG_CONTENT);
-				CompositeLoader compositeLoader = new CompositeLoader();
-				CompositeMap newChild = null;
-				try {
-					newChild = compositeLoader.loadFromString(config_content);
-				} catch (Throwable e) {
-					if(e instanceof SAXParseException){
-						SAXParseException saxPe = (SAXParseException)e;
-						throw new ConfigurationFileException("uncertain.exception.source_file",new String[]{"CONFIG_CONTENT",String.valueOf(saxPe.getLineNumber()),String.valueOf(saxPe.getColumnNumber())},null);
-					}
-					throw new ConfigurationFileException("uncertain.exception.code",new String[]{e.getMessage()},null);
-				}
-				int index = objectNode.getParent().getChilds().indexOf(objectNode);
-				if("before".equals(key_position)){
-					objectNode.getParent().addChild(index, newChild);
-				}else if("after".equals(key_position)){
-					objectNode.getParent().addChild(index+1, newChild);
-				}else if("first_child".equals(key_position)){
-					objectNode.getParent().addChild(0, newChild);
-				}else if("last_child".equals(key_position)){
-					objectNode.getParent().addChild(newChild);
-				}else{
-					throw createIllegalPositionForOperation(key_position,mode_type,dbRecord.asLocatable());
-				}
+				insertNode(dbRecord, record_id,objectNode);
 			}else if("delete".equals(mode_type)){
 				if (objectNode.getParent() == null) 
 					throw createIllegalOperationForRootException(mode_type,objectNode.asLocatable());
@@ -152,6 +108,63 @@ public class CustomSourceCode {
 			}
 		}
 		return source;
+	}
+
+	public static CompositeMap getObjectNode(CompositeMap currentNode, CompositeMap dbRecord, String record_id) {
+		CompositeMap objectNode = currentNode;
+		String array_name = dbRecord.getString(KEY_ARRAY_NAME);
+		if (array_name != null) {
+			CompositeMap array = currentNode.getChild(array_name);
+			if(array == null)
+				array = currentNode.createChild(array_name);
+			String index_field = dbRecord.getString(KEY_INDEX_FIELD);
+			if (index_field == null)
+				objectNode = array;
+			else{
+				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
+				if (index_value == null)
+					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE, dbRecord.asLocatable());
+				CompositeMap child = array.getChildByAttrib(index_field, index_value);
+				if (child == null)
+					throw SourceCodeUtil.createNodeMissingException(index_field,index_value,array.asLocatable());
+				objectNode = child;
+			}
+		}
+		return objectNode;
+	}
+
+	public static CompositeMap insertNode(CompositeMap dbRecord, String record_id,CompositeMap objectNode) {
+		String mode_type = "insert";
+		if (objectNode.getParent() == null) 
+			throw createIllegalOperationForRootException(mode_type,objectNode.asLocatable());
+		String key_position = dbRecord.getString(KEY_POSITION);
+		if(key_position == null)
+			throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_POSITION, dbRecord.asLocatable());
+		String config_content = dbRecord.getString(KEY_CONFIG_CONTENT);
+		CompositeLoader compositeLoader = new CompositeLoader();
+		CompositeMap newChild = null;
+		try {
+			newChild = compositeLoader.loadFromString(config_content);
+		} catch (Throwable e) {
+			if(e instanceof SAXParseException){
+				SAXParseException saxPe = (SAXParseException)e;
+				throw new ConfigurationFileException("uncertain.exception.source_file",new String[]{"CONFIG_CONTENT",String.valueOf(saxPe.getLineNumber()),String.valueOf(saxPe.getColumnNumber())},null);
+			}
+			throw new ConfigurationFileException("uncertain.exception.code",new String[]{e.getMessage()},null);
+		}
+		int index = objectNode.getParent().getChilds().indexOf(objectNode);
+		if("before".equals(key_position)){
+			objectNode.getParent().addChild(index, newChild);
+		}else if("after".equals(key_position)){
+			objectNode.getParent().addChild(index+1, newChild);
+		}else if("first_child".equals(key_position)){
+			objectNode.addChild(0, newChild);
+		}else if("last_child".equals(key_position)){
+			objectNode.addChild(newChild);
+		}else{
+			throw createIllegalPositionForOperation(key_position,mode_type,dbRecord.asLocatable());
+		}
+		return newChild;
 	}
 
 	private static ConfigurationFileException createIllegalOperationForRootException(String modeType,ILocatable iLocatable){
