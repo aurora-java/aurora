@@ -24,10 +24,11 @@ import aurora.security.ResourceNotDefinedException;
 public class SourceCodeSchemaManager {
 	public static CompositeMap getElementChildArray(IObjectRegistry registry, String filePath, String id)
 			throws IOException, SAXException {
+		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null)
-			return null;
+			return empty;
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
 		if (sourceFile == null || !sourceFile.exists())
@@ -37,7 +38,7 @@ public class SourceCodeSchemaManager {
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
 		SourceCodeUtil.getKeyNodeMap(source, SourceCodeUtil.KEY_ID, idMap);
 		if (idMap.isEmpty())
-			return null;
+			return empty;
 		CompositeMap node = (CompositeMap) idMap.get(id);
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
@@ -49,7 +50,7 @@ public class SourceCodeSchemaManager {
 		List arrays = ele.getAllArrays();
 		CompositeMap result = new CompositeMap("result");
 		if (arrays == null || arrays.isEmpty())
-			return result;
+			return empty;
 		for (Iterator it = arrays.iterator(); it.hasNext();) {
 			Array array = (Array) it.next();
 			CompositeMap record = new CompositeMap("record");
@@ -62,10 +63,11 @@ public class SourceCodeSchemaManager {
 
 	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,
 			CompositeMap dbRecords) throws IOException, SAXException {
+		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null)
-			return null;
+			return empty;
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
 		if (sourceFile == null || !sourceFile.exists())
@@ -75,7 +77,7 @@ public class SourceCodeSchemaManager {
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
 		SourceCodeUtil.getKeyNodeMap(source, SourceCodeUtil.KEY_ID, idMap);
 		if (idMap.isEmpty())
-			return null;
+			return empty;
 		CompositeMap node = (CompositeMap) idMap.get(id);
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
@@ -130,10 +132,11 @@ public class SourceCodeSchemaManager {
 	}
 	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id,String array_name,
 			CompositeMap dbRecords) throws IOException, SAXException {
+		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null||array_name == null)
-			return null;
+			return empty;
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
 		if (sourceFile == null || !sourceFile.exists())
@@ -143,7 +146,7 @@ public class SourceCodeSchemaManager {
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
 		SourceCodeUtil.getKeyNodeMap(source, SourceCodeUtil.KEY_ID, idMap);
 		if (idMap.isEmpty())
-			return null;
+			return empty;
 		CompositeMap node = (CompositeMap) idMap.get(id);
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
@@ -184,6 +187,8 @@ public class SourceCodeSchemaManager {
 				CompositeMap record = (CompositeMap)it.next();
 				record.setName("record");
 			}
+		}else{
+			return empty;
 		}
 		return result;
 	}
