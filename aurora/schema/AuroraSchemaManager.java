@@ -20,13 +20,13 @@ public class AuroraSchemaManager {
 	private void loadBuiltInSchema() throws IOException, SAXException, URISyntaxException {
 		schemaManager = SchemaManager.getDefaultInstance();
 		PackageManager pkgManager = new PackageManager();
-		String uncertinSchema = "uncertain_builtin_package";
-		pkgManager.loadPackgeDirectory(uncertinSchema);
+		String uncertinSchema = "uncertain_builtin_package/uncertain.builtin";
+		pkgManager.loadPackgeFromClassPath(uncertinSchema);
 		String[] packages = new String[] { "aurora_builtin_package/aurora.base/",
 				"aurora_builtin_package/aurora.database/", "aurora_builtin_package/aurora.presentation/" };
 		for (int i = 0; i < packages.length; i++) {
 			String packageName = packages[i];
-			pkgManager.loadPackage(packageName);
+			pkgManager.loadPackgeFromClassPath(packageName);
 		}
 		schemaManager.addAll(pkgManager.getSchemaManager());
 	}
