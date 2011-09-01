@@ -193,4 +193,65 @@ public class SourceCodeSchemaManager {
 		}
 		return result;
 	}
+	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,String array_name,String index_field,String index_value,
+			CompositeMap dbRecords) throws IOException, SAXException {
+		CompositeMap empty = new CompositeMap("result");
+		if (registry == null)
+			throw new RuntimeException("paramter error. 'registry' can not be null.");
+		if (id == null||array_name == null||index_field==null||index_value==null)
+			return empty;
+		CompositeMap arrayList = getArrayList(registry,filePath,id,array_name,dbRecords);
+		if (arrayList== null ||arrayList.getChilds() == null)
+			return empty;
+		CompositeMap node = arrayList.getChildByAttrib(index_field, index_value);
+		if (node == null)
+			throw SourceCodeUtil.createNodeMissingException(index_field, index_value, arrayList.asLocatable());
+		AuroraSchemaManager asm = AuroraSchemaManager.getInstance();
+		Element ele = asm.getSchemaManager().getElement(node);
+		if (ele == null)
+			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
+		CompositeMap dbAttribs = new CompositeMap("dbAttribs");
+		if (dbRecords != null && dbRecords.getChilds() != null) {
+			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
+				CompositeMap record = (CompositeMap) it.next();
+				if (!filePath.equals(record.getString(CustomSourceCode.KEY_SOURCE_FILE))
+						|| !id.equals(record.getString(CustomSourceCode.KEY_ID_VALUE))
+						|| !"set_attrib".equals(record.getString(CustomSourceCode.KEY_MOD_TYPE))) {
+					continue;
+				}
+				dbAttribs.put(record.getString(CustomSourceCode.KEY_ATTRIB_KEY), record);
+			}
+		}
+		CompositeMapEditor editor = new CompositeMapEditor(asm.getSchemaManager(), node);
+		AttributeValue[] avs = editor.getAttributeList();
+		CompositeMap result = new CompositeMap("result");
+		if (avs != null) {
+			for (int i = 0; i < avs.length; i++) {
+				Attribute attr = avs[i].getAttribute();
+				if (attr == null)
+					continue;
+				CompositeMap record = new CompositeMap("record");
+				record.put("attrib_key", attr.getLocalName());
+				record.put("source_value", avs[i].getValueString());
+				if (!dbAttribs.isEmpty()) {
+					CompositeMap dbRecord = (CompositeMap)dbAttribs.get(attr.getLocalName());
+					if (dbRecord != null) {
+						record.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
+						record.put(CustomSourceCode.KEY_ATTRIB_VALUE, dbRecord.getString(CustomSourceCode.KEY_ATTRIB_VALUE));
+						dbAttribs.remove(attr.getLocalName());
+					}
+				}
+				record.put("document", attr.getDocument());
+				result.addChild(record);
+			}
+		}
+		if (!dbAttribs.isEmpty()) {
+			for (Iterator it = dbAttribs.values().iterator(); it.hasNext();) {
+				CompositeMap record = (CompositeMap)it.next();
+				result.addChild(record);
+			}
+
+		}
+		return result;
+	}
 }
