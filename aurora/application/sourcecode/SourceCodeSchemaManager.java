@@ -170,14 +170,21 @@ public class SourceCodeSchemaManager {
 					if("insert".equals(mode_type)){
 						CompositeMap newChild= CustomSourceCode.insertNode(dbRecord, record_id, objectNode);
 						newChild.put(CustomSourceCode.KEY_MOD_TYPE,mode_type);
+						newChild.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
 					}else if("delete".equals(mode_type)){
 						objectNode.put(CustomSourceCode.KEY_MOD_TYPE,mode_type);
+						objectNode.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
 					}
 				}
 			}
 		}
 		CompositeMap result = node.getChild(array_name);
-		result.setName("result");
+		if(result != null && result.getChilds() != null){
+			for(Iterator it = result.getChildIterator();it.hasNext();){
+				CompositeMap record = (CompositeMap)it.next();
+				record.setName("record");
+			}
+		}
 		return result;
 	}
 }
