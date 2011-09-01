@@ -55,6 +55,7 @@ public class SourceCodeSchemaManager {
 			Array array = (Array) it.next();
 			CompositeMap record = new CompositeMap("record");
 			record.put("array_name", array.getLocalName());
+			record.put("index_field", array.getIdField());
 			record.put("document", array.getDocument());
 			result.addChild(record);
 		}
