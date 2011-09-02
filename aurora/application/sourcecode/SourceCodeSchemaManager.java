@@ -213,7 +213,7 @@ public class SourceCodeSchemaManager {
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null || array_name == null || index_field == null || index_value == null)
 			return empty;
-		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, dbRecords,false);
+		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(),false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
 		boolean fromDB = false;
