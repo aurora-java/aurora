@@ -111,10 +111,11 @@ public class SourceCodeSchemaManager {
 				record.put("attrib_key", attr.getLocalName());
 				record.put("source_value", avs[i].getValueString());
 				if (!dbAttribs.isEmpty()) {
-					CompositeMap dbRecord = (CompositeMap)dbAttribs.get(attr.getLocalName());
+					CompositeMap dbRecord = (CompositeMap) dbAttribs.get(attr.getLocalName());
 					if (dbRecord != null) {
 						record.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
-						record.put(CustomSourceCode.KEY_ATTRIB_VALUE, dbRecord.getString(CustomSourceCode.KEY_ATTRIB_VALUE));
+						record.put(CustomSourceCode.KEY_ATTRIB_VALUE, dbRecord
+								.getString(CustomSourceCode.KEY_ATTRIB_VALUE));
 						dbAttribs.remove(attr.getLocalName());
 					}
 				}
@@ -124,19 +125,24 @@ public class SourceCodeSchemaManager {
 		}
 		if (!dbAttribs.isEmpty()) {
 			for (Iterator it = dbAttribs.values().iterator(); it.hasNext();) {
-				CompositeMap record = (CompositeMap)it.next();
+				CompositeMap record = (CompositeMap) it.next();
 				result.addChild(record);
 			}
 
 		}
 		return result;
 	}
-	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id,String array_name,
+
+	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
 			CompositeMap dbRecords) throws IOException, SAXException {
+		return getArrayList(registry,filePath,id,array_name,dbRecords,true);
+	}
+	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
+			CompositeMap dbRecords,boolean isChangeName) throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
-		if (id == null||array_name == null)
+		if (id == null || array_name == null)
 			return empty;
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
@@ -156,52 +162,59 @@ public class SourceCodeSchemaManager {
 		Element ele = asm.getSchemaManager().getElement(node);
 		if (ele == null)
 			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
-		if(dbRecords != null && dbRecords.getChilds()!= null){
-			for(Iterator it = dbRecords.getChildIterator();it.hasNext();){
-				CompositeMap dbRecord = (CompositeMap)it.next();
+		if (dbRecords != null && dbRecords.getChilds() != null) {
+			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
+				CompositeMap dbRecord = (CompositeMap) it.next();
 				if (!filePath.equals(dbRecord.getString(CustomSourceCode.KEY_SOURCE_FILE))
 						|| !id.equals(dbRecord.getString(CustomSourceCode.KEY_ID_VALUE))
 						|| !array_name.equals(dbRecord.getString(CustomSourceCode.KEY_ARRAY_NAME))) {
 					continue;
-				}else{
+				} else {
 					String record_id = dbRecord.getString(CustomSourceCode.KEY_RECORD_ID);
 					if (record_id == null)
-						throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), CustomSourceCode.KEY_RECORD_ID);
+						throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(),
+								CustomSourceCode.KEY_RECORD_ID);
 					String mode_type = dbRecord.getString(CustomSourceCode.KEY_MOD_TYPE);
 					if (mode_type == null)
-						throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id, CustomSourceCode.KEY_MOD_TYPE, dbRecord.asLocatable());
+						throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
+								CustomSourceCode.KEY_MOD_TYPE, dbRecord.asLocatable());
 					CompositeMap objectNode = CustomSourceCode.getObjectNode(node, dbRecord, record_id);
-					if("insert".equals(mode_type)){
-						CompositeMap newChild= CustomSourceCode.insertNode(dbRecord, record_id, objectNode);
-						newChild.put(CustomSourceCode.KEY_MOD_TYPE,mode_type);
-						newChild.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
-					}else if("delete".equals(mode_type)){
-						objectNode.put(CustomSourceCode.KEY_MOD_TYPE,mode_type);
-						objectNode.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
+					if ("insert".equals(mode_type)) {
+						CompositeMap newChild = CustomSourceCode.insertNode(dbRecord, record_id, objectNode);
+						newChild.put(CustomSourceCode.KEY_MOD_TYPE, mode_type);
+						newChild
+								.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
+					} else if ("delete".equals(mode_type)) {
+						objectNode.put(CustomSourceCode.KEY_MOD_TYPE, mode_type);
+						objectNode.put(CustomSourceCode.KEY_RECORD_ID, dbRecord
+								.getString(CustomSourceCode.KEY_RECORD_ID));
 					}
 				}
 			}
 		}
 		CompositeMap result = node.getChild(array_name);
-		if(result != null && result.getChilds() != null){
-			for(Iterator it = result.getChildIterator();it.hasNext();){
-				CompositeMap record = (CompositeMap)it.next();
-				record.setName("record");
+			if (result != null && result.getChilds() != null) {
+				if(isChangeName){
+					for (Iterator it = result.getChildIterator(); it.hasNext();) {
+						CompositeMap record = (CompositeMap) it.next();
+						record.setName("record");
+					}
+				}
+			} else {
+				return empty;
 			}
-		}else{
-			return empty;
-		}
 		return result;
 	}
-	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,String array_name,String index_field,String index_value,
-			CompositeMap dbRecords) throws IOException, SAXException {
+	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,
+			String array_name, String index_field, String index_value, CompositeMap dbRecords) throws IOException,
+			SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
-		if (id == null||array_name == null||index_field==null||index_value==null)
+		if (id == null || array_name == null || index_field == null || index_value == null)
 			return empty;
-		CompositeMap arrayList = getArrayList(registry,filePath,id,array_name,dbRecords);
-		if (arrayList== null ||arrayList.getChilds() == null)
+		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, dbRecords,false);
+		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
 		CompositeMap node = arrayList.getChildByAttrib(index_field, index_value);
 		if (node == null)
@@ -216,6 +229,9 @@ public class SourceCodeSchemaManager {
 				CompositeMap record = (CompositeMap) it.next();
 				if (!filePath.equals(record.getString(CustomSourceCode.KEY_SOURCE_FILE))
 						|| !id.equals(record.getString(CustomSourceCode.KEY_ID_VALUE))
+						|| !array_name.equals(record.getString(CustomSourceCode.KEY_ARRAY_NAME))
+						|| !index_field.equals(record.getString(CustomSourceCode.KEY_ATTRIB_KEY))
+						|| !index_value.equals(record.getString(CustomSourceCode.KEY_ATTRIB_VALUE))
 						|| !"set_attrib".equals(record.getString(CustomSourceCode.KEY_MOD_TYPE))) {
 					continue;
 				}
@@ -232,12 +248,17 @@ public class SourceCodeSchemaManager {
 					continue;
 				CompositeMap record = new CompositeMap("record");
 				record.put("attrib_key", attr.getLocalName());
-				record.put("source_value", avs[i].getValueString());
+				if(node.getString(CustomSourceCode.KEY_RECORD_ID) != null){
+					record.put(CustomSourceCode.KEY_RECORD_ID, node.getString(CustomSourceCode.KEY_RECORD_ID));
+					record.put(CustomSourceCode.KEY_ATTRIB_VALUE, avs[i].getValueString());
+				}else
+					record.put("source_value", avs[i].getValueString());
 				if (!dbAttribs.isEmpty()) {
-					CompositeMap dbRecord = (CompositeMap)dbAttribs.get(attr.getLocalName());
+					CompositeMap dbRecord = (CompositeMap) dbAttribs.get(attr.getLocalName());
 					if (dbRecord != null) {
 						record.put(CustomSourceCode.KEY_RECORD_ID, dbRecord.getString(CustomSourceCode.KEY_RECORD_ID));
-						record.put(CustomSourceCode.KEY_ATTRIB_VALUE, dbRecord.getString(CustomSourceCode.KEY_ATTRIB_VALUE));
+						record.put(CustomSourceCode.KEY_ATTRIB_VALUE, dbRecord
+								.getString(CustomSourceCode.KEY_ATTRIB_VALUE));
 						dbAttribs.remove(attr.getLocalName());
 					}
 				}
@@ -247,7 +268,7 @@ public class SourceCodeSchemaManager {
 		}
 		if (!dbAttribs.isEmpty()) {
 			for (Iterator it = dbAttribs.values().iterator(); it.hasNext();) {
-				CompositeMap record = (CompositeMap)it.next();
+				CompositeMap record = (CompositeMap) it.next();
 				result.addChild(record);
 			}
 
