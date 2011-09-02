@@ -216,9 +216,23 @@ public class SourceCodeSchemaManager {
 		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, dbRecords,false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
+		boolean fromDB = false;
 		CompositeMap node = arrayList.getChildByAttrib(index_field, index_value);
-		if (node == null)
-			throw SourceCodeUtil.createNodeMissingException(index_field, index_value, arrayList.asLocatable());
+		if(node == null){
+			fromDB = true;
+			AuroraSchemaManager asm = AuroraSchemaManager.getInstance();
+			Element ele = asm.getSchemaManager().getElement(arrayList);
+			if (ele == null)
+				throw new RuntimeException("elment:" + arrayList.getQName().toString() + " is not defined.");
+			node = CompositeMapUtil.addElement(arrayList, ele.getElementType().getQName());
+			node.put(index_field, index_value);
+		}else{
+			if(node.getString(CustomSourceCode.KEY_RECORD_ID) != null){
+				fromDB = true;
+				node.remove(CustomSourceCode.KEY_RECORD_ID);
+				node.remove(CustomSourceCode.KEY_MOD_TYPE);
+			}
+		}
 		AuroraSchemaManager asm = AuroraSchemaManager.getInstance();
 		Element ele = asm.getSchemaManager().getElement(node);
 		if (ele == null)
@@ -238,15 +252,6 @@ public class SourceCodeSchemaManager {
 				dbAttribs.put(record.getString(CustomSourceCode.KEY_ATTRIB_KEY), record);
 			}
 		}
-		
-		boolean fromDB = false;
-		String record_id = null;
-		if(node.getString(CustomSourceCode.KEY_RECORD_ID) != null){
-			fromDB = true;
-			record_id = node.getString(CustomSourceCode.KEY_RECORD_ID);
-			node.remove(CustomSourceCode.KEY_RECORD_ID);
-			node.remove(CustomSourceCode.KEY_MOD_TYPE);
-		}
 		CompositeMapEditor editor = new CompositeMapEditor(asm.getSchemaManager(), node);
 		AttributeValue[] avs = editor.getAttributeList();
 		CompositeMap result = new CompositeMap("result");
@@ -258,7 +263,6 @@ public class SourceCodeSchemaManager {
 				CompositeMap record = new CompositeMap("record");
 				record.put("attrib_key", attr.getLocalName());
 				if(fromDB){
-					record.put(CustomSourceCode.KEY_RECORD_ID, record_id);
 					record.put(CustomSourceCode.KEY_ATTRIB_VALUE, avs[i].getValueString());
 				}else
 					record.put("source_value", avs[i].getValueString());
