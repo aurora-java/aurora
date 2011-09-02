@@ -230,13 +230,22 @@ public class SourceCodeSchemaManager {
 				if (!filePath.equals(record.getString(CustomSourceCode.KEY_SOURCE_FILE))
 						|| !id.equals(record.getString(CustomSourceCode.KEY_ID_VALUE))
 						|| !array_name.equals(record.getString(CustomSourceCode.KEY_ARRAY_NAME))
-						|| !index_field.equals(record.getString(CustomSourceCode.KEY_ATTRIB_KEY))
-						|| !index_value.equals(record.getString(CustomSourceCode.KEY_ATTRIB_VALUE))
+						|| !index_field.equals(record.getString(CustomSourceCode.KEY_INDEX_FIELD))
+						|| !index_value.equals(record.getString(CustomSourceCode.KEY_INDEX_VALUE))
 						|| !"set_attrib".equals(record.getString(CustomSourceCode.KEY_MOD_TYPE))) {
 					continue;
 				}
 				dbAttribs.put(record.getString(CustomSourceCode.KEY_ATTRIB_KEY), record);
 			}
+		}
+		
+		boolean fromDB = false;
+		String record_id = null;
+		if(node.getString(CustomSourceCode.KEY_RECORD_ID) != null){
+			fromDB = true;
+			record_id = node.getString(CustomSourceCode.KEY_RECORD_ID);
+			node.remove(CustomSourceCode.KEY_RECORD_ID);
+			node.remove(CustomSourceCode.KEY_MOD_TYPE);
 		}
 		CompositeMapEditor editor = new CompositeMapEditor(asm.getSchemaManager(), node);
 		AttributeValue[] avs = editor.getAttributeList();
@@ -248,8 +257,8 @@ public class SourceCodeSchemaManager {
 					continue;
 				CompositeMap record = new CompositeMap("record");
 				record.put("attrib_key", attr.getLocalName());
-				if(node.getString(CustomSourceCode.KEY_RECORD_ID) != null){
-					record.put(CustomSourceCode.KEY_RECORD_ID, node.getString(CustomSourceCode.KEY_RECORD_ID));
+				if(fromDB){
+					record.put(CustomSourceCode.KEY_RECORD_ID, record_id);
 					record.put(CustomSourceCode.KEY_ATTRIB_VALUE, avs[i].getValueString());
 				}else
 					record.put("source_value", avs[i].getValueString());
