@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+        <package-mapping packageName="aurora.datasource"/>
+        <package-mapping packageName="aurora.database.service"/>
+        <package-mapping packageName="aurora.database.actions"/>
+        <package-mapping packageName="aurora.database.datasource"/>
+        <package-mapping packageName="aurora.database.features"/>
+        <package-mapping packageName="aurora.database.local.oracle"/>
+        <package-mapping packageName="aurora.plugin.xapool"/>
+        <package-mapping packageName="aurora.transaction"/>
+        
+        <package-mapping packageName="aurora.database.rsconsumer"/>
+        
+        <class-mapping className="aurora.database.profile.DatabaseFactory" elementName="database-factory" nameSpace="http://www.aurora-framework.org/schema/database"/>
+        <class-mapping className="aurora.database.profile.DatabaseProfile" elementName="database-profile" nameSpace="http://www.aurora-framework.org/schema/database"/>
+        <class-mapping className="aurora.database.profile.SqlBuilderMapping" elementName="sql-builder-mapping" nameSpace="http://www.aurora-framework.org/schema/database"/>
+        <class-mapping className="aurora.database.profile.StatementMapping" elementName="statement-mapping" nameSpace="http://www.aurora-framework.org/schema/database"/>
+        
+        <class-mapping className="aurora.database.actions.ModelQuery" elementName="model-query" />
+        <class-mapping className="aurora.database.actions.ModelUpdate" elementName="model-update" />
+        <class-mapping className="aurora.database.actions.ModelInsert" elementName="model-insert" />
+        <class-mapping className="aurora.database.actions.ModelDelete" elementName="model-delete" />
+        <class-mapping className="aurora.database.actions.ModelJoin" elementName="model-join" />
+        <class-mapping className="aurora.database.actions.ModelJoin" elementName="model-join" />
+        <class-mapping className="aurora.database.actions.ModelExecute" elementName="model-execute" />
+        <class-mapping className="aurora.database.actions.ModelBatchUpdate" elementName="model-batch-update" />
+        <class-mapping className="aurora.database.actions.BatchApply" elementName="batch-apply" />
+        <class-mapping className="aurora.database.actions.Transaction" elementName="transaction" />
+
+    </class-registry>
