@@ -7,6 +7,9 @@ package aurora.events;
 import aurora.bm.BusinessModel;
 import aurora.service.ServiceInstance;
 
+/**
+ * @deprecated No longer use this method to check BM access
+ */
 public interface E_CheckBMAccess {
     
     public static final String EVENT_NAME = "CheckBMAccess";
