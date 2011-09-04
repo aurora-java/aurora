@@ -9,13 +9,13 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import aurora.presentation.component.ScreenIncludeTagCreator;
-
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.core.DirectoryConfig;
 import uncertain.core.IGlobalInstance;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.MessageFactory;
 import uncertain.logging.DummyLogger;
 import uncertain.logging.DummyLoggerProvider;
@@ -23,12 +23,15 @@ import uncertain.logging.ILogger;
 import uncertain.logging.ILoggerProvider;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
+import uncertain.pkg.IPackageManager;
 import uncertain.pkg.PackageManager;
+import uncertain.pkg.PackagePath;
 import uncertain.proc.ParticipantRegistry;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TagTemplateParser;
 import uncertain.util.template.TextTemplate;
+import aurora.presentation.component.ScreenIncludeTagCreator;
 
 /**
  * Manage all aspects of aurora presentation framework
@@ -154,7 +157,7 @@ public class PresentationManager implements IGlobalInstance {
         return (ViewComponentPackage) mPackageManager.getPackage(name);
     }
 
-    public PackageManager getPackageManager() {
+    public IPackageManager getPackageManager() {
         return mPackageManager;
     }
 
@@ -174,6 +177,7 @@ public class PresentationManager implements IGlobalInstance {
         if (p.getComponentMap() != null)
             mComponentIdMap.putAll(p.getComponentMap());
 
+        // TODO Use UncertainEngine's getPackageManager() instead
         if (mUncertainEngine != null)
             if (p.getClassRegistry() != null) {
                 mUncertainEngine.getClassRegistry()
@@ -202,22 +206,19 @@ public class PresentationManager implements IGlobalInstance {
     }
 
 
-    public void addPackages(PackagePath[] pkg_path) {
+    public void addPackages(PackagePath[] pkg_path) 
+        throws IOException
+    {
+        DirectoryConfig dc = mUncertainEngine.getDirectoryConfig();
         mLogger.log(Level.CONFIG, "Loading " + pkg_path.length
                 + " view component packages");
         for (int i = 0; i < pkg_path.length; i++) {
             String path = pkg_path[i].getPath();
-            if (path == null) {
-                mLogger.warning("Package No." + i
-                        + " doesn't define path property");
-                continue;
-            }
-            try {
-                loadViewComponentPackage(path);
-            } catch (Throwable ex) {
-                mLogger.log(Level.SEVERE, "Error when loading package " + path,
-                        ex);
-            }
+            if(path==null)
+                throw BuiltinExceptionFactory.createAttributeMissing(pkg_path[i], "path");
+            path = dc.translateRealPath(path);
+            DirectoryConfig.checkIsPathValid(pkg_path[i], path);
+            loadViewComponentPackage(path);
         }
     }
 
