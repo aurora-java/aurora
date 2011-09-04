@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+    <class-mapping className="aurora.application.action.HttpSessionCopy" elementName="session-copy" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.HttpSessionOperate" elementName="session-write" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.HttpSessionOperate" elementName="session-create" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.HttpSessionOperate" elementName="session-clear" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.AuroraCookie" elementName="put-cookie" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.ImageValidate" elementName="img-validate" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.AttachmentManager" elementName="atm-manager" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.RefreshPrompts" elementName="refresh-prompts" nameSpace="http://www.aurora-framework.org/application"/>
+</class-registry>
