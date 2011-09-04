@@ -13,7 +13,9 @@ import uncertain.core.DirectoryConfig;
 import uncertain.core.UncertainEngine;
 import uncertain.mbean.MBeanRegister;
 import uncertain.mbean.UncertainEngineWrapper;
+import uncertain.ocm.ClassRegistry;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.ocm.PackageMapping;
 import aurora.application.Version;
 
 public class WebContextInit implements ServletContextListener {
@@ -30,32 +32,27 @@ public class WebContextInit implements ServletContextListener {
     public WebContextInit() {
 
     }
-    
-    public void registerMBean()
-        throws Exception
-    {
-        String name = uncertainEngine.getMBeanName(null,"name=Engine");
-        UncertainEngineWrapper wrapper = new UncertainEngineWrapper(uncertainEngine);
-        MBeanRegister.resiterMBean(name, wrapper);
-    }
 
     public void initUncertain(ServletContext servletContext) throws Exception {
+
         String config_dir = servletContext.getRealPath("/WEB-INF");
         String config_file = "uncertain.xml";
-        String pattern = ".*\\.config";
+        //String pattern = ".*\\.config";
 
         uncertainEngine = new UncertainEngine(new File(config_dir), config_file);
         uncertainEngine.setName(servletContext.getServletContextName());
         DirectoryConfig dirConfig = uncertainEngine.getDirectoryConfig();
         dirConfig.setBaseDirectory(servletContext.getRealPath("/"));
+        // load aurora builtin package
+        uncertainEngine.getPackageManager().loadPackageFromRootClassPath("aurora_builtin_package");
 
         IObjectRegistry os = uncertainEngine.getObjectRegistry();
-
         os.registerInstance(ServletContext.class, servletContext);
 
-        uncertainEngine.scanConfigFiles(pattern);
+        //uncertainEngine.scanConfigFiles(pattern);
+        uncertainEngine.startup();
         
-        /** @todo to be enhanced */
+        /** TODO to be enhanced */
         IObjectRegistry reg = uncertainEngine.getObjectRegistry();
         HttpServiceFactory fact = (HttpServiceFactory)reg.getInstanceOfType(HttpServiceFactory.class);
         if(fact==null){
@@ -63,7 +60,6 @@ public class WebContextInit implements ServletContextListener {
             fact.getCompositeLoader().setBaseDir(dirConfig.getBaseDirectory());
             reg.registerInstance(fact);
         }
-
     }
 
     public void init(ServletContext servlet_context) throws Exception {
@@ -84,12 +80,6 @@ public class WebContextInit implements ServletContextListener {
         initUncertain(servlet_context);
 
         servlet_context.setAttribute(KEY_UNCERTAIN_ENGINE,uncertainEngine);
-        
-        try{
-            registerMBean();
-        }catch(Exception ex){
-            uncertainEngine.logException("Unable to register JMX MBean for uncertain engine", ex);
-        }
 
     }
 
