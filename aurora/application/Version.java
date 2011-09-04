@@ -22,19 +22,11 @@ public class Version {
     }
     
     public static int getMinorVersion(){
-        return 1;
+        return 2;
     }
     
     public static int getBuild(){
-        return 7;
+        return 0;
     }
-/*    
-    public static void main(String[] args) throws Exception {
-        Class cls = Class.forName("org.lwap.application.Version");
-        Object version = cls.newInstance();
-        Method m = cls.getMethod("getVersion", null);
-        String s = (String)m.invoke(version, null);
-        System.out.println(s);
-    }
-*/
+
 }
