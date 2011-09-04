@@ -3,6 +3,7 @@
  */
 package aurora.service;
 
+import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
 import uncertain.proc.Procedure;
 
@@ -21,5 +22,7 @@ public interface IService {
     public ServiceContext getServiceContext();
     
     public boolean invoke( Procedure proc ) throws Exception;
+    
+    public CompositeMap getServiceConfigData();
 
 }
