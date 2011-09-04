@@ -44,6 +44,8 @@ public class ServiceInitiator {
         IObjectRegistry objreg = uncertainEngine.getObjectRegistry(); 
         objreg.registerInstance(DatabaseServiceFactory.class, factory);
         //objreg.registerInstance(IModelFactory.class, factory.getModelFactory());
+
+/*        
         ClassRegistry reg =  uncertainEngine.getClassRegistry();
         reg.addPackageMapping( new PackageMapping(CompositeMapCreator.class.getPackage().getName(), CompositeMapCreator.class.getPackage().getName()) );
         reg.addClassMapping( "model-query", ModelQuery.class );
@@ -54,19 +56,19 @@ public class ServiceInitiator {
         reg.addClassMapping( "model-execute", ModelExecute.class );
         reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
         reg.addClassMapping("batch-apply", BatchApply.class);
+        reg.addClassMapping( "transaction", Transaction.class );
+
         reg.addClassMapping("session-copy", HttpSessionCopy.class);
         reg.addClassMapping("session-write", HttpSessionOperate.class);
         reg.addClassMapping("session-create", HttpSessionOperate.class);
         reg.addClassMapping("session-clear", HttpSessionOperate.class);
-        reg.addClassMapping( "transaction", Transaction.class );
 
-        
-        /** @todo move into optional package */
+
         reg.addClassMapping( "put-cookie", AuroraCookie.class);
-//        reg.addClassMapping( "import-csv", DataImport.class);
         reg.addClassMapping("img-validate", ImageValidate.class);
         reg.addClassMapping("atm-manager", AttachmentManager.class);
         reg.addClassMapping("refresh-prompts", RefreshPrompts.class);
+*/        
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
 
