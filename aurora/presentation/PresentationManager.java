@@ -27,6 +27,7 @@ import uncertain.pkg.IPackageManager;
 import uncertain.pkg.PackageManager;
 import uncertain.pkg.PackagePath;
 import uncertain.proc.ParticipantRegistry;
+import uncertain.schema.SchemaManager;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TagTemplateParser;
@@ -76,7 +77,7 @@ public class PresentationManager implements IGlobalInstance {
         mOcManager = OCManager.getInstance();
         mRegistry = ParticipantRegistry.defaultInstance();
         CompositeLoader loader = CompositeLoader.createInstanceForOCM();
-        mPackageManager = new PackageManager(loader, mOcManager);
+        mPackageManager = new PackageManager(loader, mOcManager, new SchemaManager() );
         ViewComponentPackage.loadBuiltInRegistry(mOcManager.getClassRegistry());
         mLogger = DummyLogger.getInstance();
         mLoggerProvider = DummyLoggerProvider.getInstance();
@@ -90,8 +91,11 @@ public class PresentationManager implements IGlobalInstance {
         this.mUncertainEngine = engine;
         this.mOcManager = engine.getOcManager();
         this.mRegistry = engine.getParticipantRegistry();
+        /*
         mPackageManager = new PackageManager(engine.getCompositeLoader(),
                 engine.getOcManager());
+        */
+        mPackageManager = engine.getPackageManager();
         ViewComponentPackage.loadBuiltInRegistry(engine.getClassRegistry());
         mLoggerProvider = LoggingContext.getLoggerProvider(engine
                 .getObjectRegistry());
