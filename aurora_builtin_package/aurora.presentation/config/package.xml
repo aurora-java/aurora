@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <package name="aurora.presentation">
 	<schema-files>
 		<schema-file path="aurora_presentation_base.sxsd"/>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+    <feature-attach elementName="dataSets" featureClass="aurora.application.features.DataSetInit" nameSpace="http://www.aurora-framework.org/application"/>
+    <feature-attach elementName="autoForm" featureClass="aurora.application.features.AutoForm" nameSpace="http://www.aurora-framework.org/application"/>
+    <feature-attach elementName="autoGrid" featureClass="aurora.application.features.AutoGrid" nameSpace="http://www.aurora-framework.org/application"/>
+    <feature-attach elementName="view" featureClass="aurora.application.features.ScreenRenderer" nameSpace="http://www.aurora-framework.org/application"/>
+</class-registry>
