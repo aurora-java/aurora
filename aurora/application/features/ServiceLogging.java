@@ -225,5 +225,15 @@ public class ServiceLogging extends LoggerProvider implements
     public void setEnablePerServiceConfig(boolean enablePerServiceConfig) {
         this.mEnablePerServiceConfig = enablePerServiceConfig;
     }
+
+    public String getLogPath() {
+        String path = super.getLogPath();
+        if(path==null)
+            return mDirConfig.getLogDirectory();
+        else
+            return mDirConfig.translateRealPath(path);
+    }
+    
+    
     
 }
