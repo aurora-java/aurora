@@ -22,6 +22,7 @@ import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
 import aurora.events.E_DetectProcedure;
+import aurora.service.IConfigurableService;
 import aurora.service.IService;
 import aurora.service.ServiceController;
 import aurora.service.ServiceThreadLocal;
@@ -126,6 +127,11 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			if (is_success) {
 				Procedure proc = getProcedureToRun(mProcManager, svc);
 				if(proc!=null){
+				    if(svc instanceof IConfigurableService){
+				        IConfigurableService    cfsvc = (IConfigurableService)svc;
+				        if(!cfsvc.isConfigParsed())
+				            cfsvc.parseConfig();
+				    }
 				    is_success = svc.invoke(proc);
 				}
 			}

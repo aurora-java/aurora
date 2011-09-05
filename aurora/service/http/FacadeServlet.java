@@ -49,7 +49,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
         // load configure map
         final String name = svc.getName();
         final CompositeMap config = mServiceFactory.loadServiceConfig(name);
-        svc.setServiceConfigData(config);
+        svc.setServiceConfigData(config,false);
         // set procedure name
         final String extension = name.substring(name.lastIndexOf('.') + 1);
         final String proc = mServiceFactory.getProcedureName(extension);

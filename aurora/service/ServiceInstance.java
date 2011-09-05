@@ -17,7 +17,7 @@ import uncertain.proc.ProcedureRunner;
 import aurora.database.service.SqlServiceContext;
 import aurora.events.E_PrepareServiceConfig;
 
-public class ServiceInstance implements IService {
+public class ServiceInstance implements IService, IConfigurableService {
 
     public static final String KEY_SERVICE_NAME = "service_name";
 
@@ -26,6 +26,7 @@ public class ServiceInstance implements IService {
     protected IProcedureManager mProcManager;
 
     boolean     mContextInited = false;
+    boolean     mConfigParsed = false;
     protected CompositeMap mContextMap;
     protected ServiceContext mServiceContext;
     protected ServiceController mController;
@@ -53,10 +54,11 @@ public class ServiceInstance implements IService {
         CompositeMap context = new CompositeMap("context");
         setContextMap(context);
         setName(name);
+        mConfig = mProcManager.createConfig();
     }
 
     /** Global participants can do service config population before it is parsed */
-    void parseConfig() {
+    public void parseConfig() {
         if (mConfig != null)
             mConfig.clear();
         if (mRootConfig != null)
@@ -71,6 +73,7 @@ public class ServiceInstance implements IService {
         mConfig.loadConfig(mConfigMap);
         if (mRootConfig != null)
             mConfig.setParent(mRootConfig);
+        mConfigParsed = true;
     }
     
     void initContext(){
@@ -150,8 +153,18 @@ public class ServiceInstance implements IService {
     }
 
     public void setServiceConfigData(CompositeMap configMap) {
+        setServiceConfigData( configMap, true);
+    }
+    
+    /**
+     * Set config data for this service instance
+     * @param configMap CompositeMap containing service config
+     * @param parse whether parseConfig() should be invoked immediately
+     */
+    public void setServiceConfigData( CompositeMap configMap, boolean parse ){
         mConfigMap = configMap;
-        parseConfig();
+        if(parse)
+            parseConfig();
     }
 
     public void setName(String name) {
@@ -175,6 +188,10 @@ public class ServiceInstance implements IService {
         if (mConfigMap == null)
             return true;
         return mConfigMap.getBoolean("trace", false);
+    }
+    
+    public boolean isConfigParsed(){
+        return mConfigParsed;
     }
 
     public void clear() {
@@ -213,6 +230,7 @@ public class ServiceInstance implements IService {
 
     public void setRootConfig(Configuration rootConfig) {
         mRootConfig = rootConfig;
+        mConfig.setParent(mRootConfig);
     }
     
     public ILogger getServiceLogger(){
