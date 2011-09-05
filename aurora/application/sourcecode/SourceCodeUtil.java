@@ -45,8 +45,12 @@ public class SourceCodeUtil {
 	public static ConfigurationFileException createNodeMissingException(String attrib,String value,ILocatable iLocatable){
 		return new ConfigurationFileException(SourceCodeUtil.NODE_MISSING,new String[]{attrib,value},iLocatable);
 	}
+	public static ConfigurationFileException createChildCountException(int sourceCount,int reOderCount,ILocatable iLocatable){
+		return new ConfigurationFileException(SourceCodeUtil.RE_ORDER_CHILD_COUNT,new Integer[]{sourceCount,reOderCount},iLocatable);
+	}
 	public static final String ATTRIBUTE_MISSING_CODE="aurora.application.sourcecode.attribute_missing";
 	public static final String NODE_MISSING = "aurora.application.sourcecode.node_missing";
+	public static final String RE_ORDER_CHILD_COUNT = "aurora.application.sourcecode.re_order_child_count";
 
 
 }

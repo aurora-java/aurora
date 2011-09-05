@@ -1,18 +1,23 @@
 package aurora.application.sourcecode;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ConfigurationFileException;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.schema.Element;
 import uncertain.util.resource.ILocatable;
 import aurora.schema.AuroraSchemaManager;
+import aurora.security.ResourceNotDefinedException;
 
 public class CustomSourceCode {
 
@@ -27,13 +32,26 @@ public class CustomSourceCode {
 	public static final String KEY_CONFIG_CONTENT = "config_content";
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_SOURCE_FILE = "source_file";
+	public static final String KEY_FIELDS_ORDER = "fields_order";
 
 	private static final String ILLEGAL_OPERATION_FOR_ROOT = "aurora.application.sourcecode.illegal_operation_for_root";
 	private static final String ILLEGAL_POSITION_FOR_OPERATION = "aurora.application.sourcecode.illegal_position_for_operation";
 	private static final String ILLEGAL_OPERATION = "aurora.application.sourcecode.illegal_operation";
 
+	public static CompositeMap custom(IObjectRegistry registry, String filePath,CompositeMap customConfig) throws IOException, SAXException{
+		if (registry == null)
+			throw new RuntimeException("paramter error. 'registry' can not be null.");
+		File webHome = SourceCodeUtil.getWebHome(registry);
+		File sourceFile = new File(webHome, filePath);
+		if (sourceFile == null || !sourceFile.exists())
+			throw new ResourceNotDefinedException(filePath);
+		CompositeLoader cl = new CompositeLoader();
+		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
+		return custom(source,customConfig);
+	}
+	
 	public static CompositeMap custom(CompositeMap source, CompositeMap customConfig) {
-		if (source == null || customConfig == null || customConfig.getChilds().size() == 0) {
+		if (source == null || customConfig == null || customConfig.getChilds() == null) {
 			return source;
 		}
 		Map result = new LinkedHashMap();
@@ -113,11 +131,40 @@ public class CustomSourceCode {
 				} else {
 					throw createIllegalPositionForOperation(key_position, mode_type, dbRecord.asLocatable());
 				}
-			} else {
+			}else if ("re_order".equals(mode_type)){
+				reOrder(dbRecord, record_id, objectNode);
+			}
+			else {
 				throw createIllegalOperation(mode_type, dbRecord.asLocatable());
 			}
 		}
 		return source;
+	}
+
+	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode) {
+		String field_order = dbRecord.getString(CustomSourceCode.KEY_FIELDS_ORDER);
+		if(field_order == null)
+			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
+					CustomSourceCode.KEY_FIELDS_ORDER, dbRecord.asLocatable());
+		String[] filedsOrder = field_order.split(",");
+		if(filedsOrder == null)
+			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
+					CustomSourceCode.KEY_FIELDS_ORDER, dbRecord.asLocatable());
+		if(filedsOrder.length != objectNode.getChilds().size())
+			throw SourceCodeUtil.createChildCountException(objectNode.getChilds().size(),filedsOrder.length,objectNode.asLocatable());
+		String index_field = dbRecord.getString(CustomSourceCode.KEY_INDEX_FIELD);
+		if(index_field == null)
+			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
+					CustomSourceCode.KEY_INDEX_FIELD, dbRecord.asLocatable());
+		CompositeMap clone = (CompositeMap)objectNode.clone();
+		clone.getChilds().clear();
+		for(int i= 0;i<filedsOrder.length;i++){
+			CompositeMap record = objectNode.getChildByAttrib(index_field, filedsOrder[i]);
+			if(record == null)
+				throw SourceCodeUtil.createNodeMissingException(index_field, filedsOrder[i], objectNode.asLocatable());
+			clone.addChild(record);
+		}
+		objectNode.getParent().replaceChild(objectNode, clone);
 	}
 
 	public static CompositeMap getObjectNode(CompositeMap currentNode, CompositeMap dbRecord, String record_id) {
@@ -132,7 +179,7 @@ public class CustomSourceCode {
 			if (mode_type == null)
 				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord
 						.asLocatable());
-			if (index_field == null || "insert".equals(mode_type))
+			if (index_field == null || "insert".equals(mode_type)||"re_order".equals(mode_type))
 				objectNode = array;
 			else {
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
