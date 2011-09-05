@@ -9,12 +9,17 @@ import uncertain.event.EventModel;
 import aurora.events.E_PrepareServiceConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
+import aurora.service.ServiceInstance;
 
 public class ConfigCustomizationListener implements E_PrepareServiceConfig {
 
     public static final String KEY_CUSTOMIZATION_ENABLED = "customizationenabled";
     
     ICustomizationDataProvider  mCustomizationDataProvider;
+    
+    public ConfigCustomizationListener(){
+        
+    }
 
     /**
      * @param mCustomizationDataProvider
@@ -25,14 +30,18 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
     }
 
     public int onPrepareServiceConfig(IService service) throws Exception {
-        CompositeMap config = service.getServiceConfigData();
+        ServiceInstance svc = (ServiceInstance)service;
+        CompositeMap config = svc.getServiceConfigData();
         boolean customization_enabled = config.getBoolean(KEY_CUSTOMIZATION_ENABLED, true);
         if(customization_enabled){
-            ServiceContext svc_context = service.getServiceContext();
-            CompositeMap    data = mCustomizationDataProvider.getCustomizationData( svc_context.getServiceName() , svc_context.getObjectContext());
+            ServiceContext svc_context = svc.getServiceContext();
+            String svc_name = svc.getName();
+            System.out.println(service.getServiceConfigData().toXML());
+/*
+            CompositeMap    data = mCustomizationDataProvider.getCustomizationData( svc_name , svc_context.getObjectContext());
             if(data!=null){
-                // do customization with config
             }
+*/            
         }
         return EventModel.HANDLE_NORMAL;
     }
