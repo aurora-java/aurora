@@ -164,7 +164,8 @@ public class CustomSourceCode {
 				throw SourceCodeUtil.createNodeMissingException(index_field, filedsOrder[i], objectNode.asLocatable());
 			clone.addChild(record);
 		}
-		objectNode.getParent().replaceChild(objectNode, clone);
+		objectNode.getChilds().clear();
+		objectNode.addChilds(clone.getChilds());
 	}
 
 	public static CompositeMap getObjectNode(CompositeMap currentNode, CompositeMap dbRecord, String record_id) {
