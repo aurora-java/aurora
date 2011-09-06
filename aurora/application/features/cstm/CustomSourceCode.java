@@ -475,14 +475,14 @@ public class CustomSourceCode {
 	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,
 			String array_name, String index_field, String index_value, CompositeMap dbRecords) throws IOException,
 			SAXException {
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null || array_name == null || index_field == null || index_value == null)
 			return empty;
+		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
+		if(schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(), false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
