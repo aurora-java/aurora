@@ -24,7 +24,7 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
             </ss:elements>
             <ss:arrays>
-                <ss:array name="a:fields" document="Fields" type="a:field" wizard="a:fieldsWizard"/>
+                <ss:array name="a:fields" document="Fields" type="a:field" wizard="a:fieldsWizard" idField="name"/>
                 <ss:array name="a:events" document="Events" idField="name" type="a:event"/>
             </ss:arrays>
         </ss:element>
