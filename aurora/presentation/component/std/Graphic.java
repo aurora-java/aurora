@@ -23,10 +23,20 @@ import aurora.presentation.component.std.config.GraphicConfig;
  * @author <a href="mailto:hugh.hz.wu@gmail.com">Hugh</a>
  */
 public class Graphic extends Component {
+	
+	protected int getDefaultWidth() {
+		return 600;
+	}
+
+	protected int getDefaultHeight() {
+		return 300;
+	}
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addJavaScript(session, context, "graphic/Graphics.js");
 	}
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onCreateViewContent(session, context);
@@ -38,6 +48,9 @@ public class Graphic extends Component {
 		}
 		if(gc.isMoveable()){
 			addConfig(GraphicConfig.PROPERTITY_MOVEABLE, new Boolean(gc.isMoveable()));
+		}
+		if(gc.isEditable()){
+			addConfig(GraphicConfig.PROPERTITY_EDITABLE, new Boolean(gc.isEditable()));
 		}
 		if(null!= gc.getRenderer()){
 			addConfig(GraphicConfig.PROPERTITY_RENDERER, gc.getRenderer());

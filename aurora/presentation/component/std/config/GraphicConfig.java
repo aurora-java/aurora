@@ -11,6 +11,7 @@ public class GraphicConfig extends ComponentConfig {
 	public static final String PROPERTITY_DROP_TO = "dropto";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_MOVEABLE = "moveable";
+	public static final String PROPERTITY_EDITABLE = "editable";
 	
 	public static GraphicConfig getInstance(){
 		GraphicConfig model = new GraphicConfig();
@@ -47,5 +48,11 @@ public class GraphicConfig extends ComponentConfig {
 	}
 	public void setMoveable(boolean m){
 		putBoolean(PROPERTITY_MOVEABLE, m);
+	}
+	public boolean isEditable(){
+		return getBoolean(PROPERTITY_EDITABLE, false);
+	}
+	public void setEditable(boolean m){
+		putBoolean(PROPERTITY_EDITABLE, m);
 	}
 }
