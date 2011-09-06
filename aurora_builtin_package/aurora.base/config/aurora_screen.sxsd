@@ -77,7 +77,7 @@
         <ss:element name="a:record" document="DataSet的数据项"/>
         <ss:element name="a:field" document="DataSet的field">
             <ss:attributes>
-                <ss:attribute name="name" document="field的name" type=""/>
+                <ss:attribute name="name" document="field的name" type="ss:string"/>
                 <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
                 <ss:attribute name="readOnly" default="false" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="returnField" document="ComboBox选中值的返回name"/>
