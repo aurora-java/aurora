@@ -24,8 +24,8 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
             </ss:elements>
             <ss:arrays>
-                <ss:array name="a:fields" document="DataSet的field配置" indexField="name" type="a:field" wizard="a:fieldsWizard"/>
-                <ss:array name="a:events" indexField="name" type="a:event"/>
+                <ss:array name="a:fields" document="Fields" indexField="name" type="a:field" wizard="a:fieldsWizard"/>
+                <ss:array name="a:events" document="Events" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:model-query" document="数据查询">
