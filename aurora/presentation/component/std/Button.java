@@ -52,6 +52,8 @@ public class Button extends Field {
 		Map map = context.getMap();
 		String clickEvent = view.getString(PROPERTITY_CLICK, "");
 		if(!"".equals(clickEvent)){
+			if(clickEvent.indexOf("${") != -1)  //和$()有冲突
+			clickEvent = uncertain.composite.TextParser.parse(clickEvent, model);
 			addEvent(id, "click", clickEvent);
 		}
 		String text = view.getString(PROPERTITY_TEXT, "&#160;");

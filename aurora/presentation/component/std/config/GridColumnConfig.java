@@ -19,6 +19,8 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_SORTABLE_FIELD = "sortfield";
 	public static final String PROPERTITY_FOR_EXPORT = "forexport";
 	public static final String PROPERTITY_EXPORT_FIELD = "exportfield";
+	public static final String PROPERTITY_EDITOR_FUNCTION = "editorfunction";
+	
 	
 	private static final String DEFAULT_ALIGN = "left";
 	
@@ -139,5 +141,12 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setEditor(String editor){
 		putString(PROPERTITY_EDITOR, editor);
+	}
+	
+	public String getEditorFunction(){
+		return getString(PROPERTITY_EDITOR_FUNCTION);
+	}
+	public void setEditorFunction(String func){
+		putString(PROPERTITY_EDITOR_FUNCTION, func);
 	}
 }

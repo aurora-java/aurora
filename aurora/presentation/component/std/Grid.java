@@ -245,6 +245,9 @@ public class Grid extends Component {
 					if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
 					if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
 					
+					
+					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
+					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
 					if(!"rowcheck".equals(type) && !"rowradio".equals(type))cwidth = cwidth*bl;
@@ -253,6 +256,7 @@ public class Grid extends Component {
 					if(isCheckBoxEditor(editor, view)){
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
 					}
+					if(!"".equals(editor)) column.put(GridColumnConfig.PROPERTITY_EDITOR, uncertain.composite.TextParser.parse(editor, model));
 					toJSONForParentColumn(column);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);
@@ -333,7 +337,7 @@ public class Grid extends Component {
 		CompositeMap model = context.getModel();
 		
 		CompositeMap toolbar = view.getChild(GridConfig.PROPERTITY_TOOLBAR);
-		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		StringBuffer sb = new StringBuffer();
 		boolean hasToolBar = false;
