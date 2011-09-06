@@ -7,11 +7,11 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute document="是否显示checkbox" name="showCheckBox" type="ss:boolean"/>
-                <ss:attribute document="显示的field" name="displayField" use="required"/>
-                <ss:attribute document="id选项" name="idField" use="required"/>
-                <ss:attribute document="parentField" name="parentField" use="required"/>
-                <ss:attribute document="渲染器" name="renderer"/>
+                <ss:attribute name="showCheckBox" document="是否显示checkbox" type="ss:boolean"/>
+                <ss:attribute name="displayField" document="显示的field" use="required"/>
+                <ss:attribute name="idField" document="id选项" use="required"/>
+                <ss:attribute name="parentField" document="parentField" use="required"/>
+                <ss:attribute name="renderer" document="渲染器"/>
             </ss:attributes>
         </ss:element>
     </ss:elements>

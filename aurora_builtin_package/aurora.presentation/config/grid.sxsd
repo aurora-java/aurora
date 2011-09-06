@@ -9,8 +9,8 @@
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" idField="name" type="a:column" document="列配置"/>
-                <ss:array name="a:editors" idField="id" type="a:Field" document="编辑器"/>
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
+                <ss:array name="a:editors" document="编辑器" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
@@ -52,8 +52,8 @@
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" idField="name" type="a:column"/>
-                <ss:array name="a:editors" idField="id" type="a:Field"/>
+                <ss:array name="a:columns" indexField="name" type="a:column"/>
+                <ss:array name="a:editors" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>

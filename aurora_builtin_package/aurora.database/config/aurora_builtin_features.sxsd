@@ -43,7 +43,7 @@
         </ss:element>
         <ss:element name="f:tag-delete" document="删除操作时，不是物理删除，而是更新删除标记字段">
             <ss:arrays>
-                <ss:array name="fields" type="f:tag-delete-field"/>
+                <ss:array name="fields" indexField="name" type="f:tag-delete-field"/>
             </ss:arrays>
             <ss:extensions>
                 <ss:extension base="bm:feature"/>

@@ -24,8 +24,8 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
             </ss:elements>
             <ss:arrays>
-                <ss:array name="a:fields" document="Fields" type="a:field" wizard="a:fieldsWizard" idField="name"/>
-                <ss:array name="a:events" document="Events" idField="name" type="a:event"/>
+                <ss:array name="a:fields" document="DataSet的field配置" indexField="name" type="a:field" wizard="a:fieldsWizard"/>
+                <ss:array name="a:events" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:model-query" document="数据查询">
@@ -52,7 +52,7 @@
                 <ss:attribute name="package" document="页面模板所在的package"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:dataSets" type="a:dataSet" wizard="a:dataSetsWizard"/>
+                <ss:array name="a:dataSets" indexField="id" type="a:dataSet" wizard="a:dataSetsWizard"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:screen" document="UI界面的基础单元">
@@ -77,7 +77,7 @@
         <ss:element name="a:record" document="DataSet的数据项"/>
         <ss:element name="a:field" document="DataSet的field">
             <ss:attributes>
-                <ss:attribute name="name" document="field的name" type="ss:string"/>
+                <ss:attribute name="name" document="field的name" type=""/>
                 <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
                 <ss:attribute name="readOnly" default="false" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="returnField" document="ComboBox选中值的返回name"/>
@@ -100,7 +100,7 @@
                 <ss:attribute name="autoCompleteField" document="autoComplete的查询字段,如果没有设定，默认取mapping中等于field的name属性的to属性对应的from属性的字段。"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:mapping" type="a:map"/>
+                <ss:array name="a:mapping" indexField="to" type="a:map"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:map" document="lov或者combobox和当前dataSet的映射关系">

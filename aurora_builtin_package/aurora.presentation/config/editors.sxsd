@@ -67,7 +67,7 @@
                 <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:arrays>
-                <ss:array name="a:items" type="a:item"/>
+                <ss:array name="a:items" indexField="value" type="a:item"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:item">

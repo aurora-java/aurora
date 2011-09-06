@@ -5,41 +5,41 @@
     <ss:types>
         <ss:complexType name="a:HasID">
             <ss:attributes>
-                <ss:attribute document="组件的ID,在同一个screen中ID不能重复" name="id"/>
+                <ss:attribute name="id" document="组件的ID,在同一个screen中ID不能重复"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:HasPrompt">
             <ss:attributes>
-                <ss:attribute document="组件的标签" name="prompt"/>
+                <ss:attribute name="prompt" document="组件的标签"/>
             </ss:attributes>
         </ss:complexType>
-        <ss:complexType document="具有尺寸的特性" name="a:RectangleComponent">
+        <ss:complexType name="a:RectangleComponent" document="具有尺寸的特性">
             <ss:attributes>
-                <ss:attribute document="组件的宽度,单位是像素(px)" name="width" type="ss:int"/>
-                <ss:attribute document="组件的高度,单位是像素(px)" name="height" type="ss:int"/>
-                <ss:attribute document="组件的边缘宽度,单位是像素(px)" name="marginWidth" type="ss:int"/>
-                <ss:attribute document="组件的边缘高度,单位是像素(px)" name="marginHeight" type="ss:int"/>
+                <ss:attribute name="width" document="组件的宽度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="height" document="组件的高度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="marginWidth" document="组件的边缘宽度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="marginHeight" document="组件的边缘高度,单位是像素(px)" type="ss:int"/>
             </ss:attributes>
         </ss:complexType>
-        <ss:complexType document="基础UI组件" name="a:BaseViewComponent"/>
+        <ss:complexType name="a:BaseViewComponent" document="基础UI组件"/>
         <ss:complexType name="a:HasName">
             <ss:attributes>
-                <ss:attribute document="组件name,对应dataset中field的name" name="name"/>
+                <ss:attribute name="name" document="组件name,对应dataset中field的name"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:HasStyle">
             <ss:attributes>
-                <ss:attribute document="组件的style" name="style"/>
+                <ss:attribute name="style" document="组件的style"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:HasClassName">
             <ss:attributes>
-                <ss:attribute document="组件的样式" name="className"/>
+                <ss:attribute name="className" document="组件的样式"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:BindTarget">
             <ss:attributes>
-                <ss:attribute document="需要绑定的DataSet的ID" name="bindTarget" type="a:DataSetReference"/>
+                <ss:attribute name="bindTarget" document="需要绑定的DataSet的ID" type="a:DataSetReference"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:Component">
@@ -54,7 +54,7 @@
                 <ss:extension base="a:HasPrompt"/>
             </ss:extensions>
             <ss:arrays>
-                <ss:array name="a:events" type="a:event" idField="name" document="事件"/>
+                <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:complexType>
         <ss:complexType name="a:Field"/>

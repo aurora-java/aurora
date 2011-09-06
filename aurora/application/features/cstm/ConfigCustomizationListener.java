@@ -6,6 +6,9 @@ package aurora.application.features.cstm;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
+import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.ocm.IObjectRegistry;
+import uncertain.schema.ISchemaManager;
 import aurora.events.E_PrepareServiceConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
@@ -16,18 +19,12 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
     public static final String KEY_CUSTOMIZATION_ENABLED = "customizationenabled";
     
     ICustomizationDataProvider  mCustomizationDataProvider;
-    
-    public ConfigCustomizationListener(){
-        
-    }
+	IObjectRegistry registry;
 
-    /**
-     * @param mCustomizationDataProvider
-     */
-    public ConfigCustomizationListener(
-            ICustomizationDataProvider mCustomizationDataProvider) {
-        this.mCustomizationDataProvider = mCustomizationDataProvider;
-    }
+	public ConfigCustomizationListener(IObjectRegistry registry) {
+		this.registry = registry;
+		this.mCustomizationDataProvider = (ICustomizationDataProvider)registry.getInstanceOfType(ICustomizationDataProvider.class);
+	}
 
     public int onPrepareServiceConfig(IService service) throws Exception {
         ServiceInstance svc = (ServiceInstance)service;
@@ -36,12 +33,13 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
         if(customization_enabled){
             ServiceContext svc_context = svc.getServiceContext();
             String svc_name = svc.getName();
-            System.out.println(service.getServiceConfigData().toXML());
-/*
             CompositeMap    data = mCustomizationDataProvider.getCustomizationData( svc_name , svc_context.getObjectContext());
             if(data!=null){
+        		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
+        		if(schemaManager == null)
+        			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, ConfigCustomizationListener.class.getCanonicalName());
+            	CustomSourceCode.custom(schemaManager,config, data);
             }
-*/            
         }
         return EventModel.HANDLE_NORMAL;
     }

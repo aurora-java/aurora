@@ -131,7 +131,7 @@
         <ss:element name="bm:update-sql" type="a:RawSql"/>
         <ss:element name="bm:operation">
             <ss:arrays>
-                <ss:array name="bm:parameters" type="bm:parameter"/>
+                <ss:array name="bm:parameters" indexField="name" type="bm:parameter"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element ref="bm:query-sql"/>
@@ -173,15 +173,15 @@
                 <ss:element name="bm:description" document="描述本BM功能"/>
             </ss:elements>
             <ss:arrays>
-                <ss:array name="bm:fields" type="bm:field"/>
-                <ss:array name="bm:ref-fields" type="bm:ref-field"/>
-                <ss:array name="bm:primary-key" type="bm:pk-field"/>
-                <ss:array name="bm:order-by" type="bm:order-field"/>
-                <ss:array name="bm:relations" type="bm:relation"/>
-                <ss:array name="bm:data-filters" type="bm:data-filter"/>
-                <ss:array name="bm:query-fields" type="bm:query-field"/>
-                <ss:array name="bm:features" type="bm:feature"/>
-                <ss:array name="bm:operations" type="bm:AbstractOperation"/>
+                <ss:array name="bm:fields" indexField="name" type="bm:field"/>
+                <ss:array name="bm:ref-fields" indexField="name" type="bm:ref-field"/>
+                <ss:array name="bm:primary-key" indexField="name" type="bm:pk-field"/>
+                <ss:array name="bm:order-by" indexField="name" type="bm:order-field"/>
+                <ss:array name="bm:relations" indexField="name" type="bm:relation"/>
+                <ss:array name="bm:data-filters" indexField="name" type="bm:data-filter"/>
+                <ss:array name="bm:query-fields" indexField="name" type="bm:query-field"/>
+                <ss:array name="bm:features" indexField="name" type="bm:feature"/>
+                <ss:array name="bm:operations" indexField="name" type="bm:AbstractOperation"/>
                 <ss:array name="bm:cascade-operations" type="bm:cascade-operation"/>
             </ss:arrays>
         </ss:element>
