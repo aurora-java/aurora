@@ -8,7 +8,7 @@
                 <ss:attribute name="loadData" default="false" document="是否服务端加载数据" type="ss:boolean"/>
                 <ss:attribute name="autoCreate" default="false" document="是否创建一条数据" type="ss:boolean"/>
                 <ss:attribute name="autoQuery" default="false" document="是否客户端自动发起ajax查询" type="ss:boolean"/>
-                <ss:attribute name="autoCount" default="false" document="查询是否进行统计" type="ss:boolean"/>
+                <ss:attribute name="autoCount" default="false" document="查询是否进行记录数统计" type="ss:boolean"/>
                 <ss:attribute name="fetchAll" default="false" document="是否查询所有数据" editor="" type="ss:boolean"/>
                 <ss:attribute name="canQuery" default="true" document="是否可查询" editor="" type="ss:boolean"/>
                 <ss:attribute name="canSubmit" default="true" document="是否可以提交" type="ss:boolean"/>
@@ -62,8 +62,9 @@
             </ss:elements>
             <ss:attributes>
                 <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
-                <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}" type="ss:string"/>
+                <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}"/>
                 <ss:attribute name="cacheEnabled" document="是否启用cache"/>
+                <ss:attribute name="customizationEnabled" document="是否允许个性化配置" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:datas" document="DataSet的数据">
