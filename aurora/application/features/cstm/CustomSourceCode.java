@@ -557,7 +557,7 @@ public class CustomSourceCode {
 		return result;
 	}
 
-	public static ConfigurationFileException createChildCountException(int sourceCount,int reOderCount,ILocatable iLocatable){
-		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT,new Integer[]{sourceCount,reOderCount},iLocatable);
+	public static ConfigurationFileException createChildCountException(int sourceCount,int reOrderCount,ILocatable iLocatable){
+		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT,new Integer[]{sourceCount,reOrderCount},iLocatable);
 	}
 }
