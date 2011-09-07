@@ -239,11 +239,16 @@ public class Grid extends Component {
 				if(column.getChilds() == null){
 					String dataindex = column.getString(GridColumnConfig.PROPERTITY_NAME,"");
 					if(!"".equals(dataindex)) column.putString(GridColumnConfig.PROPERTITY_NAME, dataindex);
-					if(column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false))column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
-					if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
-					if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
-					if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
-					if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
+					//if(column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false))
+						column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
+					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
+						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
+					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
+						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
+					//if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))
+						column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
+					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
+						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
 					
 					
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
