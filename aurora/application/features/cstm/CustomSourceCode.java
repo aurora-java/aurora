@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import uncertain.composite.CompositeMap;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ConfigurationFileException;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.IProcedureManager;
+import uncertain.proc.Procedure;
 import uncertain.schema.Array;
 import uncertain.schema.Attribute;
 import uncertain.schema.CompositeMapSchemaUtil;
@@ -25,6 +28,8 @@ import uncertain.schema.editor.CompositeMapEditor;
 import uncertain.util.resource.ILocatable;
 import aurora.application.sourcecode.SourceCodeUtil;
 import aurora.security.ResourceNotDefinedException;
+import aurora.service.IServiceFactory;
+import aurora.service.ServiceInvoker;
 
 public class CustomSourceCode {
 
@@ -40,13 +45,16 @@ public class CustomSourceCode {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_SOURCE_FILE = "source_file";
 	public static final String KEY_FIELDS_ORDER = "fields_order";
+	public static final String KEY_DIMENSION_INIT_PROC = "dimension_init_proc";
+	public static final String KEY_DIMENSION_TYPE = "dimension_type";
 
 	private static final String ILLEGAL_OPERATION_FOR_ROOT = "aurora.application.features.cstm.illegal_operation_for_root";
 	private static final String ILLEGAL_POSITION_FOR_OPERATION = "aurora.application.features.cstm.illegal_position_for_operation";
 	private static final String ILLEGAL_OPERATION = "aurora.application.features.cstm.illegal_operation";
 	public static final String RE_ORDER_CHILD_COUNT = "aurora.application.features.cstm.re_order_child_count";
-	
-	public static CompositeMap custom(IObjectRegistry registry, String filePath,CompositeMap customConfig) throws IOException, SAXException{
+
+	public static CompositeMap custom(IObjectRegistry registry, String filePath, CompositeMap customConfig)
+			throws Exception {
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		File webHome = SourceCodeUtil.getWebHome(registry);
@@ -55,31 +63,57 @@ public class CustomSourceCode {
 			throw new ResourceNotDefinedException(filePath);
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
-		return custom(schemaManager,source,customConfig);
+		return custom(registry,sourceFile.getCanonicalPath(),source, customConfig);
 	}
-	
-	public static CompositeMap custom(ISchemaManager schemaManager,CompositeMap source, CompositeMap customConfig) {
+
+	public static CompositeMap custom(IObjectRegistry registry, String service_name,CompositeMap source, CompositeMap customConfig) throws Exception {
 		if (source == null || customConfig == null || customConfig.getChilds() == null) {
 			return source;
 		}
+		if (registry == null)
+			throw new RuntimeException("paramter error. 'registry' can not be null.");
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
+					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		Map result = new LinkedHashMap();
 		SourceCodeUtil.getKeyNodeMap(source, SourceCodeUtil.KEY_ID, result);
 		if (result.isEmpty())
 			return source;
 		CompositeMap currentNode = null;
 		String currentId = null;
+		String currentDimension = null;
+		List executeProcList = new LinkedList();
+		String dimensionTag = source.getString("tag");
+		List supportDimensionList = null;
+		if (dimensionTag != null) {
+			supportDimensionList = new LinkedList();
+			String[] dimensions = dimensionTag.split(",");
+			for (int i = 0; i < dimensions.length; i++) {
+				supportDimensionList.add(dimensions[i]);
+			}
+		}
 		for (Iterator it = customConfig.getChildIterator(); it.hasNext();) {
 			CompositeMap dbRecord = (CompositeMap) it.next();
 			String record_id = dbRecord.getString(KEY_RECORD_ID);
 			if (record_id == null)
 				throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), KEY_RECORD_ID);
+			if (supportDimensionList != null) {
+				String dimension_type = dbRecord.getString(KEY_DIMENSION_TYPE);
+				if (!dimension_type.equals(currentDimension)) {
+					currentDimension = dimension_type;
+					if (supportDimensionList.contains(currentDimension)) {
+						String dimension_init_proc = dbRecord.getString(KEY_DIMENSION_INIT_PROC);
+						if (dimension_init_proc != null) {
+							executeProcList.add(dimension_init_proc);
+						}
+					}
+				}
+			}
 			String idValue = dbRecord.getString(KEY_ID_VALUE);
 			if (idValue == null)
-				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ID_VALUE,
-						dbRecord.asLocatable());
+				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ID_VALUE, dbRecord
+						.asLocatable());
 			if (!idValue.equals(currentId)) {
 				currentNode = (CompositeMap) result.get(idValue);
 				if (currentNode == null)
@@ -121,7 +155,7 @@ public class CustomSourceCode {
 					}
 				}
 			} else if ("insert".equals(mode_type)) {
-				insertNode(schemaManager,dbRecord, record_id, objectNode);
+				insertNode(schemaManager, dbRecord, record_id, objectNode);
 			} else if ("delete".equals(mode_type)) {
 				if (objectNode.getParent() == null)
 					throw createIllegalOperationForRootException(mode_type, objectNode.asLocatable());
@@ -142,37 +176,67 @@ public class CustomSourceCode {
 				} else {
 					throw createIllegalPositionForOperation(key_position, mode_type, dbRecord.asLocatable());
 				}
-			}else if ("re_order".equals(mode_type)){
-				reOrder(dbRecord, record_id, objectNode,true);
-			}
-			else {
+			} else if ("re_order".equals(mode_type)) {
+				reOrder(dbRecord, record_id, objectNode, true);
+			} else {
 				throw createIllegalOperation(mode_type, dbRecord.asLocatable());
 			}
 		}
+		executeDimensionProc(service_name,executeProcList,registry);
 		return source;
 	}
 
-	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode,boolean isAfterRealDelete) {
+	public static void executeDimensionProc(String service_name, List procList, IObjectRegistry registry)
+			throws Exception {
+		if (procList == null || procList.isEmpty())
+			return;
+		if (registry == null)
+			throw new RuntimeException("paramter error. 'registry' can not be null.");
+		for (Iterator it = procList.iterator(); it.hasNext();) {
+			String procedure = (String) it.next();
+			CompositeMap context = new CompositeMap();
+			IProcedureManager procedureManager = (IProcedureManager) registry
+					.getInstanceOfType(IProcedureManager.class);
+			if (procedureManager == null)
+				throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(),
+						IProcedureManager.class, CustomSourceCode.class.getName());
+			IServiceFactory serviceFactory = (IServiceFactory) registry.getInstanceOfType(IServiceFactory.class);
+			if (serviceFactory == null)
+				throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(),
+						IServiceFactory.class, CustomSourceCode.class.getName());
+			Procedure proc = null;
+			try {
+				proc = procedureManager.loadProcedure(procedure);
+			} catch (Exception ex) {
+				throw BuiltinExceptionFactory.createResourceLoadException(context.asLocatable(), procedure, ex);
+			}
+			ServiceInvoker.invokeProcedureWithTransaction(service_name, proc, serviceFactory, context);
+		}
+	}
+
+	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode,
+			boolean isAfterRealDelete) {
 		String field_order = dbRecord.getString(CustomSourceCode.KEY_FIELDS_ORDER);
-		if(field_order == null)
+		if (field_order == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
 					CustomSourceCode.KEY_FIELDS_ORDER, dbRecord.asLocatable());
 		String[] filedsOrder = field_order.split(",");
-		if(filedsOrder == null)
+		if (filedsOrder == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
 					CustomSourceCode.KEY_FIELDS_ORDER, dbRecord.asLocatable());
-//		if(!isAfterRealDelete)
-//			if(filedsOrder.length != objectNode.getChilds().size())
-//				throw CustomSourceCode.createChildCountException(objectNode.getChilds().size(),filedsOrder.length,objectNode.asLocatable());
+		// if(!isAfterRealDelete)
+		// if(filedsOrder.length != objectNode.getChilds().size())
+		// throw
+		// CustomSourceCode.createChildCountException(objectNode.getChilds().size(),filedsOrder.length,objectNode.asLocatable());
 		String index_field = dbRecord.getString(CustomSourceCode.KEY_INDEX_FIELD);
-		if(index_field == null)
+		if (index_field == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
 					CustomSourceCode.KEY_INDEX_FIELD, dbRecord.asLocatable());
-		CompositeMap clone = (CompositeMap)objectNode.clone();
+		CompositeMap clone = (CompositeMap) objectNode.clone();
 		clone.getChilds().clear();
-		for(int i= 0;i<filedsOrder.length;i++){
+		for (int i = 0; i < filedsOrder.length; i++) {
 			CompositeMap record = objectNode.getChildByAttrib(index_field, filedsOrder[i]);
-			if(record != null)
+			if (record != null)
 				clone.addChild(record);
 		}
 		objectNode.getChilds().clear();
@@ -191,7 +255,7 @@ public class CustomSourceCode {
 			if (mode_type == null)
 				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord
 						.asLocatable());
-			if (index_field == null || "insert".equals(mode_type)||"re_order".equals(mode_type))
+			if (index_field == null || "insert".equals(mode_type) || "re_order".equals(mode_type))
 				objectNode = array;
 			else {
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
@@ -207,7 +271,8 @@ public class CustomSourceCode {
 		return objectNode;
 	}
 
-	public static CompositeMap insertNode(ISchemaManager schemaManager,CompositeMap dbRecord, String record_id, CompositeMap objectNode) {
+	public static CompositeMap insertNode(ISchemaManager schemaManager, CompositeMap dbRecord, String record_id,
+			CompositeMap objectNode) {
 		String mode_type = "insert";
 		if (objectNode.getParent() == null)
 			throw createIllegalOperationForRootException(mode_type, objectNode.asLocatable());
@@ -215,10 +280,11 @@ public class CustomSourceCode {
 		if (key_position == null)
 			throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_POSITION, dbRecord
 					.asLocatable());
-		Element ele =schemaManager.getElement(objectNode);
+		Element ele = schemaManager.getElement(objectNode);
 		if (ele != null && ele.isArray()) {
 			String index_field = dbRecord.getString(KEY_INDEX_FIELD);
-			CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager,objectNode, ele.getElementType().getQName());
+			CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager, objectNode, ele.getElementType()
+					.getQName());
 			if (index_field != null) {
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
 				if (index_value == null)
@@ -293,9 +359,10 @@ public class CustomSourceCode {
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
 		}
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
+					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		if (ele == null)
 			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
@@ -335,9 +402,10 @@ public class CustomSourceCode {
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
 		}
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
+					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		if (ele == null)
 			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
@@ -345,8 +413,7 @@ public class CustomSourceCode {
 		if (dbRecords != null && dbRecords.getChilds() != null) {
 			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
 				CompositeMap record = (CompositeMap) it.next();
-				if (!filePath.equals(record.getString(KEY_SOURCE_FILE))
-						|| !id.equals(record.getString(KEY_ID_VALUE))
+				if (!filePath.equals(record.getString(KEY_SOURCE_FILE)) || !id.equals(record.getString(KEY_ID_VALUE))
 						|| !"set_attrib".equals(record.getString(KEY_MOD_TYPE))) {
 					continue;
 				}
@@ -368,8 +435,7 @@ public class CustomSourceCode {
 					CompositeMap dbRecord = (CompositeMap) dbAttribs.get(attr.getLocalName());
 					if (dbRecord != null) {
 						record.put(KEY_RECORD_ID, dbRecord.getString(KEY_RECORD_ID));
-						record.put(KEY_ATTRIB_VALUE, dbRecord
-								.getString(KEY_ATTRIB_VALUE));
+						record.put(KEY_ATTRIB_VALUE, dbRecord.getString(KEY_ATTRIB_VALUE));
 						dbAttribs.remove(attr.getLocalName());
 					}
 				}
@@ -382,7 +448,7 @@ public class CustomSourceCode {
 				CompositeMap record = (CompositeMap) it.next();
 				result.addChild(record);
 			}
-	
+
 		}
 		return result;
 	}
@@ -413,9 +479,10 @@ public class CustomSourceCode {
 		if (node == null) {
 			throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, id, source.asLocatable());
 		}
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
+					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		CompositeMap re_order = null;
 		if (ele == null)
@@ -430,26 +497,23 @@ public class CustomSourceCode {
 				} else {
 					String record_id = dbRecord.getString(KEY_RECORD_ID);
 					if (record_id == null)
-						throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(),
-								KEY_RECORD_ID);
+						throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), KEY_RECORD_ID);
 					String mode_type = dbRecord.getString(KEY_MOD_TYPE);
 					if (mode_type == null)
-						throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id,
-								KEY_MOD_TYPE, dbRecord.asLocatable());
-					if("re_order".equals(mode_type)){
+						throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE,
+								dbRecord.asLocatable());
+					if ("re_order".equals(mode_type)) {
 						re_order = dbRecord;
 						continue;
 					}
 					CompositeMap objectNode = getObjectNode(node, dbRecord, record_id);
 					if ("insert".equals(mode_type)) {
-						CompositeMap newChild = insertNode(schemaManager,dbRecord, record_id, objectNode);
+						CompositeMap newChild = insertNode(schemaManager, dbRecord, record_id, objectNode);
 						newChild.put(KEY_MOD_TYPE, mode_type);
-						newChild
-								.put(KEY_RECORD_ID, dbRecord.getString(KEY_RECORD_ID));
+						newChild.put(KEY_RECORD_ID, dbRecord.getString(KEY_RECORD_ID));
 					} else if ("delete".equals(mode_type)) {
 						objectNode.put(KEY_MOD_TYPE, mode_type);
-						objectNode.put(KEY_RECORD_ID, dbRecord
-								.getString(KEY_RECORD_ID));
+						objectNode.put(KEY_RECORD_ID, dbRecord.getString(KEY_RECORD_ID));
 					}
 				}
 			}
@@ -462,9 +526,9 @@ public class CustomSourceCode {
 					record.setName("record");
 				}
 			}
-			if(re_order != null){
+			if (re_order != null) {
 				String record_id = re_order.getString(KEY_RECORD_ID);
-				reOrder(re_order, record_id, result,false);
+				reOrder(re_order, record_id, result, false);
 			}
 		} else {
 			return empty;
@@ -480,9 +544,10 @@ public class CustomSourceCode {
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null || array_name == null || index_field == null || index_value == null)
 			return empty;
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
+					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(), false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
@@ -493,7 +558,7 @@ public class CustomSourceCode {
 			Element ele = schemaManager.getElement(arrayList);
 			if (ele == null)
 				throw new RuntimeException("elment:" + arrayList.getQName().toString() + " is not defined.");
-			node = CompositeMapSchemaUtil.addElement(schemaManager,arrayList, ele.getElementType().getQName());
+			node = CompositeMapSchemaUtil.addElement(schemaManager, arrayList, ele.getElementType().getQName());
 			node.put(index_field.toLowerCase(), index_value);
 		} else {
 			if (node.getString(KEY_RECORD_ID) != null) {
@@ -509,8 +574,7 @@ public class CustomSourceCode {
 		if (dbRecords != null && dbRecords.getChilds() != null) {
 			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
 				CompositeMap record = (CompositeMap) it.next();
-				if (!filePath.equals(record.getString(KEY_SOURCE_FILE))
-						|| !id.equals(record.getString(KEY_ID_VALUE))
+				if (!filePath.equals(record.getString(KEY_SOURCE_FILE)) || !id.equals(record.getString(KEY_ID_VALUE))
 						|| !array_name.equals(record.getString(KEY_ARRAY_NAME))
 						|| !index_field.equals(record.getString(KEY_INDEX_FIELD))
 						|| !index_value.equals(record.getString(KEY_INDEX_VALUE))
@@ -538,8 +602,7 @@ public class CustomSourceCode {
 					CompositeMap dbRecord = (CompositeMap) dbAttribs.get(attr.getLocalName());
 					if (dbRecord != null) {
 						record.put(KEY_RECORD_ID, dbRecord.getString(KEY_RECORD_ID));
-						record.put(KEY_ATTRIB_VALUE, dbRecord
-								.getString(KEY_ATTRIB_VALUE));
+						record.put(KEY_ATTRIB_VALUE, dbRecord.getString(KEY_ATTRIB_VALUE));
 						dbAttribs.remove(attr.getLocalName());
 					}
 				}
@@ -552,12 +615,14 @@ public class CustomSourceCode {
 				CompositeMap record = (CompositeMap) it.next();
 				result.addChild(record);
 			}
-	
+
 		}
 		return result;
 	}
 
-	public static ConfigurationFileException createChildCountException(int sourceCount,int reOrderCount,ILocatable iLocatable){
-		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT,new Integer[]{sourceCount,reOrderCount},iLocatable);
+	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount,
+			ILocatable iLocatable) {
+		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount },
+				iLocatable);
 	}
 }

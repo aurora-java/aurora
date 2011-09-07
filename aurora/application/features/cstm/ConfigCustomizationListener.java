@@ -6,9 +6,7 @@ package aurora.application.features.cstm;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
-import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.schema.ISchemaManager;
 import aurora.events.E_PrepareServiceConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
@@ -35,10 +33,7 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
             String svc_name = svc.getName();
             CompositeMap    data = mCustomizationDataProvider.getCustomizationData( svc_name , svc_context.getObjectContext());
             if(data!=null){
-        		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-        		if(schemaManager == null)
-        			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class, ConfigCustomizationListener.class.getCanonicalName());
-            	CustomSourceCode.custom(schemaManager,config, data);
+            	CustomSourceCode.custom(registry,svc_name,config, data);
             }
         }
         return EventModel.HANDLE_NORMAL;
