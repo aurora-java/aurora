@@ -98,7 +98,7 @@ public class CustomSourceCode {
 					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ATTRIB_KEY,
 							dbRecord.asLocatable());
 				String attrib_value = dbRecord.getString(KEY_ATTRIB_VALUE);
-				objectNode.put(attrib_key, attrib_value);
+				objectNode.put(attrib_key.toLowerCase(), attrib_value);
 			} else if ("replace".equals(mode_type)) {
 				String config_content = dbRecord.getString(KEY_CONFIG_CONTENT);
 				if (objectNode.getParent() == null) {
@@ -224,7 +224,7 @@ public class CustomSourceCode {
 				if (index_value == null)
 					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE,
 							dbRecord.asLocatable());
-				newChild.put(index_field, index_value);
+				newChild.put(index_field.toLowerCase(), index_value);
 				return newChild;
 			}
 		}
@@ -494,7 +494,7 @@ public class CustomSourceCode {
 			if (ele == null)
 				throw new RuntimeException("elment:" + arrayList.getQName().toString() + " is not defined.");
 			node = CompositeMapSchemaUtil.addElement(schemaManager,arrayList, ele.getElementType().getQName());
-			node.put(index_field, index_value);
+			node.put(index_field.toLowerCase(), index_value);
 		} else {
 			if (node.getString(KEY_RECORD_ID) != null) {
 				fromDB = true;
