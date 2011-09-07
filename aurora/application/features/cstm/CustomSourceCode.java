@@ -161,9 +161,9 @@ public class CustomSourceCode {
 		if(filedsOrder == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
 					CustomSourceCode.KEY_FIELDS_ORDER, dbRecord.asLocatable());
-		if(!isAfterRealDelete)
-			if(filedsOrder.length != objectNode.getChilds().size())
-				throw CustomSourceCode.createChildCountException(objectNode.getChilds().size(),filedsOrder.length,objectNode.asLocatable());
+//		if(!isAfterRealDelete)
+//			if(filedsOrder.length != objectNode.getChilds().size())
+//				throw CustomSourceCode.createChildCountException(objectNode.getChilds().size(),filedsOrder.length,objectNode.asLocatable());
 		String index_field = dbRecord.getString(CustomSourceCode.KEY_INDEX_FIELD);
 		if(index_field == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
