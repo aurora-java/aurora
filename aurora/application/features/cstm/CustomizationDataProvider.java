@@ -89,7 +89,6 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 				CompositeMap record = (CompositeMap)it.next();
 				String dimensionCode = record.getString("dimension_code");
 				String data_query_sql = record.getString("data_query_sql");
-				String dimension_init_proc = record.getString("dimension_init_proc");
 				if (firstRecord)
 					firstRecord = false;
 				else
