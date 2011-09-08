@@ -374,9 +374,7 @@ public class Grid extends Component {
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls')}");
-						}else if("txt".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-txt","background-position:0px -87px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
 						}
 					}
 				}
