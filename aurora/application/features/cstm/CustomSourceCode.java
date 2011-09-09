@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +15,6 @@ import uncertain.composite.CompositeMap;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ConfigurationFileException;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.proc.IProcedureManager;
-import uncertain.proc.Procedure;
 import uncertain.schema.Array;
 import uncertain.schema.Attribute;
 import uncertain.schema.CompositeMapSchemaUtil;
@@ -28,8 +25,6 @@ import uncertain.schema.editor.CompositeMapEditor;
 import uncertain.util.resource.ILocatable;
 import aurora.application.sourcecode.SourceCodeUtil;
 import aurora.security.ResourceNotDefinedException;
-import aurora.service.IServiceFactory;
-import aurora.service.ServiceInvoker;
 
 public class CustomSourceCode {
 
@@ -45,7 +40,6 @@ public class CustomSourceCode {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_SOURCE_FILE = "source_file";
 	public static final String KEY_FIELDS_ORDER = "fields_order";
-	public static final String KEY_DIMENSION_INIT_PROC = "dimension_init_proc";
 	public static final String KEY_DIMENSION_TYPE = "dimension_type";
 
 	private static final String ILLEGAL_OPERATION_FOR_ROOT = "aurora.application.features.cstm.illegal_operation_for_root";
@@ -63,10 +57,10 @@ public class CustomSourceCode {
 			throw new ResourceNotDefinedException(filePath);
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
-		return custom(registry,sourceFile.getCanonicalPath(),source, customConfig);
+		return custom(registry,source, customConfig);
 	}
 
-	public static CompositeMap custom(IObjectRegistry registry, String service_name,CompositeMap source, CompositeMap customConfig) throws Exception {
+	public static CompositeMap custom(IObjectRegistry registry,CompositeMap source, CompositeMap customConfig){
 		if (source == null || customConfig == null || customConfig.getChilds() == null) {
 			return source;
 		}
@@ -82,34 +76,11 @@ public class CustomSourceCode {
 			return source;
 		CompositeMap currentNode = null;
 		String currentId = null;
-		String currentDimension = null;
-		List executeProcList = new LinkedList();
-		String dimensionTag = source.getString("tag");
-		List supportDimensionList = null;
-		if (dimensionTag != null) {
-			supportDimensionList = new LinkedList();
-			String[] dimensions = dimensionTag.split(",");
-			for (int i = 0; i < dimensions.length; i++) {
-				supportDimensionList.add(dimensions[i]);
-			}
-		}
 		for (Iterator it = customConfig.getChildIterator(); it.hasNext();) {
 			CompositeMap dbRecord = (CompositeMap) it.next();
 			String record_id = dbRecord.getString(KEY_RECORD_ID);
 			if (record_id == null)
 				throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), KEY_RECORD_ID);
-			if (supportDimensionList != null) {
-				String dimension_type = dbRecord.getString(KEY_DIMENSION_TYPE);
-				if (!dimension_type.equals(currentDimension)) {
-					currentDimension = dimension_type;
-					if (supportDimensionList.contains(currentDimension)) {
-						String dimension_init_proc = dbRecord.getString(KEY_DIMENSION_INIT_PROC);
-						if (dimension_init_proc != null) {
-							executeProcList.add(dimension_init_proc);
-						}
-					}
-				}
-			}
 			String idValue = dbRecord.getString(KEY_ID_VALUE);
 			if (idValue == null)
 				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ID_VALUE, dbRecord
@@ -182,38 +153,8 @@ public class CustomSourceCode {
 				throw createIllegalOperation(mode_type, dbRecord.asLocatable());
 			}
 		}
-		executeDimensionProc(service_name,executeProcList,registry);
 		return source;
 	}
-
-	public static void executeDimensionProc(String service_name, List procList, IObjectRegistry registry)
-			throws Exception {
-		if (procList == null || procList.isEmpty())
-			return;
-		if (registry == null)
-			throw new RuntimeException("paramter error. 'registry' can not be null.");
-		for (Iterator it = procList.iterator(); it.hasNext();) {
-			String procedure = (String) it.next();
-			CompositeMap context = new CompositeMap();
-			IProcedureManager procedureManager = (IProcedureManager) registry
-					.getInstanceOfType(IProcedureManager.class);
-			if (procedureManager == null)
-				throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(),
-						IProcedureManager.class, CustomSourceCode.class.getName());
-			IServiceFactory serviceFactory = (IServiceFactory) registry.getInstanceOfType(IServiceFactory.class);
-			if (serviceFactory == null)
-				throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(),
-						IServiceFactory.class, CustomSourceCode.class.getName());
-			Procedure proc = null;
-			try {
-				proc = procedureManager.loadProcedure(procedure);
-			} catch (Exception ex) {
-				throw BuiltinExceptionFactory.createResourceLoadException(context.asLocatable(), procedure, ex);
-			}
-			ServiceInvoker.invokeProcedureWithTransaction(service_name, proc, serviceFactory, context);
-		}
-	}
-
 	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode,
 			boolean isAfterRealDelete) {
 		String field_order = dbRecord.getString(CustomSourceCode.KEY_FIELDS_ORDER);

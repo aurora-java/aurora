@@ -33,7 +33,7 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
             String svc_name = svc.getName();
             CompositeMap    data = mCustomizationDataProvider.getCustomizationData( svc_name , svc_context.getObjectContext());
             if(data!=null){
-            	CustomSourceCode.custom(registry,svc_name,config, data);
+            	CustomSourceCode.custom(registry,config, data);
             }
         }
         return EventModel.HANDLE_NORMAL;
