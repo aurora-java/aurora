@@ -85,7 +85,7 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 		CompositeMap result = new CompositeMap("result");
 		try {
 			ssc = databasefactory.createContextWithConnection();
-			String exits_sql = "select 1   from dual  where exists  (select 1 from sys_config_customization t where t.source_file = '"+service_name+"')";
+			String exits_sql = "select 1   from dual  where exists  (select 1 from sys_config_customization t where t.source_file = '"+service_name+"' and t.enable_flag='Y')";
 			ParsedSql exits_stmt = createStatement(exits_sql);
 			SqlRunner exits_runner = new SqlRunner(ssc, exits_stmt);
 			rs_exists = exits_runner.query(contextCopy);
