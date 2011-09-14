@@ -26,9 +26,11 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
     private static String getParsedContent(BuildSession session, String text, CompositeMap model) 
         throws IOException
     {
+        /*
     	if(text.indexOf("$(") !=-1){
             text = text.replaceAll("\\$\\(", "\\$\\$\\(");
         }
+        */
         return session.parseString(text, model);
     }
 
