@@ -63,7 +63,7 @@
             <ss:attributes>
                 <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
                 <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}"/>
-                <ss:attribute name="cacheEnabled" document="是否启用cache"/>
+                <ss:attribute name="cacheEnabled" document="是否启用cache" type="ss:boolean"/>
                 <ss:attribute name="customizationEnabled" document="是否允许个性化配置" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
