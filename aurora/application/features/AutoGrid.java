@@ -11,6 +11,7 @@ import uncertain.event.EventModel;
 import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
+import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.presentation.component.std.config.CheckBoxConfig;
@@ -102,7 +103,8 @@ public class AutoGrid implements IFeature{
     }
     
     
-    private CompositeMap processColumns(CompositeMap model) throws IOException{
+    @SuppressWarnings("unchecked")
+	private CompositeMap processColumns(CompositeMap model) throws IOException{
     	GridConfig grid = GridConfig.getInstance(view);
 		List bmColumns = new ArrayList();
 		String href = view.getString(PROPERTITY_MODEL, "");
@@ -160,7 +162,19 @@ public class AutoGrid implements IFeature{
 		Iterator bit = bmColumns.iterator();
 		while(bit.hasNext()){
 			GridColumnConfig gc = (GridColumnConfig)bit.next();
-			viewColumns.addChild(gc.getObjectContext());
+			
+			String dataType = gc.getString(Field.KEY_DATA_TYPE);
+			CompositeMap column = gc.getObjectContext();
+			if(dataType!=null){
+				if("java.lang.Double".equalsIgnoreCase(dataType)){
+					column.putString(GridColumnConfig.PROPERTITY_ALIGN, "right");
+					column.putString(GridColumnConfig.PROPERTITY_RENDERER, "Aurora.formatMoney");
+				}else if("java.lang.Long".equalsIgnoreCase(dataType)){
+					column.putString(GridColumnConfig.PROPERTITY_ALIGN, "right");
+					column.putString(GridColumnConfig.PROPERTITY_RENDERER, "Aurora.formatNumber");					
+				}				
+			}
+			viewColumns.addChild(column);
 		}
 		grid.getObjectContext().replaceChild(grid.getColumns(), viewColumns);
 		CompositeMap gridView = grid.getObjectContext();
