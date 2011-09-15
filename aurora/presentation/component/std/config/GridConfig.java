@@ -15,6 +15,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_AUTO_FOCUS = "autofocus";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_CAN_PASTE = "canpaste";
+	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";

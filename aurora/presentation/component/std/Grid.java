@@ -52,6 +52,7 @@ public class Grid extends Component {
 //	private static final String TYPE_CELL_RADIO = "cellradio";
 	private static final String TYPE_ROW_CHECKBOX = "rowcheck";
 	private static final String TYPE_ROW_RADIO = "rowradio";
+	private static final String TYPE_ROW_NUMBER = "rownumber";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -64,6 +65,7 @@ public class Grid extends Component {
 		return DEFAULT_CLASS;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -92,6 +94,7 @@ public class Grid extends Component {
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		
+		processRowNumber(map,view);
 		processSelectable(map,view);
 		createGridColumns(map,view,session,model);
 		
@@ -103,6 +106,16 @@ public class Grid extends Component {
 		
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	private void processRowNumber(Map map,CompositeMap view){
+		Boolean showRowNumber = view.getBoolean(GridConfig.PROPERTITY_SHOW_ROWNUMBER,false);
+		map.put(GridConfig.PROPERTITY_SHOW_ROWNUMBER, showRowNumber);
+		addConfig(GridConfig.PROPERTITY_SHOW_ROWNUMBER, showRowNumber);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
 	private void processSelectable(Map map,CompositeMap view){
 		Boolean selectable = new Boolean(false);
 		Boolean showCheckAll = new Boolean(true);
@@ -134,6 +147,7 @@ public class Grid extends Component {
 		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void createGridColumns(Map map, CompositeMap view,BuildSession session,CompositeMap model){
 		JSONArray jsons = new JSONArray(); 
 		List cols = new ArrayList();
@@ -162,8 +176,22 @@ public class Grid extends Component {
 		
 		
 		if(columns != null) {
-			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
+			boolean showRowNumber = ((Boolean)map.get(GridConfig.PROPERTITY_SHOW_ROWNUMBER)).booleanValue();
+			if(showRowNumber) {
+				CompositeMap column = new CompositeMap("column");
+				column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				column.putBoolean(GridColumnConfig.PROPERTITY_LOCK,true);
+				column.putInt(ComponentConfig.PROPERTITY_WIDTH, 35);
+				column.putString(GridColumnConfig.PROPERTITY_ALIGN, "center");
+				column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE,false);
+				column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE,false);
+				column.putString(GridColumnConfig.PROPERTITY_PROMPT,"#");
+				column.putString(GridColumnConfig.PROPERTITY_RENDERER, "Aurora.RowNumberRenderer");
+				column.putString(COLUMN_TYPE,TYPE_ROW_NUMBER);
+				lks.add(column);
+			}
 			
+			boolean selectable = ((Boolean)map.get(DataSetConfig.PROPERTITY_SELECTABLE)).booleanValue();
 			String selectmodel = (String)map.get(DataSetConfig.PROPERTITY_SELECTION_MODEL);
 			if(selectable) {
 				CompositeMap column = new CompositeMap("column");
@@ -255,7 +283,7 @@ public class Grid extends Component {
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
-					if(!"rowcheck".equals(type) && !"rowradio".equals(type))cwidth = cwidth*bl;
+					if(!"rowcheck".equals(type) && !"rowradio".equals(type)&& !"rownumber".equals(type))cwidth = cwidth*bl;
 					column.putInt(ComponentConfig.PROPERTITY_WIDTH, Math.round(cwidth));
 					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
@@ -286,6 +314,8 @@ public class Grid extends Component {
 		addConfig(ComponentConfig.PROPERTITY_HEIGHT, map.get(ComponentConfig.PROPERTITY_HEIGHT));
 		map.put(CONFIG, getConfigString());
 	}
+	
+	
 	private void toJSONForParentColumn(CompositeMap column){
 		CompositeMap parent=null;
 		if(column.get("_parent") instanceof CompositeMap){
@@ -297,6 +327,8 @@ public class Grid extends Component {
 			}
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
 	private void createGridEditors(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -319,6 +351,7 @@ public class Grid extends Component {
 		map.put("editors", sb.toString());
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean isCheckBoxEditor(String id, CompositeMap view){
 		boolean isChecBox = false;
 		CompositeMap editors = view.getChild(GridConfig.PROPERTITY_EDITORS);
@@ -336,6 +369,7 @@ public class Grid extends Component {
 		return isChecBox;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean creatToolBar(BuildSession session, ViewContext context) throws IOException{
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -392,6 +426,7 @@ public class Grid extends Component {
 		return hasToolBar;
 	}
 	
+	
 	private CompositeMap createButton(CompositeMap button, String text, String clz,String style,String function){
 		if("".equals(button.getString(Button.PROPERTITY_ICON,""))){
 			button.put(Button.PROPERTITY_ICON, "null");
@@ -424,6 +459,7 @@ public class Grid extends Component {
 //		return hasFooterBar;		
 //	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean hasFooterBar(CompositeMap column){
 		boolean hasFooterBar = false;
 		GridColumnConfig gcc = GridColumnConfig.getInstance(column);
@@ -445,6 +481,7 @@ public class Grid extends Component {
 		return hasFooterBar;		
 	} 
 	
+	@SuppressWarnings("unchecked")
 	private void creatFooterBar(BuildSession session, ViewContext context) throws IOException{
 		Map map = context.getMap();
 		int lockWidth = ((Integer)map.get(LOCK_WIDTH)).intValue();
@@ -473,6 +510,7 @@ public class Grid extends Component {
 		map.put(FOOTER_BAR, sb.toString());		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private String createFooterBarTable(Iterator it,boolean hasSpan){
 		int i = 0,w = 0;
 		StringBuffer sb = new StringBuffer();
@@ -501,6 +539,7 @@ public class Grid extends Component {
 		return sb.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
 		boolean hasNavBar = false;
 		CompositeMap view = context.getView();
@@ -542,7 +581,7 @@ public class Grid extends Component {
 	}
 	
 	
-	
+	@SuppressWarnings("unchecked")
 	private void processColumns(CompositeMap parent, List children, List cols, Map pro){
 		Iterator it = children.iterator();
 		boolean plock =parent!=null? (parent.getBoolean(GridColumnConfig.PROPERTITY_LOCK) != null ? parent.getBoolean(GridColumnConfig.PROPERTITY_LOCK).booleanValue() : false ):false;
@@ -576,7 +615,7 @@ public class Grid extends Component {
 		}
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	private void addRowSpan(CompositeMap column){
 		List children = column.getChilds();
 		Integer psp = column.getInt(ROW_SPAN);
@@ -623,7 +662,7 @@ public class Grid extends Component {
 	}
 
 	
-	
+	@SuppressWarnings("unchecked")
 	private String generateLockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
@@ -698,7 +737,7 @@ public class Grid extends Component {
 		return sb.toString();
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer th = new StringBuffer();
