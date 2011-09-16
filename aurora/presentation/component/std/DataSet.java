@@ -14,6 +14,9 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import aurora.application.features.ILookupCodeProvider;
+import aurora.bm.BusinessModel;
+import aurora.bm.Field;
+import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComboBoxConfig;
@@ -29,7 +32,35 @@ import aurora.presentation.component.std.config.DataSetFieldConfig;
 public class DataSet extends Component {
 	
 	private static final String VALID_SCRIPT = "validscript";
-    
+	IModelFactory mFactory;
+	
+	public DataSet(IModelFactory factory) {
+        this.mFactory = factory;
+    }
+	
+	private void initLovService(String name,BuildSession session,CompositeMap model,CompositeMap field) throws IOException{
+		String lovService = field.getString(name);
+		if(lovService!=null){
+			String baseModel =  uncertain.composite.TextParser.parse(lovService, model);
+			field.putString(name,baseModel);
+			BusinessModel bm = null;
+	        bm = mFactory.getModelForRead(baseModel.split("\\?")[0]);
+	        Field[] bmfields = bm.getFields();
+	        JSONArray lovDisplayFields = new JSONArray();
+	        if(null!=bmfields){
+	        	for(int i =0,l = bmfields.length;i<l;i++){
+	        		Field f = bmfields[i];
+	        		if(f.isForDisplay()){
+	        			DataSetFieldConfig dfc = DataSetFieldConfig.getInstance(f.getObjectContext());
+	        			dfc.setPrompt(session.getLocalizedPrompt(dfc.getPrompt()));
+	        			lovDisplayFields.put(new JSONObject(dfc.getObjectContext()));
+	        		}
+	        	}
+	        }
+	        field.put("displayFields",lovDisplayFields);
+		}
+	}
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -54,10 +85,10 @@ public class DataSet extends Component {
 					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
 				}
 				
-				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
-				if(lovService!=null){
-					field.putString(Lov.PROPERTITY_LOV_SERVICE, uncertain.composite.TextParser.parse(lovService, model));
-				}
+				initLovService(Lov.PROPERTITY_LOV_SERVICE,session, model, field);
+
+				initLovService(Lov.PROPERTITY_LOV_MODEL,session, model, field);
+
 				String lovUrl = field.getString(Lov.PROPERTITY_LOV_URL);
 				if(lovUrl!=null){
 					field.putString(Lov.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
