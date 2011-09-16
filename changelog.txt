@@ -1,3 +1,20 @@
+1.2.0
+=====
+
+2011-09-16 － 周凡
+-----------------------------------
+* 修正解析${}时的bug，原有模板、screen中的两个$写法需要修正
+* 修正配置文件解析时，view关联的feature被创建两次的问题
+
+
+2011-09-04 - 周凡
+-----------------------------------
+* UncertainEngine启动时自动注册为JMX MBean
+* 改进UncertainEngine所管理的对象注册为MBean的机制
+* 内建对象ClassRegistry和IObjectRegistry注册为MBean
+* UncertainEngine配置文件拆分为uncertain.xml和uncertain.local.xml，后者用于配置与本地信息有关的内容，如路径
+* 启动时通过package方式加载XML标记映射
+
 1.1.7
 =====
 
