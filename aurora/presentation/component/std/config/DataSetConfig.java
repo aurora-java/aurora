@@ -27,6 +27,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_MAP = "map";
 	public static final String PROPERTITY_MODEL = "model";
 	public static final String PROPERTITY_LOADDATA = "loaddata";
+	public static final String PROPERTITY_MAX_PAGESIZE = "maxpagesize";
 	public static final String PROPERTITY_PAGESIZE = "pagesize";
 	public static final String PROPERTITY_PAGEID = "pageid";	
 	public static final String PROPERTITY_QUERYURL = "queryurl";
@@ -42,6 +43,7 @@ public class DataSetConfig extends ComponentConfig {
 	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
+	public static final int DEFAULT_MAX_PAGE_SIZE = 500;
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	
 	
@@ -130,6 +132,12 @@ public class DataSetConfig extends ComponentConfig {
 		return getBoolean(PROPERTITY_FETCHALL, false);
 	}
 	
+	public int getMaxPageSize(){
+		return getInt(PROPERTITY_MAX_PAGESIZE, DEFAULT_MAX_PAGE_SIZE);		
+	}
+	public void setMaxPageSize(int size){
+		putInt(PROPERTITY_MAX_PAGESIZE, size);
+	}
 	public int getPageSize(){
 		return getInt(PROPERTITY_PAGESIZE, DEFAULT_PAGE_SIZE);		
 	}

@@ -13,7 +13,9 @@
                 <ss:attribute name="canQuery" default="true" document="是否可查询" editor="" type="ss:boolean"/>
                 <ss:attribute name="canSubmit" default="true" document="是否可以提交" type="ss:boolean"/>
                 <ss:attribute name="lookupCode" document="值列表的CODE"/>
-                <ss:attribute name="pageSize" document="查询的分页大小" type="ss:int"/>
+                <ss:attribute name="autoPageSize" default="false" document="根据Grid的高度，自适应分页大小。注：只在grid初次加载时生效，如果Grid设定了marginHeigt，行数不会根据窗口大小的调整而调整。" type="ss:boolean"/>
+                <ss:attribute name="maxPageSize" default="500" document="查询的分页大小的最大值，用于限制navBar中的分页输入框的输入上限" type="ss:int"/>
+				<ss:attribute name="pageSize" default="10" document="查询的分页大小" type="ss:int"/>
                 <ss:attribute name="queryUrl" document="查询的URL地址"/>
                 <ss:attribute name="submitUrl" document="提交的url地址"/>
                 <ss:attribute name="selectable" default="false" document="是否可选择" type="ss:boolean"/>
