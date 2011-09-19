@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.GeneralException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
@@ -48,9 +49,14 @@ public class ModelQuery extends AbstractQueryAction {
         return model;
     }
     
+    public String getName(){
+        return super.getName()+"[" + getModel() + "]";
+    }
+    
     protected void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc )
         throws Exception
     {
+
         service.query(param, consumer, desc);
     }
     

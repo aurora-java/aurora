@@ -16,7 +16,7 @@ import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
-public abstract class AbstractModelAction extends AbstractEntry implements IConfigurable {
+public abstract class AbstractModelAction extends AbstractEntry {
     
     String                  mModel;
 
@@ -88,11 +88,12 @@ public abstract class AbstractModelAction extends AbstractEntry implements IConf
     }
     
     public void beginConfigure(CompositeMap config){
+        super.beginConfigure(config);
         mEntryConfig = config;
     }
     
-    public void endConfigure(){
-        
+    public String getName(){
+        return super.getName()+"[" + getModel() + "]";
     }
     
 /*
