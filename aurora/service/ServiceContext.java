@@ -90,6 +90,11 @@ public class ServiceContext extends RuntimeContext {
         return getChildSection(KEY_ERROR);
     }
     
+    public boolean hasError(){
+        CompositeMap error = getObjectContext().getChild(KEY_ERROR);
+        return error!=null;
+    }
+    
     public CompositeMap getModel(){
         return getChildSection(KEY_MODEL);
     }    
