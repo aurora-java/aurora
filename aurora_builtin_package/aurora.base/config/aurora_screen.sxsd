@@ -61,11 +61,11 @@
                 <ss:element ref="a:view"/>
             </ss:elements>
             <ss:attributes>
-                <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
-                <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}"/>
-                <ss:attribute name="cacheEnabled" document="是否启用cache" type="ss:boolean"/>
                 <ss:attribute name="customizationEnabled" document="是否允许个性化配置" type="ss:boolean"/>
             </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:BaseService"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:datas" document="DataSet的数据">
             <ss:elements>
@@ -127,6 +127,18 @@
                 <ss:element ref="a:BaseViewComponent"/>
             </ss:elements>
         </ss:element>
+        <ss:element name="a:service">
+            <ss:extensions>
+                <ss:extension base="a:BaseService"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="checkSessionLock" document="单独控制该service是否启用防重复提交，覆盖全局文件的缺省配置" type="ss:boolean"/>
+                <ss:attribute name="lockKey" document="设置用于判断两次请求是否属于重复提交的表达式，例如${/session/@session_id}" type="ss:string"/>
+                <ss:attribute name="lockService" document="缺省情况下以当前被执行的service的名字来执行锁定。用该属性可以设置不同的锁定逻辑，以实现“如果A请求没有执行完毕，则B请 
+求也不能被提交”这样的需求" type="ss:string"/>
+                <ss:attribute name="lockErrorMessage" document="如果检测到重复提交，显示给客户端的错误信息" type="ss:string"/>
+            </ss:attributes>
+        </ss:element>
     </ss:elements>
     <ss:types>
         <ss:simpleType name="a:selectType">
@@ -147,5 +159,12 @@
     <ss:types>
         <ss:simpleType name="a:DataSetReference" base="ss:string" document="对DataSet的引用" referenceType="a:dataset"/>
         <ss:simpleType name="a:ScreenReference" base="ss:string" document="对screen的引用" referenceType="a:screen"/>
+        <ss:complexType name="a:BaseService">
+            <ss:attributes>
+                <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
+                <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}"/>
+                <ss:attribute name="cacheEnabled" document="是否启用cache" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:complexType>
     </ss:types>
 </ss:schema>
