@@ -38,27 +38,22 @@ public class DataSet extends Component {
         this.mFactory = factory;
     }
 	
-	private void initLovService(String name,BuildSession session,CompositeMap model,CompositeMap field) throws IOException{
-		String lovService = field.getString(name);
-		if(lovService!=null){
-			String baseModel =  uncertain.composite.TextParser.parse(lovService, model);
-			field.putString(name,baseModel);
-			BusinessModel bm = null;
-	        bm = mFactory.getModelForRead(baseModel.split("\\?")[0]);
-	        Field[] bmfields = bm.getFields();
-	        JSONArray lovDisplayFields = new JSONArray();
-	        if(null!=bmfields){
-	        	for(int i =0,l = bmfields.length;i<l;i++){
-	        		Field f = bmfields[i];
-	        		if(f.isForDisplay()){
-	        			DataSetFieldConfig dfc = DataSetFieldConfig.getInstance(f.getObjectContext());
-	        			dfc.setPrompt(session.getLocalizedPrompt(dfc.getPrompt()));
-	        			lovDisplayFields.put(new JSONObject(dfc.getObjectContext()));
-	        		}
-	        	}
-	        }
-	        field.put("displayFields",lovDisplayFields);
-		}
+	private void initLovService(String baseModel,BuildSession session,CompositeMap field) throws IOException{
+		BusinessModel bm = null;
+        bm = mFactory.getModelForRead(baseModel.split("\\?")[0]);
+        Field[] bmfields = bm.getFields();
+        JSONArray lovDisplayFields = new JSONArray();
+        if(null!=bmfields){
+        	for(int i =0,l = bmfields.length;i<l;i++){
+        		Field f = bmfields[i];
+        		if(f.isForDisplay()){
+        			DataSetFieldConfig dfc = DataSetFieldConfig.getInstance(f.getObjectContext());
+        			dfc.setPrompt(session.getLocalizedPrompt(dfc.getPrompt()));
+        			lovDisplayFields.put(new JSONObject(dfc.getObjectContext()));
+        		}
+        	}
+        }
+        field.put("displayFields",lovDisplayFields);
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
@@ -84,11 +79,18 @@ public class DataSet extends Component {
 				if(options!=null){
 					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
 				}
-				
-				initLovService(Lov.PROPERTITY_LOV_SERVICE,session, model, field);
-
-				initLovService(Lov.PROPERTITY_LOV_MODEL,session, model, field);
-
+				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
+				if(lovService!=null){
+					String baseModel = uncertain.composite.TextParser.parse(lovService, model);
+					field.putString(Lov.PROPERTITY_LOV_SERVICE,baseModel);
+					initLovService(baseModel,session,field);
+				}
+				String lovModel = field.getString(Lov.PROPERTITY_LOV_MODEL);
+				if(lovModel!=null){
+					String baseModel = uncertain.composite.TextParser.parse(lovModel, model);
+					field.putString(Lov.PROPERTITY_LOV_MODEL,baseModel);
+					initLovService(baseModel,session,field);
+				}
 				String lovUrl = field.getString(Lov.PROPERTITY_LOV_URL);
 				if(lovUrl!=null){
 					field.putString(Lov.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));

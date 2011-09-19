@@ -11,7 +11,9 @@ import uncertain.composite.CompositeMap;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.NumberFieldConfig;
 
 public class NavBar extends ToolBar {
 	
@@ -73,11 +75,13 @@ public class NavBar extends ToolBar {
 		
 		String inputId = IDGenerator.getInstance().generate();
 		map.put("inputid", inputId);
-		CompositeMap button = new CompositeMap("textField");
+		CompositeMap button = new CompositeMap("numberField");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.putString(ComponentConfig.PROPERTITY_ID, inputId);
 		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
+		button.put(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, new Boolean(false));
+		button.put(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
 		view.addChild(button);
 		
 		String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
@@ -101,6 +105,7 @@ public class NavBar extends ToolBar {
 			comboBox.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
 			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
+			comboBox.put(ComboBoxConfig.PROPERTITY_EDITABLE, new Boolean(true));
 			view.addChild(comboBox);
 			String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");

@@ -1,6 +1,5 @@
 package aurora.presentation.component.std.config;
 
-import aurora.application.AuroraApplication;
 import uncertain.composite.CompositeMap;
 
 
@@ -11,6 +10,7 @@ public class ComboBoxConfig extends InputFieldConfig {
 	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
 	public static final String PROPERTITY_OPTIONS = "options";
 	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_EDITABLE = "editable";
 	
 	public static final String TAG_NAME = "comboBox";
 	
@@ -55,6 +55,12 @@ public class ComboBoxConfig extends InputFieldConfig {
 	}
 	public void setRenderer(String renderer){
 		putString(PROPERTITY_RENDERER, renderer);
+	}
+	public boolean isEditable(){
+		return getBoolean(PROPERTITY_EDITABLE,false);
+	}
+	public void setEditable(Boolean editable){
+		put(PROPERTITY_EDITABLE, editable);
 	}
 	
 }
