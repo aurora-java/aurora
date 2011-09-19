@@ -168,6 +168,12 @@ public class ServiceSessionLock implements Serializable, IServiceSessionLock, IG
     public int getLockCount(){
         return mResourceLockMap.size();
     }
+    
+    public void clear(){
+        synchronized(mResourceLockMap){
+            mResourceLockMap.clear();
+        }
+    }
 
     public void registerMBean(IMBeanRegister register,
             IMBeanNameProvider name_provider)

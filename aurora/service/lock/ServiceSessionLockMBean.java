@@ -9,5 +9,7 @@ public interface ServiceSessionLockMBean {
     public String showAllLocks();
     
     public int getLockCount();
+    
+    public void clear();
 
 }
