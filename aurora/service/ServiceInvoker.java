@@ -17,6 +17,7 @@ public class ServiceInvoker {
             service_factory.beginService(context);
             IService service = (IService)service_factory.createService(service_name, context);
             service.invoke(app_proc);
+            service.release();
         }catch(Exception ex){
             scx.setSuccess(false);
             throw ex;

@@ -4,10 +4,14 @@
 package aurora.service;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.event.Configuration;
+import uncertain.event.IEventDispatcher;
 import uncertain.event.RuntimeContext;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
@@ -37,6 +41,8 @@ public class ServiceInstance implements IService, IConfigurableService {
     protected ProcedureRunner mRunner;
 
     private Object[] mEventArgs = { this };
+    
+    protected List<IResourceReleaser> mResourceReleasers = new LinkedList<IResourceReleaser>();
     
     static final String INSTANCE_KEY = RuntimeContext.getTypeKey(IService.class);
 
@@ -136,7 +142,7 @@ public class ServiceInstance implements IService, IConfigurableService {
         return mContextMap;
     }
     
-    public Configuration getConfig(){
+    public IEventDispatcher getConfig(){
         return mConfig;
     }
 
@@ -235,6 +241,21 @@ public class ServiceInstance implements IService, IConfigurableService {
     
     public ILogger getServiceLogger(){
         return LoggingContext.getLogger(mContextMap, LOGGING_TOPIC);
+    }
+    
+    public void release(){
+        if(mResourceReleasers.size()>0)
+            for( IResourceReleaser rl : mResourceReleasers){
+                try{
+                    rl.doRelease(mServiceContext);
+                }catch(Throwable thr){
+                    mRunner.getLogger().log(Level.WARNING, "Error when releasing resource", thr);
+                }
+            }
+    }
+    
+    public void addResourceReleaser( IResourceReleaser rl ){
+        mResourceReleasers.add(rl);
     }
 
 }

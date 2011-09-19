@@ -4,6 +4,7 @@
  */
 package aurora.service;
 
+
 public interface IResourceReleaser {
     
     /** Release resource generated in service context */
