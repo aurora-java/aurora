@@ -23,7 +23,8 @@ public class InitProcedureInvoker extends AbstractProcedureInvoker implements IF
     
     public int attachTo(CompositeMap config, Configuration procConfig ){
         proc_element_name = config.getName();
-        return IFeature.NORMAL;
+        //return IFeature.NORMAL;
+        return IFeature.NO_CHILD_CONFIG;
     }
     
     public void doInvoke( ProcedureRunner runner ) throws Exception {

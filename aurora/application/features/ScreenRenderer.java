@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
+import uncertain.event.Configuration;
 import uncertain.event.EventModel;
 import uncertain.event.RuntimeContext;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
@@ -38,7 +40,7 @@ import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
-public class ScreenRenderer {
+public class ScreenRenderer implements IFeature {
 	
 
     public static final String HTML_PAGE = "html-page";
@@ -274,4 +276,9 @@ public class ScreenRenderer {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+
+    public int attachTo(CompositeMap config_data, Configuration config) {
+        //return IFeature.NO_CHILD_CONFIG;
+        return IFeature.NORMAL;
+    }
 }
