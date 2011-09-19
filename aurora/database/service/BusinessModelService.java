@@ -128,6 +128,8 @@ public class BusinessModelService {
                 }
             });            
         }
+        
+        mRunner.setSaveStackTrace(false);
 
     }
 
@@ -190,6 +192,7 @@ public class BusinessModelService {
                 mServiceContext.setCurrentParameter(parameters);
             mServiceContext.setResultsetConsumer(consumer);
             mServiceContext.setFetchDescriptor(desc);
+            mRunner.setSaveStackTrace(false);
             mRunner.run();
             mRunner.checkAndThrow();
         } finally {
