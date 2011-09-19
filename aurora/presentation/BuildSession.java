@@ -105,12 +105,13 @@ public class BuildSession {
     }
 
     private void startSession(CompositeMap view) {
-        mCurrentConfig = mOwner.createConfiguration();
-        /*
-         * if(mBaseConfig!=null) mCurrentConfig.setParent(mBaseConfig);
-         */
-        mCurrentConfig.loadConfig(view);
-        mCurrentConfig.setLogger(getLogger());
+        if(mBaseConfig!=null)
+            mCurrentConfig = mBaseConfig;
+        else{
+            mCurrentConfig = mOwner.createConfiguration();
+            mCurrentConfig.loadConfig(view);
+            mCurrentConfig.setLogger(getLogger());
+        }
         /*
          * if(mSessionContext!=null) mSessionContext.clear();
          */
@@ -170,6 +171,10 @@ public class BuildSession {
             context = new ViewContext(model, view);
         }
 
+//        if(from_begin){
+//            this.fireBuildEvent("StartBuildSession", context, true);
+//        }
+        
         IViewBuilder builder = mOwner.getViewBuilder(view);
         if (builder == null)
             throw new IllegalStateException(
@@ -293,9 +298,9 @@ public class BuildSession {
         if (for_all_components) {
             // mCurrentConfig.getLogger().info("to fire global "+event_name);
             mCurrentConfig.fireEvent(event_name, mSessionContext, args);
-            if (mBaseConfig != null) {
+            if (mBaseConfig != null && mBaseConfig!=mCurrentConfig) {
                 mBaseConfig.fireEvent(event_name, mSessionContext, args);
-                mBaseConfig.getLogger().info("Fired " + event_name);
+                //mBaseConfig.getLogger().info("Fired " + event_name);
             }
         } else {
             HandleManager manager = mCurrentConfig.createHandleManager(context
