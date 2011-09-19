@@ -19,5 +19,4 @@
             <p:action Name="DoDispatch"/>
         </p:case>
     </p:switch>
-    <p:action Name="ServiceEnd"/>
 </p:procedure>
