@@ -16,14 +16,19 @@ import javax.transaction.UserTransaction;
 
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.event.IEventDispatcher;
 import uncertain.event.IParticipantManager;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.IProcedureRegistry;
 import uncertain.proc.Procedure;
+import uncertain.proc.trace.StackTraceManager;
+import uncertain.proc.trace.TraceElement;
 import aurora.events.E_DetectProcedure;
+import aurora.events.E_ServiceFinish;
 import aurora.service.IConfigurableService;
 import aurora.service.IService;
+import aurora.service.ServiceContext;
 import aurora.service.ServiceController;
 import aurora.service.ServiceThreadLocal;
 import aurora.transaction.ITransactionService;
@@ -68,7 +73,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	public static Procedure getProcedureToRun(IProcedureManager procManager ,IService service) throws Exception {
 		String procedure_name = null;
-		Configuration config = service.getConfig();
+		IEventDispatcher config = service.getConfig();
 		config
 				.fireEvent(E_DetectProcedure.EVENT_NAME,
 						new Object[] { service });
@@ -84,6 +89,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+	    
+	    // check if UncertainEngine is inited properly
 	    if(!mUncertainEngine.isRunning()){
 	        StringBuffer msg = new StringBuffer("Application failed to initialize");
 	        Throwable thr = mUncertainEngine.getInitializeException();
@@ -92,12 +99,8 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	        response.sendError(500, msg.toString());
 	        return;
 	    }
-	    
-	    
-		request.setCharacterEncoding("UTF-8");//form post encoding
-		
-		IService svc = null;
-		boolean is_success = true;
+
+	    // create transaction
 		UserTransaction trans = null;
 		IObjectRegistry or = mUncertainEngine.getObjectRegistry();
 		ITransactionService ts = (ITransactionService) or
@@ -105,10 +108,19 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		if (ts == null)
 			throw new ServletException("ITransactionService instance not found");		
 		trans = ts.getUserTransaction();
-		try {
+        
+		// begin service
+        StackTraceManager  stm = new StackTraceManager();
+        request.setCharacterEncoding("UTF-8");//form post encoding
+        IService svc = null;
+        boolean is_success = true;		
+
+        try {
 			trans.begin();
 			svc = createServiceInstance(request, response);
-			ServiceThreadLocal.setCurrentThreadContext(svc.getServiceContext().getObjectContext());
+			ServiceContext ctx = svc.getServiceContext();
+			ctx.setStackTraceManager(stm);
+			ServiceThreadLocal.setCurrentThreadContext(ctx.getObjectContext());
 			ServiceThreadLocal.setSource(request.getRequestURI());
 			populateService(request, response, svc);
 	        writeCacheDirection(response,svc);
@@ -133,12 +145,15 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				            cfsvc.parseConfig();
 				    }
 				    is_success = svc.invoke(proc);
+				    if(ctx.hasError())
+				        is_success = false;
 				}
 			}
 			if (is_success) {
 				if (post_service_proc != null)
 					is_success = svc.invoke(post_service_proc);
 			}
+	        
 		} catch (Exception ex) {
 			is_success = false;
 			mUncertainEngine.logException("Error when executing service "
@@ -152,22 +167,42 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			if (is_success) {
 				try {
 					trans.commit();
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					mUncertainEngine.logException("Error when commit service "
 							+ request.getRequestURI(), e);
 				}
 			} else {
 				try {
 					trans.rollback();
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					mUncertainEngine.logException(
 							"Error when rollback service "
 									+ request.getRequestURI(), e);
 				}
 			}
+			
+			// release resource
+			svc.release();
+			
+			// set overall finish time
+            TraceElement elm = stm.getRootNode();
+            if(elm!=null)
+                elm.setExitTime(System.currentTimeMillis());
+            //System.out.println(elm.asCompositeMap().toXML());
+            
+            // fire ServiceFinish event
+            if(svc!=null)
+                if(svc.getConfig()!=null)
+                    try{
+                        svc.getConfig().fireEvent(E_ServiceFinish.EVENT_NAME, new Object[]{svc});
+                    }catch(Throwable ex){
+                        mUncertainEngine.logException("Error when fire ServiceFinish", ex);
+                    }
+			
 			ServiceThreadLocal.remove();
 			cleanUp(svc);
 			ts.stop();
+			
 		}		
 	}
 
