@@ -105,16 +105,18 @@ public class BuildSession {
     }
 
     private void startSession(CompositeMap view) {
-        if(mBaseConfig!=null)
+        if(mBaseConfig!=null){
             mCurrentConfig = mBaseConfig;
-        else{
+            
+        }else{
             mCurrentConfig = mOwner.createConfiguration();
-            mCurrentConfig.loadConfig(view);
             mCurrentConfig.setLogger(getLogger());
         }
-        /*
-         * if(mSessionContext!=null) mSessionContext.clear();
-         */
+        
+        // Anyway root node of view will be loaded, in case new nodes were
+        // added dynamiccally in previous process. Configuration will guarantee
+        // no double creation of feature instance
+        mCurrentConfig.loadConfig(view);
     }
 
     private void endSession() {
