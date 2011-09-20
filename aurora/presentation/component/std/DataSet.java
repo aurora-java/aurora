@@ -80,7 +80,7 @@ public class DataSet extends Component {
 					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
 				}
 				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
-				if(lovService!=null){
+				if(lovService!=null && lovService.length()>0){
 					String baseModel = uncertain.composite.TextParser.parse(lovService, model);
 					field.putString(Lov.PROPERTITY_LOV_SERVICE,baseModel);
 					initLovService(baseModel,session,field);
