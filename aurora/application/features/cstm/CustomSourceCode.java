@@ -286,6 +286,9 @@ public class CustomSourceCode {
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null)
 			return empty;
+		int idx = filePath.indexOf('?'); 
+		if(idx>0)
+		    filePath = filePath.substring(0,idx);
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
 		if (sourceFile == null || !sourceFile.exists())
