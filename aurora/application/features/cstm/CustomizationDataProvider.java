@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
@@ -25,10 +26,9 @@ import aurora.database.SqlRunner;
 import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
-import aurora.service.IServiceFactory;
-import aurora.service.ServiceInvoker;
+import aurora.service.ServiceInstance;
 
-public class CustomizationDataProvider implements ICustomizationDataProvider, IGlobalInstance {
+public class CustomizationDataProvider extends AbstractLocatableObject implements ICustomizationDataProvider, IGlobalInstance {
 
 	public static final String KEY_DIMENSION_INIT_PROC = "dimension_init_proc";
 	IObjectRegistry registry;
@@ -49,7 +49,7 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 		SqlServiceContext sql_context = null;
 		try {
 			Connection conn = ds.getConnection();
-			String query_dimensions = "select d.dimension_code,d.data_query_sql,d.dimension_init_proc from sys_config_dimension d where d.enabled_flag='Y' order by d.order_num";
+			String query_dimensions = "select d.dimension_code,d.data_query_sql,d.dimension_init_proc,d.dimension_tag from sys_config_dimension d where d.enabled_flag='Y' order by d.order_num";
 			sql_context = SqlServiceContext.createSqlServiceContext(conn);
 			ParsedSql stmt = createStatement(query_dimensions);
 			SqlRunner runner = new SqlRunner(sql_context, stmt);
@@ -76,7 +76,7 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 					IObjectRegistry.class, CustomizationDataProvider.class.getCanonicalName());
 		if (dimensions == null || dimensions.getChilds() == null)
 			return null;
-		CompositeMap contextCopy = (CompositeMap)context.clone();
+
 		DatabaseServiceFactory databasefactory = (DatabaseServiceFactory) registry
 				.getInstanceOfType(DatabaseServiceFactory.class);
 		SqlServiceContext ssc = null;
@@ -88,11 +88,16 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 			String exits_sql = "select 1   from dual  where exists  (select 1 from sys_config_customization t where t.source_file = '"+service_name+"' and t.enable_flag='Y')";
 			ParsedSql exits_stmt = createStatement(exits_sql);
 			SqlRunner exits_runner = new SqlRunner(ssc, exits_stmt);
-			rs_exists = exits_runner.query(contextCopy);
+			rs_exists = exits_runner.query(null);
 			if(!rs_exists.next()){
 				return null;
 			}
-			executeDimensionProc(dimensions, service_name, registry, contextCopy);
+			
+			ServiceInstance svc = ServiceInstance.getInstance(context);
+			String tag = svc.getServiceConfigData().getString("tag");
+			if(tag!=null){
+			    executeDimensionProc(tag, dimensions, service_name, registry, context);
+			}
 			String dimenson_sql_template = "select t.record_id,t.head_id,t.source_file,t.dimension_type,t.dimension_value,d.order_num,t.mod_type,"
 					+ "t.id_value,t.array_name,t.index_field,t.index_value,t.xpath,t.position,t.config_content,t.attrib_key,t.attrib_value,t.fields_order,t.comments,d.dimension_init_proc"
 					+ " from sys_config_customization t,sys_config_dimension d where t.dimension_type=d.dimension_code and t.enable_flag = 'Y' and t.source_file='"
@@ -117,7 +122,7 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 				return null;
 			ParsedSql stmt = createStatement(sb.toString());
 			SqlRunner runner = new SqlRunner(ssc, stmt);
-			rs_details = runner.query(contextCopy);
+			rs_details = runner.query(context);
 			ResultSetLoader mRsLoader = new ResultSetLoader();
 			mRsLoader.setFieldNameCase(Character.LOWERCASE_LETTER);
 			FetchDescriptor desc = FetchDescriptor.fetchAll();
@@ -145,25 +150,23 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 		return stmt;
 	}
 
-	public void executeDimensionProc(CompositeMap dimensions, String service_name, IObjectRegistry registry,
+	public void executeDimensionProc(String service_tag, CompositeMap dimensions, String service_name, IObjectRegistry registry,
 			CompositeMap context) throws Exception {
 		if (dimensions == null || dimensions.getChilds() == null)
 			return;
 		if (registry == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					IObjectRegistry.class, CustomizationDataProvider.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this,	IObjectRegistry.class);
 		IProcedureManager procedureManager = (IProcedureManager) registry.getInstanceOfType(IProcedureManager.class);
 		if (procedureManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(),
-					IProcedureManager.class, CustomSourceCode.class.getName());
-		IServiceFactory serviceFactory = (IServiceFactory) registry.getInstanceOfType(IServiceFactory.class);
-		if (serviceFactory == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(context.asLocatable(), IServiceFactory.class,
-					CustomSourceCode.class.getName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this,	IProcedureManager.class);
 		for (Iterator it = dimensions.getChildIterator(); it.hasNext();) {
 			CompositeMap dimension = (CompositeMap) it.next();
 			String dimension_init_proc = dimension.getString(KEY_DIMENSION_INIT_PROC);
-			if (dimension_init_proc != null) {
+			String tag = dimension.getString("dimension_tag");
+			if(tag==null)
+			    continue;
+			boolean is_tag_match = service_tag.contains(tag);
+			if (dimension_init_proc != null && is_tag_match) {
 				Procedure proc = null;
 				try {
 					proc = procedureManager.loadProcedure(dimension_init_proc);
@@ -171,7 +174,8 @@ public class CustomizationDataProvider implements ICustomizationDataProvider, IG
 					throw BuiltinExceptionFactory.createResourceLoadException(context.asLocatable(),
 							dimension_init_proc, ex);
 				}
-				ServiceInvoker.invokeProcedureWithTransaction(service_name, proc, serviceFactory, context);
+				ServiceInstance svc = ServiceInstance.getInstance(context);
+				svc.invoke(proc);
 			}
 		}
 	}
