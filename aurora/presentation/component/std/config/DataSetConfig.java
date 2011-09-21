@@ -43,7 +43,7 @@ public class DataSetConfig extends ComponentConfig {
 	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
-	public static final int DEFAULT_MAX_PAGE_SIZE = 500;
+	public static final int DEFAULT_MAX_PAGE_SIZE = 1000;
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	
 	
