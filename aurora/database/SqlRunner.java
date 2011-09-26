@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -68,6 +69,11 @@ public class SqlRunner {
     
     public static Collection getSourceParameter( CompositeMap context, String path ){
         if(path==null) return context.getChilds();
+        if(".".equals(path)){
+            ArrayList lst = new ArrayList(1);
+            lst.add(context);
+            return lst;
+        }
         Object obj = context.getObject(path);
         if(obj==null) return null;
         if( obj instanceof CompositeMap ){
