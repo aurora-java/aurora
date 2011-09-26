@@ -36,7 +36,7 @@ import aurora.transaction.UserTransactionImpl;
 
 public abstract class AbstractFacadeServlet extends HttpServlet {
 
-	public static final String POST_SERVICE = "post-service";
+	//public static final String POST_SERVICE = "post-service";
 	public static final String PRE_SERVICE = "pre-service";
 	UncertainEngine mUncertainEngine;
 	IProcedureManager mProcManager;
@@ -57,7 +57,7 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 			HttpServletResponse response, IService service) throws Exception;
 
 	protected abstract void handleException(HttpServletRequest request,
-			HttpServletResponse response, Exception ex) throws IOException, ServletException;
+			HttpServletResponse response, Throwable ex) throws IOException, ServletException;
 
 	protected abstract void cleanUp(IService service);
 	
@@ -113,23 +113,24 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
         StackTraceManager  stm = new StackTraceManager();
         request.setCharacterEncoding("UTF-8");//form post encoding
         IService svc = null;
+        ServiceContext ctx = null;
         boolean is_success = true;		
 
         try {
 			trans.begin();
 			svc = createServiceInstance(request, response);
-			ServiceContext ctx = svc.getServiceContext();
+			ctx = svc.getServiceContext();
 			ctx.setStackTraceManager(stm);
 			ServiceThreadLocal.setCurrentThreadContext(ctx.getObjectContext());
 			ServiceThreadLocal.setSource(request.getRequestURI());
 			populateService(request, response, svc);
 	        writeCacheDirection(response,svc);
 
-			Procedure pre_service_proc=null, post_service_proc=null;
+			Procedure pre_service_proc=null;
 	        
 	        if (mProcRegistry != null) {
 	            pre_service_proc = mProcRegistry.getProcedure(PRE_SERVICE);
-	            post_service_proc = mProcRegistry.getProcedure(POST_SERVICE);
+	            //post_service_proc = mProcRegistry.getProcedure(POST_SERVICE);
 	        }
 
 			
@@ -149,13 +150,19 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 				        is_success = false;
 				}
 			}
+			/*
 			if (is_success) {
 				if (post_service_proc != null)
 					is_success = svc.invoke(post_service_proc);
 			}
+			*/
 	        
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			is_success = false;
+			/*
+			if(ctx.getException()==null)
+			    ctx.setException(ex);
+			    */
 			mUncertainEngine.logException("Error when executing service "
 					+ request.getRequestURI(), ex);
 			handleException(request, response, ex);

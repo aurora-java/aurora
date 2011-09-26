@@ -57,7 +57,7 @@ public class FacadeServlet extends AbstractFacadeServlet {
     }
 
     protected void handleException(HttpServletRequest request,
-            HttpServletResponse response, Exception ex) throws IOException, ServletException {
+            HttpServletResponse response, Throwable ex) throws IOException, ServletException {
         Throwable thr = ex.getCause();
         if (thr == null)
             thr = ex;
