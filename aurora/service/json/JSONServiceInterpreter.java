@@ -131,6 +131,12 @@ public class JSONServiceInterpreter {
         }
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(context.getObjectContext());        
         HttpServletResponse response = svc.getResponse();
+        /*
+        if(response.isCommitted()){
+            logger.info("response is already commited, no JSON response will be written");
+            return;
+        }
+        */
         prepareResponse(response);
         PrintWriter out = response.getWriter();
         out.println("{ \"success\":false ");
