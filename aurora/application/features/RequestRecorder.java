@@ -414,4 +414,44 @@ public class RequestRecorder extends AbstractLocatableObject implements
         register.register(name, this);
     }
 
+    public int getCheckInterval() {
+        return checkInterval;
+    }
+
+    public void setCheckInterval(int checkInterval) {
+        this.checkInterval = checkInterval;
+    }
+
+    public long getConnectionIdleTime() {
+        return connectionIdleTime;
+    }
+
+    public void setConnectionIdleTime(long connectionIdleTime) {
+        this.connectionIdleTime = connectionIdleTime;
+    }
+
+    public String getRequestSaveBm() {
+        return requestSaveBm;
+    }
+
+    public void setRequestSaveBm(String requestSaveBm) {
+        this.requestSaveBm = requestSaveBm;
+    }
+
+    public boolean isSaveDetail() {
+        return saveDetail;
+    }
+
+    public void setSaveDetail(boolean saveDetail) {
+        this.saveDetail = saveDetail;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
 }
