@@ -27,7 +27,7 @@ public class ConfigCustomizationListener implements E_PrepareServiceConfig {
     public int onPrepareServiceConfig(IService service) throws Exception {
         ServiceInstance svc = (ServiceInstance)service;
         CompositeMap config = svc.getServiceConfigData();
-        boolean customization_enabled = config.getBoolean(KEY_CUSTOMIZATION_ENABLED, true);
+        boolean customization_enabled = config.getBoolean(KEY_CUSTOMIZATION_ENABLED, mCustomizationDataProvider.getDefaultCustomizationEnabled());
         if(customization_enabled){
             ServiceContext svc_context = svc.getServiceContext();
             String svc_name = svc.getName();

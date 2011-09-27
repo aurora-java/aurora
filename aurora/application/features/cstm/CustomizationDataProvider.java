@@ -33,6 +33,7 @@ public class CustomizationDataProvider extends AbstractLocatableObject implement
 	public static final String KEY_DIMENSION_INIT_PROC = "dimension_init_proc";
 	IObjectRegistry registry;
 	CompositeMap dimensions = null;
+	boolean    defaultCustomizationEnabled = true;
 
 	public CustomizationDataProvider(IObjectRegistry registry) {
 		this.registry = registry;
@@ -179,4 +180,12 @@ public class CustomizationDataProvider extends AbstractLocatableObject implement
 			}
 		}
 	}
+
+    public boolean getDefaultCustomizationEnabled() {
+        return defaultCustomizationEnabled;
+    }
+
+    public void setDefaultCustomizationEnabled(boolean defaultCustomizationEnabled) {
+        this.defaultCustomizationEnabled = defaultCustomizationEnabled;
+    }
 }
