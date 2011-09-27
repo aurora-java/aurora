@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -58,23 +59,27 @@ public class HttpRequestTransfer implements ISingleton {
 
 	public static void copyRequest(HttpServiceInstance svc) {
 		HttpServletRequest request = svc.getRequest();
-		JSONObject dm = getParameterString(svc.getRequest());
+		//JSONObject dm = getParameterString(svc.getRequest());
 		CompositeMap r = svc.getContextMap().createChild(KEY_REQUEST);
 
 		r.put(KEY_ADDRESS, request.getRemoteAddr());
-		r.put("url", svc.getName());
+		//r.put("url", svc.getName());
+		r.put("url", request.getRequestURI());
+		/*
 		if (dm.length() != 0) {
 			r.put("params", dm);
 		}
+		*/
 		r.put("server_name", request.getServerName());
 		r.put("context_path", request.getContextPath());
 		r.put("server_port", new Integer(request.getServerPort()));
+		r.put("request_id", UUID.randomUUID());
 		CompositeMap cookie = svc.getContextMap().createChild("cookie");
 		populateCookieMap(request, cookie);
 		copyParameter(svc.getRequest(), svc);
 		copyHeader(svc.getRequest(), svc);
 	}
-
+/*
 	public static JSONObject getParameterString(HttpServletRequest request) {
 		Map params = request.getParameterMap();
 		JSONObject ps = new JSONObject();
@@ -107,7 +112,7 @@ public class HttpRequestTransfer implements ISingleton {
 		}
 		return ps;
 	}
-	
+*/	
 	public static void populateCookieMap( HttpServletRequest request, CompositeMap target ){
 	    Cookie[] cookies = request.getCookies();
 	    if(cookies!=null)
