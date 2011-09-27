@@ -180,7 +180,7 @@ public class ServiceSessionLock implements Serializable, IServiceSessionLock, IG
             throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
-       String name = name_provider.getMBeanName("Session", "name=ServiceSessionLock");
+       String name = name_provider.getMBeanName("Application", "name=ServiceSessionLock");
        register.register(name, this);
     }
 
