@@ -41,7 +41,7 @@ public class ServiceLogging extends LoggerProvider implements
     String          mPattern;
     CompositeMap    mConfig;
     // file name -> BasicFileHandler
-    HashMap         mHandlerMap;
+    // HashMap         mHandlerMap;
     boolean         mAppend;
     boolean         mEnablePerServiceConfig = false;
     // instance to provide service level logging config
@@ -52,7 +52,7 @@ public class ServiceLogging extends LoggerProvider implements
         mEngine = engine;
         mRegistry = engine.getObjectRegistry();
         mOcManager = engine.getOcManager();
-        mHandlerMap = new HashMap();
+        //mHandlerMap = new HashMap();
         mDirConfig = engine.getDirectoryConfig();
     }
     
@@ -74,6 +74,8 @@ public class ServiceLogging extends LoggerProvider implements
     }
     
     BasicFileHandler getLogHandler( String name ){
+        return createNewHandler(name);
+        /*
         BasicFileHandler handler = null;
         if(!mAppend){
             handler = createNewHandler(name);
@@ -85,6 +87,7 @@ public class ServiceLogging extends LoggerProvider implements
             }
         }
         return handler;
+        */
     }
     
     private LoggerProvider createDefaultLoggerProvider(){
@@ -192,11 +195,13 @@ public class ServiceLogging extends LoggerProvider implements
     }
     
     public void onShutdown(){
+        /*
         Iterator it = mHandlerMap.values().iterator();
         while(it.hasNext()){
            BasicFileHandler handler = (BasicFileHandler)it.next();
            handler.close();
         }
+        */
     }
 
     /**
