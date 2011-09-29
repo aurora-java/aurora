@@ -1,7 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package name="aurora.base">
-	<schema-files>
-		<schema-file path="aurora_base_type.sxsd"/>
-		<schema-file path="aurora_bm.sxsd"/>
-	</schema-files>
+<package name="aurora.plugin.spnego">
 </package>
