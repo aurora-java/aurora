@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+
+		<u:configurable-instance configFile="datasource.config" alternativeConfigFile="${configPath}/0.datasource.config">
+			<u:description>提供数据库操作所需的数据源</u:description>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="database.config">
+			<u:description>提供各种版本数据库的本地配置信息</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.database.profile.IDatabaseFactory" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="model-factory.config">
+			<u:description>提供IModelFactory实例</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.bm.IModelFactory" />
+				<u:type typeName="aurora.bm.ModelFactory" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="database-service-factory.config">
+			<u:description>提供IDatabaseServiceFactory实现</u:description>
+			<u:required-instances>
+				<u:type typeName="javax.sql.DataSource" />
+				<u:type typeName="aurora.database.profile.IDatabaseFactory" />
+				<u:type typeName="aurora.bm.IModelFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+				<u:type typeName="aurora.database.service.DatabaseServiceFactory" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+	</u:instances>
+</u:instance-config>

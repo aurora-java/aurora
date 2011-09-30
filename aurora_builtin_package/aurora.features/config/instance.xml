@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+
+		<u:configurable-instance configFile="cache.config" alternativeConfigFile="${configPath}/0.cache.config">
+			<u:description>实现INamedCacheFactory接口，提供可配置的cache服务</u:description>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="session-info-provider.config" >
+			<u:description>提供用户session信息，如关键字段的名称</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.application.ISessionInfoProvider" />
+			</u:implement-types>
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="cache-based-resource-access-checker.config" >
+			<u:description>检查用户是否有权限访问某个Web资源</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.application.ISessionInfoProvider" />
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.security.IResourceAccessChecker" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="bm-access.config" >
+			<u:description>检查用户是否有权限访问某个BM</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.bm.IModelFactory" />
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.bm.IBusinessModelAccessCheckerFactory" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="customization-data-provider.config" >
+			<u:description>提供个性化特性所需的配置信息</u:description>
+			<u:required-instances>
+				<u:type typeName="javax.sql.DataSource" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.application.features.cstm.ICustomizationDataProvider" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="service-prompt.config" >
+			<u:description>基于数据库的多语言实现</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.i18n.IMessageProvider" />
+			</u:implement-types>
+		</u:configurable-instance>
+
+		<u:configurable-instance configFile="request-record.config" >
+			<u:description>记录请求信息及异常信息到数据库</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="response-cache.config" >
+			<u:description>为请求响应提供cache</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+				<u:type typeName="uncertain.util.resource.ISourceFileManager" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.presentation.cache.IResponseCacheProvider" />
+			</u:implement-types>
+		</u:configurable-instance>		
+		
+		<u:configurable-instance configFile="service-lock.config" >
+			<u:description>实现session级的请求防重复提交功能</u:description>
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="service-procedure.config" >
+			<u:description>配置具有约定名称的流程，用于应用程序启动时，service执行前等时机被执行</u:description>
+			<u:implement-types>
+				<u:type typeName="uncertain.proc.IProcedureRegistry" />
+			</u:implement-types>
+		</u:configurable-instance>			
+					
+		
+	</u:instances>
+</u:instance-config>

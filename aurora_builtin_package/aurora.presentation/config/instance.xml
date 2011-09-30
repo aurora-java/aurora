@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+		<u:configurable-instance configFile="presentation-manager.config" >
+			<u:description>Aurora展示层</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.presentation.PresentationManager" />
+			</u:implement-types>
+		</u:configurable-instance>
+	</u:instances>
+</u:instance-config>

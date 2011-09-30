@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+		<u:configurable-instance configFile="app-init-procedure-invoker.config" />
+		<u:configurable-instance configFile="exception-descriptor.config">
+			<u:description>提供aurora.service.exception.IExceptionDescriptor的实现，用于将特定的异常类型，翻译成可读的信息</u:description>
+<!-- 
+			<u:implement-types>
+				<u:type typeName="aurora.application.ISessionInfoProvider" />
+			</u:implement-types>
+ -->			
+		</u:configurable-instance>
+	</u:instances>
+</u:instance-config>
