@@ -50,7 +50,7 @@ public class ViewComponentPackage extends ComponentPackage {
     }
     
     protected void loadComponents(){
-        File component_file = new File( getConfigDirectory(), FILE_COMPONENTS_CONFIG);
+        File component_file = new File( getConfigPath(), FILE_COMPONENTS_CONFIG);
         if(!component_file.exists())
             throw new PackageConfigurationError(FILE_COMPONENTS_CONFIG+" not exists in config directory");
         CompositeLoader loader = super.getPackageManager().getCompositeLoader();

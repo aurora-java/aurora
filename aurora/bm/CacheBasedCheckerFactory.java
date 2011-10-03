@@ -22,7 +22,7 @@ import uncertain.ocm.IObjectRegistry;
 public class CacheBasedCheckerFactory extends AbstractLocatableObject implements
         IBusinessModelAccessCheckerFactory, IGlobalInstance {
     
-    IObjectRegistry         mRegistry;
+    //IObjectRegistry         mRegistry;
     INamedCacheFactory      mCacheFactory;
     IModelFactory           mModelFactory;    
     ICache                  mBmDataCache;
@@ -49,12 +49,20 @@ public class CacheBasedCheckerFactory extends AbstractLocatableObject implements
         
     };
     
+    /*
     public CacheBasedCheckerFactory(IObjectRegistry reg) {
         mRegistry = reg;
     }
+    */
+    
+    public CacheBasedCheckerFactory(IModelFactory mf, INamedCacheFactory fact) {
+        this.mCacheFactory = fact;
+        this.mModelFactory = mf;
+    }
+    
     
     public void onInitialize(){
-        
+/*        
         mCacheFactory = (INamedCacheFactory)mRegistry.getInstanceOfType(INamedCacheFactory.class);
         if(mCacheFactory==null)
             throw BuiltinExceptionFactory.createInstanceNotFoundException(this, INamedCacheFactory.class, this.getClass().getName());
@@ -62,7 +70,7 @@ public class CacheBasedCheckerFactory extends AbstractLocatableObject implements
         mModelFactory = (IModelFactory)mRegistry.getInstanceOfType(IModelFactory.class);
         if(mModelFactory==null)
             throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IModelFactory.class, this.getClass().getName());
-        
+*/        
         if(mCacheName==null)
             throw BuiltinExceptionFactory.createAttributeMissing(this, "cacheName");
         

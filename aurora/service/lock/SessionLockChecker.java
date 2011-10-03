@@ -6,7 +6,7 @@ package aurora.service.lock;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
-import uncertain.core.IGlobalInstance;
+import uncertain.core.ILifeCycle;
 import uncertain.event.EventModel;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
@@ -16,7 +16,7 @@ import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.validation.ErrorMessage;
 
-public class SessionLockChecker implements IGlobalInstance, ISingleton {
+public class SessionLockChecker implements ISingleton, ILifeCycle {
     
     IServiceSessionLock      mSessionLock;
     IObjectRegistry          mObjectRegistry;
@@ -71,13 +71,18 @@ public class SessionLockChecker implements IGlobalInstance, ISingleton {
         return mSessionLock;
     }
     
-    public void onInitialize(){
+    public boolean startup(){
         mSessionLock = (IServiceSessionLock)mObjectRegistry.getInstanceOfType(IServiceSessionLock.class);
         if(mSessionLock==null){
             mSessionLock = new ServiceSessionLock();
             mObjectRegistry.registerInstance(IServiceSessionLock.class, mSessionLock);
         }
         mObjectRegistry.registerInstance(SessionLockChecker.class, this);
+        return true;
+    }
+    
+    public void shutdown(){
+        
     }
     
     public int onCheckServiceLock( ProcedureRunner runner )

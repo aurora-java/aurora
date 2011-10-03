@@ -10,12 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import uncertain.composite.CompositeMap;
-import uncertain.core.UncertainEngine;
 import uncertain.event.ParticipantManager;
-import uncertain.logging.ILogger;
 import uncertain.ocm.ClassRegistry;
-import uncertain.ocm.IObjectRegistry;
-import aurora.database.service.DatabaseServiceFactory;
 
 public class DatabaseFactory implements IDatabaseFactory {
     ISqlBuilderRegistry  mDefaultSqlBuilderRegistry;
@@ -26,13 +22,16 @@ public class DatabaseFactory implements IDatabaseFactory {
     ParticipantManager  mParticipantManager;
     CompositeMap        mProperties = new CompositeMap("properties");
     
-    UncertainEngine     mEngine;
-    ILogger             mLogger;
     
+    //ILogger             mLogger;
+    
+    /*
+    UncertainEngine     mEngine;
     public DatabaseFactory( UncertainEngine engine ){
         this();
         mEngine = engine;
     }
+    */
     
     public DatabaseFactory(){
         mDefaultSqlBuilderRegistry = new SqlBuilderRegistry();
@@ -121,7 +120,7 @@ public class DatabaseFactory implements IDatabaseFactory {
     public void setProperty( String key, Object value ){
         mProperties.put(key, value);    
     }
-    
+/*    
     public void onInitialize(){
         mLogger = mEngine.getLogger("aurora.database");
         mLogger.info("Constructing database factory");
@@ -135,7 +134,7 @@ public class DatabaseFactory implements IDatabaseFactory {
             dbsf.setDatabaseFactory(this);
         }
     }
-    
+*/    
     public ISqlBuilderRegistry getDefaultSqlBuilderRegistry(){
         return mDefaultSqlBuilderRegistry;
     }

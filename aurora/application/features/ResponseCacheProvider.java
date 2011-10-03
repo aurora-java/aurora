@@ -6,16 +6,17 @@ package aurora.application.features;
 
 import java.io.File;
 
-import aurora.presentation.cache.IResponseCacheProvider;
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.core.IGlobalInstance;
-import uncertain.event.EventModel;
-import uncertain.ocm.IObjectRegistry;
+import uncertain.core.ILifeCycle;
+import uncertain.exception.GeneralException;
+import uncertain.ocm.AbstractLocatableObject;
 import uncertain.util.resource.ISourceFile;
 import uncertain.util.resource.ISourceFileManager;
+import aurora.presentation.cache.IResponseCacheProvider;
 
-public class ResponseCacheProvider implements IResponseCacheProvider, IGlobalInstance {
+public class ResponseCacheProvider extends AbstractLocatableObject implements IResponseCacheProvider, IGlobalInstance, ILifeCycle {
     
     public static final String DEFAULT_SCREEN_CACHE_NAME = "ResponseCache";
     //TODO add /session/theme
@@ -25,21 +26,32 @@ public class ResponseCacheProvider implements IResponseCacheProvider, IGlobalIns
     String              mResponseCacheName = DEFAULT_SCREEN_CACHE_NAME;
     ICache              mResponseCache;
     INamedCacheFactory  mCacheFactory;
-    IObjectRegistry     mRegistry;
+    //IObjectRegistry     mRegistry;
     ISourceFileManager  mSourceFileManager;
     
-    
-    /**
-     * @param mCacheFactory
-     */
+
+    /*
     public ResponseCacheProvider(IObjectRegistry reg) {
         mRegistry = reg;
     }
+    */
     
-    public void onInitialize(){
-        mCacheFactory = (INamedCacheFactory)mRegistry.getInstanceOfType(INamedCacheFactory.class);
+    public ResponseCacheProvider(INamedCacheFactory mCacheFactory,
+            ISourceFileManager mSourceFileManager) {
+        super();
+        this.mCacheFactory = mCacheFactory;
+        this.mSourceFileManager = mSourceFileManager;
+    }
+
+    public boolean startup(){
         mResponseCache = mCacheFactory.getNamedCache(mResponseCacheName);
-        mSourceFileManager = (ISourceFileManager)mRegistry.getInstanceOfType(ISourceFileManager.class);
+        if(mResponseCache==null)
+            throw new GeneralException("uncertain.cache.named_cache_not_found", new Object[]{mResponseCacheName}, this);
+        return true;
+    }
+    
+    public void shutdown(){
+        
     }
 
     public String getFullCacheKey( String key){

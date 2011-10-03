@@ -10,8 +10,8 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
-import aurora.service.ServiceThreadLocal;
 
 /**
  * 
@@ -20,17 +20,22 @@ import aurora.service.ServiceThreadLocal;
  */
 public class DatabaseBasedMessageProvider implements IMessageProvider,IGlobalInstance {
 	
-	private DatabaseServiceFactory factory;
-	private IObjectRegistry registry;
+	private IDatabaseServiceFactory factory;
+	//private IObjectRegistry registry;
 	
 	private boolean inited = false;
 	
 	private HashMap cache = new HashMap();
 	
-	
+	/*
 	public DatabaseBasedMessageProvider(IObjectRegistry registry) {
 		super();
 		this.registry = registry;
+	}
+	*/
+	
+	public DatabaseBasedMessageProvider(IDatabaseServiceFactory fact) {
+	    this.factory = fact;
 	}
 	
 	private String descModel;
@@ -109,7 +114,7 @@ public class DatabaseBasedMessageProvider implements IMessageProvider,IGlobalIns
 	}
 
 	public void onInitialize() throws Exception {
-		factory = (DatabaseServiceFactory)registry.getInstanceOfType(DatabaseServiceFactory.class);
+		//factory = (DatabaseServiceFactory)registry.getInstanceOfType(DatabaseServiceFactory.class);
 		init();
 	}
 

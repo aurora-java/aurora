@@ -46,7 +46,7 @@ public class PresentationManager implements IGlobalInstance {
         MessageFactory.loadResource("resources.aurora_presentation_exceptions");
     }
 
-    public static final String LOGGING_TOPIC = "aurora.presentation.manager";
+    public static final String LOGGING_TOPIC = "aurora.presentation";
 
     //static final TemplateBasedView TEMPLATE_BASED_VIEW = new TemplateBasedView();
 
@@ -167,13 +167,13 @@ public class PresentationManager implements IGlobalInstance {
 
     public ViewComponentPackage loadViewComponentPackage(String path)
             throws IOException {
-        mLogger.log(Level.CONFIG, " =============== Loading package from "
+        mLogger.log(Level.INFO, " =============== Loading package from "
                 + path);
         ViewComponentPackage pkg = null;
         pkg = (ViewComponentPackage) mPackageManager.loadPackage(path,
                 ViewComponentPackage.class);
         addPackage(pkg);
-        mLogger.log(Level.CONFIG, "Loaded package " + pkg.getName());
+        mLogger.log(Level.INFO, "Loaded package " + pkg.getName());
         return pkg;
     }
 
@@ -181,13 +181,12 @@ public class PresentationManager implements IGlobalInstance {
         if (p.getComponentMap() != null)
             mComponentIdMap.putAll(p.getComponentMap());
 
-        // TODO Use UncertainEngine's getPackageManager() instead
         if (mUncertainEngine != null)
             if (p.getClassRegistry() != null) {
                 mUncertainEngine.getClassRegistry()
                         .addAll(p.getClassRegistry());
             }
-        mPackageManager.addPackage(p);
+        //mPackageManager.addPackage(p);
         mLogger.log(Level.CONFIG, "Components:{0}", new Object[] { p
                 .getComponentMap() });       
     }

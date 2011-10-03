@@ -8,14 +8,14 @@ import java.util.Iterator;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
-import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.MessageFactory;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
-import uncertain.util.resource.ILocatable;
 
 public class ModelFactory implements IModelFactory {
     
@@ -33,10 +33,22 @@ public class ModelFactory implements IModelFactory {
 
     CompositeLoader mCompositeLoader;
     
+    IObjectRegistry  mObjRegistry;
+    
     boolean mUseCache = false;
 
     // name -> BusinessModel
     ICache mModelCache;
+    
+    public void onInitialize(){
+        if(mObjRegistry!=null){
+            ICache cache = CacheFactoryConfig.getNamedCache(mObjRegistry, "BusinessModel");
+            if(cache!=null){
+                setUseCache(true);
+                setCache(cache);
+            }
+        }
+    }
 
     public boolean getUseCache() {
         return mUseCache;
@@ -66,6 +78,11 @@ public class ModelFactory implements IModelFactory {
         mOcManager = ocm;
         mCompositeLoader = CompositeLoader.createInstanceForOCM();
         mCompositeLoader.setDefaultExt(DEFAULT_MODEL_EXTENSION);
+    }
+    
+    public ModelFactory(OCManager ocm, IObjectRegistry reg) {
+        this(ocm);
+        this.mObjRegistry = reg;
     }
     
     private void saveCachedModel( String name, BusinessModel model ){

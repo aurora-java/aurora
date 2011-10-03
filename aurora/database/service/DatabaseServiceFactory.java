@@ -12,15 +12,13 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.xml.sax.SAXException;
-
-import uncertain.cache.CacheFactoryConfig;
-import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
@@ -41,15 +39,13 @@ import aurora.database.features.WhereClauseCreator;
 import aurora.database.profile.IDatabaseFactory;
 import aurora.events.E_PrepareBusinessModel;
 
-public class DatabaseServiceFactory {
+public class DatabaseServiceFactory extends AbstractLocatableObject implements IDatabaseServiceFactory {
 
     UncertainEngine uncertainEngine;
     IModelFactory modelFactory;
     DataSource dataSource;
     IDatabaseFactory databaseFactory;
     IProcedureManager       mProcedureManager;
-    // IDatabaseProfile databaseProfile;
-    // ISqlBuilderRegistry sqlBuilderRegistry;
 
     // Class -> Default participant instance
     Map defaultParticipantsMap = new HashMap();
@@ -63,7 +59,6 @@ public class DatabaseServiceFactory {
 
     public DatabaseServiceFactory(UncertainEngine engine) {
         this.uncertainEngine = engine;
-        this.mProcedureManager = engine.getProcedureManager();
         init();
     }
 
@@ -99,22 +94,12 @@ public class DatabaseServiceFactory {
     }
 
     protected void init() {
+        
+        ILogger logger = uncertainEngine.getLogger("aurora.database");
+        
+        mProcedureManager = uncertainEngine.getProcedureManager();
+        globalConfig = uncertainEngine.createConfig();
         IObjectRegistry os = uncertainEngine.getObjectRegistry();
-
-        os.registerInstance(DatabaseServiceFactory.class, this);
-        /*
-         * databaseProfile =
-         * (IDatabaseProfile)os.getInstanceOfType(IDatabaseProfile.class);
-         * if(databaseProfile==null){ databaseProfile = new
-         * DatabaseProfile("SQL92"); os.registerInstance(IDatabaseProfile.class,
-         * databaseProfile); }
-         * 
-         * sqlBuilderRegistry =
-         * (ISqlBuilderRegistry)os.getInstanceOfType(ISqlBuilderRegistry.class);
-         * if(sqlBuilderRegistry==null){ sqlBuilderRegistry = new
-         * SqlBuilderRegistry(databaseProfile);
-         * os.registerInstance(ISqlBuilderRegistry.class, sqlBuilderRegistry); }
-         */
         modelFactory = (IModelFactory) os
                 .getInstanceOfType(IModelFactory.class);
         if (modelFactory == null) {
@@ -125,11 +110,23 @@ public class DatabaseServiceFactory {
         }
 
         dataSource = (DataSource) os.getInstanceOfType(DataSource.class);
+        if(dataSource!=null){
+            logger.info("Using datasource "+dataSource);
+        }else{
+            throw BuiltinExceptionFactory.createInstanceNotFoundException(this, DataSource.class);
+        }
+        
+        IDatabaseFactory fact = (IDatabaseFactory)os.getInstanceOfType(IDatabaseFactory.class);
+        if(fact!=null)
+            setDatabaseFactory(fact);
+        else{
+            throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IDatabaseFactory.class);
+        }
 
-        globalConfig = uncertainEngine.createConfig();
 
     }
-    
+
+    /*
     public void onInitialize(){
         IObjectRegistry os = uncertainEngine.getObjectRegistry();
         ModelFactory fact = (ModelFactory)modelFactory;
@@ -139,7 +136,8 @@ public class DatabaseServiceFactory {
             fact.setCache(cache);
         }
     }
-
+    */
+    
     public Object getGlobalParticipant(Class type) {
         return defaultParticipantsMap.get(type);
     }
@@ -175,52 +173,27 @@ public class DatabaseServiceFactory {
     }
 
     public ProcedureRunner loadProcedure(String class_path, CompositeMap context) {
-        try{
-            //ProcedureRunner runner = uncertainEngine.createProcedureRunner();
-            ProcedureRunner runner = new ProcedureRunner();
-            Procedure proc = mProcedureManager.loadProcedure(class_path);
-            if(proc==null)
-                throw new IllegalArgumentException("Can't load procedure "+class_path);            
-            runner.setProcedure(proc);
-            /*
-            ProcedureRunner runner = uncertainEngine
-                    .createProcedureRunner(class_path);
-                    */
-            runner.setContext(context);
-            return runner;
-        }catch(IOException ex){
-            throw new RuntimeException(ex);
-        }catch(SAXException ex){
-            throw new RuntimeException(ex);
-        }
+        ProcedureRunner runner = new ProcedureRunner();
+        Procedure proc = mProcedureManager.loadProcedure(class_path);
+        if(proc==null)
+            throw new IllegalArgumentException("Can't load procedure "+class_path);            
+        runner.setProcedure(proc);
+        runner.setContext(context);
+        return runner;
     }
 
-    /**
-     * @return the dataSource
-     */
     public DataSource getDataSource() {
         return dataSource;
     }
 
-    /**
-     * @param dataSource
-     *            the dataSource to set
-     */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    /**
-     * @return ModelFactory instance to create BusinessModel from xml config
-     */
     public IModelFactory getModelFactory() {
         return modelFactory;
     }
 
-    /**
-     * @param metadataFactory
-     *            the ModelFactory to set
-     */
     public void setModelFactory(IModelFactory factory) {
         this.modelFactory = factory;
         
@@ -243,21 +216,6 @@ public class DatabaseServiceFactory {
     		instance.setModelFactory(factory);
     	}
 	}
-
-    /**
-     * @return the uncertainEngine
-     */
-    public UncertainEngine getUncertainEngine() {
-        return uncertainEngine;
-    }
-
-    /**
-     * @param uncertainEngine
-     *            the uncertainEngine to set
-     */
-    public void setUncertainEngine(UncertainEngine uncertainEngine) {
-        this.uncertainEngine = uncertainEngine;
-    }
 
     public BusinessModelService getModelService(String name) throws IOException {
         CompositeMap map = new CompositeMap("model-service-context");
@@ -307,42 +265,6 @@ public class DatabaseServiceFactory {
         return getModelService(model, context_map);
     }
 
-    /*
-    public RawSqlService getSqlService(String name) throws IOException,
-            SAXException {
-        CompositeMap config = uncertainEngine.loadCompositeMap(name);
-        if (config == null)
-            throw new IOException("Can't load resource " + name);
-        if (!"sql-service".equalsIgnoreCase(config.getName()))
-            throw new IllegalArgumentException(name
-                    + " is not a valid sql service");
-        RawSqlService service = new RawSqlService(uncertainEngine
-                .getOcManager());
-        service.mConfiguration = uncertainEngine.createConfig();
-        uncertainEngine.getOcManager().populateObject(config, service);
-        prepareConfig(service.mConfiguration);
-        service.mConfiguration.loadConfig(config);
-        return service;
-    }
-   
-
-    public RawSqlService getSqlService(String name, CompositeMap context_map)
-            throws IOException, SAXException {
-        RuntimeContext svc = RuntimeContext.getInstance(context_map);
-        return getSqlService(name, svc);
-    }
-
-    
-    public RawSqlService getSqlService(String name, RuntimeContext context)
-            throws IOException, SAXException {
-        RawSqlService service = getSqlService(name);
-        Configuration conf = context.getConfig();
-        if (conf != null)
-            service.mConfiguration.setParent(conf);
-        return service;
-    }
-    */
-
     public IDatabaseFactory getDatabaseFactory() {
         return databaseFactory;
     }
@@ -356,13 +278,5 @@ public class DatabaseServiceFactory {
     public IObjectRegistry getObjectRegistry(){
         return uncertainEngine==null?null:uncertainEngine.getObjectRegistry();
     }
-
-    /*
-     * public boolean isCacheEnabled() { return cacheEnabled; }
-     * 
-     * public void setCacheEnabled(boolean cacheEnabled) { this.cacheEnabled =
-     * cacheEnabled; if(!cacheEnabled){ modelCompositeCache.clear();
-     * modelConfigCache.clear(); } }
-     */
 
 }

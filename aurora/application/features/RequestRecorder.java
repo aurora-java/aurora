@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
@@ -370,6 +369,10 @@ public class RequestRecorder extends AbstractLocatableObject implements
 
     public void shutdown() {
         isRunning = false;
+        for(int i=0; i<threads.length; i++){
+            if(threads[i]!=null&&threads[i].isAlive())
+                threads[i].interrupt();
+        }
     }
 
     public void onShutdown() {

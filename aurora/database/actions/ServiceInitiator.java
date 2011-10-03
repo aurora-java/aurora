@@ -21,11 +21,11 @@ import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.DatabaseServiceFactory;
 
 public class ServiceInitiator {
-    
+    /*
     static {
         MessageFactory.loadResource("resources.aurora_validation_exceptions");
     }
-    
+    */
     UncertainEngine             uncertainEngine;
     DatabaseServiceFactory      factory;
     ILogger                     logger;
@@ -40,37 +40,13 @@ public class ServiceInitiator {
     }
     
     public void init(){
+       /*
         factory = new DatabaseServiceFactory( uncertainEngine );
         IObjectRegistry objreg = uncertainEngine.getObjectRegistry(); 
         objreg.registerInstance(DatabaseServiceFactory.class, factory);
-        //objreg.registerInstance(IModelFactory.class, factory.getModelFactory());
-
-/*        
-        ClassRegistry reg =  uncertainEngine.getClassRegistry();
-        reg.addPackageMapping( new PackageMapping(CompositeMapCreator.class.getPackage().getName(), CompositeMapCreator.class.getPackage().getName()) );
-        reg.addClassMapping( "model-query", ModelQuery.class );
-        reg.addClassMapping( "model-update", ModelUpdate.class );
-        reg.addClassMapping( "model-insert", ModelInsert.class );
-        reg.addClassMapping( "model-delete", ModelDelete.class );
-        reg.addClassMapping("model-join",ModelJoin.class);
-        reg.addClassMapping( "model-execute", ModelExecute.class );
-        reg.addClassMapping("model-batch-update", ModelBatchUpdate.class);
-        reg.addClassMapping("batch-apply", BatchApply.class);
-        reg.addClassMapping( "transaction", Transaction.class );
-
-        reg.addClassMapping("session-copy", HttpSessionCopy.class);
-        reg.addClassMapping("session-write", HttpSessionOperate.class);
-        reg.addClassMapping("session-create", HttpSessionOperate.class);
-        reg.addClassMapping("session-clear", HttpSessionOperate.class);
-
-
-        reg.addClassMapping( "put-cookie", AuroraCookie.class);
-        reg.addClassMapping("img-validate", ImageValidate.class);
-        reg.addClassMapping("atm-manager", AttachmentManager.class);
-        reg.addClassMapping("refresh-prompts", RefreshPrompts.class);
-*/        
         logger = uncertainEngine.getLogger("aurora.database");
         logger.info("BusinessModel service started");
+        */
 
     }
     
@@ -82,7 +58,7 @@ public class ServiceInitiator {
             factory.setDataSource(ds);
         }
         logger.info("Using DataSource:"+ds);
-        factory.onInitialize();
+        //factory.onInitialize();
     }
     
 
