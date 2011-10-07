@@ -2,6 +2,13 @@
 <u:instance-config xmlns:u="uncertain.pkg">
 	<u:instances>
 
+		<u:configurable-instance configFile="application.config" >
+			<u:description>提供应用程序本地化配置</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.application.IApplicationConfig" />
+			</u:implement-types>
+		</u:configurable-instance>
+
 		<u:configurable-instance configFile="cache.config" alternativeConfigFile="${configPath}/0.cache.config">
 			<u:description>实现INamedCacheFactory接口，提供可配置的cache服务</u:description>
 		</u:configurable-instance>
@@ -83,7 +90,27 @@
 				<u:type typeName="uncertain.proc.IProcedureRegistry" />
 			</u:implement-types>
 		</u:configurable-instance>			
+
+		<u:configurable-instance configFile="service-listener.config" >
+			<u:description>服务级的监听器配置</u:description>
+			<u:implement-types>
+				<u:type typeName="uncertain.event.IParticipantManager" />
+			</u:implement-types>
+		</u:configurable-instance>			
 					
+		<u:configurable-instance configFile="service-logging.config" >
+			<u:description>服务级的日志输出配置</u:description>
+		</u:configurable-instance>			
+
+		<u:configurable-instance configFile="service－lookup.config" >
+			<u:description>提供值列表特性的实现</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.DatabaseServiceFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.application.features.ILookupCodeProvider" />
+			</u:implement-types>
+		</u:configurable-instance>		
 		
 	</u:instances>
 </u:instance-config>
