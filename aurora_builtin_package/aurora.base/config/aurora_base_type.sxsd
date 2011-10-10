@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sxsd:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:sxsd="http://www.uncertain-framework.org/schema/simple-schema">
+    <sxsd:attributes/>
+    <sxsd:elements/>
+    <sxsd:categories/>
+    <sxsd:types>
+        <sxsd:complexType document="所有界面组件的基类" name="a:BaseViewComponent"/>
+        <sxsd:simpleType name="a:RawSql"/>
+        <sxsd:simpleType name="a:JavaScript"/>
+    </sxsd:types>
+    <sxsd:editors/>
+</sxsd:schema>
