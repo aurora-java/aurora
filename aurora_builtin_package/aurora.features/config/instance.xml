@@ -62,6 +62,14 @@
 			</u:implement-types>
 		</u:configurable-instance>
 
+		<u:configurable-instance configFile="service-lookup.config" >
+			<u:description>实现值列表功能</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+		</u:configurable-instance>
+
+
 		<u:configurable-instance configFile="request-record.config" >
 			<u:description>记录请求信息及异常信息到数据库</u:description>
 			<u:required-instances>
