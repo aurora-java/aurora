@@ -15,9 +15,9 @@
                 <ss:attribute name="lookupCode" document="值列表的CODE"/>
                 <ss:attribute name="autoPageSize" default="false" document="根据Grid的高度，自适应分页大小。注：只在grid初次加载时生效，如果Grid设定了marginHeigt，行数不会根据窗口大小的调整而调整。" type="ss:boolean"/>
                 <ss:attribute name="maxPageSize" default="1000" document="查询的分页大小的最大值，用于限制navBar中的分页输入框的输入上限" type="ss:int"/>
-				<ss:attribute name="pageSize" default="10" document="查询的分页大小" type="ss:int"/>
-                <ss:attribute name="queryUrl" document="查询的URL地址"/>
-                <ss:attribute name="submitUrl" document="提交的url地址"/>
+                <ss:attribute name="pageSize" default="10" document="查询的分页大小" type="ss:int"/>
+                <ss:attribute name="queryUrl" document="查询的URL地址" type="a:URLReference"/>
+                <ss:attribute name="submitUrl" document="提交的url地址" type="a:URLReference"/>
                 <ss:attribute name="selectable" default="false" document="是否可选择" type="ss:boolean"/>
                 <ss:attribute name="selectionModel" document="选择模式" type="a:selectType"/>
                 <ss:attribute name="queryDataSet" document="查询的DataSet的id" type="a:DataSetReference"/>
@@ -98,7 +98,7 @@
                 <ss:attribute name="defaultValue" document="默认值"/>
                 <ss:attribute name="checkedValue" document="checkbox选中的值"/>
                 <ss:attribute name="uncheckedValue" document="checkbox未选中的值"/>
-                <ss:attribute name="lovUrl" document="自定义URL"/>
+                <ss:attribute name="lovUrl" document="自定义URL" type="a:URLReference"/>
                 <ss:attribute name="autoComplete" default="false" document="是否开启lov的autoComplete功能" type="ss:boolean"/>
                 <ss:attribute name="autoCompleteField" document="autoComplete的查询字段,如果没有设定，默认取mapping中等于field的name属性的to属性对应的from属性的字段。"/>
             </ss:attributes>
@@ -136,7 +136,7 @@
             <ss:attributes>
                 <ss:attribute name="checkSessionLock" document="单独控制该service是否启用防重复提交，覆盖全局文件的缺省配置" type="ss:boolean"/>
                 <ss:attribute name="lockKey" document="设置用于判断两次请求是否属于重复提交的表达式，例如${/session/@session_id}" type="ss:string"/>
-                <ss:attribute name="lockService" document="缺省情况下以当前被执行的service的名字来执行锁定。用该属性可以设置不同的锁定逻辑，以实现“如果A请求没有执行完毕，则B请 
+                <ss:attribute name="lockService" document="缺省情况下以当前被执行的service的名字来执行锁定。用该属性可以设置不同的锁定逻辑，以实现“如果A请求没有执行完毕，则B请         
 求也不能被提交”这样的需求" type="ss:string"/>
                 <ss:attribute name="lockErrorMessage" document="如果检测到重复提交，显示给客户端的错误信息" type="ss:string"/>
             </ss:attributes>
@@ -161,6 +161,7 @@
     <ss:types>
         <ss:simpleType name="a:DataSetReference" base="ss:string" document="对DataSet的引用" referenceType="a:dataset"/>
         <ss:simpleType name="a:ScreenReference" base="ss:string" document="对screen的引用" referenceType="a:screen"/>
+        <ss:simpleType name="a:URLReference" base="ss:string" document="对screen或bm的引用，属性值一般具有较长的路径和html方式的参数" referenceType="a:screenBm"/>
         <ss:complexType name="a:BaseService">
             <ss:attributes>
                 <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
