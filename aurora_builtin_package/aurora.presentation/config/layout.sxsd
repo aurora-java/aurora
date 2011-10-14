@@ -11,6 +11,7 @@
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
                 <ss:attribute document="box的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+                <ss:attribute document="prompt后面的符号" name="labelSeparator" default=":" type="ss:String"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
@@ -26,6 +27,7 @@
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
                 <ss:attribute document="vbox的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+                <ss:attribute document="prompt后面的符号" name="labelSeparator" default=":" type="ss:String"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
@@ -41,6 +43,7 @@
                 <ss:attribute document="单元格的padding值" name="padding" type="ss:int"/>
                 <ss:attribute document="hbox的prompt" name="prompt" type="ss:String"/>
                 <ss:attribute document="prompt的宽度" name="labelWidth" type="ss:int"/>
+                <ss:attribute document="prompt后面的符号" name="labelSeparator" default=":" type="ss:String"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Component"/>

@@ -4,6 +4,7 @@ import java.io.Writer;
 
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 /**
@@ -27,13 +28,15 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
+		String labelSeparator = view.getString(BoxConfig.PROPRRTITY_LABEL_SEPARATOR,":");
+		
 		if(!"".equals(label)) {
 			StringBuffer str = new StringBuffer();
 			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
 			String ps = field.getString(ComponentConfig.PROPERTITY_PROMPT_STYLE);
 			if(!"".equals(ps))str.append(" style='"+ps+"' ");
 			str.append("width="+labelWidth+"><div>");
-			str.append(label+":</div></th>");
+			str.append(label+labelSeparator+"</div></th>");
 			out.write(str.toString());
 		}
 	}
