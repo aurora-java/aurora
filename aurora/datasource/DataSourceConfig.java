@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
@@ -87,7 +86,7 @@ public class DataSourceConfig implements ILifeCycle {
                 if (length != 1) {
                     mLogger.log(Level.SEVERE,
                             "TransactionManager is disabled,please use only one datasource");
-                    throw new ServletException(
+                    throw new RuntimeException(
                             "TransactionManager is disabled,please use only one datasource");
                 }
                 ts = new TransactionService(false);
@@ -115,11 +114,11 @@ public class DataSourceConfig implements ILifeCycle {
     }
 
     private void registryDataSource(DataSource ds, DatabaseConnection dbConfig,
-            INamedDataSourceProvider dsProvider) throws ServletException {
+            INamedDataSourceProvider dsProvider) throws RuntimeException {
         String dataSourceName = dbConfig.getName();
         if (ds == null) {
             mLogger.log(Level.SEVERE, "dataSource not initialized");
-            throw new ServletException(dataSourceName
+            throw new RuntimeException(dataSourceName
                     + " dataSource not initialized");
         }
 
