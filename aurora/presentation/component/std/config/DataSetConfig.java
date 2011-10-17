@@ -40,6 +40,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_VALID_LISTENER = "validlistener";
 	public static final String PROPERTITY_AUTO_PAGE_SIZE = "autopagesize";
 	public static final String PROPERTITY_PROCESS_FUNCTION = "processfunction";
+    public static final String PROPERTITY_TOTALCOUNT_FIELD = "totalcountfield";
 	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
@@ -217,6 +218,13 @@ public class DataSetConfig extends ComponentConfig {
 	public boolean isAutoCreate(){
 		return getBoolean(PROPERTITY_AUTO_CREATE, false);
 	}
+    
+    public String getTotalCountField(){
+    	return getString(PROPERTITY_TOTALCOUNT_FIELD,"totalCount");
+    }
+    public void setTotalCountField(String value){
+    	putString(PROPERTITY_TOTALCOUNT_FIELD, value);
+    }
     
     public CompositeMap getDatas(){
     	CompositeMap context = getObjectContext();
