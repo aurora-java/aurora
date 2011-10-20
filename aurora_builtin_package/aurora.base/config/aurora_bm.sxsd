@@ -84,7 +84,7 @@
         <ss:element name="bm:query-field" document="可用于查询的字段">
             <ss:attributes>
                 <ss:attribute name="name" document="查询参数的名字" type="ss:string"/>
-                <ss:attribute name="field" document="查询参数对应的字段" type="bm:LocalFieldreference"/>
+                <ss:attribute name="field" document="查询参数对应的字段" type="bm:LocalFieldReference"/>
                 <ss:attribute name="queryOperator" document="对应的查询条件的操作符，适用于简单的查询条件：字段 + 操作符 + 值" type="ss:string"/>
                 <ss:attribute name="queryExpression" document="查询条件的SQL表达式，与queryOperator二选一" type="ss:string"/>
                 <ss:attribute name="dataType" document="参数的数据类型" type="ss:string"/>
