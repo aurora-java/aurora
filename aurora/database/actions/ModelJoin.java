@@ -10,7 +10,7 @@ import uncertain.proc.ProcedureRunner;
 public class ModelJoin extends AbstractEntry {
 
 	private String models;
-	private String valueFileld;
+	private String valueField;
 	private String shareField;
 	private String joinField;
 
@@ -22,12 +22,12 @@ public class ModelJoin extends AbstractEntry {
 		this.models = models;
 	}
 
-	public String getValueFileld() {
-		return valueFileld;
+	public String getValueField() {
+		return valueField;
 	}
 
-	public void setValueFileld(String valueFileld) {
-		this.valueFileld = valueFileld;
+	public void setValueField(String valueFileld) {
+		this.valueField = valueFileld;
 	}
 
 	public String getShareField() {
@@ -49,7 +49,7 @@ public class ModelJoin extends AbstractEntry {
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
 		String[] shareFiles = this.getShareField().split(",");
-		String[] valueFiles = this.getValueFileld().split(",");
+		String[] valueFiles = this.getValueField().split(",");
 		String[] modellist =models.split(",");
 		if (modellist.length!=2){
 			throw new Exception("joinModels number must be two");
