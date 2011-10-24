@@ -10,6 +10,8 @@
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
                 <ss:attribute name="typeCase" document="大小写类型" type="a:caseType"/>
+                <ss:attribute name="readOnly" document="是否只读"/>
+                <ss:attribute name="maxLength" document="最大允许输入长度"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:passWord" document="密码输入框">
@@ -19,6 +21,7 @@
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
+                <ss:attribute name="readOnly" document="是否只读"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:comboBox">
@@ -31,6 +34,7 @@
                 <ss:attribute name="displayField" document="ComboBox的displayfield"/>
                 <ss:attribute name="options" document="ComboBox的数据源"/>
                 <ss:attribute name="emptyText" document="描述字段"/>
+                <ss:attribute name="readOnly" document="是否只读"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:numberField" document="数字输入框">
@@ -44,6 +48,7 @@
                 <ss:attribute name="decimalPrecision" document="小数位精度" type="ss:int"/>
                 <ss:attribute name="allowNegative" document="是否允许为负数" type="ss:boolean"/>
                 <ss:attribute name="allowFormat" document="是否按照千分位显示" type="ss:boolean"/>
+                <ss:attribute name="readOnly" document="是否只读"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:label" document="显示标签">
@@ -52,7 +57,7 @@
                 <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="renderer" document="渲染器"/>
+                <ss:attribute name="renderer" document="渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:datePicker" document="日期选择框">
@@ -60,19 +65,39 @@
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="dayRenderer" document="日期渲染\n回调函数function(cell,date,text){return text}\n当cell.disabled=true时，该日期无法被选择\n返回值text是html字符串"/>
+                <ss:attribute name="emptyText" document="提示信息"/>
+                <ss:attribute name="readOnly" document="是否只读"/>
+                <ss:attribute name="enableBesideDays" document="在本月的始末补齐前后月份的日期\n可选值：both|pre|next|none"/>
+                <ss:attribute name="enableMonthBtn" document="月份选择按钮显示方式\n可选值：both|pre|next|none"/>
+                <ss:attribute name="viewSize" document="日历显示个数,4为最大值"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:dateTimePicker" document="日期时间选择控件,带有时分秒输入框">
+            <ss:extensions>
+                <ss:extension base="a:datePicker"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:radio" document="单选框">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="options" document="选项集的dataset的id"/>
+                <ss:attribute name="valueField" document="选项集的dataset中用来定义选项被选中后的值的field"/>
+                <ss:attribute name="labelExpression" document="选项的描述"/>
+                <ss:attribute name="labelField" document="选项集的dataset中用来显示选项描述的field"/>
+                <ss:attribute name="layout" document="选项的布局"/>
+            </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:items" indexField="value" type="a:item"/>
             </ss:arrays>
         </ss:element>
         <ss:element name="a:item">
             <ss:attributes>
-                <ss:attribute name="label" document="raido的描述"/>
+                <ss:attribute name="label" document="radio的描述"/>
                 <ss:attribute name="value" document="radio的值"/>
             </ss:attributes>
         </ss:element>
