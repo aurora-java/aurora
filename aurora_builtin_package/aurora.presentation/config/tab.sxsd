@@ -2,26 +2,31 @@
 <ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
     <ss:elements>
-        <ss:element document="TabPanel组件" name="a:tabPanel">
+        <ss:element name="a:tabPanel" document="TabPanel组件">
             <ss:extensions>
                 <ss:extension base="a:Component"/>
             </ss:extensions>
             <ss:arrays>
-                <ss:array minOccurs="1" name="a:tabs" type="a:tab"/>
+                <ss:array name="a:tabs" minOccurs="1" type="a:tab"/>
             </ss:arrays>
         </ss:element>
-        <ss:element document="TabPanel的tab页" name="a:tab">
+        <ss:element name="a:tab" document="TabPanel的tab页">
             <ss:attributes>
-                <ss:attribute document="tab的prompt" name="prompt" use="required"/>
-                <ss:attribute document="tab的宽度" name="width" type="ss:int"/>
-                <ss:attribute document="tab的引用screen" name="ref"/>
-                <ss:attribute document="tab的className" name="tabClassName"/>
-                <ss:attribute document="tab的style" name="tabStyle"/>
-                <ss:attribute document="是否选中(默认选中第一个tab)" name="selected" type="ss:boolean"/>
-                <ss:attribute document="tab的body的className" name="bodyClassName"/>
-                <ss:attribute document="tab的body的style" name="bodyStyle"/>
-                <ss:attribute document="标签是否可关闭" name="closeable" default="false" type="ss:boolean"/>
-                <ss:attribute document="标签是否不可用" name="disabled" default="false" type="ss:boolean"/>
+                <ss:attribute name="id" document="组件的ID,在同一个screen中ID不能重复"/>
+                <ss:attribute name="bindTarget" document="需要绑定的DataSet的ID"/>
+                <ss:attribute name="prompt" document="tab的prompt" use="required"/>
+                <ss:attribute name="width" document="组件的宽度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="height" document="组件的高度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="marginWidth" document="组件的边缘宽度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="marginHeight" document="组件的边缘高度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="ref" document="tab的引用screen"/>
+                <ss:attribute name="tabClassName" document="tab的className"/>
+                <ss:attribute name="tabStyle" document="tab的style"/>
+                <ss:attribute name="selected" document="是否选中(默认选中第一个tab)" type="ss:boolean"/>
+                <ss:attribute name="bodyClassName" document="tab的body的className"/>
+                <ss:attribute name="bodyStyle" document="tab的body的style"/>
+                <ss:attribute name="closeable" default="false" document="标签是否可关闭" type="ss:boolean"/>
+                <ss:attribute name="disabled" default="false" document="标签是否不可用" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent" type=""/>

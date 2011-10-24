@@ -21,6 +21,7 @@
         </ss:element>
         <ss:element name="a:column">
             <ss:attributes>
+                <ss:attribute name="id" document="列ID,主要用于个性化中"/>
                 <ss:attribute name="name" document="列的field的name"/>
                 <ss:attribute name="prompt" document="列名"/>
                 <ss:attribute name="width" document="列的宽度" type="ss:int"/>
@@ -28,11 +29,12 @@
                 <ss:attribute name="lock" default="false" document="是否锁定" type="ss:boolean"/>
                 <ss:attribute name="align" document="排列方式" type="a:alignType"/>
                 <ss:attribute name="resizable" default="true" document="是否可调整宽度" type="ss:boolean"/>
-                <ss:attribute name="renderer" document="列的渲染器"/>
+                <ss:attribute name="renderer" document="列渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串"/>
                 <ss:attribute name="editor" document="列的编辑器,对应editors中的id"/>
-                <ss:attribute name="editorFunction" document="列编辑器函数,可动态改变编辑器" editor=""/>
-                <ss:attribute name="footerRenderer" document="footerbar的渲染器"/>
+                <ss:attribute name="editorFunction" document="列编辑器函数,可动态改变编辑器\n回调函数function(record,name){return editorid}\n返回值editorid是编辑器的id" editor=""/>
+                <ss:attribute name="footerRenderer" document="列脚注渲染\n回调函数function(data,name){return value}\n参数data是所绑定的dataset中的数据,返回值value是html字符串"/>
                 <ss:attribute name="percentWidth" document="table节点专用。列的百分比宽度,单位是(%)" type="ss:int"/>
+                <ss:attribute name="forExport" default="true" document="是否对该列进行导出" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:column"/>
