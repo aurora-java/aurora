@@ -19,7 +19,7 @@
                 <ss:attribute name="height" document="组件的高度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="marginWidth" document="组件的边缘宽度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="marginHeight" document="组件的边缘高度,单位是像素(px)" type="ss:int"/>
-                <ss:attribute name="ref" document="tab的引用screen"/>
+                <ss:attribute name="ref" document="tab的引用screen" type="a:URLReference"/>
                 <ss:attribute name="tabClassName" document="tab的className"/>
                 <ss:attribute name="tabStyle" document="tab的style"/>
                 <ss:attribute name="selected" document="是否选中(默认选中第一个tab)" type="ss:boolean"/>
