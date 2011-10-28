@@ -28,10 +28,16 @@ public class DoDispatch {
 		CompositeMap cm = context.getObjectContext();
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(cm);
-		String httptype = svc.getRequest().getHeader("x-requested-with") == null ? "null"
-				: svc.getRequest().getHeader("x-requested-with").toString();
-		if (httptype.equals("XMLHttpRequest")) {
-			JSONObject json = new JSONObject();
+		// 2B 青年的写法
+		//String httptype = svc.getRequest().getHeader("x-requested-with") == null ? "null"
+		//		: svc.getRequest().getHeader("x-requested-with").toString();
+		// if (httptype.equals("XMLHttpRequest")) {
+
+        // 文艺青年的写法
+        String httptype = svc.getRequest().getHeader("x-requested-with");
+		if ("XMLHttpRequest".equals(httptype)) {
+			/*
+		    JSONObject json = new JSONObject();
 			json.put("success", false);
 			boolean write_result = context.getBoolean("write_result", true);
 			if (write_result) {
@@ -41,6 +47,14 @@ public class DoDispatch {
 				error.put("code", cm.getString("error_msg"));
 				json.put("error", error);
 			}
+			*/
+		    JSONObject json = new JSONObject();
+            json.put("success", false);
+		    CompositeMap error_map = svc.getServiceContext().getError();
+		    if(error_map!=null){
+		        JSONObject err = JSONAdaptor.toJSONObject(error_map);
+		        json.put("error", err);
+		    }
 			prepareResponse(svc.getResponse());
 			PrintWriter out = svc.getResponse().getWriter();
 			json.write(out);
