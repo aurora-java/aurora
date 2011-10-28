@@ -59,7 +59,12 @@ public class DoDispatch {
 			PrintWriter out = svc.getResponse().getWriter();
 			json.write(out);
 		} else {
-			svc.getResponse().sendRedirect(context.getString("dispatch_url"));
+		    String url = context.getString("dispatch_url");
+		    if(url!=null){
+		        String uri = svc.getRequest().getRequestURI();
+		        if(uri.indexOf(url)<0)
+		            svc.getResponse().sendRedirect(url);
+		    }
 		}
 	}
 
