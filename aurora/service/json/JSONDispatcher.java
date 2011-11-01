@@ -35,7 +35,7 @@ import aurora.service.ServiceContext;
 public class JSONDispatcher {
     // public static final String PARAMETER = "parameter";
 
-    public static final String DEFAULT_JSON_CONTENT_TYPE = "text/html;charset=utf-8";
+    public static final String DEFAULT_JSON_CONTENT_TYPE = "application/json;charset=utf-8";
 
     public static final String HEAD_JSON_PARAMETER = "json-parameter";
 

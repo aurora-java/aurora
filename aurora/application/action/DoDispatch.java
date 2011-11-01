@@ -18,7 +18,7 @@ import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class DoDispatch {
-	public static final String DEFAULT_JSON_CONTENT_TYPE = "text/html;charset=utf-8";
+	public static final String DEFAULT_JSON_CONTENT_TYPE = "application/json;charset=utf-8";
 
 	Set arrayNameSet;
 	String output;

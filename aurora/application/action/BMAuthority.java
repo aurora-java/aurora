@@ -19,7 +19,7 @@ public class BMAuthority {
 	 public BMAuthority(){
 		 
 	 }
-	public static final String DEFAULT_JSON_CONTENT_TYPE = "text/html;charset=utf-8";
+	public static final String DEFAULT_JSON_CONTENT_TYPE = "application/json;charset=utf-8";
 	public void onAuthorityFailResponse(ServiceContext context) throws IOException,
 			JSONException {
 		CompositeMap cm = context.getObjectContext();
