@@ -75,6 +75,7 @@ public class ScreenRenderer implements IFeature {
                 mDefaultPackage = view_config.getDefaultPackage();
                 mDefaultTemplate = view_config.getDefaultTemplate();
                 mDefaultTitle = view_config.getDefaultTitle();
+                mDefaultLabelSeparator = view_config.getDefaultLabelSeparator();
             }
         }
     }
@@ -98,6 +99,7 @@ public class ScreenRenderer implements IFeature {
     String mDefaultPackage;
     String mDefaultTemplate;
     String mDefaultTitle = "";
+    String mDefaultLabelSeparator;
 //    String      mScreenCacheKey;
     boolean     mIsCache = false;
 
@@ -132,6 +134,8 @@ public class ScreenRenderer implements IFeature {
                 mScreen.putString(TemplateRenderer.KEY_PACKAGE, mDefaultPackage);
             if (mScreen.getString(TemplateRenderer.KEY_TITLE) != null)
                 mDefaultTitle = mScreen.getString(TemplateRenderer.KEY_TITLE);
+            if (mScreen.getString(TemplateRenderer.KEY_LABEL_SEPARATOR) != null)
+            	mDefaultLabelSeparator = mScreen.getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
             if (mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE) != null)
                 setContentType(mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE));
             mContext.addChild(mScreen);
@@ -203,6 +207,7 @@ public class ScreenRenderer implements IFeature {
                 }
             }
             session.setTitle(mDefaultTitle);
+            session.setLabelSeparator(mDefaultLabelSeparator);
             session.setTheme(appTheme);
             session.setBaseConfig(mService.getServiceConfig());
             session.setInstanceOfType(IService.class, mService);

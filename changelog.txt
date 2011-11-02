@@ -1,5 +1,6 @@
 1.2.0
 =====
+* application.config 增加defaultLabelSeparator属性配置，默认为 “:”。
 
 2011-09-30 - 周凡
 -----------------------------------

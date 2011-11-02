@@ -3,9 +3,11 @@ package aurora.presentation.component.std;
 import java.io.Writer;
 
 import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.service.http.WebContextInit;
 
 /**
  * Box
@@ -16,7 +18,7 @@ public class Box extends GridLayout {
 	
 	private static final String DEFAULT_TH_CLASS = "layout-th";
 	private static final String PROPERTITY_LABEL_WIDTH = "labelwidth";
-	
+	UncertainEngine ue;
 	protected int getLabelWidth(CompositeMap view){
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
 		return labelWidth;
@@ -28,7 +30,7 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
-		String labelSeparator = view.getString(BoxConfig.PROPRRTITY_LABEL_SEPARATOR,":");
+		String labelSeparator = view.getString(BoxConfig.PROPRRTITY_LABEL_SEPARATOR,session.getLabelSeparator() == null?":":session.getLabelSeparator());
 		
 		if(!"".equals(label)) {
 			StringBuffer str = new StringBuffer();

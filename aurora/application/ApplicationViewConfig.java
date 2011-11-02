@@ -14,6 +14,7 @@ public class ApplicationViewConfig extends DynamicObject {
     public static final String KEY_DEFAULT_TEMPLATE = "defaulttemplate";
     public static final String KEY_DEFAULT_PACKAGE = "defaultpackage";
     public static final String KEY_DEFAULT_TITLE = "defaulttitle";
+    public static final String KEY_DEFAULT_LABEL_SEPARATOR = "defaultlabelseparator";
     
     public String getDefaultPackage(){
         return getString(KEY_DEFAULT_PACKAGE);
@@ -37,6 +38,14 @@ public class ApplicationViewConfig extends DynamicObject {
     
     public void setDefaultTitle( String title ){
         putString(KEY_DEFAULT_TITLE, title);
+    }
+    
+    public String getDefaultLabelSeparator(){
+    	return getString(KEY_DEFAULT_LABEL_SEPARATOR);
+    }
+    
+    public void setDefaultLabelSeparator( String labelseparator ){
+    	putString(KEY_DEFAULT_LABEL_SEPARATOR, labelseparator);
     }
 
 }

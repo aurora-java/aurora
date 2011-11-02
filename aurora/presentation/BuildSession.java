@@ -85,6 +85,7 @@ public class BuildSession {
 
     /** @todo refactor out */
     String title;
+    String labelSeparator;
     ILookupCodeProvider lookupProvider;
 
     String language;
@@ -624,6 +625,13 @@ public class BuildSession {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public String getLabelSeparator() {
+    	return labelSeparator;
+    }
+    
+    public void setLabelSeparator(String labelSeparator) {
+    	this.labelSeparator = labelSeparator;
     }
 
 }
