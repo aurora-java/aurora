@@ -72,6 +72,9 @@
                 <ss:attribute name="enableBesideDays" document="在本月的始末补齐前后月份的日期\n可选值：both|pre|next|none"/>
                 <ss:attribute name="enableMonthBtn" document="月份选择按钮显示方式\n可选值：both|pre|next|none"/>
                 <ss:attribute name="viewSize" document="日历显示个数,4为最大值"/>
+                <!--add by shengbo.huang @2011/11/3-->
+                <ss:attribute name="renderer" document="渲染\n回调函数"/>
+                <!--end-->
             </ss:attributes>
         </ss:element>
         <ss:element name="a:dateTimePicker" document="日期时间选择控件,带有时分秒输入框">
@@ -136,6 +139,52 @@
                 <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
+        <!--add by shengbo.huang @2011/11/3-->
+        <ss:element name="a:upload" document="Upload">
+            <ss:attributes>
+                <ss:attribute name="buttonWidth" document="上传按钮宽度" type="ss:int"/>
+                <ss:attribute name="fileType" document="上传文件类型"/>
+                <ss:attribute name="pkvalue" document="主键"/>
+                <ss:attribute name="sourcetype" document="源类型"/>
+                <ss:attribute name="text" document="显示的文本"/>
+                <ss:attribute name="uploadurl" document="上传路径"/>
+                <ss:attribute name="deleteurl" document="删除路径"/>
+                <ss:attribute name="downloadurl" document="下载路径"/>
+                <ss:attribute name="showdelete" document="是否显示删除的文件" type="ss:boolean"/>
+                <ss:attribute name="showupload" document="是否显示上传的文件" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:menuBar" document="MenuBar">
+            <ss:attributes>
+                <ss:attribute name="displayField" document="需要显示的字段" type="ss:String"/>
+                <ss:attribute name="focus" document="聚焦"/>
+                <ss:attribute name="idField" document="唯一标识字段"/>
+                <ss:attribute name="parentField" document="父节点的唯一标识字段"/>
+                <ss:attribute name="targetName" document="指向"/>
+                <ss:attribute name="url" document="存放路径的字段"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:autoForm" document="AutoForm">
+            <ss:attributes>
+                <ss:attribute name="column" document="列数" type="ss:int"/>
+                <ss:attribute name="model" document="指定model" type="ss:String"/>
+                <ss:attribute name="title" document="标题" type="ss:String"/>
+                <ss:attribute name="labelWidth" document="prompt的宽度" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
+        </ss:element>
+        <!--end-->
     </ss:elements>
     <ss:categories/>
     <ss:types>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:chart">
+            <ss:attributes>
+                <ss:attribute name="type" document="chart类型" type="a:chartType"/>
+                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
+                <ss:attribute name="className" document="chart引用的样式类名" type="ss:String"/>
+                <ss:attribute name="marginTop" document="上边距" type="ss:int"/>
+                <ss:attribute name="marginRight" document="右边距" type="ss:int"/>
+                <ss:attribute name="marginLeft" document="左边距" type="ss:int"/>
+                <ss:attribute name="marginBottom" document="下边距" type="ss:int"/>
+                <ss:attribute name="chartStyle" document="chart的样式"/>
+                <ss:attribute name="inverted" document="是否将chart颠倒" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:xAxis" document="xAxis" indexField="name" type="a:xAxi"/>
+                <ss:array name="a:yAxis" document="yAxis" indexField="name" type="a:yAxi"/>
+            </ss:arrays>
+            <ss:elements>
+                <ss:element ref="a:title"/>
+                <ss:element ref="a:tooltip"/>
+                <ss:element ref="a:legend"/>
+                <ss:element ref="a:plotOptions"/>
+            </ss:elements>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:Axi">
+            <ss:attributes>
+                <ss:attribute name="name" document="名称" type="ss:String"/>
+                <ss:attribute name="opposite" document="反向" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:title"/>
+                <ss:element ref="a:labels"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:xAxi">
+            <ss:extensions>
+                <ss:extension base="a:Axi"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:yAxi">
+            <ss:extensions>
+                <ss:extension base="a:Axi"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:title">
+            <ss:attributes>
+                <ss:attribute name="text" document="title的名称" type="ss:String"/>
+                <ss:attribute name="x" document="水平位移" type="ss:int"/>
+                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
+                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
+                <ss:attribute name="verticalAlign" document="垂直居中，靠上，靠下" type="a:vAlignType"/>
+                <ss:attribute name="style" document="title的样式"/>
+                <ss:attribute name="floating" document="是否浮动" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:tooltip">
+            <ss:attributes>
+                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
+                <ss:attribute name="backgroundColor" document="背景颜色" type="ss:String"/>
+                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
+                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
+                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
+                <ss:attribute name="style" document="样式"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:legend">
+            <ss:attributes>
+                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
+                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="layout" document="水平或垂直" type="a:layout"/>
+                <ss:attribute name="verticalAlign" document="垂直居中，靠上，靠下" type="a:vAlignType"/>
+                <ss:attribute name="width" document="宽度" type="ss:int"/>
+                <ss:attribute name="x" document="水平位移" type="ss:int"/>
+                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
+                <ss:attribute name="backgroundColor" document="背景颜色" type="ss:String"/>
+                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
+                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
+                <ss:attribute name="floating" document="是否悬浮" type="ss:boolean"/>
+                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
+                <ss:attribute name="style" document="样式"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:plotOptions">
+            <ss:elements>
+                <ss:element ref="a:pie"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:pie">
+            <ss:attributes>
+                <ss:attribute name="allowPointSelect" document="是否允许指向选中" type="ss:boolean"/>
+                <ss:attribute name="cursor" document="光标显示类型" type="ss:String"/>
+                <ss:attribute name="showInLegend" document="在legend中显示" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:dataLabels"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:dataLabels">
+            <ss:attributes>
+                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
+                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
+                <ss:attribute name="x" document="水平位移" type="ss:int"/>
+                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
+                <ss:attribute name="color" docement="颜色" type="ss:String"/>
+                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
+                <ss:attribute name="style" document="样式"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:labels">
+            <ss:attributes>
+                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
+                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
+                <ss:attribute name="x" document="水平位移" type="ss:int"/>
+                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
+                <ss:attribute name="style" document="样式"/>
+            </ss:attributes>
+        </ss:element>
+    </ss:elements>
+    <ss:types>
+        <ss:simpleType name="a:chartType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="line"/>
+                    <ss:enumeration value="pie"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:layout">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="vertical"/>
+                    <ss:enumeration value="horizontal"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:vAlignType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="top"/>
+                    <ss:enumeration value="center"/>
+                    <ss:enumeration value="bottom"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+    </ss:types>
+    <ss:categories/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

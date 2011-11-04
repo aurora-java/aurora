@@ -7,9 +7,15 @@
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
                 <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
+                <!--add by shengbo.huang @2011/11/3-->
+                <ss:attribute name="autoFocus" document="自动对焦" type="ss:boolean"/>
+                <ss:attribute name="showRowNumber" document="是否显示行号" type="ss:boolean"/>
+                <!--end-->
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
+                <!--modify by shengbo.huang @2011/11/3-->
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <!--end-->
                 <ss:array name="a:editors" document="编辑器" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
@@ -20,6 +26,12 @@
             </ss:extensions>
         </ss:element>
         <ss:element name="a:column">
+            <!--add by shengbo.huang @2011/11/2-->
+            <ss:extensions>
+                <ss:extension base="a:fieldplace"/>
+                <ss:extension base="a:config-field"/>
+            </ss:extensions>
+            <!--end-->
             <ss:attributes>
                 <ss:attribute name="id" document="列ID,主要用于个性化中"/>
                 <ss:attribute name="name" document="列的field的name"/>
@@ -52,9 +64,14 @@
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
                 <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
+                <!--add by shengbo.huang @2011/11/3-->
+                <ss:attribute name="showHead" document="是否显示表头" type="ss:boolean"/>
+                <!--end-->
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" indexField="name" type="a:column"/>
+                <!--modify by shengbo.huang @2011/11/3-->
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <!--end-->
                 <ss:array name="a:editors" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
@@ -64,6 +81,42 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
         </ss:element>
+        <!--add by shengbo.huang @2011/11/3-->
+        <ss:element name="a:treeGrid">
+            <ss:attributes>
+                <ss:attribute name="expandField" document="展开字段" type="ss:String"/>
+                <ss:attribute name="idField" document="唯一标识字段" type="ss:String"/>
+                <ss:attribute name="parentField" document="父节点唯一标识字段" type="ss:String"/>
+                <ss:attribute name="showCheckBox" document="是否显示checkBox" type="ss:boolean"/>
+                <ss:attribute name="sequenceField" document="排序字段" type="ss:String"/>
+                <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <ss:array name="a:editors" indexField="id" type="a:Field"/>
+            </ss:arrays>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:autoGrid">
+            <ss:attributes>
+                <ss:attribute name="model" document="指定model" type="ss:String"/>
+                <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
+                <ss:attribute name="enablePageSize" document="启用页面大小" type="ss:int"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <ss:array name="a:editors" indexField="id" type="a:Field"/>
+            </ss:arrays>
+            <ss:elements>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
+            </ss:elements>
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+        </ss:element>
+        <!--end-->
     </ss:elements>
     <ss:categories/>
     <ss:types>

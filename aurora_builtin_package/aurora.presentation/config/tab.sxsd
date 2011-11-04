@@ -7,10 +7,17 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
             <ss:arrays>
-                <ss:array name="a:tabs" minOccurs="1" type="a:tab"/>
+                <!--modify by shengbo.huang @2011/11/3-->
+                <ss:array name="a:tabs" minOccurs="1" type="a:tabplace"/>
+                <!--end-->
             </ss:arrays>
         </ss:element>
         <ss:element name="a:tab" document="TabPanel的tab页">
+            <!--add by shengbo.huang @2011/11/2-->
+            <ss:extensions>
+                <ss:extension base="a:tabplace"/>
+            </ss:extensions>
+            <!--end-->
             <ss:attributes>
                 <ss:attribute name="id" document="组件的ID,在同一个screen中ID不能重复"/>
                 <ss:attribute name="bindTarget" document="需要绑定的DataSet的ID"/>
@@ -34,7 +41,6 @@
         </ss:element>
     </ss:elements>
     <ss:categories/>
-    <ss:types/>
     <ss:editors/>
     <ss:wizards/>
 </ss:schema>
