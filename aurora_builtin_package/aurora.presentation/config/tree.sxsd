@@ -12,6 +12,7 @@
                 <ss:attribute name="idField" document="id选项" use="required"/>
                 <ss:attribute name="parentField" document="parentField" use="required"/>
                 <ss:attribute name="renderer" document="渲染器"/>
+                <ss:attribute name="sequenceField" document="排序字段" type="ss:string"/>
             </ss:attributes>
         </ss:element>
     </ss:elements>
