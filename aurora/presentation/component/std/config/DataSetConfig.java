@@ -41,6 +41,7 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_AUTO_PAGE_SIZE = "autopagesize";
 	public static final String PROPERTITY_PROCESS_FUNCTION = "processfunction";
     public static final String PROPERTITY_TOTALCOUNT_FIELD = "totalcountfield";
+	public static final String PROPERTITY_SORT_TYPE = "sorttype";
 	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
@@ -54,6 +55,13 @@ public class DataSetConfig extends ComponentConfig {
 			context.copy(map);
 		}
 		return context;		
+	}
+	
+	public String getSortType(){
+		return getString(PROPERTITY_SORT_TYPE);
+	}
+	public void setSortType(String type){
+		putString(PROPERTITY_SORT_TYPE,type);
 	}
 	
 	public static DataSetConfig getInstance(){

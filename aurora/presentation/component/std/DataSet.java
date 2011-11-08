@@ -250,6 +250,8 @@ public class DataSet extends Component {
 		addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
+		if(dsc.getSortType() !=null) addConfig(DataSetConfig.PROPERTITY_SORT_TYPE, dsc.getSortType());
+		
 		if(dsc.isAutoCreate())addConfig(DataSetConfig.PROPERTITY_AUTO_CREATE, new Boolean(dsc.isAutoCreate()));
 		if(dsc.isSelectable())addConfig(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
 		if(null!=dsc.getSelectFunction())addConfig(DataSetConfig.PROPERTITY_SELECT_FUNCTION,dsc.getSelectFunction());
