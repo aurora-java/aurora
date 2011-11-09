@@ -6,23 +6,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import uncertain.composite.CompositeMap;
+import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
-import aurora.database.service.SqlServiceContext;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.service.ServiceThreadLocal;
 
 public class HTMLInclude implements IViewBuilder {
 
 	private IDatabaseServiceFactory factory;
 	private String id;
+	private String model = "doc.doc_artical";
+	private static final String PROPERTITY_ARTICAL_ID = "artical_id";
+	private static final String PROPERTITY_ARTICAL_PATH = "artical_path";
 	private String contextPath;
 	private String articalPath;
 	private String sourcePath;
@@ -52,7 +57,7 @@ public class HTMLInclude implements IViewBuilder {
 		}
 		String source = getArticalSource(articalPath);
 		if (null != source && !"".equals(source))
-			out.write("<div id ='"+id+"'>" + source + "</div>");
+			out.write("<div id ='" + id + "'>" + source + "</div>");
 	}
 
 	private void init() throws Exception {
@@ -60,32 +65,30 @@ public class HTMLInclude implements IViewBuilder {
 			throw new ViewCreationException(
 					"The property 'id' of The artical component is required.");
 		}
-		SqlServiceContext ssc = factory.createContextWithConnection();
-		Connection conn = ssc.getConnection();
-		Statement st = conn.createStatement();
-		ResultSet rs = null;
-		try {
-			rs = st
-					.executeQuery("select sa.artical_path from sys_artical sa where sa.artical_id = '"
-							+ id + "'");
-			if (!rs.next())
-				throw new ViewCreationException(
-						"Invalid property 'id' for match the 'artical_id'");
-			String path = rs.getString(1);
-			if (null != path) {
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		if (context == null)
+			throw new IllegalStateException(
+					"No service context set in ThreadLocal yet");
+
+		BusinessModelService service = factory.getModelService(model, context);
+		Map map = new HashMap();
+        map.put(PROPERTITY_ARTICAL_ID, id);
+        CompositeMap resultMap = service.queryAsMap(map);
+        if(null == resultMap){
+        	throw new ViewCreationException(
+			"Invalid property 'id' for match the 'artical_id'");
+        }
+        Iterator it = resultMap.getChildIterator();
+        while(it.hasNext()){
+        	String path = ((CompositeMap)it.next()).getString(PROPERTITY_ARTICAL_PATH);
+        	if (null != path) {
 				articalPath = "../.." + path;
 				sourcePath = contextPath
 						+ path.replaceAll("\\\\", "/").replaceAll(
 								"(.*/)[^/]*$", "$1");
+				break;
 			}
-		} finally {
-			if (rs != null)
-				rs.close();
-			if (st != null)
-				st.close();
-			if (ssc != null)
-				ssc.freeConnection();
-		}
+        }
 	}
 
 	private String getSource(String path) throws IOException {
@@ -132,8 +135,9 @@ public class HTMLInclude implements IViewBuilder {
 				metaPattern, replaceAll(titlePattern,
 						replaceAll(bodyPattern, replaceAll(headPattern,
 								replaceAll(htmlPattern, replaceAll("</link>",
-										source, ""), "$1"), "$1"), "$1$2$3"), ""),
-				""), "<script src='" + sourcePath + "$2'></script>"),
+										source, ""), "$1"), "$1"), "$1$2$3"),
+						""), ""), "<script src='" + sourcePath
+				+ "$2'></script>"),
 				"<link rel='stylesheet' type='text/css' href='" + sourcePath
 						+ "$2'/>");
 	}
