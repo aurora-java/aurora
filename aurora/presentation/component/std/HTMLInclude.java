@@ -52,12 +52,16 @@ public class HTMLInclude implements IViewBuilder {
 		id = view_context.getView().getString(ComponentConfig.PROPERTITY_ID);
 		try {
 			init();
-		} catch (Exception e) {
+		}catch (ClassNotFoundException e) {
+			out.write(e.getMessage());
+			return;
+		}
+		catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
 		String source = getArticalSource(articalPath);
 		if (null != source && !"".equals(source))
-			out.write("<div id ='" + id + "'>" + source + "</div>");
+			out.write(source);
 	}
 
 	private void init() throws Exception {
@@ -74,8 +78,8 @@ public class HTMLInclude implements IViewBuilder {
 		Map map = new HashMap();
         map.put(PROPERTITY_ARTICAL_ID, id);
         CompositeMap resultMap = service.queryAsMap(map);
-        if(null == resultMap){
-        	throw new ViewCreationException(
+        if(null == resultMap || null ==  resultMap.getChilds()){
+        	throw new ClassNotFoundException(
 			"Invalid property 'id' for match the 'artical_id'");
         }
         Iterator it = resultMap.getChildIterator();
