@@ -80,7 +80,7 @@ public class HTMLInclude implements IViewBuilder {
         CompositeMap resultMap = service.queryAsMap(map);
         if(null == resultMap || null ==  resultMap.getChilds()){
         	throw new ClassNotFoundException(
-			"Invalid property 'id' for match the 'artical_id'");
+			"文章未找到，输入的路径不正确。");
         }
         Iterator it = resultMap.getChildIterator();
         while(it.hasNext()){
