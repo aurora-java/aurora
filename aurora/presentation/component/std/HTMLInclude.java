@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
 import aurora.presentation.BuildSession;
@@ -45,11 +46,13 @@ public class HTMLInclude implements IViewBuilder {
 		this.factory = factory;
 	}
 
-	public void buildView(BuildSession session, ViewContext view_context)
-			throws IOException, ViewCreationException {
+	public void buildView(BuildSession session, ViewContext view_context)throws IOException, ViewCreationException {
 		contextPath = session.getContextPath();
 		Writer out = session.getWriter();
 		id = view_context.getView().getString(ComponentConfig.PROPERTITY_ID);
+		if(id!=null){
+			id = TextParser.parse(id, view_context.getModel());
+		}
 		try {
 			init();
 		}catch (ClassNotFoundException e) {
