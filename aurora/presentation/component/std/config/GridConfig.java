@@ -15,6 +15,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_AUTO_FOCUS = "autofocus";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_CAN_PASTE = "canpaste";
+	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
@@ -78,6 +79,12 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setCanPaste(boolean canPaste){
 		putBoolean(PROPERTITY_CAN_PASTE, canPaste);
+	}
+	public boolean isCanWheel(){
+		return getBoolean(PROPERTITY_CAN_WHEEL, true);		
+	}
+	public void setCanWheel(boolean canPaste){
+		putBoolean(PROPERTITY_CAN_WHEEL, canPaste);
 	}
 	
 	public boolean hasNavBar(){

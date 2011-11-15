@@ -13,6 +13,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 	public static final String PROPERTITY_SHOW_HEAD = "showhead";
+	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	
 	
 	public static TableConfig getInstance(){
@@ -88,5 +89,11 @@ public class TableConfig extends ComponentConfig {
 	}
 	public void setNavBar(boolean nb){
 		putBoolean(PROPERTITY_NAVBAR, nb);
+	}
+	public boolean isCanWheel(){
+		return getBoolean(PROPERTITY_CAN_WHEEL, true);		
+	}
+	public void setCanWheel(boolean canPaste){
+		putBoolean(PROPERTITY_CAN_WHEEL, canPaste);
 	}
 }

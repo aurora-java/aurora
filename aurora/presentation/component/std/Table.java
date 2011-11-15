@@ -71,6 +71,7 @@ public class Table extends Component {
 			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
 			map.put(TITLE,title);
 		}
+		addConfig(TableConfig.PROPERTITY_CAN_WHEEL, new Boolean(tc.isCanWheel()));
 		map.put(CONFIG, getConfigString());
 	}
 	private void processSelectable(Map map,CompositeMap view,CompositeMap cols){
