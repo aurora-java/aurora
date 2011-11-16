@@ -17,7 +17,6 @@ import uncertain.composite.JSONAdaptor;
 import uncertain.event.EventModel;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
-import uncertain.logging.LoggingTopic;
 import uncertain.proc.ProcedureRunner;
 import uncertain.util.LoggingUtil;
 import aurora.service.ServiceContext;
@@ -45,10 +44,13 @@ public class JSONServiceInterpreter {
 
     static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
 
+    public static String JSON_ACCESS_PARAMTER = "json_access";
     public JSONServiceInterpreter() {
     }
 
     public int preParseParameter(JSONServiceContext ct) throws Exception {
+    	if(!isJSONRequest(ct.getRequest()))
+    		return EventModel.HANDLE_NORMAL;
         ServiceContext service_context = ct;
         HttpServletRequest request = ct.getRequest();
         //HttpServletResponse response = ct.getResponse();
@@ -83,6 +85,8 @@ public class JSONServiceInterpreter {
     }
 
     public void writeResponse( ServiceContext service_context ) throws IOException, JSONException {
+    	if(!isJSONRequest(service_context))
+    		 return;
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(service_context.getObjectContext());
         String output = null;
         ServiceOutputConfig cfg = svc.getServiceOutputConfig();
@@ -117,12 +121,15 @@ public class JSONServiceInterpreter {
     }
 
     public void onCreateSuccessResponse( ServiceContext service_context ) throws IOException, JSONException {
-        writeResponse(service_context);
+        if(isJSONRequest(service_context))
+        	writeResponse(service_context);
     }
 
     public void onCreateFailResponse(ProcedureRunner runner)
             throws IOException, JSONException {
         ServiceContext context = ServiceContext.createServiceContext(runner.getContext());
+        if(!isJSONRequest(context))
+        	return;
         // log exception
         ILogger logger = LoggingContext.getLogger(context.getObjectContext(), ServiceInstance.LOGGING_TOPIC);
         Throwable thr = runner.getException();
@@ -148,5 +155,17 @@ public class JSONServiceInterpreter {
         out.println("} ");
         out.flush();
     }
-
+    private boolean isJSONRequest(ServiceContext service_context){
+    	HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(service_context.getObjectContext());
+    	return isJSONRequest(svc.getRequest());
+    }
+    private boolean isJSONRequest(HttpServletRequest request){
+    	String httptype = request.getHeader("x-requested-with");
+ 		if ("XMLHttpRequest".equals(httptype)) {
+ 			return true;
+ 		}else if("true".equals(request.getParameter(JSON_ACCESS_PARAMTER))){
+ 			return true;
+ 		}
+    	return false;
+    }
 }
