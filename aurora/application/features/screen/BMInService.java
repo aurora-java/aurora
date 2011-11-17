@@ -17,7 +17,6 @@ import uncertain.schema.ISchemaManager;
 import aurora.application.features.cstm.CustomSourceCode;
 import aurora.application.sourcecode.SourceCodeUtil;
 import aurora.bm.IModelFactory;
-import aurora.security.ResourceNotDefinedException;
 
 public class BMInService {
 	private final static QualifiedName bmReference = new QualifiedName(
@@ -31,8 +30,9 @@ public class BMInService {
 					"paramter error. 'registry' can not be null.");
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
+		// 当传入的页面无效时,返回空的东西(不是null,不抛异常)
 		if (sourceFile == null || !sourceFile.exists())
-			throw new ResourceNotDefinedException(filePath);
+			return createResult(new ArrayList<String>(0), registry);// //////
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap source = cl.loadByFullFilePath(sourceFile
 				.getCanonicalPath());
