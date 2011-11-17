@@ -19,17 +19,13 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.service.ServiceThreadLocal;
 
 public class HTMLInclude implements IViewBuilder {
 
 	private IDatabaseServiceFactory factory;
-	private String id;
 	private String model = "doc.doc_artical";
-	private static final String PROPERTITY_ARTICAL_ID = "artical_id";
-	private static final String PROPERTITY_ARTICAL_PATH = "artical_path";
-	private String contextPath;
+	private static final String PROPERTITY_ID = "id";
 	private String articalPath;
 	private String sourcePath;
 	private String titlePattern = "<title>.*</title>";
@@ -46,32 +42,29 @@ public class HTMLInclude implements IViewBuilder {
 		this.factory = factory;
 	}
 
-	public void buildView(BuildSession session, ViewContext view_context)throws IOException, ViewCreationException {
-		contextPath = session.getContextPath();
+	public void buildView(BuildSession session, ViewContext view_context)
+			throws IOException, ViewCreationException {
 		Writer out = session.getWriter();
-		id = view_context.getView().getString(ComponentConfig.PROPERTITY_ID);
-		if(id!=null){
-			id = TextParser.parse(id, view_context.getModel());
-		}
 		try {
-			init();
-		}catch (ClassNotFoundException e) {
+			init(session, view_context);
+			String source = getArticalSource(articalPath);
+			if (null != source && !"".equals(source))
+				out.write(source);
+		} catch (ClassNotFoundException e) {
 			out.write(e.getMessage());
-			return;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
-		String source = getArticalSource(articalPath);
-		if (null != source && !"".equals(source))
-			out.write(source);
 	}
 
-	private void init() throws Exception {
+	private void init(BuildSession session, ViewContext view_context)
+			throws Exception {
+		String id = view_context.getView().getString(PROPERTITY_ID);
 		if (null == id) {
-			throw new ViewCreationException(
+			throw new IllegalStateException(
 					"The property 'id' of The artical component is required.");
 		}
+		id = TextParser.parse(id, view_context.getModel());
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context == null)
 			throw new IllegalStateException(
@@ -79,23 +72,22 @@ public class HTMLInclude implements IViewBuilder {
 
 		BusinessModelService service = factory.getModelService(model, context);
 		Map map = new HashMap();
-        map.put(PROPERTITY_ARTICAL_ID, id);
-        CompositeMap resultMap = service.queryAsMap(map);
-        if(null == resultMap || null ==  resultMap.getChilds()){
-        	throw new ClassNotFoundException(
-			"文章未找到，输入的路径不正确。");
-        }
-        Iterator it = resultMap.getChildIterator();
-        while(it.hasNext()){
-        	String path = ((CompositeMap)it.next()).getString(PROPERTITY_ARTICAL_PATH);
-        	if (null != path) {
+		map.put("artical_id", id);
+		CompositeMap resultMap = service.queryAsMap(map);
+		if (null == resultMap || null == resultMap.getChilds()) {
+			throw new ClassNotFoundException("文章未找到，输入的路径不正确。");
+		}
+		Iterator it = resultMap.getChildIterator();
+		while (it.hasNext()) {
+			String path = ((CompositeMap) it.next()).getString("artical_path");
+			if (null != path) {
 				articalPath = "../.." + path;
-				sourcePath = contextPath
+				sourcePath = session.getContextPath()
 						+ path.replaceAll("\\\\", "/").replaceAll(
 								"(.*/)[^/]*$", "$1");
 				break;
 			}
-        }
+		}
 	}
 
 	private String getSource(String path) throws IOException {
