@@ -16,9 +16,7 @@
                 <ss:attribute name="rowRenderer" document="通过回调函数返回的样式表渲染指定行\n回调函数function(record,rowIndex){return css}\n返回值css值可以是class或者style字符串,也可以是class和style字符串数组"/>
             </ss:attributes>
             <ss:arrays>
-                <!--modify by shengbo.huang @2011/11/3-->
-                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
-                <!--end-->
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
                 <ss:array name="a:editors" document="编辑器" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
@@ -29,12 +27,6 @@
             </ss:extensions>
         </ss:element>
         <ss:element name="a:column">
-            <!--add by shengbo.huang @2011/11/2-->
-            <ss:extensions>
-                <ss:extension base="a:fieldplace"/>
-                <ss:extension base="a:config-field"/>
-            </ss:extensions>
-            <!--end-->
             <ss:attributes>
                 <ss:attribute name="id" document="列ID,主要用于个性化中"/>
                 <ss:attribute name="name" document="列的field的name"/>
@@ -70,12 +62,10 @@
                 <!--add by shengbo.huang @2011/11/3-->
                 <ss:attribute name="showHead" document="是否显示表头" type="ss:boolean"/>
                 <!--end-->
-            	<ss:attribute name="canWheel" default="true" document="能否通过鼠标滚动来换行" type="ss:boolean"/>
+                <ss:attribute name="canWheel" default="true" document="能否通过鼠标滚动来换行" type="ss:boolean"/>
             </ss:attributes>
             <ss:arrays>
-                <!--modify by shengbo.huang @2011/11/3-->
-                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
-                <!--end-->
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
                 <ss:array name="a:editors" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
@@ -96,7 +86,7 @@
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
                 <ss:array name="a:editors" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:extensions>
@@ -110,7 +100,7 @@
                 <ss:attribute name="enablePageSize" document="启用页面大小" type="ss:int"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:columns" document="列配置" indexField="name" type="a:fieldplace"/>
+                <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
                 <ss:array name="a:editors" indexField="id" type="a:Field"/>
             </ss:arrays>
             <ss:elements>
