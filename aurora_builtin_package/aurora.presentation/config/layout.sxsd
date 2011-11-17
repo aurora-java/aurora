@@ -13,7 +13,6 @@
             </ss:extensions>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
-                <ss:element ref="a:placeHolder"/>
             </ss:elements>
         </ss:element>
         <!--end-->
@@ -36,9 +35,6 @@
             </ss:extensions>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
-                <!--add by shengbo.huang @2011/11/3-->
-                <ss:element ref="a:placeHolder"/>
-                <!--end-->
             </ss:elements>
         </ss:element>
         <ss:element name="a:vBox" document="竖向box">
@@ -55,9 +51,6 @@
             </ss:extensions>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
-                <!--add by shengbo.huang @2011/11/3-->
-                <ss:element ref="a:placeHolder"/>
-                <!--end-->
             </ss:elements>
         </ss:element>
         <ss:element name="a:hBox" document="横向box">
@@ -74,9 +67,6 @@
             </ss:extensions>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
-                <!--add by shengbo.huang @2011/11/3-->
-                <ss:element ref="a:placeHolder"/>
-                <!--end-->
             </ss:elements>
         </ss:element>
         <ss:element name="a:form" document="form布局">
