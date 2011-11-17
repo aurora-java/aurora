@@ -2,11 +2,6 @@
 <ss:schema xmlns:c="aurora.application.action" xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:elements>
         <ss:element name="a:dataSet" wizard="a:dataSetWizard">
-            <!--add by shengbo.huang @2011/11/3-->
-            <ss:extensions>
-                <ss:extension base="a:datasetplace"/>
-            </ss:extensions>
-            <!--end-->
             <ss:attributes>
                 <ss:attribute name="id" document="DataSet的ID" type="a:DataSetReference" use="required"/>
                 <ss:attribute name="model" document="DataSet关联的BM" type="bm:ModelReference"/>
@@ -34,22 +29,28 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>
             </ss:elements>
             <ss:arrays>
-                <!--modify by shengbo.huang @2011/11/2-->
-                <ss:array name="a:fields" document="Fields" indexField="name" type="a:fieldplace" wizard="a:fieldsWizard"/>
-                <!--end-->
+                <ss:array name="a:fields" document="Fields" indexField="name" type="a:field" wizard="a:fieldsWizard"/>
                 <ss:array name="a:events" document="Events" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:element>
-        <!--add by shengbo.huang @2011/11/2-->
-        <ss:element name="a:placeHolder" document="动态列占位符">
-            <ss:extensions>
-                <ss:extension base="a:fieldplace"/>
-                <ss:extension base="a:datasetplace"/>
-                <ss:extension base="a:tabplace"/>
-            </ss:extensions>
+        <ss:element name="a:init-procedure" document="Screen/svc初始化时执行的操作">
+            <ss:elements>
+                <ss:element ref="p:AbstractAction"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:view">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+                <ss:element maxOccurs="1" minOccurs="0" ref="a:screenBody"/>
+            </ss:elements>
             <ss:attributes>
-                <ss:attribute name="id" document="绑定view-config中的唯一标识"/>
+                <ss:attribute name="template" document="页面使用的模板"/>
+                <ss:attribute name="package" document="页面模板所在的package"/>
+                <ss:attribute name="chartTheme" document="chart所使用的样式"/>
             </ss:attributes>
+            <ss:arrays>
+                <ss:array name="a:dataSets" indexField="id" type="a:dataSet" wizard="a:dataSetsWizard"/>
+            </ss:arrays>
         </ss:element>
         <ss:element name="c:create-config" document="动态列配置区">
             <ss:attributes>
@@ -68,28 +69,6 @@
                 <ss:array name="c:process-config" document="处理配置" indexField="name" type="a:config-field"/>
             </ss:arrays>
         </ss:element>
-        <!--end-->
-        <ss:element name="a:init-procedure" document="Screen/svc初始化时执行的操作">
-            <ss:elements>
-                <ss:element ref="p:AbstractAction"/>
-            </ss:elements>
-        </ss:element>
-        <ss:element name="a:view">
-            <ss:elements>
-                <ss:element ref="a:BaseViewComponent"/>
-                <ss:element maxOccurs="1" minOccurs="0" ref="a:screenBody"/>
-            </ss:elements>
-            <ss:attributes>
-                <ss:attribute name="template" document="页面使用的模板"/>
-                <ss:attribute name="package" document="页面模板所在的package"/>
-                <ss:attribute name="chartTheme" document="chart所使用的样式"/>
-            </ss:attributes>
-            <ss:arrays>
-                <!--modify by shengbo.huang @2011/11/3-->
-                <ss:array name="a:dataSets" indexField="id" type="a:datasetplace" wizard="a:dataSetsWizard"/>
-                <!--end-->
-            </ss:arrays>
-        </ss:element>
         <ss:element name="a:screen" document="UI界面的基础单元">
             <ss:elements>
                 <ss:element ref="a:init-procedure"/>
@@ -97,7 +76,7 @@
             </ss:elements>
             <!--add by shengbo.huang @2011/11/2-->
             <ss:arrays>
-                <ss:array name="a:view-config" document="动态列配置" indexField="targetId" type="c:create-config"/>
+                <ss:array name="a:view-config" document="动态列配置,可以在view标签下配置" indexField="targetId" type="c:create-config"/>
             </ss:arrays>
             <!--end-->
             <ss:attributes>
@@ -117,12 +96,6 @@
         </ss:element>
         <ss:element name="a:record" document="DataSet的数据项"/>
         <ss:element name="a:field" document="DataSet的field">
-            <!--add by shengbo.huang @2011/11/2-->
-            <ss:extensions>
-                <ss:extension base="a:fieldplace"/>
-                <ss:extension base="a:config-field"/>
-            </ss:extensions>
-            <!--end-->
             <ss:attributes>
                 <ss:attribute name="name" document="field的name" type=""/>
                 <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
@@ -197,14 +170,6 @@
             </ss:elements>
         </ss:element>
     </ss:elements>
-    <!--add by shengbo.huang @2011/11/2-->
-    <ss:types>
-        <ss:complexType name="a:fieldplace"/>
-        <ss:complexType name="a:datasetplace"/>
-        <ss:complexType name="a:tabplace"/>
-        <ss:complexType name="a:config-field"/>
-    </ss:types>
-    <!--end-->
     <ss:types>
         <ss:simpleType name="a:selectType">
             <ss:restriction base="ss:String">
