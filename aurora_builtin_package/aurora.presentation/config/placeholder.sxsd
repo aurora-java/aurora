@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:placeHolder" document="占位符">
+            <ss:extensions>
+                <ss:extension base="ss:AnyElement"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="id" document="绑定view-config中的唯一标识"/>
+            </ss:attributes>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:types/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>
