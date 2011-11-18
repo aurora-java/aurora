@@ -104,7 +104,7 @@ public class Comment extends Component {
 				+ "</cite> <span>留言于：" + date + "</span></div>");
 		buffer.append("<div class='comment-txt'>" + content + "</div>");
 		buffer.append("</div>");
-		if (null != author_id && author_id.equals(userId)) {
+		if (null != author_id && author_id.toString().equals(userId)) {
 			buffer.append("<div class='comment-bar'><a href='javascript:$(\""
 					+ id + "\").remove(\"" + commentId + "\")'>删除</a></div>");
 		}
