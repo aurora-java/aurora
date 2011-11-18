@@ -20,14 +20,14 @@ import aurora.service.ServiceThreadLocal;
 
 public class Comment extends Component {
 
-	private static final String DEFAULT_CLASS = "item-comment";
+	private static final String DEFAULT_CLASS = "comments";
 	private IDatabaseServiceFactory factory;
 	private String model = "doc.doc_comment";
 	private static final String PROPERTITY_TABLE_NAME = "tablename";
 	private static final String PROPERTITY_BIND_ID = "bindid";
 	private SimpleDateFormat parseDate;
 	private SimpleDateFormat formatDate;
-	private Long userId;
+	private String userId;
 
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
@@ -51,10 +51,9 @@ public class Comment extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		try {
-			CompositeMap sessionmap = (CompositeMap) context.getModel()
-					.getObject("/session");
+			CompositeMap sessionmap = (CompositeMap) context.getModel().getObject("/session");
 			if (null != sessionmap) {
-				userId = (Long) sessionmap.get("user_id");
+				userId = (String) sessionmap.get("user_id");
 				addConfig("username", findUserName(userId));
 			}
 			CompositeMap comments = init(session, context);
@@ -162,14 +161,13 @@ public class Comment extends Component {
 		return service.queryAsMap(map);
 	}
 
-	private String findUserName(Long userId) throws Exception {
+	private String findUserName(String userId) throws Exception {
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context == null)
 			throw new IllegalStateException(
 					"No service context set in ThreadLocal yet");
 
-		BusinessModelService service = factory.getModelService("sys.sys_user",
-				context);
+		BusinessModelService service = factory.getModelService("sys.sys_user",context);
 		Map map = new HashMap();
 		map.put("user_id", userId);
 		CompositeMap cm = service.queryAsMap(map);

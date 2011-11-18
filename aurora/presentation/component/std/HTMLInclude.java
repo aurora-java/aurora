@@ -26,7 +26,7 @@ public class HTMLInclude implements IViewBuilder {
 	private IDatabaseServiceFactory factory;
 	private String model = "doc.doc_article";
 	private static final String PROPERTITY_ID = "id";
-	private String articalPath;
+	private String articlePath;
 	private String sourcePath;
 	private String titlePattern = "<title>.*</title>";
 	private String metaPattern = "<meta[^>]*>";
@@ -47,7 +47,7 @@ public class HTMLInclude implements IViewBuilder {
 		Writer out = session.getWriter();
 		try {
 			init(session, view_context);
-			String source = getArticalSource(articalPath);
+			String source = getArticalSource(articlePath);
 			if (null != source && !"".equals(source))
 				out.write(source);
 		} catch (ClassNotFoundException e) {
@@ -62,7 +62,7 @@ public class HTMLInclude implements IViewBuilder {
 		String id = view_context.getView().getString(PROPERTITY_ID);
 		if (null == id) {
 			throw new IllegalStateException(
-					"The property 'id' of The artical component is required.");
+					"The property 'id' of The article component is required.");
 		}
 		id = TextParser.parse(id, view_context.getModel());
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
@@ -72,16 +72,16 @@ public class HTMLInclude implements IViewBuilder {
 
 		BusinessModelService service = factory.getModelService(model, context);
 		Map map = new HashMap();
-		map.put("artical_id", id);
+		map.put("article_id", id);
 		CompositeMap resultMap = service.queryAsMap(map);
 		if (null == resultMap || null == resultMap.getChilds()) {
 			throw new ClassNotFoundException("文章未找到，输入的路径不正确。");
 		}
 		Iterator it = resultMap.getChildIterator();
 		while (it.hasNext()) {
-			String path = ((CompositeMap) it.next()).getString("artical_path");
+			String path = ((CompositeMap) it.next()).getString("article_path");
 			if (null != path) {
-				articalPath = "../.." + path;
+				articlePath = "../.." + path;
 				sourcePath = session.getContextPath()
 						+ path.replaceAll("\\\\", "/").replaceAll(
 								"(.*/)[^/]*$", "$1");
