@@ -34,7 +34,10 @@ public class Switch implements IViewBuilder, ISingleton {
 			if ("null".equals(test_value) && obj == null) {
 				child_views = child.getChilds();
 				break;
-			} else {
+			}else if(test_value==null){
+			    child_views = child.getChilds();
+			    break;
+			}else {
 //				if (obj == null) obj = testField;
 				String vl = test_value.toString();
 
