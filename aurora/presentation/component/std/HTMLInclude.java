@@ -24,7 +24,7 @@ import aurora.service.ServiceThreadLocal;
 public class HTMLInclude implements IViewBuilder {
 
 	private IDatabaseServiceFactory factory;
-	private String model = "doc.doc_artical";
+	private String model = "doc.doc_article";
 	private static final String PROPERTITY_ID = "id";
 	private String articalPath;
 	private String sourcePath;
