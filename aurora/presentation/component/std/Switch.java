@@ -31,11 +31,11 @@ public class Switch implements IViewBuilder, ISingleton {
 		while (it.hasNext()) {
 			CompositeMap child = (CompositeMap) it.next();
 			Object test_value = child.get(KEY_VALUE);
-			if (test_value == null) {
+			if ("null".equals(test_value) && obj == null) {
 				child_views = child.getChilds();
 				break;
 			} else {
-				if (obj == null) obj = testField;
+//				if (obj == null) obj = testField;
 				String vl = test_value.toString();
 
 				if ("*".equals(vl))
