@@ -45,6 +45,8 @@ public class Switch implements IViewBuilder, ISingleton {
 					}
 
 				vl = TextParser.parse(vl, model);
+				if(obj==null)
+				    break;
 				if (vl.equals(obj.toString())) {
 					child_views = child.getChilds();
 					break;
