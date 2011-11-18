@@ -25,6 +25,7 @@ public class Comment extends Component {
 	private String model = "doc.doc_comment";
 	private static final String PROPERTITY_TABLE_NAME = "tablename";
 	private static final String PROPERTITY_BIND_ID = "bindid";
+	private static final String PROPERTITY_REGISTER_URL = "registerurl";
 	private SimpleDateFormat parseDate;
 	private SimpleDateFormat formatDate;
 	private String userId;
@@ -74,7 +75,7 @@ public class Comment extends Component {
 
 			map.put("txt", createTextArea(session, context));
 			map.put("btn", createButton(session, context));
-
+			
 		} catch (Exception e) {
 			throw new IOException(e.getMessage());
 		}
@@ -120,6 +121,9 @@ public class Comment extends Component {
 		textArea.put(ComponentConfig.PROPERTITY_ID, id + "_txt");
 		textArea
 				.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:150px");
+		if(null == userId){
+			textArea.put("readonly", new Boolean(true));
+		}
 		return session.buildViewAsString(model, textArea);
 	}
 
@@ -133,14 +137,19 @@ public class Comment extends Component {
 		button.put(Button.PROPERTITY_TEXT, "发 表 评 论");
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
 		button.put(Button.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
+		if(null == userId){
+			button.put("disabled", new Boolean(true));
+		}
 		return session.buildViewAsString(model, button);
 	}
-
 	private CompositeMap init(BuildSession session, ViewContext view_context)
 			throws Exception {
 		CompositeMap view = view_context.getView();
 		String tableName = view.getString(PROPERTITY_TABLE_NAME);
 		String bindId = view.getString(PROPERTITY_BIND_ID);
+		if(null == userId){
+			addConfig(PROPERTITY_REGISTER_URL,view.getString(PROPERTITY_REGISTER_URL));
+		}
 		if (null == bindId) {
 			throw new IllegalStateException(
 					"The property 'bindId' of The comment component is required.");
