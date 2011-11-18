@@ -50,17 +50,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         svc.getController().setProcedureName(
                 ControllerProcedures.INVOKE_SERVICE);
         AutoCrudServiceContext crudSvcContext = AutoCrudServiceContext.createAutoCrudServiceContext(svc.getContextMap());
-        String uri = request.getRequestURI();
-//        if(uri.startsWith("/")){
-//            uri = uri.substring(1);
-//        }
-//        String[] args = uri.split("/");
-//        if (args.length < 4)
-//            throw new ServletException("Invalid request format");
-//        int start_index = args[0].length() == 0 ? 1 : 0;
-//        String object_name = args[start_index + 2];
-//        String operation_name = args[start_index + 3];
-        
+        String uri = request.getRequestURI();       
         String[] args = uri.split("/");
 		if (args.length < 4) {
 			throw new ServletException("Invalid request format");
@@ -86,6 +76,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         if(enableBMTrace)
             screen.setTrace(true);
         CompositeMap action_config = null;
+        
         /*
         // begin check access
         Configuration config = super.getGlobalServiceConfig();
@@ -117,7 +108,14 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         }
         else
             throw new ServletException("Unknown command:"+operation_name);
-        screen.getInitProcedureConfig().addChild(0, action_config);
+        
+        CompositeMap proc_config = screen.getInitProcedureConfig(); 
+        proc_config.addChild(0, action_config);
+        // check if need to add context dump
+        String  dump_context = request.getParameter("_dump_context");
+        if("true".equals(dump_context))
+            proc_config.addChild( new CompositeMap("p","uncertain.proc","echo") );
+        
         svc.setServiceConfigData(service_config);
         
         // set autocrud service context flag
