@@ -25,6 +25,8 @@ public class Comment extends Component {
 	private String model = "doc.doc_comment";
 	private static final String PROPERTITY_TABLE_NAME = "tablename";
 	private static final String PROPERTITY_BIND_ID = "bindid";
+	private static final String PROPERTITY_REGISTER_HANDLER = "registerhandler";
+	private static final String PROPERTITY_LOGIN_HANDLER = "loginhandler";
 	private SimpleDateFormat parseDate;
 	private SimpleDateFormat formatDate;
 	private String userId;
@@ -149,6 +151,14 @@ public class Comment extends Component {
 		if (null == bindId) {
 			throw new IllegalStateException(
 					"The property 'bindId' of The comment component is required.");
+		}
+		String registerHandler = view.getString(PROPERTITY_REGISTER_HANDLER);
+		if(null != registerHandler){
+			addConfig(PROPERTITY_REGISTER_HANDLER, new JSONFunction(registerHandler));
+		}
+		String loginHandler = view.getString(PROPERTITY_LOGIN_HANDLER);
+		if(null != loginHandler){
+			addConfig(PROPERTITY_LOGIN_HANDLER, new JSONFunction(loginHandler));
 		}
 		bindId = TextParser.parse(bindId, view_context
 				.getModel());
