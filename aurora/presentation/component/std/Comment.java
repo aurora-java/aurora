@@ -119,7 +119,7 @@ public class Comment extends Component {
 		textArea.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		textArea.put(ComponentConfig.PROPERTITY_ID, id + "_txt");
 		textArea
-				.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:100px");
+				.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:150px");
 		return session.buildViewAsString(model, textArea);
 	}
 
@@ -130,9 +130,9 @@ public class Comment extends Component {
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_ID, id + "_btn");
 		button.put(Button.PROPERTITY_ICON, null);
-		button.put(Button.PROPERTITY_TEXT, "发表评论");
-		button.put(Button.PROPERTITY_CLICK, "function(){$('" + id
-				+ "').post()}");
+		button.put(Button.PROPERTITY_TEXT, "发 表 评 论");
+		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
+		button.put(Button.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
 		return session.buildViewAsString(model, button);
 	}
 
