@@ -25,7 +25,6 @@ public class Comment extends Component {
 	private String model = "doc.doc_comment";
 	private static final String PROPERTITY_TABLE_NAME = "tablename";
 	private static final String PROPERTITY_BIND_ID = "bindid";
-	private static final String PROPERTITY_REGISTER_URL = "registerurl";
 	private SimpleDateFormat parseDate;
 	private SimpleDateFormat formatDate;
 	private String userId;
@@ -147,9 +146,6 @@ public class Comment extends Component {
 		CompositeMap view = view_context.getView();
 		String tableName = view.getString(PROPERTITY_TABLE_NAME);
 		String bindId = view.getString(PROPERTITY_BIND_ID);
-		if(null == userId){
-			addConfig(PROPERTITY_REGISTER_URL,view.getString(PROPERTITY_REGISTER_URL));
-		}
 		if (null == bindId) {
 			throw new IllegalStateException(
 					"The property 'bindId' of The comment component is required.");
