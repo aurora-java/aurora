@@ -39,14 +39,14 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     IResultSetConsumer  rsConsummer;
     
     public String getConnectionName() {
-		return connectionName;
-	}
+        return connectionName;
+    }
 
-	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
-	}
+    public void setConnectionName(String connectionName) {
+        this.connectionName = connectionName;
+    }
 
-	protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
+    protected abstract void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc ) throws Exception ;
     
     protected abstract void prepare( CompositeMap context_map ) throws Exception ;
     
@@ -58,6 +58,13 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     
     protected void transferServiceOption( ServiceOption option, String key ){
         option.getObjectContext().put( key, super.mEntryConfig.get(key));        
+    }
+    
+    protected CompositeMap getMapFromRootPath( CompositeMap context, String root_path ){
+        CompositeMap data = (CompositeMap)context.getObject(root_path);
+        if(data==null)
+            data = context.createChildByTag(root_path);
+        return data;
     }
     
     public void query( CompositeMap context_map ) throws Exception
@@ -102,14 +109,14 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
                 consumer = (IResultSetConsumer)context.getInstanceOfType(IResultSetConsumer.class);            
                 if(consumer==null){
                     consumer = new CompositeMapCreator();
+                    mOCManager.populateObject(mEntryConfig, consumer);
                 }
             }
             if(consumer instanceof IContextAcceptable)
-            	((IContextAcceptable) consumer).setContext(context_map);
+                ((IContextAcceptable) consumer).setContext(context_map);
             // set root path
             if(consumer instanceof IRootMapAcceptable){
-                CompositeMap result = context.getModel();
-                if(rootPath!=null) result = result.createChildByTag(rootPath);
+                CompositeMap result = getMapFromRootPath(context.getModel(), this.rootPath);
                 ((IRootMapAcceptable)consumer).setRoot(result);
             }
             context.setResultsetConsumer(consumer);
