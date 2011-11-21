@@ -10,84 +10,144 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-public class HttpForward extends HttpServlet{
-	public static String KEY_ADDRESS="address"; 
+import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
+import uncertain.proc.IProcedureManager;
+import uncertain.proc.Procedure;
+import uncertain.proc.ProcedureRunner;
+
+import aurora.service.http.WebContextInit;
+
+public class HttpForward extends HttpServlet {	
+	private static final long serialVersionUID = -3144250964634670506L;
+	String KEY_ADDRESS = "address";
+	String KEY_PROCEDURE="procedure";
+	String KEY_OUTPUT="output";	
+	
+	String procedure;
+	IProcedureManager mProcManager;
+	ProcedureRunner mRunner;
+	UncertainEngine mUncertainEngine;
 	protected void service(HttpServletRequest request,
-			HttpServletResponse response){
-		try {
-			writeResponse(response,getHttpUrl(request));
-		} catch (Exception e) {			
-			e.printStackTrace();
-		}		
-	}
+			HttpServletResponse response) {
 		
-	public String getHttpUrl(HttpServletRequest request){
-		String address=super.getInitParameter(KEY_ADDRESS),paramName;		
-		String[] paramValues;
-		StringBuffer params=new StringBuffer();
-		int i,length;
-		boolean isFirst=true;
-		Enumeration enumn=request.getParameterNames();
-		while (enumn.hasMoreElements()) {
-			paramName = (String) enumn.nextElement();
-			paramValues=request.getParameterValues(paramName);
-			for(i=0,length=paramValues.length;i<length;i++){
-				if(isFirst){
-					params.append("?");
-					isFirst=false;
+		mUncertainEngine= (UncertainEngine) this.getServletContext().getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
+		procedure=super.getInitParameter(KEY_PROCEDURE);
+				
+		try {
+			if(!mUncertainEngine.isRunning()){
+		        StringBuffer msg = new StringBuffer("Application failed to initialize");
+		        Throwable thr = mUncertainEngine.getInitializeException();
+		        if(thr!=null)
+		            msg.append(":").append(thr.getMessage());
+		        response.sendError(500, msg.toString());
+		        return;
+		    }		    
+			
+			if(procedure!=null){
+				mProcManager=mUncertainEngine.getProcedureManager();
+				Procedure proc = mProcManager.loadProcedure(procedure);				
+				
+				CompositeMap context=new CompositeMap("context");
+				HttpSession httpSession=request.getSession();
+				Enumeration<String> enume=httpSession.getAttributeNames();
+				CompositeMap session=context.createChild("session");
+				while(enume.hasMoreElements()){
+					String key=enume.nextElement();
+					session.put(key, httpSession.getAttribute(key));
+				}			
+			
+				CompositeMap parameter=context.createChild("parameter");
+				String param=getParam(request);
+				parameter.putString("param", param);				
+				
+				mRunner= new ProcedureRunner();
+				mRunner.setProcedure(proc);
+				mRunner.setContext(context);
+				mRunner.run();
+				
+				Object msg=context.getObject(super.getInitParameter(KEY_OUTPUT));
+				if(msg==null){
+					writeResponse(response, super.getInitParameter(KEY_ADDRESS)+"?"+param);
 				}else{
+					  response.sendError(500, msg.toString());
+				}				
+			}	
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	public String getParam(HttpServletRequest request) {
+		String paramName;
+		String[] paramValues;
+		StringBuffer params = new StringBuffer();
+		int i, length;
+		boolean isFirst = true;
+		Enumeration<String> enumn = request.getParameterNames();
+		while (enumn.hasMoreElements()) {
+			paramName = enumn.nextElement();
+			paramValues = request.getParameterValues(paramName);
+			for (i = 0, length = paramValues.length; i < length; i++) {
+				if (isFirst) {
+//					params.append("?");
+					isFirst = false;
+				} else {
 					params.append("&");
 				}
 				params.append(paramName);
 				params.append("=");
-				params.append(paramValues[i].replace(' ', '+'));					
+				params.append(paramValues[i].replace(' ', '+'));
 			}
-		}		
-		return address+params;
+		}
+		return params.toString();
 	}
-		
-	public void	writeResponse(HttpServletResponse response,String url) throws Exception{
+
+	public void writeResponse(HttpServletResponse response, String url)
+			throws Exception {
 		OutputStream os = null;
-		InputStream is = null;		
-		HttpURLConnection connection=null;
+		InputStream is = null;
+		HttpURLConnection connection = null;
 		int Buffer_size = 50 * 1024;
-		try{	
+		try {
 			URL postUrl = new URL(url);
-			connection = (HttpURLConnection)postUrl.openConnection();
+			connection = (HttpURLConnection) postUrl.openConnection();
 			connection.setReadTimeout(0);
-			connection.connect();			
-			response.setContentType(connection.getContentType());			
+			connection.connect();
+			response.setContentType(connection.getContentType());
 			response.setContentLength(connection.getContentLength());
-			response.addHeader("Content-Disposition",connection.getHeaderField("Content-Disposition"));			
+			response.addHeader("Content-Disposition",
+					connection.getHeaderField("Content-Disposition"));
 			os = response.getOutputStream();
-			try{
+			try {
 				is = connection.getInputStream();
-			}catch(Exception e){
-				is= connection.getErrorStream();
+			} catch (Exception e) {
+				is = connection.getErrorStream();
 			}
-			byte buf[]=new byte[Buffer_size];
+			byte buf[] = new byte[Buffer_size];
 			int len;
-			while((len=is.read(buf))>0)
-				os.write(buf,0,len);			
-		}finally{			
-			if (is != null){
+			while ((len = is.read(buf)) > 0)
+				os.write(buf, 0, len);
+		} finally {
+			if (is != null) {
 				try {
 					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			
-			if (os != null){
+
+			if (os != null) {
 				try {
 					os.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			
-			if(connection!=null){
+
+			if (connection != null) {
 				connection.disconnect();
 			}
 		}
