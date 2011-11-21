@@ -14,6 +14,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.RadioConfig;
 
 /**
@@ -37,7 +38,7 @@ public class Radio extends Component {
 		CompositeMap items = rc.getItems();
 		if(items!=null){
 			try {
-				createOptions(session,map,items,layout,labelField,valueField, rc.getLabelExpression());
+				createOptions(session,view,map,items,layout,labelField,valueField, rc.getLabelExpression());
 			} catch (JSONException e) {
 				throw new IOException(e.getMessage());
 			}
@@ -47,7 +48,7 @@ public class Radio extends Component {
 				CompositeMap options = (CompositeMap)model.getObject(ds);
 				if(options!=null)
 				try {
-					createOptions(session,map,options,layout,labelField,valueField, rc.getLabelExpression());
+					createOptions(session,view,map,options,layout,labelField,valueField, rc.getLabelExpression());
 				} catch (JSONException e) {
 					throw new IOException(e.getMessage());
 				}
@@ -60,7 +61,7 @@ public class Radio extends Component {
 	}
 	
 	
-	private void createOptions(BuildSession session,Map map, CompositeMap items,String layout,String labelField,String valueField,String expression) throws JSONException {
+	private void createOptions(BuildSession session,CompositeMap view,Map map, CompositeMap items,String layout,String labelField,String valueField,String expression) throws JSONException {
 		StringBuffer sb = new StringBuffer();
 		List children = items.getChilds();
 		List options = new ArrayList();
@@ -79,9 +80,10 @@ public class Radio extends Component {
 				
 				JSONObject option = new JSONObject(item);
 				options.add(option);
+				String radioSeparator = view.getString(RadioConfig.PROPERTITY_RADIO_SEPARATOR,session.getRadioSeparator() == null?":":session.getRadioSeparator());
 				
 				if(!"".equals(label)){
-					label = ":"+label;
+					label = radioSeparator+label;
 				}
 				
 				sb.append("<div class='item-radio-option'  style='text-align:left;");

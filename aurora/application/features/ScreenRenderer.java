@@ -76,6 +76,7 @@ public class ScreenRenderer implements IFeature {
                 mDefaultTemplate = view_config.getDefaultTemplate();
                 mDefaultTitle = view_config.getDefaultTitle();
                 mDefaultLabelSeparator = view_config.getDefaultLabelSeparator();
+                mDefaultRadioSeparator = view_config.getDefaultRadioSeparator();
             }
         }
     }
@@ -100,6 +101,7 @@ public class ScreenRenderer implements IFeature {
     String mDefaultTemplate;
     String mDefaultTitle = "";
     String mDefaultLabelSeparator;
+    String mDefaultRadioSeparator;
 //    String      mScreenCacheKey;
     boolean     mIsCache = false;
 
@@ -208,6 +210,7 @@ public class ScreenRenderer implements IFeature {
             }
             session.setTitle(mDefaultTitle);
             session.setLabelSeparator(mDefaultLabelSeparator);
+            session.setRadioSeparator(mDefaultRadioSeparator);
             session.setTheme(appTheme);
             session.setBaseConfig(mService.getServiceConfig());
             session.setInstanceOfType(IService.class, mService);

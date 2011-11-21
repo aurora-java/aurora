@@ -31,7 +31,7 @@ public class Form extends Box {
 		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
 		
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
 		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td></td></tr>");
 		super.afterBuildTop(session, model, view);
 	}
@@ -52,7 +52,7 @@ public class Form extends Box {
 //		int height = Integer.valueOf("".equals(hstr) ?  "300" : hstr).intValue();
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
-		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
 		
 		String className = DEFAULT_TABLE_CLASS + " layout-form";
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
@@ -80,7 +80,7 @@ public class Form extends Box {
 		super.afterBuildTop(session, model, view);
 		Writer out = session.getWriter();
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
 		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td></td></tr>");
 	}
 

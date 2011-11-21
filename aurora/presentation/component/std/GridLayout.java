@@ -120,7 +120,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
-		boolean showBorder = view.getBoolean(BoxConfig.PROPRRTITY_SHOWBORDER, false);
+		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
 		
 		
 //		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");

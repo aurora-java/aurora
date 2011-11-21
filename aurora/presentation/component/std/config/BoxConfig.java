@@ -11,8 +11,8 @@ public class BoxConfig extends ComponentConfig {
 	public static final String PROPERTITY_CELLSPACING = "cellspacing";
 	public static final String PROPERTITY_VALIDALIGN = "validalign";
 	public static final String PROPERTITY_PADDING = "padding";
-	public static final String PROPRRTITY_SHOWBORDER = "showborder";
-	public static final String PROPRRTITY_LABEL_SEPARATOR = "labelseparator";
+	public static final String PROPERTITY_SHOWBORDER = "showborder";
+	public static final String PROPERTITY_LABEL_SEPARATOR = "labelseparator";
 	
 	
 	public int getRows() {
@@ -57,17 +57,17 @@ public class BoxConfig extends ComponentConfig {
 	}
 	
 	public Boolean isShowBorder(){
-        return getBoolean(PROPRRTITY_SHOWBORDER);
+        return getBoolean(PROPERTITY_SHOWBORDER);
     }
     public void setShowBorder(boolean show){
-        putBoolean(PROPRRTITY_SHOWBORDER, show);
+        putBoolean(PROPERTITY_SHOWBORDER, show);
     }
     
     public String getLabelSeparator(){
-    	return getString(PROPRRTITY_LABEL_SEPARATOR);
+    	return getString(PROPERTITY_LABEL_SEPARATOR);
     }
     public void setLabelSeparator(String labelSeparator){
-    	putString(PROPRRTITY_LABEL_SEPARATOR, labelSeparator);
+    	putString(PROPERTITY_LABEL_SEPARATOR, labelSeparator);
     }
 	
 }

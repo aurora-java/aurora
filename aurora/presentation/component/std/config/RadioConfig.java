@@ -12,6 +12,7 @@ public class RadioConfig extends ComponentConfig {
 	private static final String PROPERTITY_LAYOUT = "layout";
 	private static final String PROPERTITY_OPTIONS = "options";
 	private static final String PROPERTITY_LABEL_EXPRESSION = "labelexpression";
+	public static final String PROPERTITY_RADIO_SEPARATOR = "radioseparator";
 //	private static final String PROPERTITY_SELECT_IDNEX = "selectindex";
 	
 	public static final String DEFAULT_LAYOUT_HORIZONTAL = "horizontal";
@@ -78,6 +79,12 @@ public class RadioConfig extends ComponentConfig {
 	}
 	public void setOptions(String options){
 		putString(PROPERTITY_OPTIONS, options);
+	}
+	public String getRadioSeparator(){
+		return getString(PROPERTITY_RADIO_SEPARATOR);
+	}
+	public void setRadioSeparator(String radioseparator){
+		putString(PROPERTITY_RADIO_SEPARATOR, radioseparator);
 	}
 	
 	

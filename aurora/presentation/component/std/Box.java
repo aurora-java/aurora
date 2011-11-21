@@ -30,7 +30,7 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
-		String labelSeparator = view.getString(BoxConfig.PROPRRTITY_LABEL_SEPARATOR,session.getLabelSeparator() == null?":":session.getLabelSeparator());
+		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,session.getLabelSeparator() == null?":":session.getLabelSeparator());
 		
 		if(!"".equals(label)) {
 			StringBuffer str = new StringBuffer();

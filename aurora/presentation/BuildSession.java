@@ -86,6 +86,7 @@ public class BuildSession {
     /** @todo refactor out */
     String title;
     String labelSeparator;
+    String radioSeparator;
     ILookupCodeProvider lookupProvider;
 
     String language;
@@ -632,6 +633,13 @@ public class BuildSession {
     
     public void setLabelSeparator(String labelSeparator) {
     	this.labelSeparator = labelSeparator;
+    }
+    public String getRadioSeparator() {
+    	return radioSeparator;
+    }
+    
+    public void setRadioSeparator(String radioSeparator) {
+    	this.radioSeparator = radioSeparator;
     }
 
 }
