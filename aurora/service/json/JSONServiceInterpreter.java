@@ -49,7 +49,7 @@ public class JSONServiceInterpreter {
     }
 
     public int preParseParameter(JSONServiceContext ct) throws Exception {
-    	if(!isJSONRequest(ct.getRequest()))
+    	if(!isJSONRequest(ct.getRequest(), ct))
     		return EventModel.HANDLE_NORMAL;
         ServiceContext service_context = ct;
         HttpServletRequest request = ct.getRequest();
@@ -157,15 +157,17 @@ public class JSONServiceInterpreter {
     }
     private boolean isJSONRequest(ServiceContext service_context){
     	HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(service_context.getObjectContext());
-    	return isJSONRequest(svc.getRequest());
+    	return isJSONRequest(svc.getRequest(), service_context);
     }
-    private boolean isJSONRequest(HttpServletRequest request){
+    private boolean isJSONRequest(HttpServletRequest request, ServiceContext context){
     	String httptype = request.getHeader("x-requested-with");
  		if ("XMLHttpRequest".equals(httptype)) {
  			return true;
  		}else if("true".equals(request.getParameter(JSON_ACCESS_PARAMTER))){
  			return true;
+ 		}else if(context.getRequestType()!=null){
+ 		    return false;
  		}
-    	return false;
+    	return true;
     }
 }

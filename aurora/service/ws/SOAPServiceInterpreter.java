@@ -45,8 +45,10 @@ public class SOAPServiceInterpreter {
 
 	public int preParseParameter(ServiceContext service_context)
 			throws Exception {
-		if (!isSOAPRequest(service_context))
+		if (!isSOAPRequest(service_context)){
+		    service_context.setRequestType(HEAD_SOAP_PARAMETER);
 			return EventModel.HANDLE_NORMAL;
+		}
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(service_context.getObjectContext());
 		String soapContent = inputStream2String(svc.getRequest()
