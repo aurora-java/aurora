@@ -43,6 +43,8 @@ public class ServiceContext extends RuntimeContext {
     
     public static final String KEY_ERROR_DESCRIPTION = "__error_description__";
     
+    public static final String KEY_REQUEST_TYPE = "__request_type__";
+    
     public static ServiceContext createServiceContext( CompositeMap map ){
         ServiceContext context = new ServiceContext();
         context.initialize(map);
@@ -187,6 +189,14 @@ public class ServiceContext extends RuntimeContext {
         CompositeMap parent = p.getParent();
         put(KEY_CURRENT_PARAMETER, p);
         p.setParent(parent);
+    }
+    
+    public String getRequestType(){
+        return getString(KEY_REQUEST_TYPE);
+    }
+    
+    public void setRequestType(String type){
+        putString(KEY_REQUEST_TYPE, type);
     }
     
     /*
