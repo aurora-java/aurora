@@ -29,7 +29,7 @@ public class Comment extends Component {
 	private static final String PROPERTITY_LOGIN_HANDLER = "loginhandler";
 	private SimpleDateFormat parseDate;
 	private SimpleDateFormat formatDate;
-	private String userId;
+	private Object userId;
 
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
@@ -55,7 +55,7 @@ public class Comment extends Component {
 		try {
 			CompositeMap sessionmap = (CompositeMap) context.getModel().getObject("/session");
 			if (null != sessionmap) {
-				userId = (String) sessionmap.get("user_id");
+				userId = sessionmap.get("user_id");
 				addConfig("username", findUserName(userId));
 			}
 			CompositeMap comments = init(session, context);
@@ -176,7 +176,7 @@ public class Comment extends Component {
 		return service.queryAsMap(map);
 	}
 
-	private String findUserName(String userId) throws Exception {
+	private String findUserName(Object userId) throws Exception {
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context == null)
 			throw new IllegalStateException(
