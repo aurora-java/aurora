@@ -18,9 +18,13 @@ public class Repeater implements IViewBuilder {
 		CompositeMap model = view_context.getModel();
 		CompositeMap view = view_context.getView();
 		
-		String dataModel = view.getString(KEY_DATAMODEL,"");
-		if("".equals(dataModel)) throw new aurora.presentation.ViewCreationException("repeater: No dataModel field specified");
-		CompositeMap m = (CompositeMap)model.getObject(dataModel);
+		String dataModel = view.getString(KEY_DATAMODEL);
+		//if("".equals(dataModel)) throw new aurora.presentation.ViewCreationException("repeater: No dataModel field specified");
+		CompositeMap m = null;
+		if(dataModel!=null)
+		    m = (CompositeMap)model.getObject(dataModel);
+		else
+		    m = model;
 		if (m == null) return;
 		Iterator itm = m.getChildIterator();
 		if (itm == null) return;
