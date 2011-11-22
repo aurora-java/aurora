@@ -41,7 +41,7 @@ public class ScreenIncludeTag implements ITagContent {
         ScreenInclude sc = createScreenInclude();
         CompositeMap view = ScreenInclude.createScreenIncludeConfig(mScreenName);
         try{
-            sc.doScreenInclude(session, view, root);
+            sc.doScreenInclude(session, context, view, root);
         }catch(Exception ex){
             throw  new GeneralException("aurora.presentation.component.screen_include_invoke_error", 
                     new Object[]{view.toXML()}, 

@@ -10,6 +10,7 @@ import java.io.Writer;
 import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.core.ConfigurationError;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
@@ -110,14 +111,15 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
         return svc;
     }
     
-    public void doScreenInclude( BuildSession session, CompositeMap view, CompositeMap root)
+    public void doScreenInclude( BuildSession session, CompositeMap model, CompositeMap view, CompositeMap root)
         throws Exception
     {
         String screen_name = view.getString(KEY_SCREEN);
         if(screen_name==null)
             throw BuiltinExceptionFactory.createAttributeMissing(view.asLocatable(), "screen"); 
             //new ConfigurationError("'screen' property must be set for <screen-include>");
-        screen_name = session.parseString(screen_name, root );
+        //screen_name = TextParser.parse(screen_name, model);
+        screen_name = session.parseString(screen_name, model );
         // Added by mark.ma -- parse parameter
         int parameterpositiion = screen_name.lastIndexOf("?");
         if (parameterpositiion != -1) {
@@ -128,8 +130,11 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
             CompositeMap pcm = root.getChild("parameter");
             for (int i = 0; i < parameters.length; i++) {
                 String p = parameters[i];
-                pcm.put(p.substring(0, p.indexOf("=")), p.substring(p
-                        .indexOf("=") + 1, p.length()));
+                String key = p.substring(0, p.indexOf("="));
+                key = session.parseString(key, model);
+                String value = p.substring(p.indexOf("=") + 1, p.length());
+                value = session.parseString(value, model);
+                pcm.put( key, value);
             }
         }        
         // end
@@ -161,8 +166,9 @@ public class ScreenInclude implements IViewBuilder, ISingleton {
     public void buildView(BuildSession session, ViewContext view_context)
             throws IOException, ViewCreationException {
         CompositeMap view = view_context.getView();
+        CompositeMap model = view_context.getModel();
         try{
-            doScreenInclude(session, view_context.getView(), view_context.getModel().getRoot());
+            doScreenInclude(session, model, view_context.getView(), model.getRoot());
         }catch(Exception ex){
             throw new ViewCreationException("aurora.presentation.component.screen_include_invoke_error", 
                     new Object[]{view.toXML()}, 
