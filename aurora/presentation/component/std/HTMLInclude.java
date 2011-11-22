@@ -24,8 +24,9 @@ import aurora.service.ServiceThreadLocal;
 public class HTMLInclude implements IViewBuilder {
 
 	private IDatabaseServiceFactory factory;
-	private String model = "doc.doc_article";
-	private static final String PROPERTITY_ID = "id";
+	private static final String PROPERTITY_PATH_FIELD = "pathfield";
+	private static final String PROPERTITY_MODEL = "model";
+	private static final String PROPERTITY_PARAMS = "params";
 	private String articlePath;
 	private String sourcePath;
 	private String titlePattern = "<title>.*</title>";
@@ -59,27 +60,31 @@ public class HTMLInclude implements IViewBuilder {
 
 	private void init(BuildSession session, ViewContext view_context)
 			throws Exception {
-		String id = view_context.getView().getString(PROPERTITY_ID);
-		if (null == id) {
-			throw new IllegalStateException(
-					"The property 'id' of The article component is required.");
-		}
-		id = TextParser.parse(id, view_context.getModel());
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context == null)
 			throw new IllegalStateException(
 					"No service context set in ThreadLocal yet");
-
-		BusinessModelService service = factory.getModelService(model, context);
+		CompositeMap view = view_context.getView();
+		String pathField = view.getString(PROPERTITY_PATH_FIELD);
+		String model = view.getString(PROPERTITY_MODEL);
+		CompositeMap params = view.getChild(PROPERTITY_PARAMS);
 		Map map = new HashMap();
-		map.put("article_id", id);
+		if(null!=params){
+			Iterator pit = params.getChildIterator();
+			while(pit.hasNext()){
+				CompositeMap param = (CompositeMap) pit.next();
+				map.put(param.get("name"), TextParser.parse((String) param.get("value"), view_context.getModel()));
+			}
+		}
+		BusinessModelService service = factory.getModelService(model, context);
+		
 		CompositeMap resultMap = service.queryAsMap(map);
 		if (null == resultMap || null == resultMap.getChilds()) {
 			throw new ClassNotFoundException("文章未找到，输入的路径不正确。");
 		}
 		Iterator it = resultMap.getChildIterator();
 		while (it.hasNext()) {
-			String path = ((CompositeMap) it.next()).getString("article_path");
+			String path = ((CompositeMap) it.next()).getString(pathField);
 			if (null != path) {
 				articlePath = "../.." + path;
 				sourcePath = session.getContextPath()
