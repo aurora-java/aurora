@@ -9,6 +9,7 @@ public class DataSetFieldConfig extends DynamicObject  {
 	
 	public static final String PROPERTITY_REQUIRED = "required";
 	public static final String PROPERTITY_READONLY = "readonly";
+	public static final String PROPERTITY_EDITABLE = "editable";
     public static final String PROPERTITY_PROMPT = "prompt";
     public static final String PROPERTITY_RETURN_FIELD = "returnfield";
     public static final String PROPERTITY_VALUE_FIELD = "valuefield";
@@ -47,6 +48,12 @@ public class DataSetFieldConfig extends DynamicObject  {
     }
     public void setReadOnly(boolean readonly){
     	putBoolean(PROPERTITY_READONLY, readonly);
+    }
+    public boolean getEditable(){
+    	return getBoolean(PROPERTITY_EDITABLE, true);
+    }
+    public void setEditable(boolean editable){
+    	putBoolean(PROPERTITY_EDITABLE, editable);
     }
     
     
