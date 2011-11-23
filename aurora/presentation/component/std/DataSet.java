@@ -71,13 +71,10 @@ public class DataSet extends Component {
 			while(it.hasNext()){
 				CompositeMap field = (CompositeMap)it.next();
 				DataSetFieldConfig sdfc = DataSetFieldConfig.getInstance(field);
-				if(sdfc.getRequired())
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, true);
-				if(sdfc.getReadOnly())
-				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, true);
 
-//				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired());
-//				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired());
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_EDITABLE, sdfc.getEditable());
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				
 				String options = field.getString(ComboBoxConfig.PROPERTITY_OPTIONS);
