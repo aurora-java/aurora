@@ -43,7 +43,7 @@ public class CompositeMapCreator extends AbstractLocatableObject implements IRes
     }
 
     public void begin( String root_name ) {
-        if(!hasRootMap)
+        if(!hasRootMap||rootMap==null)
             rootMap = new CompositeMap(root_name);
     }
 

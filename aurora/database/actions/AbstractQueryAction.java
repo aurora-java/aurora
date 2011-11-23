@@ -61,6 +61,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     }
     
     protected CompositeMap getMapFromRootPath( CompositeMap context, String root_path ){
+    	if(root_path == null)
+    		return context;
         CompositeMap data = (CompositeMap)context.getObject(root_path);
         if(data==null)
             data = context.createChildByTag(root_path);
@@ -117,7 +119,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
             // set root path
             if(consumer instanceof IRootMapAcceptable){
                 CompositeMap result = getMapFromRootPath(context.getModel(), this.rootPath);
-                ((IRootMapAcceptable)consumer).setRoot(result);
+                if(result!=null)
+                	((IRootMapAcceptable)consumer).setRoot(result);
             }
             context.setResultsetConsumer(consumer);
             doQuery(param, consumer, desc);
