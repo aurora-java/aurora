@@ -81,27 +81,26 @@ public class WebServiceInvoker extends AbstractEntry {
 			out.flush();
 			out.close();
 			String soapResponse = null;
+			CompositeMap soap = null;
+			CompositeLoader cl = new CompositeLoader();
 			// http status ok
 			if (HttpURLConnection.HTTP_OK == httpUrlConnection
 					.getResponseCode()) {
-				soapResponse = inputStream2String(httpUrlConnection.getInputStream());
+				soap = cl.loadFromStream(httpUrlConnection.getInputStream());
+				soapResponse = soap.toXML();
 				LoggingContext.getLogger(context,this.getClass().getCanonicalName()).config("correct response:"+soapResponse);
 			}else{
-				soapResponse = inputStream2String(httpUrlConnection.getErrorStream());
+				soap = cl.loadFromStream(httpUrlConnection.getErrorStream());
+				soapResponse = soap.toXML();
 				LoggingContext.getLogger(context,this.getClass().getCanonicalName()).config("error response:"+soapResponse);
 				if(raiseExceptionOnError){
 					throw new ConfigurationFileException(WS_INVOKER_ERROR_CODE,new Object[]{url,soapResponse},this); 
 				}
 			}
 			httpUrlConnection.disconnect();
-			if (soapResponse == null || "".equals(soapResponse))
-				return;
-			CompositeLoader cl = new CompositeLoader();
-			CompositeMap soap = cl.loadFromString(soapResponse);
 			CompositeMap result = (CompositeMap) soap.getChild(
 					SOAPServiceInterpreter.BODY.getLocalName()).getChilds()
 					.get(0);
-//			result = cl.loadFromString(result.getText());
 			if (returnPath != null)
 				runner.getContext().putObject(returnPath, result, true);
 		}catch(Exception e){
