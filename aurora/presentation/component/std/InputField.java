@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 
@@ -43,7 +44,7 @@ public class InputField extends Field {
 			map.put(ComponentConfig.PROPERTITY_VALUE, emptyText);
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
 		}
-	
+		addConfig(InputFieldConfig.PROPERTITY_EDITABLE,new Boolean(view.getBoolean(InputFieldConfig.PROPERTITY_EDITABLE,true)));
 	}
 
 }

@@ -105,7 +105,7 @@ public class NavBar extends ToolBar {
 			comboBox.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
 			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
-			comboBox.put(ComboBoxConfig.PROPERTITY_EDITABLE, new Boolean(true));
+			comboBox.put(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(false));
 			view.addChild(comboBox);
 			String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");
