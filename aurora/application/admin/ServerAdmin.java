@@ -68,7 +68,6 @@ public class ServerAdmin extends Thread {
                 File home_path = new File(mHome);
                 File config_path = new File(home_path, "WEB-INF");
                 mEngineInitiator = new EngineInitiator(home_path,config_path);
-                System.out.println("init EngineInitiator");
                 mEngineInitiator.init();
                 mIsRunning = true;
                 start();
@@ -107,7 +106,7 @@ public class ServerAdmin extends Thread {
         
         static void printUsage(){
             System.out.println("Usage:");
-            System.out.println("ServerAdmin <port> <lwap home directory>");
+            System.out.println("ServerAdmin <port> <aurora home directory>");
         }
         
         public static void main( String[] args ) throws Exception {
