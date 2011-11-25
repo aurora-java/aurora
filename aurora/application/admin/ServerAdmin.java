@@ -11,7 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import uncertain.core.EngineInitiator;
+import uncertain.core.DirectoryConfig;
+import uncertain.core.UncertainEngine;
 
 public class ServerAdmin extends Thread {
     
@@ -19,7 +20,7 @@ public class ServerAdmin extends Thread {
         ServerSocket        mSocket;
         String              mHome;
         boolean             mIsRunning = true;
-        EngineInitiator     mEngineInitiator;
+        UncertainEngine     mUncertainEngine;
         List                mClientThreadList;
         
         /**
@@ -51,12 +52,9 @@ public class ServerAdmin extends Thread {
                 }
                 mSocket = null;
             }
-            if( mEngineInitiator != null ){
-//                mEngineInitiator.shutdown();
-            	if(mEngineInitiator.getUncertainEngine() != null&&mEngineInitiator.getUncertainEngine().getIsRunning()){
-            		mEngineInitiator.getUncertainEngine().shutdown();
-            	}
-                mEngineInitiator = null;
+            if( mUncertainEngine != null && mUncertainEngine.getIsRunning()){
+            	mUncertainEngine.shutdown();
+            	mUncertainEngine = null;
             }
         }
         
@@ -67,8 +65,13 @@ public class ServerAdmin extends Thread {
                 mClientThreadList = new LinkedList();
                 File home_path = new File(mHome);
                 File config_path = new File(home_path, "WEB-INF");
-                mEngineInitiator = new EngineInitiator(home_path,config_path);
-                mEngineInitiator.init();
+                String config_file = "uncertain.xml";
+                mUncertainEngine = new UncertainEngine(config_path, config_file);
+                DirectoryConfig dirConfig = mUncertainEngine.getDirectoryConfig();
+                dirConfig.setBaseDirectory(mHome);
+                // load aurora builtin package
+                mUncertainEngine.getPackageManager().loadPackageFromRootClassPath("aurora_builtin_package");
+                mUncertainEngine.startup();
                 mIsRunning = true;
                 start();
             }catch(Exception ex){
@@ -110,7 +113,7 @@ public class ServerAdmin extends Thread {
         }
         
         public static void main( String[] args ) throws Exception {
-//        	args = new String[]{"18080", "E:/tomcats/HAP/tomcat/webapps/HAP/web"};
+//        	args = new String[]{"18080", "E:/workspace/focus/sap/write/run"};
             if(args.length<2){
                 printUsage();
                 return;
