@@ -12,9 +12,16 @@ public class DatabaseConnection{
 	String url;
 	String userName;
 	String password;	
+	String initSql;
 	boolean pool=true;	
-	CompositeMap config=null;	
-
+	CompositeMap config=null;		
+	
+	public String getInitSql() {
+		return initSql;
+	}
+	public void setInitSql(String initSql) {
+		this.initSql = initSql;
+	}
 	public String getName() {
 		return name;
 	}

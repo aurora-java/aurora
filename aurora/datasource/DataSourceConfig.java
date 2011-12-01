@@ -106,7 +106,7 @@ public class DataSourceConfig implements ILifeCycle {
             // TODO to be refactor
             IServiceFactory sf = createServiceFactory(ts);
             mObjectRegistry.registerInstance(IServiceFactory.class, sf);
-
+            mObjectRegistry.registerInstance(DataSourceConfig.class,this);
             return true;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
