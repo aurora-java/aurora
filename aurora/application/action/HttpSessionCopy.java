@@ -28,6 +28,8 @@ import aurora.service.http.HttpServiceInstance;
 public class HttpSessionCopy extends AbstractEntry {
     
     public static void copySession( CompositeMap context, HttpSession session ){
+    	if(session == null)
+    		return;
         ServiceContext svcctx = ServiceContext.createServiceContext(context);
         CompositeMap session_map = svcctx.getSession();
         Enumeration e = session.getAttributeNames();

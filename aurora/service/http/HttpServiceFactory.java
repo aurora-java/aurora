@@ -21,6 +21,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.event.Configuration;
 import uncertain.event.IParticipantManager;
+import aurora.application.action.HttpSessionCopy;
 import aurora.application.features.HttpRequestTransfer;
 import aurora.service.controller.ControllerProcedures;
 
@@ -101,6 +102,7 @@ public class HttpServiceFactory {
         svc.setServlet(servlet);   
         svc.setRootConfig(mServiceParentConfig);
         HttpRequestTransfer.copyRequest(svc);
+        HttpSessionCopy.copySession(svc.getContextMap(), request.getSession(false));
         return svc;
     }
     
