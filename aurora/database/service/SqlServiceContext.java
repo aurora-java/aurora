@@ -22,6 +22,10 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
+import aurora.database.ParsedSql;
+import aurora.database.SqlRunner;
+import aurora.datasource.DataSourceConfig;
+import aurora.datasource.DatabaseConnection;
 import aurora.datasource.INamedDataSourceProvider;
 import aurora.datasource.NamedDataSourceProvider;
 import aurora.service.ServiceContext;
@@ -165,10 +169,11 @@ public class SqlServiceContext extends ServiceContext {
 	    			mLogger.log(Level.SEVERE, "No DataSource instance configured in engine");
 	    			throw new IllegalStateException("No DataSource instance configured in engine");
 	    		}
-	    		conn=ds.getConnection();
+	    		conn=ds.getConnection();	    		
 	    		if(conn.getAutoCommit())
     				conn.setAutoCommit(false);
 	    		setConnection(conn);
+	    		connectionInitialize(reg,datasourceName);
 	    	}
     	}else{           
             conn=getNamedConnection(datasourceName);
@@ -187,9 +192,35 @@ public class SqlServiceContext extends ServiceContext {
     			if(conn.getAutoCommit())
     				conn.setAutoCommit(false);
     			setNamedConnection(datasourceName, conn);
+    			connectionInitialize(reg,datasourceName);
     		}
     	}    	
     }
+    
+    public void connectionInitialize(IObjectRegistry reg,String dsName) throws SQLException{   		
+		String initSql=null;
+		String dataBaseName;
+		DataSourceConfig dataSourceconfig=(DataSourceConfig)reg.getInstanceOfType(DataSourceConfig.class);
+		DatabaseConnection[] databaseConnections=dataSourceconfig.getDatabaseConnections();
+		for(DatabaseConnection dataBaseConifg:databaseConnections){
+			dataBaseName=dataBaseConifg.getName();
+			if(null==dsName&&null==dataBaseName){
+				initSql=dataBaseConifg.getInitSql();
+				break;
+			}else if(null!=dsName&&dsName.equals(dataBaseName)){
+				initSql=dataBaseConifg.getInitSql();	
+				break;
+			}			
+		}
+		
+		if(null==initSql)return;
+		ParsedSql stmt = new ParsedSql();
+		stmt.parse(initSql);		
+		SqlRunner exits_runner = new SqlRunner(this, stmt);			
+		exits_runner.setConnectionName(dsName);
+		exits_runner.update(this.getParameter());		
+    }
+    
     public void freeConnection()
         throws SQLException
     {
