@@ -38,19 +38,18 @@ public class Switch implements IViewBuilder, ISingleton {
 			    child_views = child.getChilds();
 			    break;
 			}else {
-//				if (obj == null) obj = testField;
 				String vl = test_value.toString();
 
-				if ("*".equals(vl))
-					if (obj != null) {
+				if ("*".equals(vl)) {
+//					if (obj != null) {
 						child_views = child.getChilds();
 						break;
-					}
-
+//					}
+				}			
 				vl = TextParser.parse(vl, model);
-				if(obj==null)
-				    break;
-				if (vl.equals(obj.toString())) {
+//				if(obj==null)
+//				    break;
+				if (obj != null && vl.equals(obj.toString())) {
 					child_views = child.getChilds();
 					break;
 				}
