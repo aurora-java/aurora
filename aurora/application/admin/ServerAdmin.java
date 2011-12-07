@@ -102,7 +102,8 @@ public class ServerAdmin extends Thread {
                     addClient(thread);
                     thread.start();
                 }catch( IOException ex){
-                    ex.printStackTrace();
+                	if(mIsRunning)
+                		ex.printStackTrace();
                 }
             }
         }
@@ -113,7 +114,7 @@ public class ServerAdmin extends Thread {
         }
         
         public static void main( String[] args ) throws Exception {
-//        	args = new String[]{"18080", "E:/workspace/focus/sap/write/run"};
+//        	args = new String[]{"18080", "E:/MyDocuments/Documents/公司项目/Aurora/功能清单/sap/write/run"};
             if(args.length<2){
                 printUsage();
                 return;
