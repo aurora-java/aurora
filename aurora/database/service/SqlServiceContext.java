@@ -98,7 +98,7 @@ public class SqlServiceContext extends ServiceContext {
     
     public Connection getNamedConnection(String name) throws SQLException{
         String key = KEY_DATABASE_CONNECTION + "." + name;      
-    	return (Connection)super.get(key);
+    	return name==null?(Connection)getInstanceOfType(Connection.class):(Connection)super.get(key);
     }    
  
     public ICompositeAccessor getCompositeAccessor() {
