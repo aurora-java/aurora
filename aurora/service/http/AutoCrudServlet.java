@@ -89,6 +89,7 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
         if ("query".equals(operation_name)) {
             ModelQueryConfig mq = ActionConfigManager
                     .createModelQuery(object_name);
+            // Here set <model-query> properties from parameter. see AbstractQueryActionConfig.setParameters()
             mq.setParameters(svc.getServiceContext().getParameter());
             action_config = mq.getObjectContext();
             CompositeMap service_output = service_config.getChild("service-output");
