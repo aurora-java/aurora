@@ -29,6 +29,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     Integer     pageSize;
     String      fieldNameCase = "lower";
     byte        fieldNameCaseValue = Character.LOWERCASE_LETTER;
+    // Is attributes set from client request parameters( such as autocrud )? If so, extra security check is needed.
+    boolean     attribFromRequest = false;
 
     String      rootPath;
     String      recordName;
@@ -281,6 +283,14 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
         Object inst = mOCManager.createObject(child);
         if(inst==null || !(inst instanceof IResultSetConsumer));
         rsConsummer = (IResultSetConsumer)inst;
+    }
+
+    public boolean getAttribFromRequest() {
+        return attribFromRequest;
+    }
+
+    public void setAttribFromRequest(boolean attribFromRequest) {
+        this.attribFromRequest = attribFromRequest;
     }
     
 }
