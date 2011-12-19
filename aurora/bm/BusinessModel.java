@@ -265,6 +265,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     }    
    
     public void setBaseTable(String table){
+    	System.out.print(table);
         put(KEY_BASE_TABLE, table);
     }
     
@@ -774,6 +775,21 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         putBoolean(KEY_NEED_ACCESS_CONTROL, b);
     }
     
+    public void setAllowFetchAll(boolean b){
+    	putBoolean(KEY_ALLOW_FETCH_ALL,b);
+    }
+    
+    public Boolean getAllowFetchAll(){
+    	return getBoolean(KEY_ALLOW_FETCH_ALL);
+    }
+    
+    public void setMaxPageSize(int num){
+    	putInt(KEY_MAX_PAGE_SIZE,num);
+    }
+    
+    public Integer getMaxPageSize(){
+    	return getInteger(KEY_MAX_PAGE_SIZE);
+    }
     /**
      * According to accessControlModel property, if set to "separate", return self;
      * else, if has parent BusinessModel, recursively reach parent until parent is null
