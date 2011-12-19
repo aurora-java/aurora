@@ -18,6 +18,7 @@ public class AbstractQueryActionConfig extends DynamicObject {
     public static final String KEY_AUTOCOUNT = "autocount";
     private static final String KEY_FETCHALL = "fetchall";
     public static final String KEY_PARAMETER = "parameter";
+    public static final String KEY_ATTRIB_FROM_REQUEST = "attribfromrequest";
     
     static final String[] POPULATABLE_PARAMETERS = {KEY_ROOTPATH, KEY_RECORDNAME, KEY_AUTOCOUNT, KEY_FETCHALL,ServiceOption.KEY_QUERY_ORDER_BY };
 
@@ -76,6 +77,10 @@ public class AbstractQueryActionConfig extends DynamicObject {
             if(value!=null)
                 super.object_context.put(POPULATABLE_PARAMETERS[i], value);
         }
+    }
+    
+    public void setAttribFromRequest( boolean value ){
+        putBoolean(KEY_ATTRIB_FROM_REQUEST, value);
     }
 
 }
