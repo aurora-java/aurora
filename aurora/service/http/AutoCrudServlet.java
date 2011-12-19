@@ -91,6 +91,9 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
                     .createModelQuery(object_name);
             // Here set <model-query> properties from parameter. see AbstractQueryActionConfig.setParameters()
             mq.setParameters(svc.getServiceContext().getParameter());
+            // Set attribFromRequest flag, so that extra security check for certain attribute 
+            // ( such as fetchAll ) will be enforced 
+            mq.setAttribFromRequest(true);
             action_config = mq.getObjectContext();
             CompositeMap service_output = service_config.getChild("service-output");
             service_output.put("output", "/model/"+mq.getRootPath());
