@@ -11,6 +11,7 @@ import uncertain.exception.GeneralException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.OCManager;
+import aurora.bm.BusinessModel;
 import aurora.database.DatabaseConstant;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
@@ -56,7 +57,28 @@ public class ModelQuery extends AbstractQueryAction {
     protected void doQuery( CompositeMap param, IResultSetConsumer consumer, FetchDescriptor desc )
         throws Exception
     {
-
+    	if(getAttribFromRequest()){            	
+        	BusinessModel bm=service.getBusinessModel();
+        	
+        	if(bm.getAllowFetchAll()!=null&&bm.getAllowFetchAll().booleanValue()==false){
+        		fetchAll=false; 
+        		desc.setFetchAll(fetchAll);
+        	}
+        	
+        	if(!fetchAll){
+	        	int maxPageSize=1000;
+	        	if(bm.getMaxPageSize()!=null){        		
+	        		maxPageSize=bm.getMaxPageSize().intValue();        		
+	        	}else{
+	        		Object defaultPageSize=svcFactory.getDatabaseFactory().getProperty("maxpagesize");
+	        		if(defaultPageSize!=null)
+	        			maxPageSize=Integer.parseInt((String)defaultPageSize);
+	        	}
+	        	
+	        	if(desc.getPageSize()>maxPageSize&&pageSize==null)        		
+	    			desc.setPageSize(maxPageSize);
+        	}
+        }
         service.query(param, consumer, desc);
     }
     
@@ -76,7 +98,7 @@ public class ModelQuery extends AbstractQueryAction {
         */ 
         //service.setTrace(getTrace());    
         serviceContext = (BusinessModelServiceContext)DynamicObject.cast(context, BusinessModelServiceContext.class);
-    }
+    }  
     
     protected void cleanUp( CompositeMap context ){
     }
