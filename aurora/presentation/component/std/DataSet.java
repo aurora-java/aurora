@@ -247,7 +247,20 @@ public class DataSet extends Component {
 		if(dsc.isAutoPageSize())addConfig(DataSetConfig.PROPERTITY_AUTO_PAGE_SIZE, new Boolean(dsc.isAutoPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		addConfig(DataSetConfig.PROPERTITY_TOTALCOUNT_FIELD, dsc.getTotalCountField());
-		addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
+		
+		BusinessModel bm = null;
+		Integer mps = null;
+		String md = dsc.getModel();
+		if(md!=null)bm = mFactory.getModelForRead(md);
+		if(bm!=null){
+			mps = bm.getMaxPageSize();
+		}
+		if(mps!=null) {
+			addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(mps));
+		}else{
+			addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
+		}
+		
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
 		if(dsc.getSortType() !=null) addConfig(DataSetConfig.PROPERTITY_SORT_TYPE, dsc.getSortType());
