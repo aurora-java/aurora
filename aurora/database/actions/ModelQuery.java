@@ -66,7 +66,7 @@ public class ModelQuery extends AbstractQueryAction {
         	}
         	
         	if(!fetchAll){
-	        	int maxPageSize=1000;
+	        	int maxPageSize=-1;
 	        	if(bm.getMaxPageSize()!=null){        		
 	        		maxPageSize=bm.getMaxPageSize().intValue();        		
 	        	}else{
@@ -74,8 +74,7 @@ public class ModelQuery extends AbstractQueryAction {
 	        		if(defaultPageSize!=null)
 	        			maxPageSize=Integer.parseInt((String)defaultPageSize);
 	        	}
-	        	
-	        	if(desc.getPageSize()>maxPageSize&&pageSize==null)        		
+	        	if(maxPageSize!=-1&&desc.getPageSize()>maxPageSize&&pageSize==null)        		
 	    			desc.setPageSize(maxPageSize);
         	}
         }
