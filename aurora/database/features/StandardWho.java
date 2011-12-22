@@ -19,7 +19,17 @@ public class StandardWho {
     String  createdByField = "CREATED_BY";
     String  creationDateField = "CREATION_DATE";
     String  lastUpdatedByField = "LAST_UPDATED_BY";
-    public String getCreatedByField() {
+    boolean  forQuery=false;
+    
+    public boolean getForQuery() {
+		return forQuery;
+	}
+
+	public void setForQuery(boolean forQuery) {
+		this.forQuery = forQuery;
+	}
+
+	public String getCreatedByField() {
 		return createdByField;
 	}
 
@@ -98,6 +108,10 @@ public class StandardWho {
     }
     
     public void onPrepareBusinessModel( BusinessModel model ){
+    	boolean forSelect=false;
+    	if(getForQuery()){
+    		forSelect=true;
+    	}
         Boolean standard_who_added = model.getObjectContext().getBoolean(KEY_STANDARD_WHO_ADDED);
         if(standard_who_added!=null)
             return;
@@ -106,21 +120,25 @@ public class StandardWho {
         String sysdate = profile.getKeyword(IDatabaseProfile.KEY_CURRENT_TIME);
         
         Field created_by = CREATED_BY.createCopy();
+        created_by.setForSelect(forSelect);
         created_by.setParameterPath(userIdPath);
         created_by.setName(createdByField);
         model.addField(created_by);
         
         Field creation_date = CREATION_DATE.createCopy();
+        creation_date.setForSelect(forSelect);
         creation_date.setInsertExpression(sysdate);
         creation_date.setName(creationDateField);
         model.addField(creation_date);
         
         Field last_updated_by = LAST_UPDATED_BY.createCopy();
+        last_updated_by.setForSelect(forSelect);
         last_updated_by.setParameterPath(userIdPath);
         last_updated_by.setName(lastUpdatedByField);
         model.addField(last_updated_by);
         
         Field last_updated_date = LAST_UPDATED_DATE.createCopy();
+        last_updated_date.setForSelect(forSelect);
         last_updated_date.setInsertExpression(sysdate);
         last_updated_date.setUpdateExpression(sysdate);
         last_updated_date.setName(lastUpdatedDateField);
