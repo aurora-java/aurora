@@ -5,17 +5,24 @@ package aurora.database.features;
 
 import java.sql.ResultSet;
 
+import uncertain.composite.CompositeMap;
 import uncertain.ocm.ISingleton;
 import aurora.database.DBUtil;
 import aurora.database.IResultSetConsumer;
 import aurora.database.ParsedSql;
 import aurora.database.SqlRunner;
+import aurora.database.profile.IDatabaseFactory;
+import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.ServiceOption;
-import aurora.database.service.SqlServiceContext;
 
 public class AutoQueryCounter implements ISingleton {
-    
-    public void onQueryFinish(SqlServiceContext context)
+	IDatabaseFactory mFactory;
+	
+	public AutoQueryCounter(IDatabaseFactory fact){
+		mFactory=fact;
+	}
+	
+    public void onQueryFinish(BusinessModelServiceContext context)
         throws Exception
     {
         ServiceOption option = context.getServiceOption();
@@ -23,12 +30,22 @@ public class AutoQueryCounter implements ISingleton {
         IResultSetConsumer consumer = context.getResultsetConsumer();
         if(consumer==null) return;
         if(option.isAutoCount()){
-            long count = 0;
-            StringBuffer oldsql = context.getSqlString();
-            if(oldsql==null) return;
-            StringBuffer sql = new StringBuffer(oldsql.toString());            
-            sql.insert(0, "select count(1) from ( ");
-            sql.append(" ) s");
+            long count = 0;       
+            StringBuffer sql =null;
+            CompositeMap countSql=context.getBusinessModel().getCountSql();
+            
+            if(countSql!=null){
+            	sql = new StringBuffer(countSql.getText());
+            	WhereClauseCreator wcCreator=new WhereClauseCreator(mFactory);
+            	wcCreator.doPopulateSql(context, sql);
+            }else{
+            	 StringBuffer oldsql = context.getSqlString();
+                 if(oldsql==null) return;
+                 sql = new StringBuffer(oldsql.toString());            
+                 sql.insert(0, "select count(1) from ( ");
+                 sql.append(" ) s");
+            }            
+           
             ParsedSql s = new ParsedSql(sql.toString());
             SqlRunner runner = new SqlRunner(context, s);  
             runner.setConnectionName(option.getConnectionName());
