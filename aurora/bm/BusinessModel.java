@@ -83,6 +83,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     public static final String KEY_ALLOW_FETCH_ALL = "allowfetchall";
 
     public static final String KEY_MAX_PAGE_SIZE = "maxpagesize";
+    
+    public static final String KEY_COUNT_SQL="count-sql";
 
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -804,7 +806,9 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         if(ACCESS_CONTROL_MODE_SEPARATE.equals(mode))
             return this;
         return parent.getModelForAccessCheck();
+    }    
+    
+    public CompositeMap getCountSql(){
+    	return getObjectContext().getChild(KEY_COUNT_SQL);
     }
-
-
 }
