@@ -79,7 +79,7 @@ public class DatabaseServiceFactory extends AbstractLocatableObject implements I
                 getDatabaseFactory());
         setGlobalParticipant(WhereClauseCreator.class, where_creator);
 
-        AutoQueryCounter auto_query_counter = new AutoQueryCounter();
+        AutoQueryCounter auto_query_counter = new AutoQueryCounter(getDatabaseFactory());
         setGlobalParticipant(AutoQueryCounter.class, auto_query_counter);
 
         DeleteSqlCreator delete_creator = new DeleteSqlCreator(
