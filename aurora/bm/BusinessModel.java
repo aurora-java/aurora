@@ -566,6 +566,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
                     result.add(param);
                 }else{
                     param = new Parameter(obj);
+                    result.add(param);
                 }
             }
         return result;
