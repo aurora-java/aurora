@@ -10,6 +10,6 @@ public interface IAccessRule {
     
     public String getName();
     
-    public boolean isValid( CompositeMap runtime_context );
+    public boolean isValid( CompositeMap runtime_context ) throws Exception;   
 
 }
