@@ -14,7 +14,9 @@ public class AccessCheckRuleConfig implements IAccessCheckRuleProvider{
 		}
 	}
 	
-	public IAccessRule getAccessRule(String name) {		
+	public IAccessRule getAccessRule(String name) {
+		if(accessCheckRuleMap==null)
+			throw new IllegalArgumentException("access-check-rule.config:access-check-rules is null");
 		return (IAccessRule)accessCheckRuleMap.get(name);
 	}
 }

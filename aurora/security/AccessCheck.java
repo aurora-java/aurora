@@ -18,6 +18,8 @@ public class AccessCheck {
     public void onAccessCheck(ProcedureRunner runner) throws Exception
     {
     	IAccessRule accsessRule =this.mRuleProvider.getAccessRule(name);
+    	if(accsessRule==null)
+    		throw new IllegalArgumentException("The access-check-rule {"+name+"} is undefined");
     	boolean status=accsessRule.isValid(runner.getContext());
     	if(!status){
     		throw uncertain.exception.MessageFactory.createException("aurora.security.access_check_rule_error",(Throwable)null,new Object[]{name});
