@@ -4,4 +4,7 @@
 		<schema-file path="aurora_base_type.sxsd"/>
 		<schema-file path="aurora_bm.sxsd"/>
 	</schema-files>
+	<resource-files>
+		<resource-file path="resources/aurora_validation_exceptions" />
+	</resource-files>
 </package>
