@@ -46,6 +46,7 @@ public class HttpServiceFactory {
     
     private CompositeLoader createCompositeLoader(){
         CompositeLoader l = new CompositeLoader();
+        l.setSaveNamespaceMapping(true);
         l.ignoreAttributeCase();
         ICache c = CacheFactoryConfig.getNamedCache(mUncertainEngine.getObjectRegistry(), KEY_WEB_RESOURCE_CACHE);
         if(c!=null){
