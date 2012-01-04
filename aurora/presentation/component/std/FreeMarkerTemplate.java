@@ -7,13 +7,16 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
+import aurora.application.AuroraApplication;
 import aurora.application.features.IFreeMarkerTemplateProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
@@ -46,15 +49,29 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 			t.process(p, out);
 			out.flush();
 			str = out.toString();
-			
-//			System.out.println(view.getPrefix());
-//			System.out.println(view.getNamespaceURI());
-			//TODO: view.getNamespaceMapping()是null,其他命名空间如何取? 
+			 
 			StringBuffer sb = new StringBuffer();
-			sb.append("<").append(view.getPrefix()).append(":screen ").append("xmlns:").append(view.getPrefix()).append("=\"")
-			  .append(view.getNamespaceURI()).append("\">").append(str).append("</").append(view.getPrefix()).append(":screen>");
+			
+			Map nsm = view.getRoot().getNamespaceMapping();
+			if(nsm==null) nsm = new HashMap();
+			String prefix = (String)nsm.get(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			if(prefix==null){
+				prefix = view.getPrefix();
+				nsm.put(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, prefix);
+			}
+			sb.append("<").append(prefix).append(":screen ");
+			Set ks = nsm.keySet();
+			Iterator it = ks.iterator();
+			while(it.hasNext()){
+				String key = (String)it.next();
+				String value = (String)nsm.get(key);
+				sb.append("xmlns:").append(value).append("=\"").append(key).append("\" ");
+			}
+			
+			sb.append(">").append(str).append("</").append(view.getPrefix()).append(":screen>");
 			CompositeLoader cl = new CompositeLoader();
 			List list = new ArrayList();
+			System.out.println(sb);
 			CompositeMap c = cl.loadFromString(sb.toString(), provider.getDefaultEncoding());
 			list.add(c);
 			session.buildViews(model, list);
