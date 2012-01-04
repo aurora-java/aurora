@@ -36,10 +36,11 @@ public class SOAPServiceInterpreter {
 			"http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
 	public static final QualifiedName BODY = new QualifiedName("soapenv",
 			"http://schemas.xmlsoap.org/soap/envelope/", "Body");
+	/*
 	static {
 		MessageFactory.loadResource("resources.aurora_validation_exceptions");
 	}
-
+    */
 	public SOAPServiceInterpreter() {
 	}
 
