@@ -251,7 +251,7 @@ public class DataSet extends Component {
 		BusinessModel bm = null;
 		Integer mps = null;
 		String md = dsc.getModel();
-		if(md!=null)bm = mFactory.getModelForRead(md);
+		if(md!=null)bm = mFactory.getModelForRead(uncertain.composite.TextParser.parse(md, model));
 		if(bm!=null){
 			mps = bm.getMaxPageSize();
 		}
