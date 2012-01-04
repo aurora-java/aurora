@@ -2,6 +2,7 @@
 <p:procedure xmlns:p="uncertain.proc">
     <p:switch test="@success">
         <p:case Value="true">
+        	<p:action Name="AccessCheck"/>
             <p:action Name="InitService"/>
             <p:action Name="ParseParameter"/>
             <p:action Name="CreateModel"/>
