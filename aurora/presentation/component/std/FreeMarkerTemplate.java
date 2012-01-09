@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,9 @@ import aurora.presentation.ViewContext;
 import freemarker.template.Template;
 
 public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
+	
+	public static final String PARSE = "parse";
+	
 	IObjectRegistry mObjectRegistry;
 
 	public FreeMarkerTemplate(IObjectRegistry rg) {
@@ -39,6 +43,8 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 		try {
 			CompositeMap model = view_context.getModel();
 			CompositeMap view = view_context.getView();
+			boolean isParse = view.getBoolean(PARSE, true);			
+			
 			IFreeMarkerTemplateProvider provider = (IFreeMarkerTemplateProvider) mObjectRegistry.getInstanceOfType(IFreeMarkerTemplateProvider.class);
 			reader = new BufferedReader(new StringReader(view.getText()));
 			t = new Template(view.getName(), reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
@@ -49,32 +55,35 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 			t.process(p, out);
 			out.flush();
 			str = out.toString();
-			 
-			StringBuffer sb = new StringBuffer();
 			
-			Map nsm = view.getRoot().getNamespaceMapping();
-			if(nsm==null) nsm = new HashMap();
-			String prefix = (String)nsm.get(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			if(prefix==null){
-				prefix = view.getPrefix();
-				nsm.put(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, prefix);
+			if(isParse){
+				StringBuffer sb = new StringBuffer();			
+				Map nsm = view.getRoot().getNamespaceMapping();
+				if(nsm==null) nsm = new HashMap();
+				String prefix = (String)nsm.get(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				if(prefix==null){
+					prefix = view.getPrefix();
+					nsm.put(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, prefix);
+				}
+				sb.append("<").append(prefix).append(":screen ");
+				Set ks = nsm.keySet();
+				Iterator it = ks.iterator();
+				while(it.hasNext()){
+					String key = (String)it.next();
+					String value = (String)nsm.get(key);
+					sb.append("xmlns:").append(value).append("=\"").append(key).append("\" ");
+				}
+				
+				sb.append(">").append(str).append("</").append(view.getPrefix()).append(":screen>");
+				CompositeLoader cl = new CompositeLoader();
+				List list = new ArrayList();
+				CompositeMap c = cl.loadFromString(sb.toString(), provider.getDefaultEncoding());
+				list.add(c);
+				session.buildViews(model, list);
+			}else{
+				Writer writer = session.getWriter();
+				writer.write(str);
 			}
-			sb.append("<").append(prefix).append(":screen ");
-			Set ks = nsm.keySet();
-			Iterator it = ks.iterator();
-			while(it.hasNext()){
-				String key = (String)it.next();
-				String value = (String)nsm.get(key);
-				sb.append("xmlns:").append(value).append("=\"").append(key).append("\" ");
-			}
-			
-			sb.append(">").append(str).append("</").append(view.getPrefix()).append(":screen>");
-			CompositeLoader cl = new CompositeLoader();
-			List list = new ArrayList();
-			System.out.println(sb);
-			CompositeMap c = cl.loadFromString(sb.toString(), provider.getDefaultEncoding());
-			list.add(c);
-			session.buildViews(model, list);
 		} catch (Exception e) {
 			throw new aurora.presentation.ViewCreationException(e.getMessage());
 		} finally {
