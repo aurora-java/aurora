@@ -23,6 +23,7 @@ import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
+import aurora.presentation.component.std.config.LovConfig;
 
 /**
  * 
@@ -78,32 +79,39 @@ public class DataSet extends Component {
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_EDITABLE))
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_EDITABLE, sdfc.getEditable());
+				
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				
 				String options = field.getString(ComboBoxConfig.PROPERTITY_OPTIONS);
 				if(options!=null){
 					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
 				}
-				String lovService = field.getString(Lov.PROPERTITY_LOV_SERVICE);
+				
+				LovConfig lc = LovConfig.getInstance(field);
+				if(null!=field.getString(LovConfig.PROPERTITY_FETCH_SINGLE))
+					field.putBoolean(LovConfig.PROPERTITY_FETCH_SINGLE, lc.getFetchSingle());
+				
+				String lovService = field.getString(LovConfig.PROPERTITY_LOV_SERVICE);
 				if(lovService!=null && lovService.length()>0){
 					String baseModel = uncertain.composite.TextParser.parse(lovService, model);
-					field.putString(Lov.PROPERTITY_LOV_SERVICE,baseModel);
+					field.putString(LovConfig.PROPERTITY_LOV_SERVICE,baseModel);
 					initLovService(baseModel,session,field);
 				}
-				String lovModel = field.getString(Lov.PROPERTITY_LOV_MODEL);
+				String lovModel = field.getString(LovConfig.PROPERTITY_LOV_MODEL);
 				if(lovModel!=null){
 					String baseModel = uncertain.composite.TextParser.parse(lovModel, model);
-					field.putString(Lov.PROPERTITY_LOV_MODEL,baseModel);
+					field.putString(LovConfig.PROPERTITY_LOV_MODEL,baseModel);
 					initLovService(baseModel,session,field);
 				}
-				String lovUrl = field.getString(Lov.PROPERTITY_LOV_URL);
+				String lovUrl = field.getString(LovConfig.PROPERTITY_LOV_URL);
 				if(lovUrl!=null){
-					field.putString(Lov.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
+					field.putString(LovConfig.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
 				}
-				String lovTitle = field.getString(Lov.PROPERTITY_TITLE);
+				String lovTitle = field.getString(LovConfig.PROPERTITY_TITLE);
 				if(lovTitle!=null){
-					field.putString(Lov.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
+					field.putString(LovConfig.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
 				}
+				
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
 				

@@ -9,26 +9,11 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
+import aurora.presentation.component.std.config.LovConfig;
 
 public class Lov extends TextField {
-	//TODO:需要改造
-	public static final String PROPERTITY_TITLE = "title";
-	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
-	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
-	public static final String PROPERTITY_LOV_URL = "lovurl";
-	public static final String PROPERTITY_LOV_MODEL = "lovmodel";
-	public static final String PROPERTITY_LOV_SERVICE = "lovservice";
-	public static final String PROPERTITY_LOV_WIDTH = "lovwidth";
-	public static final String PROPERTITY_LOV_AUTO_QUERY = "lovautoquery";
-	public static final String PROPERTITY_LOV_LABEL_WIDTH = "lovlabelwidth";
-	public static final String PROPERTITY_LOV_HEIGHT = "lovheight";
-	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
-	public static final String PROPERTITY_LOV_FETCH_REMOTE = "fetchremote";
-	public static final String PROPERTITY_LOV_AUTOCOMPLETE_RENDERER = "autocompleterenderer";
-	public static final String PROPERTITY_LOV_EDITABLE = "editable";
 	
 	private static final String CONFIG_CONTEXT = "context";
-	
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
@@ -39,21 +24,23 @@ public class Lov extends TextField {
 		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
 		
 		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
-		addConfig(PROPERTITY_LOV_URL, view.getString(PROPERTITY_LOV_URL,""));
-		addConfig(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE,""));
-		addConfig(PROPERTITY_VALUE_FIELD, view.getString(PROPERTITY_VALUE_FIELD,""));
-		addConfig(PROPERTITY_DISPLAY_FIELD, view.getString(PROPERTITY_DISPLAY_FIELD,""));
-		addConfig(PROPERTITY_LOV_MODEL, view.getString(PROPERTITY_LOV_MODEL,""));
-		addConfig(PROPERTITY_LOV_SERVICE, view.getString(PROPERTITY_LOV_SERVICE,""));
-		addConfig(PROPERTITY_LOV_WIDTH, new Integer(view.getInt(PROPERTITY_LOV_WIDTH,400)));
-		addConfig(PROPERTITY_LOV_AUTO_QUERY, new Boolean(view.getBoolean(PROPERTITY_LOV_AUTO_QUERY,true)));
-		addConfig(PROPERTITY_LOV_LABEL_WIDTH, new Integer(view.getInt(PROPERTITY_LOV_LABEL_WIDTH,75)));
-		addConfig(PROPERTITY_LOV_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_HEIGHT,400)));
-		addConfig(PROPERTITY_LOV_GRID_HEIGHT, new Integer(view.getInt(PROPERTITY_LOV_GRID_HEIGHT,350)));
-		addConfig(PROPERTITY_LOV_FETCH_REMOTE, new Boolean(view.getBoolean(PROPERTITY_LOV_FETCH_REMOTE, true)));
-		addConfig(PROPERTITY_LOV_EDITABLE, new Boolean(view.getBoolean(PROPERTITY_LOV_EDITABLE, true)));
-		String renderer = view.getString(PROPERTITY_LOV_AUTOCOMPLETE_RENDERER);
-		if(renderer != null)addConfig(PROPERTITY_LOV_AUTOCOMPLETE_RENDERER, renderer);
+		LovConfig lc = LovConfig.getInstance(view);
+		addConfig(LovConfig.PROPERTITY_LOV_URL, lc.getLovUrl());
+		addConfig(LovConfig.PROPERTITY_TITLE, lc.getTitle());
+		addConfig(LovConfig.PROPERTITY_VALUE_FIELD, lc.getValueField());
+		addConfig(LovConfig.PROPERTITY_DISPLAY_FIELD, lc.getDisplayField());
+		addConfig(LovConfig.PROPERTITY_LOV_MODEL, lc.getLovModel());
+		addConfig(LovConfig.PROPERTITY_LOV_SERVICE, lc.getLovService());
+		addConfig(LovConfig.PROPERTITY_LOV_WIDTH, new Integer(lc.getLovWidth()));
+		addConfig(LovConfig.PROPERTITY_LOV_AUTO_QUERY, new Boolean(lc.getLovAutoQuery()));
+		addConfig(LovConfig.PROPERTITY_LOV_LABEL_WIDTH, new Integer(lc.getLovLabelWidth()));
+		addConfig(LovConfig.PROPERTITY_LOV_HEIGHT, new Integer(lc.getLovHeight()));
+		addConfig(LovConfig.PROPERTITY_LOV_GRID_HEIGHT, new Integer(lc.getLovGridHeight()));
+		addConfig(LovConfig.PROPERTITY_FETCH_REMOTE, new Boolean(lc.getFetchRemote()));
+		addConfig(LovConfig.PROPERTITY_EDITABLE, new Boolean(lc.getEditable()));
+		addConfig(LovConfig.PROPERTITY_FETCH_SINGLE, new Boolean(lc.getFetchSingle()));
+		String renderer = lc.getAutocompleteRenderer();
+		if(renderer != null)addConfig(LovConfig.PROPERTITY_AUTOCOMPLETE_RENDERER, renderer);
 		map.put(CONFIG, getConfigString());
 	}
 }
