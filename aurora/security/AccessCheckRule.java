@@ -61,7 +61,7 @@ public class AccessCheckRule implements IAccessRule{
 	public boolean isValid(CompositeMap context_map) throws Exception {
 		String parsed_model = TextParser.parse(this.getCheckBM(), context_map);
 		BusinessModelService service=mDatabaseServiceFactory.getModelService(parsed_model, context_map);
-		CompositeMap result=service.queryAsMap(context_map);		
+		CompositeMap result=service.queryAsMap(service.getServiceContext().getParameter());		
 		boolean isValid=false;
 		if(successValue.equals(result.getObject("record/"+this.getCheckField())))
 			isValid=true;
