@@ -78,6 +78,9 @@ public class ServerAdmin extends Thread {
                 ex.printStackTrace();
             }
         }
+        public UncertainEngine getUncertainEngine(){
+        	return mUncertainEngine;
+        }
         
         void addClient( CommandHandleThread thread ){
             mClientThreadList.add(thread);
@@ -114,7 +117,6 @@ public class ServerAdmin extends Thread {
         }
         
         public static void main( String[] args ) throws Exception {
-//        	args = new String[]{"18080", "E:/MyDocuments/Documents/公司项目/Aurora/功能清单/sap/write/run"};
             if(args.length<2){
                 printUsage();
                 return;
