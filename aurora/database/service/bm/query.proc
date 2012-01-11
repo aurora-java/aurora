@@ -15,5 +15,5 @@
 	-->
 	<action name="ExecuteQuery" input="SqlString,BusinessModel"/>
 	<action name="QueryFinish" />
-	<action name="FetchResultSet" input="BusinessModel"/>
+	<action name="FetchResultSet" input="BusinessModel,ResultsetConsumer"/>
 </procedure>
