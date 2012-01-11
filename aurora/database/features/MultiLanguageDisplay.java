@@ -18,6 +18,7 @@ import aurora.bm.Relation;
 import aurora.database.DBUtil;
 import aurora.database.DatabaseConstant;
 import aurora.database.FetchDescriptor;
+import aurora.database.IResultSetConsumer;
 import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
@@ -149,5 +150,13 @@ public class MultiLanguageDisplay {
                 + "})");
         return sql.toString();
     }
-
+/*
+    public void postFetchResultSet(BusinessModel bm, IResultSetConsumer consumer){
+        if(consumer.getResult() instanceof CompositeMap){
+            CompositeMap data = (CompositeMap)consumer.getResult();
+            if(data!=null)
+                System.out.println(data.toXML());
+        }
+    }
+*/
 }
