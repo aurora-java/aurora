@@ -35,7 +35,7 @@ public class HttpForward extends HttpServlet {
 		
 		mUncertainEngine= (UncertainEngine) this.getServletContext().getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
 		procedure=super.getInitParameter(KEY_PROCEDURE);
-				
+		boolean is_check=false;		
 		try {
 			if(!mUncertainEngine.isRunning()){
 		        StringBuffer msg = new StringBuffer("Application failed to initialize");
@@ -45,7 +45,7 @@ public class HttpForward extends HttpServlet {
 		        response.sendError(500, msg.toString());
 		        return;
 		    }		    
-			
+			String param=getParam(request);
 			if(procedure!=null){
 				mProcManager=mUncertainEngine.getProcedureManager();
 				Procedure proc = mProcManager.loadProcedure(procedure);				
@@ -60,21 +60,24 @@ public class HttpForward extends HttpServlet {
 				}			
 			
 				CompositeMap parameter=context.createChild("parameter");
-				String param=getParam(request);
+				
 				parameter.putString("param", param);				
 				
 				mRunner= new ProcedureRunner();
 				mRunner.setProcedure(proc);
 				mRunner.setContext(context);
-				mRunner.run();
-				
+				mRunner.run();						
 				Object msg=context.getObject(super.getInitParameter(KEY_OUTPUT));
-				if(msg==null){
-					writeResponse(response, super.getInitParameter(KEY_ADDRESS)+"?"+param);
-				}else{
+				if(msg!=null){				
 					  response.sendError(500, msg.toString());
-				}				
+				}else{
+					is_check=true;
+				}						
+			}else{
+				is_check=true;
 			}	
+			if(is_check)
+				writeResponse(response, super.getInitParameter(KEY_ADDRESS)+"?"+param);
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -114,7 +117,7 @@ public class HttpForward extends HttpServlet {
 		try {
 			URL postUrl = new URL(url);
 			connection = (HttpURLConnection) postUrl.openConnection();
-			connection.setReadTimeout(0);
+			connection.setReadTimeout(3000);
 			connection.connect();
 			response.setContentType(connection.getContentType());
 			response.setContentLength(connection.getContentLength());
