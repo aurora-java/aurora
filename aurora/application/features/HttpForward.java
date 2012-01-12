@@ -7,6 +7,8 @@ import java.net.URL;
 
 import java.util.Enumeration;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +20,9 @@ import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
 
+import aurora.bm.BusinessModel;
+import aurora.database.service.BusinessModelService;
+import aurora.database.service.DatabaseServiceFactory;
 import aurora.service.http.WebContextInit;
 
 public class HttpForward extends HttpServlet {	
@@ -27,14 +32,16 @@ public class HttpForward extends HttpServlet {
 	String KEY_OUTPUT="output";	
 	
 	String procedure;
+	String returnPath;
+	String address;
 	IProcedureManager mProcManager;
 	ProcedureRunner mRunner;
 	UncertainEngine mUncertainEngine;
+	DatabaseServiceFactory svcFactory;
+	
 	protected void service(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) {	
 		
-		mUncertainEngine= (UncertainEngine) this.getServletContext().getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
-		procedure=super.getInitParameter(KEY_PROCEDURE);
 		boolean is_check=false;		
 		try {
 			if(!mUncertainEngine.isRunning()){
@@ -59,25 +66,28 @@ public class HttpForward extends HttpServlet {
 					session.put(key, httpSession.getAttribute(key));
 				}			
 			
-				CompositeMap parameter=context.createChild("parameter");
-				
+				CompositeMap parameter=context.createChild("parameter");				
 				parameter.putString("param", param);				
 				
 				mRunner= new ProcedureRunner();
 				mRunner.setProcedure(proc);
 				mRunner.setContext(context);
 				mRunner.run();						
-				Object msg=context.getObject(super.getInitParameter(KEY_OUTPUT));
+				Object msg=context.getObject(returnPath);
 				if(msg!=null){				
 					  response.sendError(500, msg.toString());
 				}else{
 					is_check=true;
-				}						
+				}	
+				
+				BusinessModel bm=(BusinessModel)context.get("BusinessModel");
+				BusinessModelService service = svcFactory.getModelService(bm, context);
+				service.getServiceContext().freeConnection();				
 			}else{
 				is_check=true;
 			}	
 			if(is_check)
-				writeResponse(response, super.getInitParameter(KEY_ADDRESS)+"?"+param);
+				writeResponse(response, address+"?"+param);
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -155,4 +165,13 @@ public class HttpForward extends HttpServlet {
 			}
 		}
 	}
+	
+	public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        mUncertainEngine= (UncertainEngine) this.getServletContext().getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
+        svcFactory=(DatabaseServiceFactory) mUncertainEngine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
+		procedure=super.getInitParameter(KEY_PROCEDURE);
+		returnPath=super.getInitParameter(KEY_OUTPUT);
+		address=super.getInitParameter(KEY_ADDRESS);
+    }
 }
