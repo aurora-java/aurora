@@ -7,143 +7,173 @@ import uncertain.composite.QualifiedName;
 import uncertain.util.StringSplitter;
 
 public class ViewComponent {
-    
-    String                  name;
-    Class                   builder;
-    String                  feature_classes;
-    ViewComponentPackage    owner;
-    
-    String                  nameSpace;
-    String                  elementName;
-    String                  default_template;   
-/*
-    // to be 
-    String                  features;
-    Class[]                 feature_class_array;
-    
-    public void setFeatureClasses( String classes )
-        throws ClassNotFoundException
-    {
-        this.feature_classes = classes;
-        String[] c = StringSplitter.splitToArray(classes, ',', false);
-        feature_class_array = new Class[c.length];
-        for(int i=0; i<c.length; i++){
-            feature_class_array[i] = Class.forName(c[i].trim());
-        }
-    }
-    
-    public String getFeatureClasses(){
-        return this.feature_classes;
-    }
-    
-    public Class[] getFeatureClassArray(){
-        return feature_class_array;
-    }
-*/
-    
-    /** Default constructor without parameters */
-    public ViewComponent(){
-        
-    }
-    
-    /**
-     * @param namespace namespace of view tag
-     * @param name name of view tag
-     * @param builder_type type of builder 
-     */
-    public ViewComponent( String namespace, String name, Class builder_type ){
-        setElementName(name);
-        setNameSpace(namespace);
-        setBuilder(builder_type);
-    }
-    
-    
-    /**
-     * @return the builder
-     */
-    public Class getBuilder() {
-        return builder;
-    }
 
-    /**
-     * @param builder the builder to set
-     */
-    public void setBuilder(Class builder) {
-        this.builder = builder;
-    }
+	String name;
+	Class builder;
+	String feature_classes;
+	ViewComponentPackage owner;
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	String nameSpace;
+	String elementName;
+	String category;
+	String icon;
+	String default_template;
 
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/*
+	 * // to be String features; Class[] feature_class_array;
+	 * 
+	 * public void setFeatureClasses( String classes ) throws
+	 * ClassNotFoundException { this.feature_classes = classes; String[] c =
+	 * StringSplitter.splitToArray(classes, ',', false); feature_class_array =
+	 * new Class[c.length]; for(int i=0; i<c.length; i++){
+	 * feature_class_array[i] = Class.forName(c[i].trim()); } }
+	 * 
+	 * public String getFeatureClasses(){ return this.feature_classes; }
+	 * 
+	 * public Class[] getFeatureClassArray(){ return feature_class_array; }
+	 */
 
-    /**
-     * @return the default_template
-     */
-    public String getDefaultTemplate() {
-        return default_template;
-    }
+	/** Default constructor without parameters */
+	public ViewComponent() {
 
-    /**
-     * @param default_template the default_template to set
-     */
-    public void setDefaultTemplate(String default_template) {
-        this.default_template = default_template;
-    }
+	}
 
-    /**
-     * @return the _package
-     */
-    public ViewComponentPackage getOwner() {
-        return owner;
-    }
+	/**
+	 * @param namespace
+	 *            namespace of view tag
+	 * @param name
+	 *            name of view tag
+	 * @param builder_type
+	 *            type of builder
+	 */
+	public ViewComponent(String namespace, String name, Class builder_type) {
+		setElementName(name);
+		setNameSpace(namespace);
+		setBuilder(builder_type);
+	}
 
-    /**
-     * @param _package the _package to set
-     */
-    public void setOwner(ViewComponentPackage owner) {
-        this.owner = owner;
-    }
+	/**
+	 * @return the builder
+	 */
+	public Class getBuilder() {
+		return builder;
+	}
 
-    /**
-     * @return the elementName
-     */
-    public String getElementName() {
-        return elementName;
-    }
+	/**
+	 * @param builder
+	 *            the builder to set
+	 */
+	public void setBuilder(Class builder) {
+		this.builder = builder;
+	}
 
-    /**
-     * @param elementName the elementName to set
-     */
-    public void setElementName(String elementName) {
-        this.elementName = elementName;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @return the nameSpace
-     */
-    public String getNameSpace() {
-        return nameSpace;
-    }
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @param nameSpace the nameSpace to set
-     */
-    public void setNameSpace(String nameSpace) {
-        this.nameSpace = nameSpace;
-    }
-    
-    public QualifiedName getElementIdentifier(){
-        return new QualifiedName(nameSpace, elementName);
-    }
+	/**
+	 * @return the default_template
+	 */
+	public String getDefaultTemplate() {
+		return default_template;
+	}
+
+	/**
+	 * @param default_template
+	 *            the default_template to set
+	 */
+	public void setDefaultTemplate(String default_template) {
+		this.default_template = default_template;
+	}
+
+	/**
+	 * @return the _package
+	 */
+	public ViewComponentPackage getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param _package
+	 *            the _package to set
+	 */
+	public void setOwner(ViewComponentPackage owner) {
+		this.owner = owner;
+	}
+
+	/**
+	 * @return the elementName
+	 */
+	public String getElementName() {
+		return elementName;
+	}
+
+	/**
+	 * @param elementName
+	 *            the elementName to set
+	 */
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+	/**
+	 * @return the nameSpace
+	 */
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	/**
+	 * @param nameSpace
+	 *            the nameSpace to set
+	 */
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category
+	 *            the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	/**
+	 * @return the icon
+	 */
+	public String getIcon() {
+		return icon;
+	}
+
+	/**
+	 * @param icon
+	 *            the icon to set
+	 */
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public QualifiedName getElementIdentifier() {
+		return new QualifiedName(nameSpace, elementName);
+	}
 
 }
