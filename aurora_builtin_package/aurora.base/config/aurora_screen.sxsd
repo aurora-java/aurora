@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ss:schema xmlns:c="aurora.application.action" xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:elements>
+        <ss:element name="a:link" >
+            <ss:attributes>
+              <ss:attribute name="id" document="唯一标志" type=""/>
+              <ss:attribute name="model" document="bm文件的pkg路径" type="a:URLReference"/>
+              <ss:attribute name="modelaction" document="对应bm的action" type=""/>
+              <ss:attribute name="url" document="screen文件的路径" type="a:URLReference"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="a:dataSet" wizard="a:dataSetWizard">
             <ss:attributes>
                 <ss:attribute name="id" document="DataSet的ID" type="a:DataSetReference" use="required"/>
@@ -42,6 +50,7 @@
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:screenBody"/>
+                <ss:element minOccurs="0" ref="a:link"/>
             </ss:elements>
             <ss:attributes>
                 <ss:attribute name="template" document="页面使用的模板"/>
