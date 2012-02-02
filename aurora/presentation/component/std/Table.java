@@ -58,7 +58,7 @@ public class Table extends Component {
 		if (rowRenderer != null)
 			addConfig(TableConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(null!=view.getString(ComponentConfig.PROPERTITY_WIDTH))
-			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth+"px");
+			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, view.getString(ComponentConfig.PROPERTITY_WIDTH)+"px");
 		else if(null!=percentWidth)
 			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth+"%");
 		List cols = new ArrayList();
