@@ -54,7 +54,7 @@
         </ss:element>
         <ss:element name="a:table">
             <ss:attributes>
-                <ss:attribute name="percenWidth" document="组件的百分比宽度,单位是(%)" type="ss:int"/>
+                <ss:attribute name="percentWidth" document="组件的百分比宽度,单位是(%)" type="ss:int"/>
                 <ss:attribute name="title" document="表的标题" type="ss:String"/>
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
                 <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
