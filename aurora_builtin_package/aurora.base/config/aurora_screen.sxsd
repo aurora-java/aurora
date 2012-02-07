@@ -61,9 +61,23 @@
                 <ss:array name="a:dataSets" indexField="id" type="a:dataSet" wizard="a:dataSetsWizard"/>
             </ss:arrays>
         </ss:element>
-        <ss:element name="c:create-config" document="动态列配置区">
+        <ss:element name="c:batch-config" document="动态循环创建子节点">
+            <ss:extensions>
+                <ss:extension base="c:dynamicField"/>
+            </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="targetId" document="目标ds" type="a:String"/>
+                <ss:attribute name="targetId" document="需要替换的placeHolder的id" type="a:String"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="c:create-config" document="动态列配置区">
+            <ss:extensions>
+                <ss:extension base="c:dynamicField"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="targetId" document="需要替换的placeHolder的id" type="a:String"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="p:loop"/>
@@ -85,7 +99,7 @@
             </ss:elements>
             <!--add by shengbo.huang @2011/11/2-->
             <ss:arrays>
-                <ss:array name="a:view-config" document="动态列配置,可以在view标签下配置" indexField="targetId" type="c:create-config"/>
+                <ss:array name="a:view-config" document="动态列配置,可以在view标签下配置" indexField="targetId" type="c:dynamicField"/>
             </ss:arrays>
             <!--end-->
             <ss:attributes>
@@ -238,5 +252,6 @@
                 <ss:attribute name="cacheEnabled" document="是否启用cache" type="ss:boolean"/>
             </ss:attributes>
         </ss:complexType>
+        <ss:complexType name="c:dynamicField"/>
     </ss:types>
 </ss:schema>
