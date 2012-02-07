@@ -83,6 +83,22 @@
                 <ss:element ref="p:loop"/>
             </ss:elements>
         </ss:element>
+        <ss:element name="a:case">
+            <ss:attributes>
+                <ss:attribute name="value" document="条件值"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:switch">
+            <ss:elements>
+                <ss:element ref="a:case"/>
+            </ss:elements>
+            <ss:attributes>
+                <ss:attribute name="test" document="需要判断的值"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="p:loop" document="循环">
             <ss:attributes>
                 <ss:attribute name="nullable" document="可不可以为null" type="a:boolean"/>
