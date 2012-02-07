@@ -23,6 +23,11 @@
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
         </ss:element>
+        <ss:element name="f:multi-language-display" document="多语言特性">
+            <ss:extensions>
+                <ss:extension base="bm:feature"/>
+            </ss:extensions>
+        </ss:element>
         <ss:element name="f:standard-who" document="每次创建、更改记录时，留下操作人员ID和操作日期的记录">
             <ss:attributes>
                 <ss:attribute name="userIdPath" document="用于获取当前操作用户的的XPath路径，如/session/@user_id"/>
