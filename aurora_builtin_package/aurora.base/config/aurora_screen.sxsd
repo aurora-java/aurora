@@ -223,6 +223,11 @@
                 <ss:element ref="a:service-output"/>
             </ss:elements>
         </ss:element>
+        <ss:element name="a:refresh-prompts" document="重新加载并缓存prompt信息">
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
     </ss:elements>
     <ss:types>
         <ss:simpleType name="a:selectType">
