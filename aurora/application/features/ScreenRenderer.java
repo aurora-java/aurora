@@ -140,7 +140,7 @@ public class ScreenRenderer implements IFeature {
             	mDefaultLabelSeparator = mScreen.getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
             if (mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE) != null)
                 setContentType(mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE));
-            mContext.addChild(mScreen);
+            //mContext.addChild(mScreen);
             mContext.putBoolean("output", true);
         }
         return EventModel.HANDLE_NORMAL;
