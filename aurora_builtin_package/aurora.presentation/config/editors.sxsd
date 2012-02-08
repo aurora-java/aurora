@@ -10,8 +10,8 @@
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
                 <ss:attribute name="typeCase" document="大小写类型" type="a:caseType"/>
-                <ss:attribute name="readOnly" document="是否只读"/>
-                <ss:attribute name="maxLength" document="最大允许输入长度"/>
+                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
+                <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:passWord" document="密码输入框">
@@ -21,7 +21,7 @@
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="readOnly" document="是否只读"/>
+                <ss:attribute name="readOnly" document="是否只读"  type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:comboBox">
@@ -34,7 +34,7 @@
                 <ss:attribute name="displayField" document="ComboBox的displayfield"/>
                 <ss:attribute name="options" document="ComboBox的数据源"/>
                 <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="readOnly" document="是否只读"/>
+                <ss:attribute name="readOnly" document="是否只读"  type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:numberField" document="数字输入框">
@@ -48,7 +48,20 @@
                 <ss:attribute name="decimalPrecision" document="小数位精度" type="ss:int"/>
                 <ss:attribute name="allowNegative" document="是否允许为负数" type="ss:boolean"/>
                 <ss:attribute name="allowFormat" document="是否按照千分位显示" type="ss:boolean"/>
-                <ss:attribute name="readOnly" document="是否只读"/>
+                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:spinner" document="微调范围输入框">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="emptyText" document="描述字段"/>
+                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
+                <ss:attribute name="min" document="最小值" type="ss:int"/>
+                <ss:attribute name="max" document="最大值" type="ss:int"/>
+                <ss:attribute name="step" document="夸度" type="ss:int"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:label" document="显示标签">
@@ -68,13 +81,11 @@
             <ss:attributes>
                 <ss:attribute name="dayRenderer" document="日期渲染\n回调函数function(cell,date,text){return text}\n当cell.disabled=true时，该日期无法被选择\n返回值text是html字符串"/>
                 <ss:attribute name="emptyText" document="提示信息"/>
-                <ss:attribute name="readOnly" document="是否只读"/>
-                <ss:attribute name="enableBesideDays" document="在本月的始末补齐前后月份的日期\n可选值：both|pre|next|none"/>
-                <ss:attribute name="enableMonthBtn" document="月份选择按钮显示方式\n可选值：both|pre|next|none"/>
-                <ss:attribute name="viewSize" document="日历显示个数,4为最大值"/>
-                <!--add by shengbo.huang @2011/11/3-->
+                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
+                <ss:attribute name="enableBesideDays" document="在本月的始末补齐前后月份的日期" type="a:caseType"/>
+                <ss:attribute name="enableMonthBtn" document="月份选择按钮显示方式" type="a:caseType"/>
+                <ss:attribute name="viewSize" document="日历显示个数,4为最大值" type="ss:int"/>
                 <ss:attribute name="renderer" document="渲染\n回调函数"/>
-                <!--end-->
             </ss:attributes>
         </ss:element>
         <ss:element name="a:dateTimePicker" document="日期时间选择控件,带有时分秒输入框">
@@ -139,7 +150,6 @@
                 <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
-        <!--add by shengbo.huang @2011/11/3-->
         <ss:element name="a:upload" document="Upload">
             <ss:attributes>
                 <ss:attribute name="buttonWidth" document="上传按钮宽度" type="ss:int"/>
@@ -160,7 +170,7 @@
         </ss:element>
         <ss:element name="a:menuBar" document="MenuBar">
             <ss:attributes>
-                <ss:attribute name="displayField" document="需要显示的字段" type="ss:String"/>
+                <ss:attribute name="displayField" document="需要显示的字段"/>
                 <ss:attribute name="focus" document="聚焦"/>
                 <ss:attribute name="idField" document="唯一标识字段"/>
                 <ss:attribute name="parentField" document="父节点的唯一标识字段"/>
@@ -175,8 +185,8 @@
         <ss:element name="a:autoForm" document="AutoForm">
             <ss:attributes>
                 <ss:attribute name="column" document="列数" type="ss:int"/>
-                <ss:attribute name="model" document="指定model" type="ss:String"/>
-                <ss:attribute name="title" document="标题" type="ss:String"/>
+                <ss:attribute name="model" document="指定model"/>
+                <ss:attribute name="title" document="标题"/>
                 <ss:attribute name="labelWidth" document="prompt的宽度" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>
@@ -184,7 +194,6 @@
                 <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
-        <!--end-->
     </ss:elements>
     <ss:categories/>
     <ss:types>
@@ -193,6 +202,16 @@
                 <ss:enumerations>
                     <ss:enumeration value="upper"/>
                     <ss:enumeration value="lower"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:showType">
+            <ss:restriction base="ss:string">
+                <ss:enumerations>
+                    <ss:enumeration value="both"/>
+                    <ss:enumeration value="pre"/>
+                    <ss:enumeration value="next"/>
+                    <ss:enumeration value="none"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
