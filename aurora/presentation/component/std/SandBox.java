@@ -9,9 +9,9 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 
-public class SendBox extends Component {
+public class SandBox extends Component {
 
-	private static final String DEFAULT_CLASS = "sendbox";
+	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
 
 	protected int getDefaultWidth() {
@@ -25,8 +25,8 @@ public class SendBox extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "sendbox/SendBox.css");
-		addJavaScript(session, context, "sendbox/SendBox.js");
+		addStyleSheet(session, context, "sandbox/SandBox.css");
+		addJavaScript(session, context, "sandbox/SandBox.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)

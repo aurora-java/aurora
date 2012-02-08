@@ -12,7 +12,7 @@ import uncertain.composite.CompositeMap;
 import aurora.service.IService;
 import aurora.service.ServiceInstance;
 
-public class SendBoxServlet extends FacadeServlet {
+public class SandBoxServlet extends FacadeServlet {
 
     protected void populateService(HttpServletRequest request,
             HttpServletResponse response, IService service) throws Exception {
