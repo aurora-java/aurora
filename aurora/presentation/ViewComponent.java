@@ -16,7 +16,7 @@ public class ViewComponent {
 	String nameSpace;
 	String elementName;
 	String category;
-	String icon;
+	String description;
 	String default_template;
 
 	/*
@@ -157,23 +157,17 @@ public class ViewComponent {
 		this.category = category;
 	}
 
-	/**
-	 * @return the icon
-	 */
-	public String getIcon() {
-		return icon;
-	}
-
-	/**
-	 * @param icon
-	 *            the icon to set
-	 */
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
 
 	public QualifiedName getElementIdentifier() {
 		return new QualifiedName(nameSpace, elementName);
+	}
+
+	public String getDescription() {
+		return description == null ? "" : description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }
