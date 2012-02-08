@@ -56,13 +56,14 @@ public class SendBox extends Component {
 
 	private String createTextArea(BuildSession session, ViewContext context)
 			throws IOException {
+		String height = context.getView().getString(
+				ComponentConfig.PROPERTITY_HEIGHT, "150");
 		CompositeMap model = context.getModel();
 		CompositeMap textArea = new CompositeMap("textArea");
 		textArea.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		textArea.put(ComponentConfig.PROPERTITY_ID, id + "_view");
-		textArea
-				.put(ComponentConfig.PROPERTITY_STYLE,
-						"width:99%;height:150px;");
+		textArea.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:"
+				+ height + "px;");
 		try {
 			return session.buildViewAsString(model, textArea);
 		} catch (Exception e) {
