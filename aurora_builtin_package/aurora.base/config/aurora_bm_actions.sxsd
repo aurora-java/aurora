@@ -27,6 +27,14 @@
                 <ss:attribute name="maxAge" document="Cookie生命周期，单位秒，-1为永远不过期直到关闭浏览器"/>
             </ss:attributes>
         </ss:element>
+        <ss:element name="a:model-join" document="两个Map，通过关键字进行关联合并成一个Map，第一个Map竖向循环，第二个Map横向循环">
+            <ss:attributes>
+                <ss:attribute name="models" document="两个Map，通过逗号分隔，第一个Map竖向循环。第二个Map横向循环"/>
+                <ss:attribute name="valueField" document="关联之后Map横向循环的的value，支持多个字段逗号分隔，顺序与shareField对应"/>
+                <ss:attribute name="shareField" document="关联之后Map横向循环的key，支持多个字段逗号分隔"/>
+                <ss:attribute name="joinField" document="两个Map进行关联的关键字，可以支持多个关键字以逗号分隔"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="a:import-excel" document="导入标记支持如下文件类型xls,xlsx,csv,txt">
             <ss:attributes>
                 <ss:attribute name="header_id" document="fnd_interface_headers表中的header_id"/>
