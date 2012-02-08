@@ -2,6 +2,7 @@
 <package name="aurora.base">
 	<schema-files>
 		<schema-file path="aurora_base_type.sxsd"/>
+		<schema-file path="aurora_validation.sxsd"/>
 		<schema-file path="aurora_bm.sxsd"/>
 	</schema-files>
 	<resource-files>

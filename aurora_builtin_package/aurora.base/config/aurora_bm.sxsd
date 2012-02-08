@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:e="aurora.service.exception" xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:types>
         <ss:complexType name="bm:feature" document="所有可以放置在bm的features部分的tag，必须继承此类型"/>
         <ss:simpleType name="bm:ExtendModeType">
@@ -171,6 +171,7 @@
             </ss:attributes>
             <ss:elements>
                 <ss:element name="bm:description" document="描述本BM功能"/>
+                <ss:element document="对BM操作中发生的异常，定义其描述信息" ref="e:exception-descriptor-config"/>
             </ss:elements>
             <ss:arrays>
                 <ss:array name="bm:fields" indexField="name" type="bm:field"/>
