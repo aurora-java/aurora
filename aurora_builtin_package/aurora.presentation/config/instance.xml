@@ -7,5 +7,11 @@
 				<u:type typeName="aurora.presentation.PresentationManager" />
 			</u:implement-types>
 		</u:configurable-instance>
+        <u:configurable-instance configFile="freemarker-provider.config" >
+            <u:description>基于FreeMaker模板技术实现</u:description>
+            <u:implement-types>
+                <u:type typeName="aurora.presentation.IFreeMarkerTemplateProvider" />
+            </u:implement-types>
+        </u:configurable-instance>
 	</u:instances>
 </u:instance-config>
