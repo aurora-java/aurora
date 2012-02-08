@@ -52,13 +52,6 @@
 			</u:implement-types>
 		</u:configurable-instance>
         
-        <u:configurable-instance configFile="freemarker-provider.config" >
-            <u:description>基于FreeMaker模板技术实现</u:description>
-            <u:implement-types>
-                <u:type typeName="aurora.application.features.IFreeMarkerTemplateProvider" />
-            </u:implement-types>
-        </u:configurable-instance>
-        
 		<u:configurable-instance configFile="service-prompt.config" >
 			<u:description>基于数据库的多语言实现</u:description>
 			<u:required-instances>
