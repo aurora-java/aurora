@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    $Author: zhoufan  
+    $Date: 2012-2-8 下午02:49:03  
+    $Revision: 1.0  
+    $Purpose: 
+-->
+<ss:schema xmlns:e="aurora.service.exception" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:elements>
+        <ss:element name="e:error-message">
+            <ss:attributes>
+                <ss:attribute name="code" document="错误代码"/>
+                <ss:attribute name="field" document="如果是字段级错误，发生错误的字段名称"/>
+                <ss:attribute name="message" document="错误描述信息"/>
+            </ss:attributes>
+            <ss:arrays>
+                <ss:array name="e:errors" type="e:error-message"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="e:exception-descriptor">
+            <ss:attributes>
+                <ss:attribute name="exception" document="异常的完整类名"/>
+                <ss:attribute name="handleClass" document="负责对该异常创建描述信息的类名，应为aurora.service.exception.IExceptionDescriptor实例"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element minOccurs="1" ref="e:error-message"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="e:exception-descriptor-config">
+            <ss:elements>
+                <ss:element minOccurs="1" ref="e:exception-descriptor"/>
+            </ss:elements>
+        </ss:element>
+    </ss:elements>
+</ss:schema>
