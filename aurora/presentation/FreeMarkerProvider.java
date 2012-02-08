@@ -1,4 +1,4 @@
-package aurora.application.features;
+package aurora.presentation;
 
 import uncertain.core.IGlobalInstance;
 import freemarker.template.Configuration;

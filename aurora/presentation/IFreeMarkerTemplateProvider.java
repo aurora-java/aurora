@@ -1,4 +1,4 @@
-package aurora.application.features;
+package aurora.presentation;
 
 import freemarker.template.Configuration;
 
