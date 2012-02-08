@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    $Author: zhoufan  
+    $Date: 2012-2-8 下午02:49:03  
+    $Revision: 1.0  
+    $Purpose: 
+-->
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:elements>
+        <ss:element name="a:session-copy" document="将HttpSession中的所有key/value映射，copy到运行时容器的/session路径中">
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:session-write" document="向HttpSession中写入值">
+            <ss:attributes>
+                <ss:attribute name="source" document="要写入的值的路径。如果为空，则将/session下面的所有key/value写入HttpSession中"/>
+                <ss:attribute name="target" document="要写入的值的key。如果为空，并且通过source取到的对象是CompositeMap实例，则将其中的所有key/value映射写入HttpSession"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:session-clear" document="清除HttpSession">
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:session-create" document="创建HttpSession">
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:bm-access-check" document="通过预先配置的属性，从cache中按约定格式的key，检查当前用户是否有权限执行当前请求的BM操作">
+            <!--
+            <ss:attributes>
+                <ss:attribute name="errorMessage" document="如果没有权限，要显示的错误提示信息"/>
+            </ss:attributes>
+-->
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:resource-access-check" document="通过预先配置的属性，从cache中按约定格式的key，检查当前用户是否有权限访问当前资源">
+            <ss:attributes>
+                <ss:attribute name="resultPath" document="将检查结果放到哪个路径下"/>
+                <ss:attribute name="serviceNamePath" default="@service_name" document="当前请求的资源名称在运行时容器中的路径"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:check-dispatch" document="检查运行时容器中的某个值是否满足设定条件，如果是，则跳转到指定的url">
+            <ss:attributes>
+                <ss:attribute name="field" document="要检查的值的XPath路径"/>
+                <ss:attribute name="value" document="检查是否与该属性设定的值匹配"/>
+                <ss:attribute name="dispatchUrl" document="如果符合条件，要跳转到的URL地址"/>
+                <ss:attribute name="message" document="传递给该URL的参数，用于显示提示消息"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+    </ss:elements>
+</ss:schema>
