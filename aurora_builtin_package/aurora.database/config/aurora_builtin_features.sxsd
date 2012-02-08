@@ -35,6 +35,7 @@
                 <ss:attribute name="creationDateField" document="表中记录创建日期的字段名"/>
                 <ss:attribute name="lastUpdatedByField" document="表中记录最后更新人ID的字段名"/>
                 <ss:attribute name="lastUpdatedDateField" document="表中记录最后更新日期的字段名"/>
+                <ss:attribute name="forQuery" document="查询的时候是否返回standard-who字段" type="ss:boolean"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="bm:feature"/>
