@@ -20,6 +20,28 @@
         </ss:simpleType>
     </ss:types>
     <ss:elements>
+        <ss:element name="a:put-cookie" document="写Cookie标记">
+            <ss:attributes>
+                <ss:attribute name="name" document="Cookie名称"/>
+                <ss:attribute name="value" document="Cookie值，支持XPATH取值"/>
+                <ss:attribute name="maxAge" document="Cookie生命周期，单位秒，-1为永远不过期直到关闭浏览器"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:import-excel" document="导入标记支持如下文件类型xls,xlsx,csv,txt">
+            <ss:attributes>
+                <ss:attribute name="header_id" document="fnd_interface_headers表中的header_id"/>
+                <ss:attribute name="dataSourceName" document="导入数据库的dataSourceName"/>
+                <ss:attribute name="user_id" document="当前用户user_id"/>
+                <ss:attribute name="separator" document="导入文本类型时的分隔符"/>
+                <ss:attribute name="template_code" document="模板code"/>
+                <ss:attribute name="job_id" document="任务id"/>
+                <ss:attribute name="attribute1" document="扩展字段1"/>
+                <ss:attribute name="attribute2" document="扩展字段2"/>
+                <ss:attribute name="attribute3" document="扩展字段3"/>
+                <ss:attribute name="attribute4" document="扩展字段4"/>
+                <ss:attribute name="attribute5" document="扩展字段5"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="a:model-query" document="通过BM执行查询">
             <ss:attributes>
                 <ss:attribute name="autoCount" document="是否自动计算记录总数" type="ss:boolean"/>
