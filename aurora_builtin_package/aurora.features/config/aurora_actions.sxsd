@@ -61,5 +61,16 @@
                 <ss:extension base="p:AbstractAction"/>
             </ss:extensions>
         </ss:element>
+        <ss:element name="a:batch-apply" document="对上下文（context）中的数据进行批量依次执行">
+            <ss:attributes>
+                <ss:attribute name="sourcepath" document="对上下文（context）中的路径（XPath），譬如/parameter/details"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="p:AbstractAction"/>
+            </ss:elements>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
     </ss:elements>
 </ss:schema>
