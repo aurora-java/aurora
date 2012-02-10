@@ -156,6 +156,7 @@
                 <ss:attribute name="operations" document="detail记录允许的操作，如insert,update,delete,execute等，用逗号分隔"/>
             </ss:attributes>
         </ss:element>
+        <ss:element name="bm:description" document="描述本BM功能"/>
         <ss:element name="bm:model">
             <ss:attributes>
                 <ss:attribute name="baseTable" document="对应的数据库基表"/>
@@ -170,7 +171,7 @@
                 <ss:attribute name="maxPageSize" default="500" document="每页允许的最大记录数"/>
             </ss:attributes>
             <ss:elements>
-                <ss:element name="bm:description" document="描述本BM功能"/>
+                <ss:element ref="bm:description"/>
                 <ss:element document="对BM操作中发生的异常，定义其描述信息" ref="e:exception-descriptor-config"/>
             </ss:elements>
             <ss:arrays>
