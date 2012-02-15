@@ -321,11 +321,11 @@ public class AttachmentManager extends AbstractEntry{
 	}
 
 	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
-		
+		Connection nativeConn=null;
 		if(conn instanceof C3P0ProxyConnection){
         	C3P0NativeJdbcExtractor nativeJdbcExtractor=new C3P0NativeJdbcExtractor();
         	try {
-        		conn = nativeJdbcExtractor.getNativeConnection(conn);
+        		nativeConn = nativeJdbcExtractor.getNativeConnection(conn);
 			} catch (Exception e) {
 				throw new Exception(e);			
 			}			
@@ -337,7 +337,7 @@ public class AttachmentManager extends AbstractEntry{
 		ResultSet rs = null;
 		OutputStream outstream = null;
 		try {
-			st = conn.createStatement();
+			st = nativeConn.createStatement();
 			st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
 			st.execute("commit");
 
