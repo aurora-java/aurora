@@ -8,7 +8,7 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
-public class NavigationBar extends Component {
+public class AccordionMenu extends Component {
 
 	private static final String PROPERTY_DISPLAY_FIELD = "displayfield";
 	private static final String PROPERTY_MIN_HEIGHT = "minheight";
@@ -26,8 +26,8 @@ public class NavigationBar extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "navigationbar/NavigationBar-min.css");
-		addJavaScript(session, context, "navigationbar/NavigationBar.js");
+		addStyleSheet(session, context, "accordionmenu/AccordionMenu-min.css");
+		addJavaScript(session, context, "accordionmenu/AccordionMenu.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
