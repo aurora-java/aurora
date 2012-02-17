@@ -14,7 +14,7 @@ public class AccordionMenu extends Component {
 	private static final String PROPERTY_MIN_HEIGHT = "minheight";
 	private static final String PROPERTY_PARENT_FIELD = "parentfield";
 	private static final String PROPERTY_ID_FIELD = "idfield";
-	//private static final String PROPERTY_SEQUENCE_FIELD = "sequencefield";
+	private static final String PROPERTY_SEQUENCE_FIELD = "sequencefield";
 	private static final String PROPERTY_ICON = "icon";
 	private static final String PROPERTY_INFO = "information";
 
@@ -27,7 +27,7 @@ public class AccordionMenu extends Component {
 			throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "accordionmenu/AccordionMenu-min.css");
-		addJavaScript(session, context, "accordionmenu/AccordionMenu.js");
+		addJavaScript(session, context, "accordionmenu/AccordionMenu-min.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
@@ -39,7 +39,7 @@ public class AccordionMenu extends Component {
 		String displayField = view.getString(PROPERTY_DISPLAY_FIELD);
 		String parentField = view.getString(PROPERTY_PARENT_FIELD);
 		String idField = view.getString(PROPERTY_ID_FIELD);
-		//String sequence = view.getString(PROPERTY_SEQUENCE_FIELD);
+		String sequence = view.getString(PROPERTY_SEQUENCE_FIELD);
 		String icon = uncertain.composite.TextParser.parse(
 				view.getString(PROPERTY_ICON), model);
 		if (null == icon)
@@ -64,6 +64,7 @@ public class AccordionMenu extends Component {
 		addConfig(PROPERTY_ID_FIELD, idField);
 		addConfig(PROPERTY_DISPLAY_FIELD, displayField);
 		addConfig(PROPERTY_ICON, icon);
+		addConfig(PROPERTY_SEQUENCE_FIELD, sequence);
 		map.put(CONFIG, getConfigString());
 	}
 }
