@@ -48,8 +48,8 @@ public class AccordionMenu extends Component {
 				view.getString(PROPERTY_INFO), model);
 		if (null != info)
 			map.put(PROPERTY_INFO, info);
-		int minHeight = view.getInt(PROPERTY_MIN_HEIGHT, -1);
-		if (minHeight != -1)
+		String minHeight = view.getString(PROPERTY_MIN_HEIGHT);
+		if (null != minHeight && !minHeight.isEmpty())
 			map.put(PROPERTY_MIN_HEIGHT, "min-height:" + minHeight + "px");
 		CompositeMap params = model.getRoot();
 		String menuID = (String) params.getObject("/parameter/@menu_id");
