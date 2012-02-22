@@ -62,7 +62,11 @@
                 <ss:attribute name="multiLanguage" document="是否属于多语言字段"/>
                 <ss:attribute name="multiLanguageDescField" document="多语言关联的字段"/>
                 <ss:attribute name="forceUpdate" document="如果设置为true，即使客户端没有传递该参数，该字段也会被拼接到update语句中"/>
-            </ss:attributes>
+                <!--原型开发用-->
+                <ss:attribute name="defaultEditor" document="field的默认编辑器(可用值：textField、numberField、comboBox、lov、datePicker、dateTimePicker)"/>
+                <!--comboBox,lov-->
+                <ss:attribute name="options" document="当defaultEditor是comboBox、lov时需要设定的关联bm"/>
+              </ss:attributes>
         </ss:element>
         <ss:element name="bm:ref-field">
             <ss:attributes>
@@ -169,6 +173,8 @@
                 <ss:attribute name="accessControlMode" document="权限控制方式，如果该BM有父BM，缺省情况下该BM的权限控制方式与父BM相同，如果accessControlMode设置为separate，则该BM使用自己的权限控制设置，与父BM无关"/>
                 <ss:attribute name="allowFetchAll" document="是否允许将所有查询结果，不分页地传递给客户端" type="ss:boolean"/>
                 <ss:attribute name="maxPageSize" default="500" document="每页允许的最大记录数"/>
+                <!--原型工具-->
+                <ss:attribute name="defaultDisplayField" document="默认的界面显示用的field"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="bm:description"/>
