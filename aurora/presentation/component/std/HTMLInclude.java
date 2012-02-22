@@ -39,7 +39,7 @@ public class HTMLInclude implements IViewBuilder {
 	private String bodyPattern = "(.*)<body[^>]*>(.*)</body>(.*)";
 	private String scriptPattern = "<script[^>]*src=([\"\'])([^\'\"]*)\\1[^>]*(/|.*/script)>";
 	private String linkPattern = "<link[^>]*href=([\"\'])([^\'\"]*)\\1[^>]*/?>";
-	private String imgPattern = "<img[^>]*src=([\"\'])([^\'\"]*)\\1[^>]*(/|.*/img)>";
+	private String imgPattern = "<img[^>]*src=([\"\'])([^\'\"]*)\\1[^>]*(/*)>";
 	private ClassLoader mClassLoader = Thread.currentThread()
 			.getContextClassLoader();
 
