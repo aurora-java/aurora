@@ -92,6 +92,11 @@
             <ss:extensions>
                 <ss:extension base="a:datePicker"/>
             </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="hour" document="默认显示的小时" default="0" type="ss:int"/>
+                <ss:attribute name="minute" document="默认显示的分钟" default="0" type="ss:int"/>
+                <ss:attribute name="second" document="默认显示的秒钟" default="0" type="ss:int"/>
+            </ss:attributes>
         </ss:element>
         <ss:element name="a:radio" document="单选框">
             <ss:extensions>
