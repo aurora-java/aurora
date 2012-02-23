@@ -63,7 +63,7 @@
                 <ss:attribute name="multiLanguageDescField" document="多语言关联的字段"/>
                 <ss:attribute name="forceUpdate" document="如果设置为true，即使客户端没有传递该参数，该字段也会被拼接到update语句中"/>
                 <!--原型开发用-->
-                <ss:attribute name="defaultEditor" document="field的默认编辑器(可用值：textField、numberField、comboBox、lov、datePicker、dateTimePicker)"/>
+                <ss:attribute name="defaultEditor" document="field的默认编辑器(可用值：textField、numberField、comboBox、lov、checkBox、datePicker、dateTimePicker)"/>
                 <!--comboBox,lov-->
                 <ss:attribute name="options" document="当defaultEditor是comboBox、lov时需要设定的关联bm"/>
               </ss:attributes>
