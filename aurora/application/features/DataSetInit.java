@@ -96,7 +96,8 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 		if(baseModel!=null && dsc.getLoadData() == true){
 			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
 			mqc.setModel(baseModel);
-			mqc.setRootPath("/model/"+baseModel);
+//			mqc.setRootPath("/model/"+baseModel);
+			mqc.setRootPath("/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
 			mqc.setAutoCount(false);//ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false)
 			mqc.setFetchAll(true);//ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true)
 			screen.addInitProcedureAction(mqc.getObjectContext());
@@ -105,7 +106,8 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 			if(datas == null){
 				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
 			}
-			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+baseModel);
+//			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+baseModel);
+			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
 		}
 		if(cq){
 			if(!"".equals(queryUrl)){
