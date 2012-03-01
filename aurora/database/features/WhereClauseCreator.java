@@ -94,7 +94,7 @@ public class WhereClauseCreator {
                 if(has_field){
                     SelectField select_field = select.getField(field.getName());
                     if(select_field!=null)
-                        qf.addToWhereClause(where, select_field, field.getInputPath());
+                        qf.addToWhereClause(where, new RawSqlExpression(select_field.getNameForOperate()), field.getInputPath());
                     else
                         qf.addToWhereClause(where, new RawSqlExpression(field.getPhysicalName()), field.getInputPath());
                 }else
