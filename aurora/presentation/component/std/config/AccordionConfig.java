@@ -9,7 +9,6 @@ public class AccordionConfig extends ComponentConfig {
 	public static final String PROPERTITY_ACCORDIONS = "accordions";
 
 	public static final String PROPERTITY_SINGLE_MODE = "singlemode";
-	public static final String PROPERTITY_REF = "ref";
 	public static final String PROPERTITY_SHOW_ICON = "showicon";
 
 	public static AccordionConfig getInstance() {
@@ -34,14 +33,6 @@ public class AccordionConfig extends ComponentConfig {
 
 	public void setSingleMode(boolean singleMode) {
 		putBoolean(PROPERTITY_SINGLE_MODE, singleMode);
-	}
-
-	public String getRef() {
-		return getString(PROPERTITY_REF);
-	}
-
-	public void setRef(String ref) {
-		putString(PROPERTITY_REF, ref);
 	}
 	
 	public boolean isShowIcon() {

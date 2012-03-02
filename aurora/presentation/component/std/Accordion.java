@@ -18,6 +18,7 @@ public class Accordion extends Component {
 
 	private static final String DEFAULT_CLASS = "layout-accordion";
 	private static final String SELECTED = "selected";
+	private static final String REF = "ref";
 	
 	private int bodyHeight;
 	private int stripHeight = 25;
@@ -93,7 +94,7 @@ public class Accordion extends Component {
 				.getString(ComponentConfig.PROPERTITY_PROMPT)));
 		sb.append("</DIV><DIV class='item-accordion-body' style='height:"
 				+ bodyHeight + "px;'>");
-		String ref = accordion.getString(AccordionConfig.PROPERTITY_REF, "");
+		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
 			if (accordionChilds != null) {
@@ -111,7 +112,7 @@ public class Accordion extends Component {
 				sb.append(accordion.getText());
 			}
 		}
-		accordion.putString(AccordionConfig.PROPERTITY_REF, uncertain.composite.TextParser
+		accordion.putString(REF, uncertain.composite.TextParser
 				.parse(ref, model));
 		sb.append("</DIV></DIV>");
 		return sb.toString();

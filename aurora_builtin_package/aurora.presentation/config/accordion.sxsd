@@ -6,6 +6,10 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
             </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="singleMode" default="true" document="accordion页是否是单选模式" type="ss:boolean"/>
+                <ss:attribute name="showIcon" default="true" document="是否显示按钮图标" type="ss:boolean"/>
+            </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:accordions" minOccurs="1" type="a:accordion"/>
             </ss:arrays>
@@ -15,7 +19,6 @@
                 <ss:attribute name="prompt" document="accordion的prompt" use="required"/>
                 <ss:attribute name="ref" document="accordion的引用screen" type="a:URLReference"/>
                 <ss:attribute name="selected" default="false" document="accordion页是否展开" type="ss:boolean"/>
-                <ss:attribute name="singleMode" default="true" document="accordion页是否是单选模式" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent" type=""/>
