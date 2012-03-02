@@ -11,17 +11,14 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.AccordionConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Accordion extends Component {
 
 	private static final String DEFAULT_CLASS = "layout-accordion";
-
-	private static final String ACCORDIONS = "accordions";
-	private static final String SINGLE_MODE = "singlemode";
-	private static final String PROPERTITY_REF = "ref";
-	private static final String PROPERTITY_SELECTED = "selected";
-
+	private static final String SELECTED = "selected";
+	
 	private int bodyHeight;
 	private int stripHeight = 25;
 
@@ -42,15 +39,16 @@ public class Accordion extends Component {
 		//CompositeMap view = context.getView();
 		Map map = context.getMap();
 		addConfig("stripheight", new Integer(stripHeight));
-		map.put(ACCORDIONS, createAccordions(session, context));
+		map.put(AccordionConfig.PROPERTITY_ACCORDIONS, createAccordions(session, context));
 		map.put(CONFIG, getConfigString());
 	}
 
 	private String createAccordions(BuildSession session, ViewContext context)
 			throws IOException {
 		CompositeMap view = context.getView();
+		AccordionConfig ac = AccordionConfig.getInstance(view);
 		Map map = context.getMap();
-		CompositeMap accordions = view.getChild(ACCORDIONS);
+		CompositeMap accordions = ac.getAccordions();
 		StringBuffer sb = new StringBuffer();
 		JSONArray jsons = new JSONArray();
 		if (null != accordions) {
@@ -58,24 +56,23 @@ public class Accordion extends Component {
 			if (null != childs) {
 				int numAccordions = childs.size();
 				int i = 0;
-				boolean isSelected = false, singleMode = view.getBoolean(
-						SINGLE_MODE, true);
+				boolean isSelected = false, singleMode = ac.isSingleMode(),showIcon = ac.isShowIcon();
 				bodyHeight = (((Integer) map
 						.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - numAccordions
 						* stripHeight)
 						/ (singleMode ? 1 : numAccordions);
 				Iterator it = childs.iterator();
-				addConfig(SINGLE_MODE, new Boolean(singleMode));
+				addConfig(AccordionConfig.PROPERTITY_SINGLE_MODE, new Boolean(singleMode));
+				addConfig(AccordionConfig.PROPERTITY_SHOW_ICON, new Boolean(showIcon));
 				while (it.hasNext()) {
 					CompositeMap accordion = (CompositeMap) it.next();
 					if ((isSelected == false || singleMode == false)
-							&& "true".equals(accordion.getString(
-									PROPERTITY_SELECTED, ""))) {
+							&& "true".equals(accordion.getString(SELECTED, ""))) {
 						sb.append(createAccordion(session, context, accordion,
-								isSelected = true));
+								isSelected = true,showIcon));
 					} else
 						sb.append(createAccordion(session, context, accordion,
-								false));
+								false,showIcon));
 					jsons.put(new JSONObject(accordion));
 					i++;
 				}
@@ -86,22 +83,17 @@ public class Accordion extends Component {
 	}
 
 	private String createAccordion(BuildSession session, ViewContext context,
-			CompositeMap accordion, boolean isSelected) throws IOException {
+			CompositeMap accordion, boolean isSelected,boolean showIcon) throws IOException {
 		CompositeMap model = context.getModel();
-		int accordionHeight = isSelected ? bodyHeight + stripHeight
-				: stripHeight;
-		String stripClass = isSelected ? "item-accordion selected"
-				: "item-accordion";
 		StringBuffer sb = new StringBuffer();
-		sb.append("<DIV class='" + stripClass + "' style='height:"
-				+ accordionHeight + "px'><DIV class='strip' style='height:"
-				+ stripHeight + "px;line-height:"
-				+ stripHeight + "px'>");
+		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
+				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='strip'>");
+		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
 		sb.append(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)));
 		sb.append("</DIV><DIV class='item-accordion-body' style='height:"
 				+ bodyHeight + "px;'>");
-		String ref = accordion.getString(PROPERTITY_REF, "");
+		String ref = accordion.getString(AccordionConfig.PROPERTITY_REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
 			if (accordionChilds != null) {
@@ -119,7 +111,7 @@ public class Accordion extends Component {
 				sb.append(accordion.getText());
 			}
 		}
-		accordion.putString(PROPERTITY_REF, uncertain.composite.TextParser
+		accordion.putString(AccordionConfig.PROPERTITY_REF, uncertain.composite.TextParser
 				.parse(ref, model));
 		sb.append("</DIV></DIV>");
 		return sb.toString();

@@ -27,14 +27,14 @@ public class TreeConfig extends ComponentConfig {
 	
 	public static TreeConfig getInstance(){
 		TreeConfig model = new TreeConfig();
-		CompositeMap context = TextFieldConfig.createContext(null,TAG_NAME);
+		CompositeMap context = TreeConfig.createContext(null,TAG_NAME);
         model.initialize(context);
         return model;
     }
 	
 	public static TreeConfig getInstance(CompositeMap context){
 		TreeConfig model = new TreeConfig();
-		CompositeMap map = TextFieldConfig.createContext(context,TAG_NAME);
+		CompositeMap map = TreeConfig.createContext(context,TAG_NAME);
         model.initialize(map);
         return model;
     }
