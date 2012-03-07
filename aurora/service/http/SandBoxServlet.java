@@ -18,7 +18,7 @@ public class SandBoxServlet extends FacadeServlet {
             HttpServletResponse response, IService service) throws Exception {
     	final ServiceInstance svc = (ServiceInstance) service;
     	String content = request.getParameter("content");
-		CompositeLoader cl = new CompositeLoader();
+		CompositeLoader cl = mServiceFactory.getCompositeLoader();
 		final CompositeMap config = cl.loadFromString(content);
     	
         svc.setServiceConfigData(config,false);
