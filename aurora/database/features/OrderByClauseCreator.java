@@ -18,6 +18,8 @@ import aurora.database.sql.SelectStatement;
 
 public class OrderByClauseCreator  implements ISingleton {
     
+    public static final String KEY_ORDER_BY = "ORDER BY ";
+
     public static final String ORDER_FIELD_PARAM_NAME = "_ORDER_FIELD_PARAM_NAME";
     
     public static final String ORDER_TYPE_PARAM_NAME = "_ORDER_TYPE_PARAM_NAME";
@@ -39,8 +41,16 @@ public class OrderByClauseCreator  implements ISingleton {
         CompositeMap param = bmsc.getCurrentParameter();
         String order_field = getField(ORDER_FIELD_PARAM_NAME, ORDER_FIELD, param);
         String replace = "";
-        if(order_field!=null){
-            StringBuffer order_by_clause = new StringBuffer("ORDER BY ");
+        BusinessModel model = bmsc.getBusinessModel();
+        
+        if(order_field==null){
+            if(model!=null){
+                String defaultorderyby=model.getDefaultOrderby();
+                if(defaultorderyby!=null)
+                    replace = KEY_ORDER_BY + defaultorderyby;
+            }
+        }else{
+            StringBuffer order_by_clause = new StringBuffer(KEY_ORDER_BY);
             order_by_clause.append(order_field);
             String order_type = getField(ORDER_TYPE_PARAM_NAME, ORDER_TYPE, param);
             if(order_type!=null){
