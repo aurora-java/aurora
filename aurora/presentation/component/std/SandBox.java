@@ -13,6 +13,7 @@ public class SandBox extends Component {
 
 	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
+	private static final String PROPERTITY_CONTENT = "content";
 
 	protected int getDefaultWidth() {
 		return 600;
@@ -33,6 +34,10 @@ public class SandBox extends Component {
 			throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
+		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
+		String content = uncertain.composite.TextParser.parse(view.getString(PROPERTITY_CONTENT),model);
+		addConfig(PROPERTITY_CONTENT,content);
 		addConfig(PROPERTITY_CONTEXT, session.getContextPath());
 		map.put("view", buildScreenTemplate(session, context));
 		map.put("btn", createButton(session, context));
