@@ -93,21 +93,25 @@ public class SandBox extends Component {
 				view.getString(PROPERTITY_TAG), model);
 		String tag = getTag(tag_name, prefix);
 		String pattern = getPattern(tag_name, prefix);
+		String defaultPattern = getDefaultPattern(tag_name, prefix);
 		if (null != tag_name && !tag_name.isEmpty() && content.contains(tag)) {
-			String left_wrap_content = getContent(content, pattern, "$1");
-			String tag_content = getContent(content, pattern, "$2");
-			String right_wrap_content = getContent(content, pattern, "$3");
-			sb.append(left_wrap_content.trim());
+			String left_wrap_content = getContent(
+					getContent(content, defaultPattern, "$1"), pattern, "$1");
+			String tag_content = getContent(
+					getContent(content, defaultPattern, "$2"), pattern, "$2");
+			String right_wrap_content = getContent(
+					getContent(content, defaultPattern, "$3"), pattern, "$3");
+			sb.append(parseContent(left_wrap_content.trim()));
 			sb.append("<div id='");
 			sb.append(id);
 			sb.append("_tagcontent' class='tagcontent' contentEditable='true'>");
 			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			sb.append(tag_content);
+			sb.append(parseContent(tag_content));
 			sb.append("</div>");
-			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			sb.append(right_wrap_content.trim());
+			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			sb.append(parseContent(right_wrap_content.trim()));
 		} else
-			sb.append(content.replaceAll(">", "&gt;").replace("<", "&lt;"));
+			sb.append(parseContent(content));
 		sb.append("</div>");
 		return sb.toString();
 	}
@@ -130,7 +134,16 @@ public class SandBox extends Component {
 		}
 	}
 
-	private String getPattern(String tag, String prefix) {
+	private String getPattern(String tag, String prefix) {		
+		StringBuffer sb = new StringBuffer("(.*)(<");
+		sb.append(prefix);
+		sb.append(":");
+		sb.append(tag);
+		sb.append("[^>]*/>)(.*)");		
+		return sb.toString();
+	}
+
+	private String getDefaultPattern(String tag, String prefix) {
 		StringBuffer sb = new StringBuffer("(.*)(<");
 		sb.append(prefix);
 		sb.append(":");
@@ -147,17 +160,18 @@ public class SandBox extends Component {
 		StringBuffer sb = new StringBuffer();
 		sb.append(prefix);
 		sb.append(":");
-		sb.append(tag);		
+		sb.append(tag);
 		return sb.toString();
+	}
+
+	private String parseContent(String content) {
+		return content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
 	private String getContent(String content, String pattern, String replacement) {
 		if (null == content || "".equals(content))
 			return "";
-		return replaceAll(
-				">",
-				replaceAll("<", replaceAll(pattern, content, replacement),
-						"&lt;"), "&gt;");
+		return replaceAll(pattern, content, replacement);
 	}
 
 	private String replaceAll(String regex, CharSequence input,
