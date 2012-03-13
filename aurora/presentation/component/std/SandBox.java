@@ -2,6 +2,7 @@ package aurora.presentation.component.std;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import uncertain.composite.CompositeMap;
 import aurora.application.AuroraApplication;
@@ -14,6 +15,7 @@ public class SandBox extends Component {
 	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
 	private static final String PROPERTITY_CONTENT = "content";
+	private static final String PROPERTITY_TAG = "tag";
 
 	protected int getDefaultWidth() {
 		return 600;
@@ -36,8 +38,9 @@ public class SandBox extends Component {
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
-		String content = uncertain.composite.TextParser.parse(view.getString(PROPERTITY_CONTENT),model);
-		addConfig(PROPERTITY_CONTENT,content);
+		String content = uncertain.composite.TextParser.parse(
+				view.getString(PROPERTITY_CONTENT), model);
+		addConfig(PROPERTITY_CONTENT, content);
 		addConfig(PROPERTITY_CONTEXT, session.getContextPath());
 		map.put("view", buildScreenTemplate(session, context));
 		map.put("btn", createButton(session, context));
@@ -51,29 +54,62 @@ public class SandBox extends Component {
 		String prefix = view.getPrefix();
 		sb.append("&lt;").append(prefix).append(":screen ").append("xmlns:")
 				.append(prefix).append("=\"").append(view.getNamespaceURI())
-				.append("\"&gt;").append("\n&lt;").append(prefix).append(
-						":view").append("&gt;").append(
-						createTextArea(session, context)).append("&lt;/")
-				.append(prefix).append(":view&gt;\n").append("&lt;/").append(
-						prefix).append(":screen&gt;");
+				.append("\"&gt;").append("\n&lt;").append(prefix)
+				.append(":view").append("&gt;")
+				.append(createTextArea(session, context, prefix))
+				.append("&lt;/").append(prefix).append(":view&gt;\n")
+				.append("&lt;/").append(prefix).append(":screen&gt;");
 		return sb.toString();
 	}
 
-	private String createTextArea(BuildSession session, ViewContext context)
-			throws IOException {
-		String height = context.getView().getString(
-				ComponentConfig.PROPERTITY_HEIGHT, "150");
+	// private String createTextArea(BuildSession session, ViewContext context)
+	// throws IOException {
+	// String height = context.getView().getString(
+	// ComponentConfig.PROPERTITY_HEIGHT, "150");
+	// CompositeMap model = context.getModel();
+	// CompositeMap textArea = new CompositeMap("textArea");
+	// textArea.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+	// textArea.put(ComponentConfig.PROPERTITY_ID, id + "_view");
+	// textArea.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:"
+	// + height + "px;");
+	// try {
+	// return session.buildViewAsString(model, textArea);
+	// } catch (Exception e) {
+	// throw new IOException(e.getMessage());
+	// }
+	// }
+
+	private String createTextArea(BuildSession session, ViewContext context,
+			String prefix) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<div id='");
+		sb.append(id);
+		sb.append("_wrapcontent' class='wrapcontent' contentEditable='true'>");
+		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
-		CompositeMap textArea = new CompositeMap("textArea");
-		textArea.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-		textArea.put(ComponentConfig.PROPERTITY_ID, id + "_view");
-		textArea.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:"
-				+ height + "px;");
-		try {
-			return session.buildViewAsString(model, textArea);
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
+		String content = uncertain.composite.TextParser.parse(
+				view.getString(PROPERTITY_CONTENT), model);
+		String tag_name = uncertain.composite.TextParser.parse(
+				view.getString(PROPERTITY_TAG), model);
+		String tag = getTag(tag_name, prefix);
+		String pattern = getPattern(tag_name, prefix);
+		if (null != tag_name && !tag_name.isEmpty() && content.contains(tag)) {
+			String left_wrap_content = getContent(content, pattern, "$1");
+			String tag_content = getContent(content, pattern, "$2");
+			String right_wrap_content = getContent(content, pattern, "$3");
+			sb.append(left_wrap_content.trim());
+			sb.append("<div id='");
+			sb.append(id);
+			sb.append("_tagcontent' class='tagcontent' contentEditable='true'>");
+			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			sb.append(tag_content);
+			sb.append("</div>");
+			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			sb.append(right_wrap_content.trim());
+		} else
+			sb.append(content.replaceAll(">", "&gt;").replace("<", "&lt;"));
+		sb.append("</div>");
+		return sb.toString();
 	}
 
 	private String createButton(BuildSession session, ViewContext context)
@@ -92,5 +128,41 @@ public class SandBox extends Component {
 		} catch (Exception e) {
 			throw new IOException(e.getMessage());
 		}
+	}
+
+	private String getPattern(String tag, String prefix) {
+		StringBuffer sb = new StringBuffer("(.*)(<");
+		sb.append(prefix);
+		sb.append(":");
+		sb.append(tag);
+		sb.append("[^>]*>.*</");
+		sb.append(prefix);
+		sb.append(":");
+		sb.append(tag);
+		sb.append(">)(.*)");
+		return sb.toString();
+	}
+
+	private String getTag(String tag, String prefix) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(prefix);
+		sb.append(":");
+		sb.append(tag);		
+		return sb.toString();
+	}
+
+	private String getContent(String content, String pattern, String replacement) {
+		if (null == content || "".equals(content))
+			return "";
+		return replaceAll(
+				">",
+				replaceAll("<", replaceAll(pattern, content, replacement),
+						"&lt;"), "&gt;");
+	}
+
+	private String replaceAll(String regex, CharSequence input,
+			String replacement) {
+		return Pattern.compile(regex, Pattern.DOTALL).matcher(input)
+				.replaceAll(replacement);
 	}
 }
