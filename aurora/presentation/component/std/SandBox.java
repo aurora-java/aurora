@@ -89,6 +89,10 @@ public class SandBox extends Component {
 		CompositeMap model = context.getModel();
 		String content = uncertain.composite.TextParser.parse(
 				view.getString(PROPERTITY_CONTENT), model);
+		if(null == content || content.isEmpty()){
+			sb.append("</div>");
+			return sb.toString();
+		}
 		String tag_name = uncertain.composite.TextParser.parse(
 				view.getString(PROPERTITY_TAG), model);
 		String tag = getTag(tag_name, prefix);
