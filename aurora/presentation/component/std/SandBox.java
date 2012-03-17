@@ -20,12 +20,11 @@ public class SandBox extends Component {
 
 	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
-	private static final String PROPERTITY_CONTENT = "content";
 	private static final String PROPERTITY_FILE_NAME = "filename";
 	private static final String PROPERTITY_TAG = "tag";
 
-	private static final String CDATA_END = "]]>";
-	private static final String CDATA_BEGIN = "<![CDATA[";
+	private static final String CDATA_END = "]]&gt;";
+	private static final String CDATA_BEGIN = "&lt;![CDATA[";
 	private static final String DEFAULT_INDENT = "    ";
 	private static final String LINE_SEPARATOR = System
 			.getProperty("line.separator");
@@ -201,10 +200,6 @@ public class SandBox extends Component {
 			content.append("&gt;");
 			if (need_new_line_local)
 				content.append(LINE_SEPARATOR);
-			if (elm.equals("script"))
-				content.append(childs.toString().replaceAll("<", "&lt;")
-						.replaceAll(">", "&gt;"));
-			else
 				content.append(childs);
 			if (need_new_line_local)
 				content.append(indent_str);
