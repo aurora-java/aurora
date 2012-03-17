@@ -1,10 +1,16 @@
 package aurora.presentation.component.std;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
+import org.xml.sax.SAXException;
+
+import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.util.XMLWritter;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -15,7 +21,16 @@ public class SandBox extends Component {
 	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
 	private static final String PROPERTITY_CONTENT = "content";
+	private static final String PROPERTITY_FILE_NAME = "filename";
 	private static final String PROPERTITY_TAG = "tag";
+
+	private static final String CDATA_END = "]]>";
+	private static final String CDATA_BEGIN = "<![CDATA[";
+	private static final String DEFAULT_INDENT = "    ";
+	private static final String LINE_SEPARATOR = System
+			.getProperty("line.separator");
+
+	boolean inited = false;
 
 	protected int getDefaultWidth() {
 		return 600;
@@ -36,18 +51,13 @@ public class SandBox extends Component {
 			throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
-		CompositeMap view = context.getView();
-		CompositeMap model = context.getModel();
-		String content = uncertain.composite.TextParser.parse(
-				view.getString(PROPERTITY_CONTENT), model);
-		addConfig(PROPERTITY_CONTENT, content);
 		addConfig(PROPERTITY_CONTEXT, session.getContextPath());
-		map.put("view", buildScreenTemplate(session, context));
+		map.put("view", createView(session, context));
 		map.put("btn", createButton(session, context));
 		map.put("config", getConfigString());
 	}
 
-	private String buildScreenTemplate(BuildSession session, ViewContext context)
+	private String createView(BuildSession session, ViewContext context)
 			throws IOException {
 		StringBuffer sb = new StringBuffer();
 		CompositeMap view = context.getView();
@@ -56,66 +66,44 @@ public class SandBox extends Component {
 				.append(prefix).append("=\"").append(view.getNamespaceURI())
 				.append("\"&gt;").append("\n&lt;").append(prefix)
 				.append(":view").append("&gt;")
-				.append(createTextArea(session, context, prefix))
-				.append("&lt;/").append(prefix).append(":view&gt;\n")
-				.append("&lt;/").append(prefix).append(":screen&gt;");
+				.append(createTextArea(session, context)).append("&lt;/")
+				.append(prefix).append(":view&gt;\n").append("&lt;/")
+				.append(prefix).append(":screen&gt;");
 		return sb.toString();
+
 	}
 
-	// private String createTextArea(BuildSession session, ViewContext context)
-	// throws IOException {
-	// String height = context.getView().getString(
-	// ComponentConfig.PROPERTITY_HEIGHT, "150");
-	// CompositeMap model = context.getModel();
-	// CompositeMap textArea = new CompositeMap("textArea");
-	// textArea.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-	// textArea.put(ComponentConfig.PROPERTITY_ID, id + "_view");
-	// textArea.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:"
-	// + height + "px;");
-	// try {
-	// return session.buildViewAsString(model, textArea);
-	// } catch (Exception e) {
-	// throw new IOException(e.getMessage());
-	// }
-	// }
-
-	private String createTextArea(BuildSession session, ViewContext context,
-			String prefix) {
+	private String createTextArea(BuildSession session, ViewContext context)
+			throws IOException {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<div id='");
 		sb.append(id);
 		sb.append("_wrapcontent' class='wrapcontent' contentEditable='true'>");
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
-		String content = uncertain.composite.TextParser.parse(
-				view.getString(PROPERTITY_CONTENT), model);
-		if(null == content || content.isEmpty()){
+		String prefix = view.getPrefix();
+		String file_name = uncertain.composite.TextParser.parse(
+				view.getString(PROPERTITY_FILE_NAME), model);
+		File file = new File(file_name);
+		if (!file.exists()) {
 			sb.append("</div>");
 			return sb.toString();
 		}
 		String tag_name = uncertain.composite.TextParser.parse(
 				view.getString(PROPERTITY_TAG), model);
-		String tag = getTag(tag_name, prefix);
-		String pattern = getPattern(tag_name, prefix);
-		String defaultPattern = getDefaultPattern(tag_name, prefix);
-		if (null != tag_name && !tag_name.isEmpty() && content.contains(tag)) {
-			String left_wrap_content = getContent(
-					getContent(content, defaultPattern, "$1"), pattern, "$1");
-			String tag_content = getContent(
-					getContent(content, defaultPattern, "$2"), pattern, "$2");
-			String right_wrap_content = getContent(
-					getContent(content, defaultPattern, "$3"), pattern, "$3");
-			sb.append(parseContent(left_wrap_content.trim()));
-			sb.append("<div id='");
-			sb.append(id);
-			sb.append("_tagcontent' class='tagcontent' contentEditable='true'>");
-			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			sb.append(parseContent(tag_content));
-			sb.append("</div>");
-			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			sb.append(parseContent(right_wrap_content.trim()));
-		} else
-			sb.append(parseContent(content));
+		CompositeLoader loader = new CompositeLoader();
+		CompositeMap screenMap = null;
+		try {
+			screenMap = loader.loadByFullFilePath(file_name);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		CompositeMap view_map = screenMap.getChild("view");
+		if (view_map != null) {
+			String content = getContent(0, view_map, prefix, tag_name);
+			sb.append(content);
+		}
 		sb.append("</div>");
 		return sb.toString();
 	}
@@ -138,49 +126,98 @@ public class SandBox extends Component {
 		}
 	}
 
-	private String getPattern(String tag, String prefix) {		
-		StringBuffer sb = new StringBuffer("(.*)(<");
-		sb.append(prefix);
-		sb.append(":");
-		sb.append(tag);
-		sb.append("[^>]*/>)(.*)");		
-		return sb.toString();
+	private static void getAttributeXML(Map map, StringBuffer attribs) {
+		Iterator it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			if (value != null)
+				attribs.append(" ").append(
+						XMLWritter.getAttrib(key.toString(), value.toString()));
+		}
 	}
 
-	private String getDefaultPattern(String tag, String prefix) {
-		StringBuffer sb = new StringBuffer("(.*)(<");
-		sb.append(prefix);
-		sb.append(":");
-		sb.append(tag);
-		sb.append("[^>]*>.*</");
-		sb.append(prefix);
-		sb.append(":");
-		sb.append(tag);
-		sb.append(">)(.*)");
-		return sb.toString();
+	private void getChildXML(int level, List childs, StringBuffer buf,
+			String prefix, String tag_name) {
+		if (childs == null)
+			return;
+		Iterator it = childs.iterator();
+		while (it.hasNext()) {
+			CompositeMap map = (CompositeMap) it.next();
+			buf.append(getContent(level, map, prefix, tag_name));
+		}
 	}
 
-	private String getTag(String tag, String prefix) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(prefix);
-		sb.append(":");
-		sb.append(tag);
-		return sb.toString();
+	private String getIndentString(int level) {
+		StringBuffer pre_indent = new StringBuffer();
+		for (int i = 0; i < level; i++)
+			pre_indent.append(DEFAULT_INDENT);
+		return pre_indent.toString();
 	}
 
-	private String parseContent(String content) {
-		return content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+	private String getContent(int level, CompositeMap map, String prefix,
+			String tag_name) {
+		StringBuffer content = new StringBuffer();
+		StringBuffer attribs = new StringBuffer();
+		StringBuffer childs = new StringBuffer();
+		String indent_str = getIndentString(level - 1);
+		String namespace_uri = map.getNamespaceURI();
+		boolean mUseNewLine = true;
+		boolean need_new_line_local = true;
+		boolean need_div_close = false;
+
+		getAttributeXML(map, attribs);
+		if (map.getChilds() == null) {
+			if (map.getText() != null) {
+				need_new_line_local = false;
+				childs.append(CDATA_BEGIN).append(map.getText())
+						.append(CDATA_END);
+			}
+		} else
+			getChildXML(level + 1, map.getChilds(), childs, prefix, tag_name);
+		if (level == 0) {
+			content.append(childs);
+			return content.toString();
+		}
+		String elm = map.getName();
+		if (namespace_uri != null)
+			elm = prefix + ":" + elm;
+		if (map.getName().equals(tag_name)) {
+			content.append("<div");
+			if (!inited) {
+				content.append(" id='");
+				content.append(id);
+				content.append("_tagcontent'");
+			}
+			content.append(" class='tagcontent' contentEditable='true'>");
+			need_div_close = true;
+			mUseNewLine = false;
+			inited = true;
+		}
+		content.append(indent_str).append("&lt;").append(elm);
+		content.append(attribs);
+		if (childs.length() > 0) {
+			content.append("&gt;");
+			if (need_new_line_local)
+				content.append(LINE_SEPARATOR);
+			if (elm.equals("script"))
+				content.append(childs.toString().replaceAll("<", "&lt;")
+						.replaceAll(">", "&gt;"));
+			else
+				content.append(childs);
+			if (need_new_line_local)
+				content.append(indent_str);
+			content.append("&lt;/");
+			content.append(elm);
+			content.append("&gt;");
+		} else
+			content.append("/&gt;");
+		if (need_div_close)
+			content.append("</div>");
+		if (mUseNewLine)
+			content.append(LINE_SEPARATOR);
+		return content.toString();
 	}
 
-	private String getContent(String content, String pattern, String replacement) {
-		if (null == content || "".equals(content))
-			return "";
-		return replaceAll(pattern, content, replacement);
-	}
-
-	private String replaceAll(String regex, CharSequence input,
-			String replacement) {
-		return Pattern.compile(regex, Pattern.DOTALL).matcher(input)
-				.replaceAll(replacement);
-	}
 }
