@@ -189,7 +189,7 @@ public class SandBox extends Component {
 				content.append(id);
 				content.append("_tagcontent'");
 			}
-			content.append(" class='tagcontent' contentEditable='true'>");
+			content.append(" class='tagcontent'>");
 			need_div_close = true;
 			mUseNewLine = false;
 			inited = true;
