@@ -17,6 +17,10 @@ import aurora.ide.api.statistics.model.ProjectObject;
 import aurora.ide.api.statistics.model.StatisticsProject;
 import aurora.ide.api.statistics.model.Tag;
 
+/**
+ * process and save the statistical data
+ * 
+ * */
 public class Statistician implements IStatisticsReporter {
 
 	private StatisticsProject project;
@@ -109,6 +113,7 @@ public class Statistician implements IStatisticsReporter {
 		this.poList = poList;
 	}
 
+	// Iteration CompositeMap
 	public StatisticsResult doStatistic() {
 		int i = 0;
 		for (ProjectObject po : this.poList) {
