@@ -267,6 +267,7 @@ public class Chart extends Component {
 		String theme = view.getString(PROPERTITY_THEME.toLowerCase());
 		if(theme==null)theme = "grid";
 		
+		addJavaScript(session, context, "chart/Animate-min.js");
 		addJavaScript(session, context, "chart/Adapter-min.js");
 		addJavaScript(session, context, "chart/Chart-min.js");
 		addJavaScript(session, context, "chart/themes/"+theme+".js");
