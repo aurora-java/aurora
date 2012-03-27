@@ -88,6 +88,7 @@ public class BuildSession {
     String labelSeparator;
     String radioSeparator;
     ILookupCodeProvider lookupProvider;
+    int defaultPageSize;
 
     String language;
 
@@ -640,6 +641,14 @@ public class BuildSession {
     
     public void setRadioSeparator(String radioSeparator) {
     	this.radioSeparator = radioSeparator;
+    }
+    
+    public int getDefaultPageSize(){
+    	return defaultPageSize;
+    }
+    
+    public void setDefaultPageSize(int size){
+    	this.defaultPageSize = size;
     }
 
 }

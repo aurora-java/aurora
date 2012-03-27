@@ -268,8 +268,8 @@ public class DataSet extends Component {
 		}else{
 			addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
 		}
-		
-		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(dsc.getPageSize()));
+		int page_size = session.getDefaultPageSize() < 0 ? dsc.getPageSize() : session.getDefaultPageSize();
+		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(page_size));
 		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
 		if(dsc.getSortType() !=null) addConfig(DataSetConfig.PROPERTITY_SORT_TYPE, dsc.getSortType());
 		
