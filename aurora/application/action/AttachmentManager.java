@@ -321,7 +321,7 @@ public class AttachmentManager extends AbstractEntry{
 	}
 
 	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
-		Connection nativeConn=null;
+		Connection nativeConn=conn;
 		if(conn instanceof C3P0ProxyConnection){
         	C3P0NativeJdbcExtractor nativeJdbcExtractor=new C3P0NativeJdbcExtractor();
         	try {
