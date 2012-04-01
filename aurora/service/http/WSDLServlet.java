@@ -81,17 +81,11 @@ public class WSDLServlet extends HttpServlet {
 		} else {
 			wsdl = new WSDLGenerator(bm, fullUrl, operation_name);
 		}
+		response.setContentType("text/plain;charset=UTF-8");// 设置响应的MIME类型。
 		PrintWriter out = response.getWriter();
-		response.setContentType("text/html;charset=UTF-8");// 设置响应的MIME类型。
 		try {
-			out.println("<HTML>");
-			out.println("<BODY>");
-			out.println("<XMP>");
 			String content = XMLOutputter.defaultInstance().toXML(wsdl.run(), true);
 			out.print(content);
-			out.println("</XMP>");
-			out.println("</BODY>");
-			out.println("</HTML>");
 			out.flush();
 		} finally {
 			if (out != null) {
