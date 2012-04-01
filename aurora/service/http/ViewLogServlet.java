@@ -2,8 +2,9 @@ package aurora.service.http;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
@@ -13,8 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uncertain.core.DirectoryConfig;
 import uncertain.core.UncertainEngine;
-import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.features.ServiceLogging;
 
@@ -25,6 +26,9 @@ public class ViewLogServlet extends HttpServlet {
 	private static final long serialVersionUID = 9084871702386808386L;
 	
 	String logPath;
+	
+	DirectoryConfig mDirConfig;
+	IObjectRegistry reg;
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		ServletContext  context = config.getServletContext();
@@ -32,15 +36,12 @@ public class ViewLogServlet extends HttpServlet {
 		if (uncertainEngine == null)
 			throw new ServletException("Uncertain engine not initialized");
 
-		// get global service config
-		IObjectRegistry reg = uncertainEngine.getObjectRegistry();
+		reg = uncertainEngine.getObjectRegistry();
 		if (reg == null)
 			throw new ServletException("IObjectRegistry not initialized");
-		ServiceLogging serviceLogging = (ServiceLogging)reg.getInstanceOfType(ServiceLogging.class);
-		if(serviceLogging == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ServiceLogging.class, "aurora.service.http.ViewLogServlet");
-		logPath=serviceLogging.getLogPath();
-		
+
+		 mDirConfig = uncertainEngine.getDirectoryConfig();
+		logPath = getLogPath();
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
@@ -56,34 +57,39 @@ public class ViewLogServlet extends HttpServlet {
 		if(!logFile.getCanonicalPath().startsWith(logBasePaht.getCanonicalPath())){
 			return;
 		}
+		response.setContentType("text/plain;charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		response.setContentType("text/html;charset=UTF-8");// 设置响应的MIME类型。
-		out.println("<HTML>");
-		out.println("<BODY>");
 		File f = new File(fileName);
-		BufferedReader bufferin = null;
+		BufferedReader bufferedReader = null;
 		try {
-			FileReader in = new FileReader(f);
-			bufferin = new BufferedReader(in);
-			String str = null;
-			while ((str = bufferin.readLine()) != null) {
-				out.print("<BR>" + str);
+			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+			String line = null;
+			while ((line=bufferedReader.readLine())!= null) {
+				out.println(line);
 			}
-			bufferin.close();
-			in.close();
-			out.println("</BODY>");
-			out.println("</HTML>");
+			
 		}finally{
-			if(bufferin != null){
+			if(bufferedReader != null){
 				try {
-					bufferin.close();
+					bufferedReader.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			if(out != null){
+				out.flush();
 				out.close();
 			}
 		}
 	}
+    public String getLogPath() {
+    	String path = null;
+		ServiceLogging serviceLogging = (ServiceLogging)reg.getInstanceOfType(ServiceLogging.class);
+		if(serviceLogging != null)
+			path = serviceLogging.getLogPath();
+        if(path==null)
+            return mDirConfig.getLogDirectory();
+        else
+            return mDirConfig.translateRealPath(path);
+    }
 }
