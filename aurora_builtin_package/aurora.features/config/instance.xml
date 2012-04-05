@@ -61,6 +61,10 @@
 				<u:type typeName="aurora.i18n.IMessageProvider" />
 			</u:implement-types>
 		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="multi-language-description.config" >
+			<u:description>多语言实现</u:description>
+		</u:configurable-instance>
 
 		<u:configurable-instance configFile="request-record.config" >
 			<u:description>记录请求信息及异常信息到数据库</u:description>
@@ -111,6 +115,5 @@
 				<u:type typeName="aurora.application.features.ILookupCodeProvider" />
 			</u:implement-types>
 		</u:configurable-instance>		
-		
 	</u:instances>
 </u:instance-config>
