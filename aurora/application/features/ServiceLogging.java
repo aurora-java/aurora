@@ -11,6 +11,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.core.DirectoryConfig;
 import uncertain.core.IGlobalInstance;
+import uncertain.core.ILifeCycle;
 import uncertain.core.UncertainEngine;
 import uncertain.event.IContextListener;
 import uncertain.event.RuntimeContext;
@@ -30,7 +31,7 @@ import aurora.application.util.LoggingConfig;
 import aurora.service.ServiceInstance;
 
 public class ServiceLogging extends LoggerProvider implements 
-    IGlobalInstance, IContextListener, IConfigurable 
+    IGlobalInstance, IContextListener, IConfigurable,ILifeCycle
 {
     
     private static final String SERVICE_LOGGING_FILE = "SERVICE_LOGGING_FILE";
@@ -238,6 +239,16 @@ public class ServiceLogging extends LoggerProvider implements
         else
             return mDirConfig.translateRealPath(path);
     }
+
+	@Override
+	public boolean startup() {
+		onInitialize();
+		return true;
+	}
+
+	@Override
+	public void shutdown() {
+	}
     
     
     
