@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+
+		<u:configurable-instance configFile="bm-access-cache.config" >
+			<u:description>权限控制</u:description>
+		<u:required-instances>
+			<u:type typeName="uncertain.cache.INamedCacheFactory" />
+		</u:required-instances>
+		</u:configurable-instance>
+		<u:configurable-instance configFile="multi-language-description-cache.config" >
+			<u:description>多语言</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>	
+		</u:configurable-instance>
+		<u:configurable-instance configFile="screen-access-cache.config" >
+			<u:description>资源配置</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>	
+		</u:configurable-instance>	
+		<u:configurable-instance configFile="service-lookup-prompt-cache.config" >
+			<u:description>值列表</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>	
+		</u:configurable-instance>
+		<u:configurable-instance configFile="service-lookup-list-cache.config" >
+			<u:description>值列表描述</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>	
+		</u:configurable-instance>
+		<u:configurable-instance configFile="service-prompt-cache.config" >
+			<u:description>国际化</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>	
+		</u:configurable-instance>
+	</u:instances>
+</u:instance-config>

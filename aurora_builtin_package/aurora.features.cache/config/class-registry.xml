@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+	<package-mapping packageName="aurora.application.features.msg"/>
+	<package-mapping packageName="aurora.application.features.cache"/>
+	<class-mapping className="aurora.database.features.CacheBasedMultiLanguageStorage" elementName="multi-language-storage" nameSpace="aurora.database.features"/>
+</class-registry>
