@@ -149,7 +149,7 @@ public class JSONServiceInterpreter {
         out.println("{ \"success\":false ");
         CompositeMap error = context.getError();
         if (error != null) {
-            out.println(",error:");
+            out.println(",\"error\":");
             out.println(JSONAdaptor.toJSONObject(error).toString());
         }
         out.println("} ");
