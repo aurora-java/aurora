@@ -5,8 +5,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
-import javax.jms.TextMessage;
-
 import uncertain.composite.CompositeMap;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
@@ -91,7 +89,7 @@ public class DefaultMessageHandler extends AbstractLocatableObject implements
 
 			try {
 				logger.log(Level.CONFIG, "receive message text:{0}",
-						new Object[] { ((TextMessage) message).getText() });
+						new Object[] { message.getText() });
 				logger.log(Level.CONFIG, "load procedure:{0}",
 						new Object[] { procedure });
 				Procedure proc = null;

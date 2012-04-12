@@ -1,7 +1,5 @@
 package aurora.application.features.msg;
 
-import javax.jms.JMSException;
-
 import uncertain.composite.CompositeMap;
 
 public class Message implements IMessage {
@@ -17,11 +15,11 @@ public class Message implements IMessage {
 
 
 	@Override
-	public String getText() throws JMSException {
+	public String getText() throws Exception {
 		return text;
 	}
 
-	public void setText(String text) throws JMSException {
+	public void setText(String text) {
 		this.text = text;
 	}
 
