@@ -17,6 +17,8 @@ import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import aurora.database.DatabaseConstant;
 import aurora.database.service.SqlServiceContext;
+import aurora.events.E_TransactionCommit;
+import aurora.events.E_TransactionRollBack;
 import aurora.service.IService;
 
 public class UserTransactionImpl implements UserTransaction{
@@ -50,6 +52,7 @@ public class UserTransactionImpl implements UserTransaction{
 	            logger.severe("Error when commit connection:"+ex.getMessage());
 	        }	        
 	    }
+	    context.fireEvent(E_TransactionCommit.EVENT_NAME);
 	}
 	
 	public void rollback() throws IllegalStateException, SecurityException,
@@ -66,6 +69,7 @@ public class UserTransactionImpl implements UserTransaction{
                 logger.severe("Error when rollback connection:"+ex.getMessage());
             }           
         }
+        context.fireEvent(E_TransactionRollBack.EVENT_NAME);
 	}
 	public int getStatus() throws SystemException {
 		return 0;
