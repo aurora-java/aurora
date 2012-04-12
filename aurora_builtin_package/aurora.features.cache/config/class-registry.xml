@@ -2,5 +2,5 @@
 <class-registry>
 	<package-mapping packageName="aurora.application.features.msg"/>
 	<package-mapping packageName="aurora.application.features.cache"/>
-	<class-mapping className="aurora.database.features.CacheBasedMultiLanguageStorage" elementName="multi-language-storage" nameSpace="aurora.database.features"/>
+	<!--  <class-mapping className="aurora.database.features.CacheBasedMultiLanguageStorage" elementName="multi-language-storage" nameSpace="aurora.database.features"/>-->
 </class-registry>
