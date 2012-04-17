@@ -1,8 +1,10 @@
 package aurora.database.features;
 
 import uncertain.composite.CompositeMap;
+import uncertain.event.RuntimeContext;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.features.msg.IMessageDispatcher;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.Message;
 import aurora.bm.BusinessModel;
@@ -37,6 +39,10 @@ public class BmDmlEvent {
         }
         String text =baseTable.toLowerCase()+SERPRATOR_CHAR+bmsContext.getOperation().toLowerCase();
         Message message = new Message(text,properties);
-        messageStub.send(TOPIC,message,bmsContext.getObjectContext());
+//        messageStub.send(TOPIC,message,bmsContext.getObjectContext());
+        IMessageDispatcher messageDispatcher = (IMessageDispatcher)RuntimeContext.getInstance(bmsContext.getObjectContext()).getInstanceOfType(IMessageDispatcher.class);
+    	if(messageDispatcher == null)
+    		throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageDispatcher.class, this.getClass().getCanonicalName());
+    	messageDispatcher.send(TOPIC,message,bmsContext.getObjectContext());
     }
 }
