@@ -43,7 +43,7 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 	private String event;
 	protected String reloadBM;
 	protected String reloadProc;
-	protected String group_by_fields;
+	protected String groupByFields;
 	
 	protected ICacheProvider provider;
 	protected IDatabaseServiceFactory dsFactory;
@@ -128,10 +128,10 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 			CompositeMap data = queryBM(reloadBM,message.getProperties());
 			if(data == null)
 				return;
-			if(group_by_fields != null){
+			if(groupByFields != null){
 				CompositeMap config = new CompositeMap();
 				CompositeMap level1 = new CompositeMap();
-				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, group_by_fields);
+				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, groupByFields);
 				level1.put(GroupConfig.KEY_RECORD_NAME, "level1");
 				config.addChild(level1);
 				data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
@@ -325,11 +325,11 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 		this.operation = operation;
 	}
 
-	public String getGroup_by_fields() {
-		return group_by_fields;
+	public String getGroupByFields() {
+		return groupByFields;
 	}
 
-	public void setGroup_by_fields(String group_by_fields) {
-		this.group_by_fields = group_by_fields;
+	public void setGroupByFields(String groupByFields) {
+		this.groupByFields = groupByFields;
 	}
 }

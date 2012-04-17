@@ -48,7 +48,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	protected String type = "value";
 	protected String key = "${@key}";
 	protected boolean isConcurrent = true;
-	protected String group_by_fields;
+	protected String groupByFields;
 	protected String cacheDesc;
 	protected String reloadTopic = "dml_event";
 	protected String reloadMessage;
@@ -158,10 +158,10 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			CompositeMap data = queryBM(loadBM,context);
 			if(data == null)
 				return;
-			if(group_by_fields != null){
+			if(groupByFields != null){
 				CompositeMap config = new CompositeMap();
 				CompositeMap level1 = new CompositeMap();
-				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, group_by_fields);
+				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, groupByFields);
 				level1.put(GroupConfig.KEY_RECORD_NAME, "level1");
 				config.addChild(level1);
 				data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
@@ -437,12 +437,12 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		return cache;
 	}
 
-	public String getGroup_by_fields() {
-		return group_by_fields;
+	public String getGroupByFields() {
+		return groupByFields;
 	}
 
-	public void setGroup_by_fields(String group_by_fields) {
-		this.group_by_fields = group_by_fields;
+	public void setGroupByFields(String groupByFields) {
+		this.groupByFields = groupByFields;
 	}
 
 	@Override
