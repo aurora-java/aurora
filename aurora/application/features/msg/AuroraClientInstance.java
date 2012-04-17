@@ -45,12 +45,13 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	private IObjectRegistry registry;
 	public ILogger logger;
 	private Map<String,IMessageHandler> handlersMap = new HashMap<String,IMessageHandler>();
-	private Map<String,IMessageDispatcher> dispatchersMap = new HashMap<String,IMessageDispatcher>();
+	private IMessageDispatcher messageDispatcher;
 	private Map<String,IConsumer> consumerMap;
 	private boolean inited = false;
 	
 	public AuroraClientInstance(IObjectRegistry registry) {
 		this.registry = registry;
+		messageDispatcher = new MessageDispatcher(registry);
 	}
 	
 	public boolean startup() {
@@ -118,14 +119,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	public IMessageDispatcher[] getMessageDispatchers() {
 		return mMessageDispatchers;
 	}
-	public void setMessageDispatchers(IMessageDispatcher[] messageDispatchers) {
-		this.mMessageDispatchers = messageDispatchers;
-		if(messageDispatchers != null){
-			for(int i= 0;i<messageDispatchers.length;i++){
-				dispatchersMap.put(messageDispatchers[i].getTopic(), messageDispatchers[i]);
-			}
-		}
-	}
 	public IConsumer[] getConsumers() {
 		return consumers;
 	}
@@ -159,14 +152,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 		}
 	}
 
-	public IMessageDispatcher getDispatcher(String topic) {
-		return dispatchersMap.get(topic);
-	}
-
-	public void send(String topic,IMessage message, CompositeMap context) throws Exception {
-		IMessageDispatcher sender = getDispatcher(topic);
-		if(sender == null)
-			throw new IllegalArgumentException("Don't not define the MessageDispatcher for topic:"+topic);
-		sender.send(message, context);
+	public IMessageDispatcher getDispatcher() {
+		return messageDispatcher;
 	}
 }

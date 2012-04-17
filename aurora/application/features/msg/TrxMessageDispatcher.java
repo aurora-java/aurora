@@ -1,22 +1,16 @@
 package aurora.application.features.msg;
 
-import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import uncertain.composite.CompositeMap;
-import uncertain.core.ILifeCycle;
-import uncertain.event.Configuration;
 import uncertain.event.EventModel;
-import uncertain.event.IParticipantManager;
+import uncertain.event.RuntimeContext;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import aurora.events.E_TransactionCommit;
 import aurora.events.E_TransactionRollBack;
-import aurora.service.IService;
-import aurora.service.ServiceContext;
-import aurora.service.ServiceInstance;
-import aurora.service.http.AbstractFacadeServlet;
+import aurora.service.ServiceThreadLocal;
 
 public class TrxMessageDispatcher implements E_TransactionCommit,E_TransactionRollBack,IMessageDispatcher{
 	
@@ -24,84 +18,78 @@ public class TrxMessageDispatcher implements E_TransactionCommit,E_TransactionRo
 	
 	protected String topic;
 	
-	protected IMessageDispatcher dispatcher;
-	
-	private ConcurrentHashMap<IService, Queue<IMessage>> serviceMap = new ConcurrentHashMap<IService, Queue<IMessage>>();
+	private Queue<MessageEntity> msgQueue = new ConcurrentLinkedQueue<MessageEntity>();
 	
 	public TrxMessageDispatcher(IObjectRegistry registry) {
 		this.mRegistry = registry;
-		this.dispatcher = createMessageDispatcher();
-		startup();
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		RuntimeContext.getInstance(context).setInstanceOfType(IMessageDispatcher.class, this);
 	}
 	protected IMessageDispatcher createMessageDispatcher(){
-		return new MessageDispatcher(mRegistry);
+		 IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
+	        if(messageStub == null)
+	        	throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageStub.class, this.getClass().getCanonicalName());
+	     return messageStub.getDispatcher();
 	}
 
-	public int onTransactionRollBack(IService service) {
-		Queue<IMessage> list = serviceMap.get(service);
-		if(list == null || list.isEmpty())
-			return EventModel.HANDLE_NORMAL;
-		else{
-			serviceMap.remove(service);
-		}
+	public int onTransactionRollBack() {
+		msgQueue.clear();
 		return EventModel.HANDLE_NORMAL;
 		
 	}
 
-	public int onTransactionCommit(IService service) {
-		Queue<IMessage> list = serviceMap.get(service);
-		if (list == null || list.isEmpty())
+	public int onTransactionCommit() {
+		if (msgQueue == null || msgQueue.isEmpty())
 			return EventModel.HANDLE_NORMAL;
-		for (IMessage mo : list) {
+		IMessageDispatcher dispatcher = createMessageDispatcher();
+		for (MessageEntity me : msgQueue) {
 			try {
-				CompositeMap context = new CompositeMap();
-				ServiceContext serviceContext = service.getServiceContext();
-				if (serviceContext != null) {
-					context = serviceContext.getObjectContext();
-				}
-				dispatcher.setTopic(topic);
-				dispatcher.send(mo, context);
+				dispatcher.send(me.getTopic(),me.getMessage(), me.getContext());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
-		serviceMap.remove(service);
+		msgQueue.clear();
 		return EventModel.HANDLE_NORMAL;
 	}
-	public boolean startup() {
-		IParticipantManager pm = (IParticipantManager)mRegistry.getInstanceOfType(IParticipantManager.class);
-		if(pm!=null){
-			List commitListenerList = pm.getParticipantList(AbstractFacadeServlet.TRANSATION_COMMIT_CONFIG);
-			commitListenerList.add(this);
-			List rollbakcListenerList = pm.getParticipantList(AbstractFacadeServlet.TRANSATION_ROLLBACK_CONFIG);
-			rollbakcListenerList.add(this);
+
+
+	@Override
+	public void send(String topic,IMessage message, CompositeMap context) throws Exception {
+		MessageEntity me = new MessageEntity(topic, message, context);
+		msgQueue.add(me);
+	}
+	class MessageEntity {
+		String topic;
+		IMessage message;
+		CompositeMap context;
+		
+		public MessageEntity(String topic, IMessage message, CompositeMap context) {
+			super();
+			this.topic = topic;
+			this.message = message;
+			this.context = context;
 		}
-		return true;
-	}
-	public void shutdown() {
-		if (serviceMap != null)
-			serviceMap.clear();
-	}
-	@Override
-	public String getTopic() {
-		return topic;
-	}
-	@Override
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
-	@Override
-	public void send(IMessage message, CompositeMap context) throws Exception {
-		if(context == null)
-			throw new IllegalArgumentException("Context can't be null");
-		IService service = ServiceInstance.getInstance(context);
-		if(service == null)
-			throw new IllegalArgumentException("Can't get Service from context:"+context.toXML());
-		Queue<IMessage> queue = serviceMap.get(service);
-		if(queue == null){
-			queue = new ConcurrentLinkedQueue<IMessage>();
-			serviceMap.put(service, queue);
+		
+		public String getTopic() {
+			return topic;
 		}
-		queue.add(message);
+		public void setTopic(String topic) {
+			this.topic = topic;
+		}
+		public IMessage getMessage() {
+			return message;
+		}
+		public void setMessage(IMessage message) {
+			this.message = message;
+		}
+		public CompositeMap getContext() {
+			return context;
+		}
+		public void setContext(CompositeMap context) {
+			this.context = context;
+		}
+		
 	}
+	
 }

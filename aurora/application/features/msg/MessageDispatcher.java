@@ -15,17 +15,7 @@ public class MessageDispatcher implements IMessageDispatcher{
 	}
 
 	@Override
-	public String getTopic() {
-		return topic;
-	}
-
-	@Override
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
-
-	@Override
-	public void send(IMessage message, CompositeMap context) throws Exception {
+	public void send(String topic,IMessage message, CompositeMap context) throws Exception {
 		 IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
         if(messageStub == null)
         	throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageStub.class, this.getClass().getCanonicalName());

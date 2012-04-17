@@ -3,6 +3,7 @@ package aurora.application.features.msg;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
+import uncertain.event.RuntimeContext;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
@@ -14,6 +15,7 @@ public class MessageCreator extends AbstractEntry{
 	
 	private String message;
 	private String topic;
+	private boolean trxType= false;
 	private Property[] properties;
 	
 	private IObjectRegistry mRegistry;
@@ -37,11 +39,27 @@ public class MessageCreator extends AbstractEntry{
         		p.putToMap(context,pps,true);
         	}
         }
+        
+        /*IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
+        if(messageStub == null)
+        	throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageStub.class, this.getClass().getCanonicalName());
+        Message msg = new Message(parsedMessage,pps);
+        messageStub.send(parsedTopic, msg, context);*/
+        
         IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
         if(messageStub == null)
         	throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageStub.class, this.getClass().getCanonicalName());
         Message msg = new Message(parsedMessage,pps);
-        messageStub.send(parsedTopic, msg, context);
+        if(trxType){
+        	IMessageDispatcher messageDispatcher = (IMessageDispatcher)RuntimeContext.getInstance(context).getInstanceOfType(IMessageDispatcher.class);
+        	if(messageDispatcher == null)
+        		throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageDispatcher.class, this.getClass().getCanonicalName());
+        	messageDispatcher.send(parsedTopic, msg, context);
+        }else{
+        	messageStub.getDispatcher().send(parsedTopic, msg, context);
+        }
+        
+        
 	}
 
 	public Property[] getProperties() {
@@ -67,5 +85,12 @@ public class MessageCreator extends AbstractEntry{
 	public void setTopic(String topic) {
 		this.topic = topic;
 	}
-	
+
+	public boolean getTrxType() {
+		return trxType;
+	}
+
+	public void setTrxType(boolean trxType) {
+		this.trxType = trxType;
+	}
 }
