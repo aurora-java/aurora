@@ -561,6 +561,7 @@ public class Chart extends Component {
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_STEP, cfg);
+		putEvents(context, view, cfg);
 		return new JSONObject(cfg);
 	}
 	
@@ -597,6 +598,7 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTWIDTH, cfg);
+		putEvents(context, view, cfg);
 		return new JSONObject(cfg);
 	}
 	
@@ -628,7 +630,8 @@ public class Chart extends Component {
 		processFillColor(view,cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);		
+		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);	
+		putEvents(context, view, cfg);
 		return new JSONObject(cfg);
 	}
 	private JSONObject processPlotPie(CompositeMap view, ViewContext context){
@@ -660,6 +663,7 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);		
+		putEvents(context, view, cfg);
 		return new JSONObject(cfg);
 	}
 	
@@ -839,7 +843,7 @@ public class Chart extends Component {
 					putStringCfg(axi, PROPERTITY_AXIS_LINECOLOR, cfg);
 					createTitle(axi,cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_TYPE, cfg);					
-					
+					putEvents(context, view, cfg);
 					array.put(cfg);
 				}
 				if(array != null)
