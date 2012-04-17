@@ -26,8 +26,6 @@ import uncertain.proc.trace.StackTraceManager;
 import uncertain.proc.trace.TraceElement;
 import aurora.events.E_DetectProcedure;
 import aurora.events.E_ServiceFinish;
-import aurora.events.E_TransactionCommit;
-import aurora.events.E_TransactionRollBack;
 import aurora.service.IConfigurableService;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
@@ -40,8 +38,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 
 	//public static final String POST_SERVICE = "post-service";
 	public static final String PRE_SERVICE = "pre-service";
-	public static final String TRANSATION_COMMIT_CONFIG = "transaction-commit";
-	public static final String TRANSATION_ROLLBACK_CONFIG = "transaction-rollback";
 	UncertainEngine mUncertainEngine;
 	IProcedureManager mProcManager;
 	ServletConfig mConfig;
@@ -52,8 +48,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 	//Procedure mPostServiceProc;
 	
 	Configuration  mGlobalServiceConfig;
-	Configuration  mTransactionCommitConfig;
-	Configuration mTransactionRollBackConfig;
 
 	protected abstract IService createServiceInstance(
 			HttpServletRequest request, HttpServletResponse response)
@@ -184,13 +178,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 					mUncertainEngine.logException("Error when commit service "
 							+ request.getRequestURI(), e);
 				}
-				if(mTransactionCommitConfig != null){
-					try{
-						mTransactionCommitConfig.fireEvent(E_TransactionCommit.EVENT_NAME, new Object[]{svc});
-					}catch(Throwable tc){
-                        mUncertainEngine.logException("Error when fire TransactionCommit", tc);
-                    }
-				}
 			} else {
 				try {
 					trans.rollback();
@@ -198,13 +185,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 					mUncertainEngine.logException(
 							"Error when rollback service "
 									+ request.getRequestURI(), e);
-				}
-				if(mTransactionRollBackConfig != null){
-					try{
-						mTransactionRollBackConfig.fireEvent(E_TransactionRollBack.EVENT_NAME, new Object[]{svc});
-					}catch(Throwable tr){
-						mUncertainEngine.logException("Error when fire TransactionRollBack", tr);
-					}
 				}
 			}
 			
@@ -251,8 +231,6 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		IParticipantManager pm = (IParticipantManager)reg.getInstanceOfType(IParticipantManager.class);
 		if(pm!=null){
 		    mGlobalServiceConfig = pm.getParticipantsAsConfig("service");
-		    mTransactionCommitConfig = pm.getParticipantsAsConfig(TRANSATION_COMMIT_CONFIG);
-		    mTransactionRollBackConfig = pm.getParticipantsAsConfig(TRANSATION_ROLLBACK_CONFIG);
 		}
 	}
 	
