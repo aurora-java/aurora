@@ -1,38 +1,26 @@
 package aurora.i18n;
 
-import java.util.Locale;
-
 import uncertain.cache.ICache;
-import uncertain.cache.MapBasedCache;
 
 public class CacheBasedLocalizedMessageProvider implements ILocalizedMessageProvider {
 
-	private ICache cache;
 	private String lang;
-
-	public CacheBasedLocalizedMessageProvider(String lang, ICache cache) {
-		this.cache = cache;
-		this.lang = lang;
-		if (lang == null)
-			this.lang = Locale.getDefault().getLanguage();
-		if (cache == null)
-			cache = new MapBasedCache();
+	private CacheBasedMessageProvider messageProvider;
+	
+	public CacheBasedLocalizedMessageProvider(String language_code, CacheBasedMessageProvider messageProvider) {
+		this.lang = language_code;
+		this.messageProvider = messageProvider;
 	}
-	public CacheBasedLocalizedMessageProvider() {
-		lang = Locale.getDefault().getLanguage();
-		cache = new MapBasedCache();
-	}
-
 	public String getMessage(String code) {
-		return (String) cache.getValue(getKey(code));
+		return (String) messageProvider.getMessage(lang, code);
 	}
 
 	public String getMessage(String code, Object[] params) {
-		return null;
+		return messageProvider.getMessage(lang, code, params);
 	}
 
 	public void putMessage(String code, String description) {
-		cache.setValue(getKey(code), description);
+		messageProvider.setMessage(lang,code, description);
 	}
 
 	public void setLang(String lang) {
