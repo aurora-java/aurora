@@ -55,6 +55,10 @@ public class Chart extends Component {
 	private static final String PROPERTITY_LABELS_LABEL_HTML = "html";
 	private static final String PROPERTITY_LABELS_LABEL_STYLE = "style";
 	
+	private static final String PROPERTITY_EXPORTING = "exporting";
+	private static final String PROPERTITY_EXPORTING_URL = "url";
+	private static final String PROPERTITY_EXPORTING_ENABLED = "enabled";
+	
 	private static final String PROPERTITY_TITLE_TEXT = "text";
 	private static final String PROPERTITY_TITLE_X = "x";
 	private static final String PROPERTITY_TITLE_Y = "y";
@@ -298,6 +302,7 @@ public class Chart extends Component {
 		processPlotOptions(context);
 		processTooltip(context);
 		processLabels(context);
+		processExporting(context);
 		createAxis(context,PROPERTITY_AXIS_X);
 		createAxis(context,PROPERTITY_AXIS_Y);
 		
@@ -784,7 +789,18 @@ public class Chart extends Component {
 		if(array != null)
 		addConfig("labels", array);
 	}
-	
+	private void processExporting(ViewContext context){
+		Map cfg = new HashMap();
+		CompositeMap cview = context.getView();
+		CompositeMap view = cview.getChild(PROPERTITY_EXPORTING);
+
+		if(view !=null) {
+			putStringCfg(view,PROPERTITY_EXPORTING_URL,cfg);
+			putBooleanCfg(view, PROPERTITY_EXPORTING_ENABLED, cfg);
+		}
+		if(!cfg.isEmpty())
+		addConfig("exporting", new JSONObject(cfg));
+	}
 	private void createLabels(CompositeMap cview, Map map){
 		CompositeMap view = cview.getChild(PROPERTITY_AXIS_LABELS);
 		Map cfg = new HashMap();
