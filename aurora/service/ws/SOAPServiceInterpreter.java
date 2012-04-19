@@ -4,6 +4,7 @@
 package aurora.service.ws;
 
 import java.io.ByteArrayOutputStream;
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -16,7 +17,6 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.QualifiedName;
 import uncertain.composite.XMLOutputter;
 import uncertain.event.EventModel;
-import uncertain.exception.MessageFactory;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.proc.ProcedureRunner;
@@ -36,6 +36,8 @@ public class SOAPServiceInterpreter {
 			"http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
 	public static final QualifiedName BODY = new QualifiedName("soapenv",
 			"http://schemas.xmlsoap.org/soap/envelope/", "Body");
+	
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");;
 	/*
 	static {
 		MessageFactory.loadResource("resources.aurora_validation_exceptions");
@@ -47,27 +49,36 @@ public class SOAPServiceInterpreter {
 	public int preParseParameter(ServiceContext service_context)
 			throws Exception {
 		if (!isSOAPRequest(service_context)){
-		    service_context.setRequestType(HEAD_SOAP_PARAMETER);
 			return EventModel.HANDLE_NORMAL;
 		}
+		service_context.setRequestType(HEAD_SOAP_PARAMETER);
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(service_context.getObjectContext());
-		String soapContent = inputStream2String(svc.getRequest()
-				.getInputStream());
-		LoggingContext.getLogger(service_context.getObjectContext(),
-				this.getClass().getCanonicalName()).config(
-				"request:\r\n" + soapContent);
+		String soapContent = inputStream2String(svc.getRequest().getInputStream());
+		ILogger logger = LoggingContext.getLogger(service_context.getObjectContext(),this.getClass().getCanonicalName());
+		logger.config("request:"+LINE_SEPARATOR+ soapContent);
 		if (soapContent == null || "".equals(soapContent))
 			return EventModel.HANDLE_NORMAL;
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap soap = cl.loadFromString(soapContent, "UTF-8");
-		CompositeMap parameter = (CompositeMap) soap.getChild(
-				BODY.getLocalName()).getChilds().get(0);
+		CompositeMap parameter = (CompositeMap) soap.getChild(BODY.getLocalName()).getChilds().get(0);
 		service_context.setParameter(parameter);
-		LoggingContext.getLogger(service_context.getObjectContext(),
-				this.getClass().getCanonicalName()).config(
-				"context:\r\n" + service_context.getObjectContext().toXML());
+		parseAuthorization(service_context);
+		logger.config("context:"+LINE_SEPARATOR + service_context.getObjectContext().toXML());
 		return EventModel.HANDLE_NORMAL;
+	}
+	private void parseAuthorization(ServiceContext service_context){
+		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(service_context.getObjectContext());
+		String authorization = svc.getRequest().getHeader("Authorization");
+		if(authorization != null){
+			String encodeAuth = authorization.substring("Basic ".length());
+			String decode = Base64.base64Decode(encodeAuth);
+			String[] strs = decode.split(":");
+			CompositeMap record = new CompositeMap("Authorization");
+			record.put("user", strs[0]);
+			record.put("password", strs[1]);
+			service_context.getObjectContext().addChild(record);
+		}
 	}
 
 	public String inputStream2String(InputStream is) throws IOException {
@@ -128,7 +139,7 @@ public class SOAPServiceInterpreter {
 		String content = XMLOutputter.defaultInstance().toXML(body.getRoot());
 		LoggingContext.getLogger(service_context.getObjectContext(),
 				this.getClass().getCanonicalName()).config(
-				"response content:\r\n" + content);
+				"response content:"+LINE_SEPARATOR + content);
 		out.print(content);
 		out.flush();
 
@@ -146,6 +157,7 @@ public class SOAPServiceInterpreter {
 				.getContext());
 		if (!isSOAPRequest(context))
 			return;
+		context.setRequestType(HEAD_SOAP_PARAMETER);
 		// log exception
 		ILogger logger = LoggingContext.getLogger(context.getObjectContext(),
 				ServiceInstance.LOGGING_TOPIC);
