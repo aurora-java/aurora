@@ -18,11 +18,10 @@ public class CacheProviderRegistry {
 	public static final String KEY_LAST_RELOAD_DATE = "lastReloadDate";
 	public static final String KEY_PAST_TIME = "pastTime";
 	
-	private static SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
 	public static Map<String,ICacheProvider> providerMap = new HashMap<String,ICacheProvider>();
 	
 	public static CompositeMap getAllProvider(){
+		SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		CompositeMap result = new CompositeMap("result");
 		Set<Entry<String,ICacheProvider>> entrySet = providerMap.entrySet();
 		for(Entry<String,ICacheProvider> entry:entrySet){
