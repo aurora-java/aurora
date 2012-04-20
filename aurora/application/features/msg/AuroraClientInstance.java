@@ -37,7 +37,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	 * 
 	 */
 	public static final String PLUGIN = "aurora.application.features.msg";
-	private IMessageDispatcher[] mMessageDispatchers;
 	private IMessageHandler[] mMessageHandlers;
 	private IConsumer[] consumers;
 	private String url;
@@ -115,9 +114,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 		for(int i= 0;i<messageHandlers.length;i++){
 			handlersMap.put(messageHandlers[i].getName(), messageHandlers[i]);
 		}
-	}
-	public IMessageDispatcher[] getMessageDispatchers() {
-		return mMessageDispatchers;
 	}
 	public IConsumer[] getConsumers() {
 		return consumers;
