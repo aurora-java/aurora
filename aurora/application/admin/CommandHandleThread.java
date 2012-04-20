@@ -37,6 +37,8 @@ public class CommandHandleThread extends Thread {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInput));
                 PrintWriter    writer = new PrintWriter( new OutputStreamWriter(mOutput) );
                 String command = reader.readLine();
+                if(command == null)
+                	continue;
                 command = command.trim();
                 if("stop".equalsIgnoreCase(command)){
                     writer.println("Shutting down...");
