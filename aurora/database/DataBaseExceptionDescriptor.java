@@ -42,7 +42,7 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 	
 	private CompositeMap parseErrorMessage(ServiceContext context, Throwable exception) {
 		CompositeMap error = new CompositeMap(ErrorMessage.ERROR_MESSAGE);
-		String message = null;
+		String message = null,code = null;
 		try {
 			String errMsg = exception.getMessage();
 			int endIndex = errMsg.indexOf("\n");
@@ -64,7 +64,9 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 	
 				CompositeMap msg = (CompositeMap) resultMap.getChilds().get(0);
 				message = (String) msg.getObject("@MESSAGE");
+				code = (String) msg.getObject("@MESSAGE_CODE");
 				error.put(ErrorMessage.KEY_MESSAGE, message);
+				error.put(ErrorMessage.KEY_CODE, code);
 			}else{
 				error.put(ErrorMessage.KEY_MESSAGE, errMsg);				
 			}
