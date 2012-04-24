@@ -20,6 +20,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_FOR_EXPORT = "forexport";
 	public static final String PROPERTITY_EXPORT_FIELD = "exportfield";
 	public static final String PROPERTITY_EDITOR_FUNCTION = "editorfunction";
+	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	
 	
 	private static final String DEFAULT_ALIGN = "left";
@@ -114,7 +115,12 @@ public class GridColumnConfig extends ComponentConfig {
 	public void setResizable(boolean resiable){
 		putBoolean(PROPERTITY_RESIZABLE, resiable);
 	}
-	
+	public boolean isAutoAdjust(){
+		return getBoolean(PROPERTITY_AUTO_ADJUST, true);
+	}
+	public void setAutoAdjust(boolean autoAdjust){
+		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
+	}
 	public String getPrompt(){
 		return getString(PROPERTITY_PROMPT);		
 	}

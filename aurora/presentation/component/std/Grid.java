@@ -57,7 +57,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid-min.js");
+		addJavaScript(session, context, "grid/Grid.js");
 	}
 	
 	
@@ -277,8 +277,9 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))
 						column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
-						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
+						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getString(COLUMN_TYPE)==null?true:false));
 					
+						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 					
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
