@@ -62,7 +62,7 @@ public class Component {
 	}
 
 	protected Integer getComponentWidth(CompositeMap model, CompositeMap view, Map map) {
-		CompositeMap root = view.getRoot();
+		CompositeMap root = model.getRoot();
 		CompositeMap vwc = null;
 		String vws = null;
 		Integer vw = null;
@@ -90,7 +90,7 @@ public class Component {
 	}
 
 	protected Integer getComponentHeight(CompositeMap model, CompositeMap view, Map map) {
-		CompositeMap root = view.getRoot();
+		CompositeMap root = model.getRoot();
 		CompositeMap vhc = null;
 		String vhs = null;
 		Integer vh = null;
