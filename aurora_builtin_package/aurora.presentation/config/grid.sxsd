@@ -42,6 +42,7 @@
                 <ss:attribute name="footerRenderer" document="列脚注渲染\n回调函数function(data,name){return value}\n参数data是所绑定的dataset中的数据,返回值value是html字符串"/>
                 <ss:attribute name="percentWidth" document="table节点专用。列的百分比宽度,单位是(%)" type="ss:int"/>
                 <ss:attribute name="forExport" default="true" document="是否对该列进行导出" type="ss:boolean"/>
+                <ss:attribute name="autoAdjust" default="true" document="是否自动调整列宽" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:column"/>
