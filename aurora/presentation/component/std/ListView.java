@@ -67,8 +67,8 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 		String className = lc.getClassName();
 		if(className !=null){
 			defaultClass += " " + className;
-			sb.append(" class='").append(defaultClass).append("'");			
 		}
+		sb.append(" class='").append(defaultClass).append("'");			
 		String style = lc.getStyle();
 		if(style !=null){
 			sb.append(" style='").append(style).append("'");			
