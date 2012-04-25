@@ -8,7 +8,7 @@ public class ListViewColumnConfig extends ComponentConfig {
 	
 	private static final String TAG_NAME = "column";
 	
-	private static final String PROPERTITY_HEAD_ALIGN = "headAlign";
+	private static final String PROPERTITY_HEAD_ALIGN = "headalign";
 	
 	private static final String PROPERTITY_ALIGN = "align";
 	

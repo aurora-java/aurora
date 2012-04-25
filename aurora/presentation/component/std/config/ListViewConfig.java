@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class ListViewConfig extends ComponentConfig {
 	
-	public static final String TAG_NAME = "list";
+	public static final String TAG_NAME = "listView";
 	
 	private static final String PROPERTITY_COLUMNS = "columns";
 	private static final String PROPERTITY_DATA_MODEL = "datamodel";
