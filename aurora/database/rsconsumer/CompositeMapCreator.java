@@ -53,7 +53,7 @@ public class CompositeMapCreator extends AbstractLocatableObject implements IRes
 
     public void loadField(String name, Object value) {
         String newName = (String)attributeMappings.get(name);
-        if(newName == null);
+        if(newName == null)
             newName = name;
         currentRecord.put(newName, value);
         if(attribAsCdata&&attribAsCdatas!=null){
