@@ -172,12 +172,17 @@ public class SOAPServiceInterpreter {
 		PrintWriter out = response.getWriter();
 		out.append("<?xml version='1.0' encoding='UTF-8'?>");
 		CompositeMap body = createSOAPBody();
-		CompositeMap result = new CompositeMap();
-		result.put("success", "false");
-		body.addChild(result);
-		CompositeMap error = context.getError();
-		if (error != null) {
-			result.addChild(error);
+		CompositeMap soap_error = context.getObjectContext().getChild("result");
+		if(soap_error == null){
+			CompositeMap result = new CompositeMap("result");
+			result.put("success", "false");
+			body.addChild(result);
+			CompositeMap error = context.getError();
+			if (error != null) {
+				result.addChild(error);
+			}
+		}else{
+			body.addChild(soap_error);
 		}
 		out.println(body.getRoot().toXML());
 		out.flush();
