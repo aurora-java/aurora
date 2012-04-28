@@ -19,6 +19,7 @@ public class CacheBasedMultiLanguageDisplay {
 	private ICacheBasedMultiLanguageProvider cacheProvider;
 	private CompositeMap dbProperties;
 
+	protected  boolean hasMlFields = false;
 	public CacheBasedMultiLanguageDisplay(IObjectRegistry objectRegistry, IDatabaseFactory databaseFactory) throws IOException {
 		cacheProvider = (ICacheBasedMultiLanguageProvider) objectRegistry.getInstanceOfType(ICacheBasedMultiLanguageProvider.class);
 		if (cacheProvider == null) 
@@ -44,6 +45,7 @@ public class CacheBasedMultiLanguageDisplay {
 				refield = field;
 			}
 			if (refield.getMultiLanguage()) {
+				hasMlFields  = true;
 				multiLanguageDescField = refield.getMultiLanguageDescField();
 				for (int j = 0; j < l; j++) {
 					Field f = fields[j];

@@ -45,7 +45,6 @@ public class CacheBasedMultiLanguageStorage extends CacheBasedMultiLanguageDispl
     String mlTable = null;
     CompositeMap dbProperties = null;
     ILogger mLogger = null;
-    boolean hasMlFields = false;
 
     public CacheBasedMultiLanguageStorage(IObjectRegistry objectRegistry,IModelFactory modelFactory,
             IDatabaseFactory databaseFactory) throws IOException {
