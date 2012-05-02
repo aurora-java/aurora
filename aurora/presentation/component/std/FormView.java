@@ -120,7 +120,6 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 		int i=0;
 		while(it.hasNext()){
 			CompositeMap section = (CompositeMap)it.next();
-			System.out.println(section.toXML());
 			sb.append("<TR><TD>");
 			sb.append("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
 			if(i==0)sb.append(" class='top'");
