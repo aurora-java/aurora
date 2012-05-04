@@ -92,7 +92,7 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 	}
 
 	@Override
-	public void notice(IMessage message) throws Exception {
+	public void onMessage(IMessage message){
 		provider.writeLock();
 		try{
 			if(IEventHandler.OPERATIONS.delete.name().equals(operation)){
@@ -104,6 +104,8 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 			}else if(IEventHandler.OPERATIONS.reload.name().equals(operation)){
 				reload(message);
 			}
+		}catch(Exception e){
+			logger.log(Level.SEVERE, "handle message exception", e);
 		}finally{
 			provider.writeUnLock();
 		}

@@ -1,22 +1,33 @@
 package aurora.application.features.cache;
 
+import java.util.logging.Level;
+
 import aurora.application.features.msg.IConsumer;
 import aurora.application.features.msg.IMessage;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.INoticerConsumer;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
 
-public class FullReloadHandler extends AbstractLocatableObject implements IEventHandler{
+public class FullReloadHandler extends AbstractLocatableObject implements IEventHandler {
 
 	private String topic;
 	private String event;
 	private ICacheProvider provider;
+
+	private ILogger logger;
+
 	@Override
-	public void notice(IMessage message) throws Exception {
-		provider.reload();
-		
+	public void onMessage(IMessage message) {
+		try {
+			provider.reload();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "reload failed!", e);
+		}
+
 	}
 
 	public String getEvent() {
@@ -35,9 +46,9 @@ public class FullReloadHandler extends AbstractLocatableObject implements IEvent
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
 		IConsumer consumer = stub.getConsumer(topic);
 		if (!(consumer instanceof INoticerConsumer))
-			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class,
-					IConsumer.class);
+			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
 		((INoticerConsumer) consumer).addListener(event, this);
+		logger = LoggingContext.getLogger(this.getClass().getPackage().getName(), registry);
 	}
 
 	@Override

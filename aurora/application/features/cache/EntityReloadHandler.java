@@ -1,5 +1,7 @@
 package aurora.application.features.cache;
 
+import java.util.logging.Level;
+
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
@@ -70,7 +72,7 @@ public class EntityReloadHandler extends RecordReloadHandler{
 		this.operations = operations;
 	}
 	@Override
-	public void notice(IMessage message) throws Exception {
+	public void onMessage(IMessage message){
 		provider.writeLock();
 		try{
 			if(message == null)
@@ -89,6 +91,8 @@ public class EntityReloadHandler extends RecordReloadHandler{
 			}else if(IEventHandler.OPERATIONS.reload.name().equals(operation)){
 				reload(message);
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "handle message exception", e);
 		}finally{
 			provider.writeUnLock();
 		}

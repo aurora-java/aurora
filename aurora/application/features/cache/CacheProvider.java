@@ -35,7 +35,7 @@ import aurora.database.service.SqlServiceContext;
 import aurora.service.IServiceFactory;
 import aurora.service.ServiceInvoker;
 
-public class CacheProvider extends AbstractLocatableObject implements ICacheProvider, IMessageListener,ILifeCycle{
+public class CacheProvider extends AbstractLocatableObject implements ICacheProvider, IMessageListener, ILifeCycle {
 
 	protected String cacheName;
 	protected String loadProc;
@@ -53,7 +53,6 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	protected String reloadTopic = "dml_event";
 	protected String reloadMessage;
 	protected Date lastReloadDate;
-	
 
 	protected boolean inited = false;
 	protected ILogger logger;
@@ -65,7 +64,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	protected INamedCacheFactory mCacheFactory;
 	protected IMessageStub messageStub;
 
-	public CacheProvider(IObjectRegistry registry,INamedCacheFactory cacheFactory) { 
+	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory) {
 		this.mRegistry = registry;
 		this.mCacheFactory = cacheFactory;
 	}
@@ -73,7 +72,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public void onInitialize() throws Exception {
 		if (cacheName == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "cacheName");
-		if (key == null )
+		if (key == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "key");
 		logger = LoggingContext.getLogger(this.getClass().getCanonicalName(), mRegistry);
 		procedureManager = (IProcedureManager) mRegistry.getInstanceOfType(IProcedureManager.class);
@@ -86,20 +85,19 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		if (dsFactory == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, DatabaseServiceFactory.class, this.getClass().getName());
 		//
-		if(reloadMessage == null){
-			reloadMessage = cacheName+"_reload";
+		if (reloadMessage == null) {
+			reloadMessage = cacheName + "_reload";
 		}
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
 		if (stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
 		IConsumer consumer = stub.getConsumer(reloadTopic);
 		if (!(consumer instanceof INoticerConsumer))
-			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class,
-					IConsumer.class);
+			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
 		((INoticerConsumer) consumer).addListener(reloadMessage, this);
 		CacheProviderRegistry.put(cacheName, this);
 		if (eventHandlers != null) {
-			for(int i=0;i<eventHandlers.length;i++){
+			for (int i = 0; i < eventHandlers.length; i++) {
 				eventHandlers[i].init(this, mRegistry);
 			}
 		}
@@ -153,12 +151,13 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			writeUnLock();
 		}
 	}
-	protected void executeBM(CompositeMap context) throws Exception{
-		if(loadBM != null){
-			CompositeMap data = queryBM(loadBM,context);
-			if(data == null)
+
+	protected void executeBM(CompositeMap context) throws Exception {
+		if (loadBM != null) {
+			CompositeMap data = queryBM(loadBM, context);
+			if (data == null)
 				return;
-			if(groupByFields != null){
+			if (groupByFields != null) {
 				CompositeMap config = new CompositeMap();
 				CompositeMap level1 = new CompositeMap();
 				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, groupByFields);
@@ -168,58 +167,58 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			}
 			String type = getType();
 			List childs = data.getChilds();
-			if(ICacheProvider.VALUE_TYPE.value.name().equals(type)){
-				if(childs == null){
+			if (ICacheProvider.VALUE_TYPE.value.name().equals(type)) {
+				if (childs == null) {
 					String key = TextParser.parse(getKey(), data);
 					String value = TextParser.parse(getValue(), data);
-					cache.setValue(key,value);
-				}else{
-					for(Object child:data.getChilds()){
-						CompositeMap record = (CompositeMap)child;
+					cache.setValue(key, value);
+				} else {
+					for (Object child : data.getChilds()) {
+						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
 						String value = TextParser.parse(getValue(), record);
-						cache.setValue(key,value);
+						cache.setValue(key, value);
 					}
 				}
-			}else if(ICacheProvider.VALUE_TYPE.record.name().equals(type)){
-				if(childs == null){
+			} else if (ICacheProvider.VALUE_TYPE.record.name().equals(type)) {
+				if (childs == null) {
 					String key = TextParser.parse(getKey(), data);
-					cache.setValue(key,data);
-				}else{
-					for(Object child:data.getChilds()){
-						CompositeMap record = (CompositeMap)child;
+					cache.setValue(key, data);
+				} else {
+					for (Object child : data.getChilds()) {
+						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
-						cache.setValue(key,record);
+						cache.setValue(key, record);
 					}
 				}
-			}else if(ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)){
-				if(childs == null){
+			} else if (ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)) {
+				if (childs == null) {
 					throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
-				}else{
-					for(Object child:data.getChilds()){
-						CompositeMap record = (CompositeMap)child;
+				} else {
+					for (Object child : data.getChilds()) {
+						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
 						List new_values = record.getChilds();
-						if(new_values == null)
+						if (new_values == null)
 							throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
 						List<String> value_list = new LinkedList<String>();
 						cache.setValue(key, value_list);
-						for(Object value:new_values){
-							CompositeMap newValue_record = (CompositeMap)value;
-							String new_value =TextParser.parse(getValue(), newValue_record);
+						for (Object value : new_values) {
+							CompositeMap newValue_record = (CompositeMap) value;
+							String new_value = TextParser.parse(getValue(), newValue_record);
 							value_list.add(new_value);
 						}
 					}
 				}
-			}else if(ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)){
-				if(childs == null){
+			} else if (ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)) {
+				if (childs == null) {
 					throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
-				}else{
-					for(Object child:data.getChilds()){
-						CompositeMap record = (CompositeMap)child;
+				} else {
+					for (Object child : data.getChilds()) {
+						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
 						List new_values = record.getChilds();
-						if(new_values == null)
+						if (new_values == null)
 							throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
 						List<String> value_list = new LinkedList<String>();
 						cache.setValue(key, value_list);
@@ -229,6 +228,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			}
 		}
 	}
+
 	protected void executeProc(String procedure, CompositeMap context) {
 		writeLock();
 		try {
@@ -240,9 +240,9 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				throw BuiltinExceptionFactory.createResourceLoadException(this, procedure, ex);
 			}
 			String name = "Cache." + procedure;
-			if(context != null)
+			if (context != null)
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
-			else{
+			else {
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 			}
 		} catch (Exception ex) {
@@ -275,6 +275,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		this.cacheName = name;
 
 	}
+
 	public void reload() throws Exception {
 		writeLock();
 		try {
@@ -303,6 +304,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			readUnLock();
 		}
 	}
+
 	public String getRefreshBM() {
 		return refreshBM;
 	}
@@ -310,6 +312,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public void setRefreshBM(String refreshBM) {
 		this.refreshBM = refreshBM;
 	}
+
 	public String getCacheKey() {
 		return key;
 	}
@@ -405,7 +408,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			return;
 		((IReadWriteLockable) cache).readLock().unlock();
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -417,10 +420,12 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public String getCacheName() {
 		return cacheName;
 	}
+
 	public void setCacheName(String cacheName) {
 		this.cacheName = cacheName;
 	}
-	public void removeKey(String key){
+
+	public void removeKey(String key) {
 		cache.remove(key);
 	}
 
@@ -428,7 +433,8 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public String getKey() {
 		return key;
 	}
-	public void setKey(String key){
+
+	public void setKey(String key) {
 		this.key = key;
 	}
 
@@ -449,6 +455,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public String getCacheDesc() {
 		return cacheDesc;
 	}
+
 	public void setCacheDesc(String cacheDesc) {
 		this.cacheDesc = cacheDesc;
 	}
@@ -456,8 +463,9 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	@Override
 	public String getReloadTopic() {
 		return reloadTopic;
-		
+
 	}
+
 	public void setReloadTopic(String reloadTopic) {
 		this.reloadTopic = reloadTopic;
 	}
@@ -466,6 +474,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public String getReloadMessage() {
 		return reloadMessage;
 	}
+
 	public void setReloadMessage(String reloadMessage) {
 		this.reloadMessage = reloadMessage;
 	}
@@ -474,14 +483,19 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	public Date getLastReloadDate() {
 		return lastReloadDate;
 	}
-	public void setLastReloadDate(Date date){
+
+	public void setLastReloadDate(Date date) {
 		this.lastReloadDate = date;
 	}
 
 	@Override
-	public void notice(IMessage message) throws Exception {
-		if(reloadMessage.equals(message.getText()))
+	public void onMessage(IMessage message) {
+		try {
+			if (reloadMessage.equals(message.getText()))
 				reload();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "reload failed!", e);
+		}
 	}
 
 	@Override
@@ -498,7 +512,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	@Override
 	public void shutdown() {
-				
+
 	}
-	
+
 }
