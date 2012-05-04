@@ -109,7 +109,7 @@ public class DefaultMessageHandler extends AbstractLocatableObject implements IM
 				if (!(object instanceof IMessageListener))
 					throw BuiltinExceptionFactory.createInstanceTypeWrongException("", IMessageListener.class, object.getClass());
 				IMessageListener lis = (IMessageListener) object;
-				lis.notice(message);
+				lis.onMessage(message);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
 			}

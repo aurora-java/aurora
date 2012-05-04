@@ -1,7 +1,7 @@
 package aurora.application.features.msg;
 
-public interface IMessageHandler{
+
+public interface IMessageHandler extends IMessageListener{
 	public String getName();
 	public void setName(String name);
-	public void onMessage(IMessage msg);
 }

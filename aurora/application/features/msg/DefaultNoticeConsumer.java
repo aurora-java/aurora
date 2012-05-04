@@ -42,7 +42,7 @@ public class DefaultNoticeConsumer extends AbstractLocatableObject implements IN
 		if(listeners != null){
 			for(IMessageListener l:listeners){
 				try {
-					l.notice(msg);
+					l.onMessage(msg);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, "Listener:"+l.toString()+" occur exception.", e);
 					throw new RuntimeException("Listener:"+l.toString()+" occur exception.",e);
