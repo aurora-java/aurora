@@ -114,6 +114,13 @@
 			<u:implement-types>
 				<u:type typeName="aurora.application.features.ILookupCodeProvider" />
 			</u:implement-types>
-		</u:configurable-instance>		
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="soap.config" >
+			<u:description>web service配置</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.service.ws.ISOAPConfiguration" />
+			</u:implement-types>
+		</u:configurable-instance>				
 	</u:instances>
 </u:instance-config>
