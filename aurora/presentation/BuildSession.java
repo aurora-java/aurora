@@ -85,6 +85,7 @@ public class BuildSession {
 
     /** @todo refactor out */
     String title;
+    String manifest;
     String labelSeparator;
     String radioSeparator;
     ILookupCodeProvider lookupProvider;
@@ -628,6 +629,16 @@ public class BuildSession {
     public void setTitle(String title) {
         this.title = title;
     }
+    
+    public String getManifest() {
+        return manifest;
+    }
+
+    public void setManifest(String manifest) {
+        this.manifest = manifest;
+    }
+    
+    
     public String getLabelSeparator() {
     	return labelSeparator;
     }
