@@ -103,6 +103,7 @@ public class ScreenRenderer implements IFeature {
     String mDefaultTitle = "";
     String mDefaultLabelSeparator;
     String mDefaultRadioSeparator;
+    String mManifest = null;
     int mDefaultPageSize;
 //    String      mScreenCacheKey;
     boolean     mIsCache = false;
@@ -143,6 +144,8 @@ public class ScreenRenderer implements IFeature {
             if (mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE) != null)
                 setContentType(mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE));           
             //mContext.addChild(mScreen);
+            if (mScreen.getString(TemplateRenderer.KEY_MANIFEST) != null)
+                mManifest = mScreen.getString(TemplateRenderer.KEY_MANIFEST);
             mContext.putBoolean("output", true);
         }
         return EventModel.HANDLE_NORMAL;
@@ -210,6 +213,7 @@ public class ScreenRenderer implements IFeature {
                     }
                 }
             }
+            session.setManifest(mManifest);
             session.setTitle(mDefaultTitle);
             session.setLabelSeparator(mDefaultLabelSeparator);
             session.setRadioSeparator(mDefaultRadioSeparator);
