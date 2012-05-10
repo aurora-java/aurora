@@ -221,6 +221,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS = "dataLabels";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN = "align";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR = "color";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR = "backgroundColor";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED = "enabled";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER = "formatter";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION = "rotation"; 
@@ -734,6 +735,7 @@ public class Chart extends Component {
 		if(view != null){
 			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN,cfg);
 			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR,cfg);
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR,cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED, cfg);
 			putFunctionCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER, cfg);
 			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION, cfg);
