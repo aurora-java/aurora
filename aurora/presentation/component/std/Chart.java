@@ -143,6 +143,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_AXIS_OFFSET = "offset";
 	private static final String PROPERTITY_AXIS_OPPOSITE = "opposite"; 
 	private static final String PROPERTITY_AXIS_NAME = "name"; 
+	private static final String PROPERTITY_AXIS_BINDTARGET = "bindtarget"; 
 	
 	private static final String PROPERTITY_AXIS_PLOTBANDS = "plotBands"; 
 	private static final String PROPERTITY_AXIS_PLOTBANDS_COLOR = "color";
@@ -851,6 +852,7 @@ public class Chart extends Component {
 					putIntCfg(axi, PROPERTITY_AXIS_OFFSET, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_OPPOSITE, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_NAME, cfg);
+					putStringCfg(axi, PROPERTITY_AXIS_BINDTARGET, cfg);
 					creatPlotBands(axi,cfg);
 					creatPlotLines(axi,cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_REVERSED, cfg);
