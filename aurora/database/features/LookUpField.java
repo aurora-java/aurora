@@ -7,13 +7,13 @@ import java.util.List;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.features.DefaultLookupCodeProvider;
 import aurora.application.features.ILookupCodeProvider;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.database.profile.IDatabaseFactory;
-import aurora.database.service.SqlServiceContext;
-import aurora.i18n.IMessageProvider;
 
+@SuppressWarnings("unchecked")
 public class LookUpField {
 
 	private IDatabaseFactory factory;
@@ -26,11 +26,10 @@ public class LookUpField {
 
 	public void onPrepareBusinessModel(BusinessModel model) {
 		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
-		if(lookupProvider==null)
-		    return;
-		String type = lookupProvider.getLookupType();
-		String sqlTemplate = lookupProvider.getLookupSql();
-		if("sql".equalsIgnoreCase(type)){
+		if(lookupProvider==null)return;
+		if(lookupProvider instanceof DefaultLookupCodeProvider){
+			DefaultLookupCodeProvider defaultLookupProvider = (DefaultLookupCodeProvider)lookupProvider;
+			String sqlTemplate = defaultLookupProvider.getLookupSql();
 			Field[] fields = model.getFields();
 			List lookupfields = new ArrayList();
 			if (fields != null) {
@@ -80,15 +79,14 @@ public class LookUpField {
 		model.makeReady();
 	}
 
-	public void postFetchResultSet(SqlServiceContext context,BusinessModel model) throws Exception {
-		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
-		if(lookupProvider==null)
-		    return;
-		String type = lookupProvider.getLookupType();
-		if("cache".equalsIgnoreCase(type)){
-			//TODO:要等seacat修改好后才能实现
-		}
-	}
+//	public void postFetchResultSet(SqlServiceContext context,BusinessModel model) throws Exception {
+//		ILookupCodeProvider lookupProvider = (ILookupCodeProvider) mRegistry.getInstanceOfType(ILookupCodeProvider.class);
+//		if(lookupProvider==null)
+//		    return;
+//		String type = lookupProvider.getLookupType();
+//		if("cache".equalsIgnoreCase(type)){
+//		}
+//	}
 
 	private String createExpression(String sqlTemplate,String code, String name) {
 		String sql = null,langPath = "ZHS";

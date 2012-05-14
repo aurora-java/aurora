@@ -22,8 +22,8 @@ import aurora.service.ServiceThreadLocal;
  * @version $Id: DefaultLookupCodeProvider.java v 1.0 2011-3-29 下午01:57:45 IBM Exp $
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  * 
- * TODO:缓存需要重构!!
  */
+@SuppressWarnings("unchecked")
 public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalInstance {
 
     private String lookupType = "sql";
