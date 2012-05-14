@@ -30,17 +30,8 @@ public class CacheBasedLookUpField {
 		if(lookupProvider==null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ILookupCodeProvider.class,
 					this.getClass().getCanonicalName());
-		String type = lookupProvider.getLookupType();
-		if(!"cache".equals(type)){
-			return;
-			//throw new RuntimeException("The ILookupCodeProvider instance's type is "+type+",expectation is cache");
-		}
 	}
 	public void postFetchResultSet(BusinessModel model, IResultSetConsumer consumer) throws Exception {
-		String type = lookupProvider.getLookupType();
-		if(!"cache".equalsIgnoreCase(type)||consumer.getResult() == null){
-			return;
-		}
 		Object result = consumer.getResult();
 		if (!(result instanceof CompositeMap))
 			return;
