@@ -33,11 +33,12 @@ public interface ILookupCodeProvider {
      * @return Prompt according to specified value
      */
     public String getLookupPrompt(String language, String lookup_code, Object lookup_value );
-    
+/*    
     public String getLookupType();
     
     public String getLookupModel();
     
     public String getLookupSql();
+*/    
 
 }
