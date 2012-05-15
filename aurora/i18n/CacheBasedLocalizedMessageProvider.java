@@ -1,10 +1,14 @@
 package aurora.i18n;
 
-import uncertain.cache.ICache;
+import java.text.MessageFormat;
+
+import aurora.service.ServiceThreadLocal;
+import uncertain.composite.TextParser;
 
 public class CacheBasedLocalizedMessageProvider implements ILocalizedMessageProvider {
 
 	private String lang;
+	private String cacheKey="{0}.{1}";
 	private CacheBasedMessageProvider messageProvider;
 	
 	public CacheBasedLocalizedMessageProvider(String language_code, CacheBasedMessageProvider messageProvider) {
@@ -25,7 +29,6 @@ public class CacheBasedLocalizedMessageProvider implements ILocalizedMessageProv
 
 	public void setLang(String lang) {
 		this.lang = lang;
-
 	}
 
 	public String getLang() {
@@ -33,7 +36,14 @@ public class CacheBasedLocalizedMessageProvider implements ILocalizedMessageProv
 	}
 
 	public String getKey(String code) {
-		return code + ICache.DEFAULT_CONNECT_CHAR + lang;
+		String patten = TextParser.parse(cacheKey, ServiceThreadLocal.getCurrentThreadContext());
+		return MessageFormat.format(patten,code,lang);
+	}
+	public String getCacheKey() {
+		return cacheKey;
+	}
+	public void setCacheKey(String cacheKey) {
+		this.cacheKey = cacheKey;
 	}
 
 }
