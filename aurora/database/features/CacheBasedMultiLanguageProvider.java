@@ -1,7 +1,11 @@
 package aurora.database.features;
 
+import java.text.MessageFormat;
+
+import aurora.service.ServiceThreadLocal;
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
+import uncertain.composite.TextParser;
 import uncertain.core.IGlobalInstance;
 import uncertain.exception.GeneralException;
 import uncertain.ocm.AbstractLocatableObject;
@@ -13,6 +17,7 @@ public class CacheBasedMultiLanguageProvider extends AbstractLocatableObject imp
 	private INamedCacheFactory mCacheFactory;
 	
 	private String cacheName;
+	private String cacheKey="{0}.{1}";
 	
 	private ICache cache;
 	
@@ -28,7 +33,8 @@ public class CacheBasedMultiLanguageProvider extends AbstractLocatableObject imp
 	}
 	
 	public String getFullCacheKey(String description_id, String language) {
-		return description_id + ICache.DEFAULT_CONNECT_CHAR + language;
+		String patten = TextParser.parse(cacheKey, ServiceThreadLocal.getCurrentThreadContext());
+		return MessageFormat.format(patten, description_id,language);
 	}
 
 	public String getDescription(String description_id, String language) {
@@ -40,5 +46,10 @@ public class CacheBasedMultiLanguageProvider extends AbstractLocatableObject imp
 	public void setCacheName(String cacheName) {
 		this.cacheName = cacheName;
 	}
-	
+	public String getCacheKey() {
+		return cacheKey;
+	}
+	public void setCacheKey(String cacheKey) {
+		this.cacheKey = cacheKey;
+	}
 }
