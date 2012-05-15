@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+	<package-mapping packageName="aurora.application.features.msg"/>
+	<package-mapping packageName="aurora.application.features.cache"/>
+	<feature-attach elementName="service" featureClass="aurora.application.features.msg.TrxMessageDispatcher" nameSpace="http://www.aurora-framework.org/application"/>
+  	<!--  <class-mapping className="aurora.database.features.CacheBasedMultiLanguageStorage" elementName="multi-language-storage" nameSpace="aurora.database.features"/>-->
+</class-registry>
