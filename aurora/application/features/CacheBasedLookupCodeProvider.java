@@ -1,12 +1,16 @@
 package aurora.application.features;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import aurora.service.ServiceThreadLocal;
+
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.core.IGlobalInstance;
 import uncertain.exception.GeneralException;
 import uncertain.ocm.AbstractLocatableObject;
@@ -19,10 +23,9 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 	
 	private String promptCacheName;
 	private String listCacheName;
-	
-	private String lookupType = "cache";
-	private String lookupSql;
-	private String lookupModel;
+	private String promptCacheKey="{0}.{1}.{2}";
+	private String listCacheKey="{0}.{1}";
+
 	private String sortField;
 
 	private ICache promptCache;
@@ -33,7 +36,7 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 	}
 
 	public List getLookupList(String language, String lookup_code) throws Exception {
-		List result = (List) listCache.getValue(getFullCacheKey(lookup_code, language));
+		List result = (List) listCache.getValue(getFullListCacheKey(lookup_code, language));
 		if (result != null)
 			sorList(result);
 		return result;
@@ -52,7 +55,7 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 	}
 
 	public String getLookupPrompt(String language, String lookup_code, Object lookup_value) {
-		Object prompt = promptCache.getValue(getFullCacheKey(lookup_code, lookup_value!=null?lookup_value.toString():null, language));
+		Object prompt = promptCache.getValue(getFullPromptCacheKey(lookup_code, lookup_value!=null?lookup_value.toString():null, language));
 		if(prompt != null)
 			return prompt.toString();
 		return null;
@@ -67,30 +70,6 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 			throw new GeneralException("uncertain.cache.named_cache_not_found", new Object[] { listCacheName }, this);
 	}
 
-	public String getLookupType() {
-		return lookupType;
-	}
-
-	public void setLookupType(String lookupType) {
-		this.lookupType = lookupType;
-	}
-
-	public String getLookupSql() {
-		return lookupSql;
-	}
-
-	public void setLookupSql(String lookupSql) {
-		this.lookupSql = lookupSql;
-	}
-
-	public String getLookupModel() {
-		return lookupModel;
-	}
-
-	public void setLookupModel(String lookupModel) {
-		this.lookupModel = lookupModel;
-	}
-
 	public String getSortField() {
 		return sortField == null ? DEFAULT_SORT_FIELD: sortField;
 	}
@@ -99,11 +78,13 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 		this.sortField = sortField;
 	}
 
-	public String getFullCacheKey(String code, String language) {
-		return code + ICache.DEFAULT_CONNECT_CHAR + language;
+	public String getFullListCacheKey(String code, String language) {
+		String patten = TextParser.parse(listCacheKey, ServiceThreadLocal.getCurrentThreadContext());
+		return MessageFormat.format(patten, code,language);
 	}
-	public String getFullCacheKey(String code,String code_value, String language) {
-		return code + ICache.DEFAULT_CONNECT_CHAR +code_value+ICache.DEFAULT_CONNECT_CHAR+language;
+	public String getFullPromptCacheKey(String code,String code_value, String language) {
+		String patten = TextParser.parse(promptCacheKey, ServiceThreadLocal.getCurrentThreadContext());
+		return MessageFormat.format(patten, code,code_value,language);
 	}
 
 	public String getListCacheName() {
@@ -120,5 +101,21 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 
 	public void setPromptCacheName(String promptCacheName) {
 		this.promptCacheName = promptCacheName;
-	}	
+	}
+
+	public String getListCacheKey() {
+		return listCacheKey;
+	}
+
+	public void setListCacheKey(String listCacheKey) {
+		this.listCacheKey = listCacheKey;
+	}
+
+	public String getPromptCacheKey() {
+		return promptCacheKey;
+	}
+
+	public void setPromptCacheKey(String promptCacheKey) {
+		this.promptCacheKey = promptCacheKey;
+	}
 }
