@@ -352,7 +352,7 @@ public class Chart extends Component {
 		addJavaScript(session, context, "chart/Chart-min.js");
 		if(!view.getBoolean(PROPERTITY_CHART_POLAR,false) && hasPolarType(view)){
 			view.put(PROPERTITY_CHART_POLAR, new Boolean(true));
-			addJavaScript(session, context, "chart/Chart-more.js");
+			addJavaScript(session, context, "chart/Chart-more-min.js");
 		}
 		addJavaScript(session, context, "chart/themes/"+theme+".js");
 		addJavaScript(session, context, "chart/Exporting-min.js");
