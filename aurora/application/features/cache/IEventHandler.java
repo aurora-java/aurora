@@ -1,5 +1,6 @@
 package aurora.application.features.cache;
 
+import uncertain.cache.ICacheProvider;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.features.msg.IMessageListener;
 

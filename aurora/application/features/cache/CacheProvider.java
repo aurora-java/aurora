@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import uncertain.cache.ConcurrentCache;
 import uncertain.cache.ICache;
+import uncertain.cache.ICacheProvider;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.cache.IReadWriteLockable;
 import uncertain.composite.CompositeMap;
@@ -83,7 +84,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IServiceFactory.class, this.getClass().getName());
 		dsFactory = (IDatabaseServiceFactory) mRegistry.getInstanceOfType(IDatabaseServiceFactory.class);
 		if (dsFactory == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, DatabaseServiceFactory.class, this.getClass().getName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IDatabaseServiceFactory.class, this.getClass().getName());
 		//
 		if (reloadMessage == null) {
 			reloadMessage = cacheName + "_reload";

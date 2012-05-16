@@ -6,6 +6,7 @@ import aurora.application.features.msg.IConsumer;
 import aurora.application.features.msg.IMessage;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.INoticerConsumer;
+import uncertain.cache.ICacheProvider;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
