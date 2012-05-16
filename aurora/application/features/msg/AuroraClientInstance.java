@@ -3,37 +3,34 @@ package aurora.application.features.msg;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import uncertain.composite.CompositeMap;
 import uncertain.core.ILifeCycle;
 import uncertain.exception.BuiltinExceptionFactory;
-import uncertain.exception.MessageFactory;
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.features.msg.IConsumer;
-import aurora.application.features.msg.IMessage;
-import aurora.application.features.msg.IMessageDispatcher;
-import aurora.application.features.msg.IMessageHandler;
-import aurora.application.features.msg.IMessageStub;
 
 public class AuroraClientInstance extends AbstractLocatableObject implements ILifeCycle,IMessageStub {
 	/**
 	 * 配置样本
-	<?xml version="1.0" encoding="UTF-8"?>
-	<amq:AMQ-client-instance xmlns:amq="aurora.plugin.amq" xmlns:jms="aurora.plugin.jms" url="failover:tcp://localhost:61616">
-	    <jms:messageHandlers>
-	        <jms:defaultMessageHandler name="handler1" procedure="init.load_priviledge_check_data"/>
-	    </jms:messageHandlers>
-	    <jms:consumers >
-	        <amq:consumer topic="test1">
-	            <amq:events>
-	                <amq:event handler="handler1" message="resource_update"/>
-	            </amq:events>
-	        </amq:consumer>
-	    </amq:consumers>
-	</amq:AMQ-client-instance>
+		<msg:Aurora-client-instance xmlns:msg="aurora.application.features.msg" xmlns:ios="com.hand.mas.ios">
+		
+			    <messageHandlers>
+			        <msg:DefaultMessageHandler name="refreshPriviledge" procedure="init.load_priviledge_check_data"/>
+			        <msg:DefaultMessageHandler name="refreshService" procedure="init.load_system_service"/>
+			    </messageHandlers>
+				
+			    <consumers>
+			        <msg:consumer topic="application_foundation">
+			            <events>
+			                <msg:event handler="refreshPriviledge" message="priviledge_setting_change"/>
+			                <msg:event handler="refreshService" message="service_config_change"/>
+			            </events>
+			        </msg:consumer>
+					<msg:DefaultNoticeConsumer topic="dml_event"/>
+			    </consumers>
+				
+		</msg:Aurora-client-instance>
 	 * 
 	 */
 	public static final String PLUGIN = "aurora.application.features.msg";
@@ -42,11 +39,11 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	private String url;
 	
 	private IObjectRegistry registry;
-	public ILogger logger;
 	private Map<String,IMessageHandler> handlersMap = new HashMap<String,IMessageHandler>();
 	private IMessageDispatcher messageDispatcher;
 	private Map<String,IConsumer> consumerMap;
 	private boolean inited = false;
+	private Logger logger;
 	
 	public AuroraClientInstance(IObjectRegistry registry) {
 		this.registry = registry;
@@ -56,9 +53,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	public boolean startup() {
 		if(inited)
 			return true;
-		logger = LoggingContext.getLogger(PLUGIN, registry);
-		//TODO 
-		MessageFactory.loadResource("resources.aurora_plugin_amq");
+		logger = Logger.getLogger(PLUGIN);
 		if(url == null){
 			BuiltinExceptionFactory.createOneAttributeMissing(this, "url");
 		}
@@ -121,7 +116,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	public void setConsumers(IConsumer[] consumers) {
 		this.consumers = consumers;
 		if(consumers != null){
-			consumerMap = new HashMap();
+			consumerMap = new HashMap<String,IConsumer>();
 			if(consumers != null){
 				for(int i= 0;i<consumers.length;i++){
 					consumerMap.put(consumers[i].getTopic(), consumers[i]);
@@ -129,13 +124,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 			}
 		}
 	}
-	public ILogger getLogger() {
-		return logger;
-	}
-	public void setLogger(ILogger logger) {
-		this.logger = logger;
-	}
-
 	public IConsumer getConsumer(String topic) {
 		return consumerMap.get(topic);
 	}
