@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.ConfigurationFileException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
@@ -39,9 +40,9 @@ public class Consumer extends AbstractLocatableObject implements IConsumer {
 		if(handlerName != null){
 			IMessageHandler handler = (IMessageHandler)stub.getMessageHandler(handlerName);
 			if(handler == null){
-				logger.log(Level.SEVERE,"Error when handle jsm message."+" Can't find the handler for name:'"+handlerName+"'.");
-				throw new IllegalStateException("Can't find the handler for name:'"+handlerName+"'.");
-				
+				ConfigurationFileException ex = new ConfigurationFileException(MessageCodes.HANDLER_NOT_FOUND_ERROR, new Object[]{handlerName}, this);
+				logger.log(Level.SEVERE,"Error when handle jms message", ex);
+				throw ex;
 			}
 			handler.onMessage(msg);
 		}
