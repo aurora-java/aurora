@@ -121,6 +121,13 @@
 			<u:implement-types>
 				<u:type typeName="aurora.service.ws.ISOAPConfiguration" />
 			</u:implement-types>
-		</u:configurable-instance>				
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="msg.config" >
+			<u:description>消息机制配置</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.application.features.msg.IMessageStub" />
+			</u:implement-types>
+		</u:configurable-instance>					
 	</u:instances>
 </u:instance-config>
