@@ -13,7 +13,7 @@ import uncertain.ocm.IObjectRegistry;
 public class AuroraClientInstance extends AbstractLocatableObject implements ILifeCycle,IMessageStub {
 	/**
 	 * 配置样本
-		<msg:Aurora-client-instance xmlns:msg="aurora.application.features.msg" xmlns:ios="com.hand.mas.ios">
+		<msg:Aurora-client-instance xmlns:msg="aurora.application.features.msg">
 		
 			    <messageHandlers>
 			        <msg:DefaultMessageHandler name="refreshPriviledge" procedure="init.load_priviledge_check_data"/>
@@ -42,7 +42,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	private Map<String,IMessageHandler> handlersMap = new HashMap<String,IMessageHandler>();
 	private IMessageDispatcher messageDispatcher;
 	private Map<String,IConsumer> consumerMap;
-	private boolean inited = false;
+	private boolean started = false;
 	private Logger logger;
 	
 	public AuroraClientInstance(IObjectRegistry registry) {
@@ -51,7 +51,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	}
 	
 	public boolean startup() {
-		if(inited)
+		if(started)
 			return true;
 		logger = Logger.getLogger(PLUGIN);
 		if(url == null){
@@ -80,7 +80,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 			}
 		});
 		registry.registerInstance(IMessageStub.class, this);
-		inited = true;
+		started = true;
 		return true;
 	}
 	public void onShutdown() throws Exception{
@@ -138,5 +138,10 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 
 	public IMessageDispatcher getDispatcher() {
 		return messageDispatcher;
+	}
+
+	@Override
+	public boolean isStarted() {
+		return started;
 	}
 }
