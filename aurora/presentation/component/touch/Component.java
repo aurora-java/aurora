@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.event.Configuration;
+import uncertain.proc.IFeature;
 import aurora.presentation.BuildSession;
+import aurora.presentation.ViewComponentPackage;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.markup.HtmlPageContext;
 
 @SuppressWarnings("unchecked")
-public class Component {
-	
+public class Component implements IFeature {
+	CompositeMap  view_config;
 	protected static final String CLASS = "cls";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
@@ -63,8 +66,15 @@ public class Component {
 	protected void addStyleSheet(BuildSession session, ViewContext context, String style) {
 		if (!session.includeResource(style)) {
 			HtmlPageContext page = HtmlPageContext.getInstance(context);
-			String styleSheet = session.getResourceUrl(style);
+			ViewComponentPackage pkg = session.getPresentationManager().getPackage(view_config);
+			String styleSheet = session.getResourceUrl(pkg, style);
 			page.addStyleSheet(styleSheet);
 		}
 	}
+
+    @Override
+    public int attachTo(CompositeMap config_data, Configuration config) {
+        this.view_config = config_data;
+        return IFeature.NORMAL;
+    }
 }
