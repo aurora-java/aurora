@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import aurora.database.features.CacheBasedLookUpField;
+import aurora.database.profile.IDatabaseFactory;
+import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.IDatabaseServiceFactory;
 import aurora.service.ServiceThreadLocal;
 
 import uncertain.cache.ICache;
@@ -12,6 +16,8 @@ import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.core.IGlobalInstance;
+import uncertain.core.UncertainEngine;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.GeneralException;
 import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
@@ -19,6 +25,7 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 
 	private static final String DEFAULT_SORT_FIELD = "code_value_id";
 	
+	private IObjectRegistry mRegistry;
 	private INamedCacheFactory mCacheFactory;
 	
 	private String promptCacheName;
@@ -32,6 +39,7 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 	private ICache listCache;
 	
 	public CacheBasedLookupCodeProvider(IObjectRegistry registry,INamedCacheFactory cacheFactory) {
+		this.mRegistry = registry;
 		this.mCacheFactory = cacheFactory;
 	}
 
@@ -68,6 +76,21 @@ public class CacheBasedLookupCodeProvider extends AbstractLocatableObject implem
 		listCache = mCacheFactory.getNamedCache(listCacheName);
 		if (listCache == null)
 			throw new GeneralException("uncertain.cache.named_cache_not_found", new Object[] { listCacheName }, this);
+		
+		IDatabaseServiceFactory databaseServiceFactory = (IDatabaseServiceFactory)mRegistry.getInstanceOfType(IDatabaseServiceFactory.class);
+		if(databaseServiceFactory == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IDatabaseServiceFactory.class);
+		if(!(databaseServiceFactory instanceof DatabaseServiceFactory))
+			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), DatabaseServiceFactory.class, databaseServiceFactory.getClass());
+		IDatabaseFactory databaseFactory = (IDatabaseFactory)mRegistry.getInstanceOfType(IDatabaseFactory.class);
+		if(databaseFactory == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IDatabaseFactory.class);
+		UncertainEngine uncertainEngine = (UncertainEngine)mRegistry.getInstanceOfType(UncertainEngine.class);
+		if(uncertainEngine == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, UncertainEngine.class);
+		
+		CacheBasedLookUpField cacheBasedLookUpField = new CacheBasedLookUpField(databaseFactory, uncertainEngine.getObjectRegistry());
+		((DatabaseServiceFactory)databaseServiceFactory).setGlobalParticipant(cacheBasedLookUpField);
 	}
 
 	public String getSortField() {
