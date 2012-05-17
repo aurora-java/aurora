@@ -94,7 +94,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
 		IConsumer consumer = stub.getConsumer(reloadTopic);
 		if(consumer == null){
-			if(stub.isStarted()){
+			if(!stub.isStarted()){
 				throw new IllegalStateException("MessageStub is not started, please check the configuration.");
 			}else{
 				throw new IllegalStateException("MessageStub does not define the reloadTopic '"+reloadTopic+"', please check the configuration.");
