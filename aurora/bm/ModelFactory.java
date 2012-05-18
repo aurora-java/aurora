@@ -8,8 +8,8 @@ import java.util.Iterator;
 
 import org.xml.sax.SAXException;
 
-import aurora.application.features.cache.CacheFactoryConfig;
 
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
