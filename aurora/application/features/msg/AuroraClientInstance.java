@@ -65,9 +65,11 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 							consumers[i].init(AuroraClientInstance.this);
 						} catch (Exception e) {
 							logger.log(Level.SEVERE,"init jms consumers failed!",e);
+							throw new RuntimeException(e);
 						}
 					}
 				}
+				started = true;
 			}
 		}).start();
 		Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -80,7 +82,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 			}
 		});
 		registry.registerInstance(IMessageStub.class, this);
-		started = true;
 		return true;
 	}
 	public void onShutdown() throws Exception{
