@@ -99,15 +99,6 @@
                 <ss:attribute name="test" document="需要判断的值"/>
             </ss:attributes>
         </ss:element>
-        <ss:element name="p:loop" document="循环">
-            <ss:attributes>
-                <ss:attribute name="nullable" document="可不可以为null" type="a:boolean"/>
-                <ss:attribute name="source" document="绑定的数据源" type="a:String"/>
-            </ss:attributes>
-            <ss:arrays>
-                <ss:array name="c:process-config" document="处理配置" indexField="name" type="a:config-field"/>
-            </ss:arrays>
-        </ss:element>
         <ss:element name="a:screen" document="UI界面的基础单元">
             <ss:elements>
                 <ss:element ref="a:init-procedure"/>
@@ -192,7 +183,11 @@
                 <ss:element ref="a:BaseViewComponent"/>
             </ss:elements>
         </ss:element>
-        <ss:element name="a:service-output"/>
+        <ss:element name="a:service-output" document="设置service要输出的数据的路径，格式等信息">
+            <ss:attributes>
+                <ss:attribute name="output" document="要输出的数据在context中的XPath路径"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="a:service">
             <ss:extensions>
                 <ss:extension base="a:BaseService"/>
@@ -271,6 +266,7 @@
                 <ss:attribute name="trace" document="是否启用trace" type="ss:boolean"/>
                 <ss:attribute name="cacheKey" document="如果该screen可以通过cache获取已创建好的结果，则设置该属性以确定cache key的内容，例如LeftBanner${/session/@session_id}"/>
                 <ss:attribute name="cacheEnabled" document="是否启用cache" type="ss:boolean"/>
+                <ss:attribute name="tag" document="用,分隔的tag"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="c:dynamicField"/>
