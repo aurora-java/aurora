@@ -82,8 +82,8 @@ public class DatabaseServiceFactory extends AbstractLocatableObject implements I
 		setGlobalParticipant(DeleteSqlCreator.class, delete_creator);
 
 		
-		LookUpField lookupfiled = new LookUpField(databaseFactory, uncertainEngine.getObjectRegistry());
-		setGlobalParticipant(LookUpField.class, lookupfiled);
+//		LookUpField lookupfiled = new LookUpField(databaseFactory, uncertainEngine.getObjectRegistry());
+//		setGlobalParticipant(LookUpField.class, lookupfiled);
 
 		setGlobalParticipant(OrderByClauseCreator.class, new OrderByClauseCreator());
 	}
