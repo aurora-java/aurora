@@ -30,6 +30,36 @@ public class CacheBasedLookUpField {
 		if(lookupProvider==null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ILookupCodeProvider.class,
 					this.getClass().getCanonicalName());
+		Field[] fields = model.getFields();
+		if(fields == null)
+			return;
+		Field field = null;
+		Field refield = null;
+		String lookUpField = null;
+		for (int i = 0, l = fields.length; i < l; i++) {
+			field = fields[i];
+			if (field.isReferenceField()) {
+				CompositeMap cmap = (CompositeMap) field.getReferredField().getObjectContext().clone();
+				cmap.copy(field.getObjectContext());
+				refield = Field.getInstance(cmap);// field.getReferredField();
+			} else {
+				refield = field;
+			}
+			lookUpField =  refield.getLookUpField();
+			if (lookUpField!= null && refield.getLookUpCode() != null) {
+				for (int j = 0; j < l; j++) {
+					Field f = fields[j];
+					if (f.getName().equalsIgnoreCase(lookUpField)) {
+						if (!f.isExpression()) {
+							f.setForQuery(false);
+							f.setForSelect(false);
+							break;
+						}
+					}
+				}
+			}
+		}
+		model.makeReady();
 	}
 	public void postFetchResultSet(BusinessModel model, IResultSetConsumer consumer) throws Exception {
 		Object result = consumer.getResult();
