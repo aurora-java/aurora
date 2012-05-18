@@ -5,8 +5,7 @@ package aurora.presentation;
 
 import java.io.IOException;
 
-import aurora.application.features.cache.CacheFactoryConfig;
-
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
