@@ -9,7 +9,7 @@
 			</u:implement-types>
 		</u:configurable-instance>
 
-		<u:configurable-instance configFile="cache.config" alternativeConfigFile="${configPath}/0.cache.config">
+		<u:configurable-instance configFile="cache.config">
 			<u:description>实现INamedCacheFactory接口，提供可配置的cache服务</u:description>
 		</u:configurable-instance>
 
