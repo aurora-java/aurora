@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.xml.sax.SAXException;
 
+import uncertain.cache.CacheFactoryConfig;
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
@@ -22,7 +23,6 @@ import uncertain.event.Configuration;
 import uncertain.event.IParticipantManager;
 import aurora.application.action.HttpSessionCopy;
 import aurora.application.features.HttpRequestTransfer;
-import aurora.application.features.cache.CacheFactoryConfig;
 import aurora.service.controller.ControllerProcedures;
 
 public class HttpServiceFactory {
