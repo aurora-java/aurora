@@ -15,10 +15,10 @@ public class PeriodModeCacheProvider extends CacheProvider {
 		super(registry,cacheFactory);
 	}
 
-	public void onInitialize() throws Exception {
+	public void initialize() {
 		if(refreshInterval == -1)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "refreshInterval");
-		super.onInitialize();
+		super.initialize();
 		executePeriodMode();
 	}
 	private void executePeriodMode() {

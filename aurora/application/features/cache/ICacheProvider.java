@@ -3,17 +3,16 @@ package aurora.application.features.cache;
 import java.util.Date;
 
 import uncertain.cache.ICache;
+import uncertain.cache.ICacheManager;
 
 
-public interface ICacheProvider {
+public interface ICacheProvider extends ICacheManager {
 	
 	public enum VALUE_TYPE{value,valueSet,record,recordSet};
-	
-	public void onInitialize() throws Exception;
 
 	public String getKey();
 
-	public void reload() throws Exception;
+	public void reload();
 	
 	public String getReloadTopic();
 	
@@ -32,11 +31,11 @@ public interface ICacheProvider {
 	public String getType();
 
 	public String getValue();
-
+/*
 	public ICache getCache();
 	
 	public String getCacheName();
 	
 	public String getCacheDesc();
-
+*/
 }

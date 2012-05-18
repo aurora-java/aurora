@@ -69,7 +69,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		this.mCacheFactory = cacheFactory;
 	}
 
-	public void onInitialize() throws Exception {
+	public void initialize() {
 		if (cacheName == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "cacheName");
 		if (key == null)
@@ -146,7 +146,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 	}
 
-	protected void initCacheData() throws Exception {
+	protected void initCacheData() {
 		writeLock();
 		try {
 			if (isLoadByBM()) {
@@ -154,7 +154,10 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			} else {
 				executeProc(loadProc, null);
 			}
-		} finally {
+		}catch(Exception ex){ 
+            throw new RuntimeException(ex);
+        } 
+		finally {
 			writeUnLock();
 		}
 	}
@@ -283,7 +286,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	}
 
-	public void reload() throws Exception {
+	public void reload() {
 		writeLock();
 		try {
 			inited = false;
@@ -291,7 +294,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			loadOnStartup = true;
 			initCacheData();
 			setLastReloadDate(new Date());
-		} finally {
+		}finally {
 			writeUnLock();
 		}
 	}
