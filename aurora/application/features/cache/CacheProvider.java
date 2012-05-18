@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 import uncertain.cache.ConcurrentCache;
 import uncertain.cache.ICache;
-import uncertain.cache.ICacheProvider;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.cache.IReadWriteLockable;
 import uncertain.composite.CompositeMap;

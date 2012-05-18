@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import uncertain.cache.ICache;
-import uncertain.cache.ICacheProvider;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.composite.transform.GroupConfig;

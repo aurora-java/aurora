@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import uncertain.cache.ICacheProvider;
 import uncertain.composite.CompositeMap;
 
 public class CacheProviderRegistry {

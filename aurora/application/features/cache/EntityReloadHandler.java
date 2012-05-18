@@ -2,7 +2,6 @@ package aurora.application.features.cache;
 
 import java.util.logging.Level;
 
-import uncertain.cache.ICacheProvider;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
