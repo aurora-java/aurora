@@ -13,6 +13,8 @@ public class CacheProviderRegistry {
 
 	public static final String KEY_CACHE_NAME = "cacheName"; 
 	public static final String KEY_CACHE_DESC = "cacheDesc";
+	public static final String KEY_RELOAD_TYPE = "reloadType";
+	public static final String KEY_RELOAD_INTERVAL = "reloadInterval";
 	public static final String KEY_RELOAD_TOPIC = "reloadTopic";
 	public static final String KEY_RELOAD_MSG = "reloadMessage";
 	public static final String KEY_LAST_RELOAD_DATE = "lastReloadDate";
@@ -41,6 +43,13 @@ public class CacheProviderRegistry {
 				}else{
 					record.put(KEY_LAST_RELOAD_DATE, "");
 					record.put(KEY_PAST_TIME, "");
+				}
+				if(provider instanceof PeriodModeCacheProvider){
+					record.put(KEY_RELOAD_TYPE, "periodMode");
+					record.put(KEY_RELOAD_INTERVAL, ((PeriodModeCacheProvider)provider).getRefreshInterval());
+				}else{
+					record.put(KEY_RELOAD_TYPE, "");
+					record.put(KEY_RELOAD_INTERVAL, "");
 				}
 				result.addChild(record);
 			}
