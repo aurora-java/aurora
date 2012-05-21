@@ -16,9 +16,12 @@ public class MessageDispatcher implements IMessageDispatcher{
 
 	@Override
 	public void send(String topic,IMessage message, CompositeMap context) throws Exception {
-		 IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
+		IMessageStub messageStub = (IMessageStub)mRegistry.getInstanceOfType(IMessageStub.class);
         if(messageStub == null)
         	throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageStub.class, this.getClass().getCanonicalName());
+        if(!messageStub.isStarted()){
+			throw new IllegalStateException("MessageStub is not started, please check the configuration.");
+		}
         IConsumer consumer = messageStub.getConsumer(topic);
         if(consumer == null)
         	throw new IllegalStateException("Can't get consumer for topic:"+topic+"from MessageStub");
