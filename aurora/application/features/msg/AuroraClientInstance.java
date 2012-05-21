@@ -71,6 +71,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 					}
 				}
 				status = STARTED_STATUS;
+				logger.log(Level.INFO,"start jms client successful!");
 			}
 		}).start();
 		Runtime.getRuntime().addShutdownHook(new Thread(){
