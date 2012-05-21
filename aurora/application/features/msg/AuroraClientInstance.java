@@ -42,7 +42,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	private Map<String,IMessageHandler> handlersMap = new HashMap<String,IMessageHandler>();
 	private IMessageDispatcher messageDispatcher;
 	private Map<String,IConsumer> consumerMap;
-	private boolean started = false;
+	private int status = STOP_STATUS;
 	private Logger logger;
 	
 	public AuroraClientInstance(IObjectRegistry registry) {
@@ -51,8 +51,9 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	}
 	
 	public boolean startup() {
-		if(started)
+		if(status == STARTING_STATUS || status == STARTED_STATUS)
 			return true;
+		status = STARTING_STATUS;
 		logger = Logger.getLogger(PLUGIN);
 		if(url == null){
 			BuiltinExceptionFactory.createOneAttributeMissing(this, "url");
@@ -69,7 +70,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 						}
 					}
 				}
-				started = true;
+				status = STARTED_STATUS;
 			}
 		}).start();
 		Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -143,6 +144,6 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 
 	@Override
 	public boolean isStarted() {
-		return started;
+		return status == STARTED_STATUS;
 	}
 }
