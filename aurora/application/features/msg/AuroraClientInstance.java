@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import uncertain.core.ILifeCycle;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
 
@@ -71,7 +72,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 					}
 				}
 				status = STARTED_STATUS;
-				logger.log(Level.INFO,"start jms client successful!");
+				LoggingContext.getLogger(PLUGIN, registry).log(Level.INFO,"start jms client successful!");
 			}
 		}).start();
 		Runtime.getRuntime().addShutdownHook(new Thread(){
