@@ -14,6 +14,7 @@ public class FormViewConfig extends ComponentConfig {
 	
 	public static final String PROPERTITY_PROMPT_ALIGN = "promptalign";
 	public static final String PROPERTITY_PROMPT_WIDTH = "promptwidth";
+	public static final String PROPERTITY_TABLE_STYLE = "tablestyle";
 	
 	private static final String DEFAULT_PROMPT_ALIGN = "left";
 	private static final int DEFAULT_PROMPT_WIDTH = 15;
@@ -50,6 +51,13 @@ public class FormViewConfig extends ComponentConfig {
     }
     public void setTitle(String title){
     	putString(PROPERTITY_TITLE, title);
+    }
+    
+    public String getTableStyle(){
+    	return getString(PROPERTITY_TABLE_STYLE);
+    }
+    public void setTableStyle(String style){
+    	putString(PROPERTITY_TABLE_STYLE, style);
     }
     
     public String getPromptAlign(){

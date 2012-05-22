@@ -14,6 +14,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IFreeMarkerTemplateProvider;
 import aurora.presentation.IViewBuilder;
@@ -42,138 +43,170 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
 		FormViewConfig lc = FormViewConfig.getInstance(view);
-		CompositeMap dm = (CompositeMap)model.getObject(lc.getDataModel());
+		String dataModel = lc.getDataModel();
+		CompositeMap dm = new CompositeMap();
+		if(dataModel != null) {
+			dm = (CompositeMap)model.getObject(lc.getDataModel());
+		}
+		
 		CompositeMap data = new CompositeMap();
 		List records = dm.getChilds();
 		if(records !=null){
 			data = (CompositeMap)records.get(0);
 		}
-		StringBuffer sb = new StringBuffer();
-		generateTitleHead(sb,lc,data);
-		generateTable(sb,lc);
-		generateFields(sb,lc,data);
-		generateFooter(sb,lc);
 		Writer out = session.getWriter();
 		try {
-			out.write(sb.toString());
+			generateTitleHead(out,lc,data);
+			generateTable(out,lc);
+			generateFields(session,out,lc,data);
+			generateFooter(out,lc);
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
 		
 	}
 	
-	private void generateTitleHead(StringBuffer sb, FormViewConfig lc, CompositeMap model) throws ViewCreationException, IOException{
+	private void generateTitleHead(Writer out, FormViewConfig lc, CompositeMap model) throws ViewCreationException, IOException{
 		String title = lc.getTitle();
 		String style = lc.getStyle();
-		sb.append("<DIV class='formViewWrap' ");
+		out.write("<DIV class='formViewWrap' ");
 		if(style !=null){
-			sb.append(" style='").append(style).append("'");			
+			out.write(" style='");
+			out.write(style);
+			out.write("'");			
 		}
-		sb.append(">");
+		out.write(">");
 		if(title != null){
-			sb.append("<DIV class='title'>").append(title).append("</DIV>");
+			out.write("<DIV class='title'>");
+			out.write(title);
+			out.write("</DIV>");
 		}else {
 			title = lc.getTitleText();
 			if(title != null){
-				sb.append("<span class='title'>");
+				out.write("<span class='title'>");
 				Reader reader = null;
 				Template t = null;
-				StringWriter out = null;
+				StringWriter sw = null;
 				try {
 					IFreeMarkerTemplateProvider provider = (IFreeMarkerTemplateProvider) mObjectRegistry.getInstanceOfType(IFreeMarkerTemplateProvider.class);
 					reader = new BufferedReader(new StringReader(title));
 					t = new Template("title", reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
-					out = new StringWriter();
+					sw = new StringWriter();
 					Map p = new HashMap();
 					p.put("model", model);
-					t.process(p, out);
-					out.flush();
-					sb.append(out.toString()).append("</span>");
+					t.process(p, sw);
+					sw.flush();
+					out.write(sw.toString());
+					out.write("</span>");
 				} catch (Exception e) {
 					throw new aurora.presentation.ViewCreationException(e.getMessage());
 				} finally {
 					if(reader != null) reader.close();
-					if(out != null) out.close();
+					if(sw != null) sw.close();
 				}
 			}
 		}
 	}
 	
-	private void generateTable(StringBuffer sb, FormViewConfig lc){
-		sb.append("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
+	private void generateTable(Writer out, FormViewConfig lc) throws IOException{
+		out.write("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
 		String defaultClass = "formView";
 		String className = lc.getClassName();
 		if(className !=null){
 			defaultClass += " " + className;
 		}
-		sb.append(" class='").append(defaultClass).append("'");			
-		
-		sb.append(">");
+		String style = lc.getTableStyle();
+		if(style != null){
+			out.write(" style='");
+			out.write(style);
+			out.write("'");
+		}
+		out.write(" class='");
+		out.write(defaultClass);
+		out.write("'>");
 	}
 	
 	
-	private void generateFields(StringBuffer sb, FormViewConfig lc, CompositeMap data) throws ViewCreationException, IOException {
-		sb.append("<TBODY>");
+	private void generateFields(BuildSession session,Writer out, FormViewConfig lc, CompositeMap data) throws Exception {
+		out.write("<TBODY>");
 		List childs = lc.getSections();
 		Iterator it = childs.iterator();
 		int labelWidth = lc.getPromptWidth();
 		int i=0;
 		while(it.hasNext()){
 			CompositeMap section = (CompositeMap)it.next();
-			sb.append("<TR><TD>");
-			sb.append("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
-			if(i==0)sb.append(" class='top'");
-			if(!it.hasNext())sb.append(" class='bottom'");
-			sb.append("><TBODY><TR>");
+			out.write("<TR><TD>");
+			out.write("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
+			if(i==0)out.write(" class='top'");
+			if(!it.hasNext())out.write(" class='bottom'");
+			out.write("><TBODY><TR>");
 			Iterator cit = section.getChildIterator();
 			while(cit.hasNext()){
 				CompositeMap c = (CompositeMap)cit.next();
 				FormViewFieldConfig field = FormViewFieldConfig.getInstance(c);
 				Integer fw = field.getPromptWidth();
 				labelWidth = fw == null ? labelWidth : fw;
-				sb.append("<TD align='").append(lc.getPromptAlign()).append("'").append(" class='label' width='").append(labelWidth).append("%'");
-				sb.append(">").append(field.getPrompt()).append("</TD>");
-				sb.append("<TD class='field' ");
-				sb.append("width='").append(field.getWidth()).append("%'>");
-				sb.append(processContent(data,c)).append("</TD>");
+				out.write("<TD align='");
+				out.write(lc.getPromptAlign());
+				out.write("' class='label' width='");
+				out.write(""+labelWidth);
+				out.write("%'");
+				out.write(">");
+				out.write(field.getPrompt());
+				out.write("</TD>");
+				out.write("<TD class='field' ");
+				out.write("width='");
+				out.write(""+field.getWidth());
+				out.write("%'>");
+				processContent(session,out,data,c);
+				out.write("</TD>");
 			}
-			sb.append("</TR></TBODY></TABLE>");
+			out.write("</TR></TBODY></TABLE>");
 			i++;
 		}
 				
-		sb.append("</TBODY>");
+		out.write("</TBODY>");
 	}
 	
-	private void generateFooter(StringBuffer sb, FormViewConfig lc) {
-		sb.append("</TABLE></DIV>");
+	private void generateFooter(Writer out, FormViewConfig lc) throws IOException {
+		out.write("</TABLE></DIV>");
 	}
 	
 	
-	private String processContent(CompositeMap model,CompositeMap c) throws IOException,ViewCreationException{
+	private void processContent(BuildSession session, Writer out, CompositeMap model,CompositeMap c) throws Exception{
 		String content = c.getText();
-		if(content != null){
+		if(c.getChilds() == null){
+			FormViewFieldConfig column = FormViewFieldConfig.getInstance(c);
+			out.write(model.getString(column.getName(),""));
+		}else if(content != null && !"".equals(content.trim())){
 			Reader reader = null;
 			Template t = null;
-			StringWriter out = null;
+			StringWriter sw = null;
 			try {
 				IFreeMarkerTemplateProvider provider = (IFreeMarkerTemplateProvider) mObjectRegistry.getInstanceOfType(IFreeMarkerTemplateProvider.class);
 				reader = new BufferedReader(new StringReader(content));
 				t = new Template(c.getName(), reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
-				out = new StringWriter();
+				sw = new StringWriter();
 				Map p = new HashMap();
 				p.put("model", model);
-				t.process(p, out);
-				out.flush();
-				return out.toString();
+				t.process(p, sw);
+				sw.flush();
+				out.write(sw.toString());
 			} catch (Exception e) {
 				throw new aurora.presentation.ViewCreationException(e.getMessage());
 			} finally {
 				if(reader != null) reader.close();
-				if(out != null) out.close();
+				if(sw != null) sw.close();
 			}
 		}else{
-			FormViewFieldConfig column = FormViewFieldConfig.getInstance(c);
-			return model.getString(column.getName(),"");
+			Iterator it = c.getChildIterator();
+			if(it != null){
+				while(it.hasNext()){
+					CompositeMap v = (CompositeMap)it.next();
+					session.buildView(model, v);
+				}
+			}
+			
 		}
 	}
 
