@@ -314,7 +314,7 @@ public class AttachmentManager extends AbstractEntry{
             // Update attachment record
             stmt = conn.createStatement();
             stmt.executeUpdate("update fnd_atm_attachment a set a.file_path = '"+file.getPath()+"' where a.attachment_id = "+aid);
-            conn.commit();
+//            conn.commit();
         }finally{
             DBUtil.closeStatement(stmt);
         }
@@ -330,8 +330,9 @@ public class AttachmentManager extends AbstractEntry{
 				throw new Exception(e);			
 			}			
         }
-		
-		conn.setAutoCommit(false);
+		if(conn.getAutoCommit()){
+			conn.setAutoCommit(false);
+		}
 		long size = 0;
 		Statement st = null;
 		ResultSet rs = null;
@@ -339,7 +340,7 @@ public class AttachmentManager extends AbstractEntry{
 		try {
 			st = nativeConn.createStatement();
 			st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
-			st.execute("commit");
+//			st.execute("commit");
 
 			rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
 			if (!rs.next())
@@ -362,10 +363,10 @@ public class AttachmentManager extends AbstractEntry{
 				size += le;
 			}
 			outstream.close();
-			st.execute("commit");
+//			st.execute("commit");
 			st.close();
 			instream.close();
-			conn.commit();
+//			conn.commit();
 			return size;
 		} finally {
 			DBUtil.closeResultSet(rs);
