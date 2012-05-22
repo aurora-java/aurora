@@ -24,11 +24,14 @@ public class Chart extends Component {
 	private static final String PROPERTITY_SERIES_NAME = "seriesName";
 	private static final String PROPERTITY_THEME = "chartTheme";
 	
+	private static final String PROPERTITY_CHART_ALIGNTICKS = "alignTicks";
+	private static final String PROPERTITY_CHART_ANIMATION = "animation";
 	private static final String PROPERTITY_CHART_BACKGROUNDCOLOR = "backgroundColor";
 	private static final String PROPERTITY_CHART_BORDERCOLOR = "borderColor";
 	private static final String PROPERTITY_CHART_BORDERRADIUS = "borderRadius";
 	private static final String PROPERTITY_CHART_BORDERWIDTH = "borderWidth";
-	private static final String PROPERTITY_CHART_CLASS_NAME = "className";
+	private static final String PROPERTITY_CHART_CLASSNAME = "className";
+	private static final String PROPERTITY_CHART_DEFAULTSERIESTYPE = "defaultSeriesType"; 
 	private static final String PROPERTITY_CHART_IGNORE_HIDDEN_SERIES = "ignoreHiddenSeries"; 
 	private static final String PROPERTITY_CHART_INVERTED = "inverted";
 	private static final String PROPERTITY_CHART_MARGIN = "margin"; 
@@ -52,10 +55,9 @@ public class Chart extends Component {
 	private static final String PROPERTITY_CHART_SPACING_LEFT = "spacingLeft";
 	private static final String PROPERTITY_CHART_STYLE = "chartStyle"; 
 	private static final String PROPERTITY_CHART_TYPE = "type";
-	private static final String PROPERTITY_CHART_ZOOM_TYP = "zoomType";
+	private static final String PROPERTITY_CHART_ZOOMTYPE = "zoomType";
 	
 	private static final String PROPERTITY_CHART_POLAR = "polar";
-	private static final String PROPERTITY_CHART_ANGULAR = "angular";
 	
 	private static final String PROPERTITY_CREDITS = "credits";
 	private static final String PROPERTITY_CREDITS_ENABLED = "enabled";
@@ -126,6 +128,9 @@ public class Chart extends Component {
 	private static final String PROPERTITY_TOOLTIP_BORDERWIDTH = "borderWidth";
 	private static final String PROPERTITY_TOOLTIP_ENABLED = "enabled";
 	private static final String PROPERTITY_TOOLTIP_FORMATTER = "formatter";
+	private static final String PROPERTITY_TOOLTIP_HEADERFORMAT = "headerForamt";
+	private static final String PROPERTITY_TOOLTIP_POINTFORMAT = "pointFormat";
+	private static final String PROPERTITY_TOOLTIP_FOOTERFORMAT = "footerFormat";
 	private static final String PROPERTITY_TOOLTIP_SHADOW = "shadow";
 	private static final String PROPERTITY_TOOLTIP_SHARED = "shared";
 	private static final String PROPERTITY_TOOLTIP_SNAP = "snap";
@@ -309,7 +314,6 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS = "borderRadius";
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH = "borderWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT = "colorByPoint";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_CROPTHRESHOLD = "cropThreshold";
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING = "groupPadding";
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH = "minPointLength";
 	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING = "pointPadding";
@@ -326,12 +330,10 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_PIE_BORDERWIDTH = "borderWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_PIE_CENTER = "center";
 	private static final String PROPERTITY_PLOTOPTIONS_PIE_INNERSIZE = "innerSize";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_SHOWINLEGEND = "showInLegend";
 	private static final String PROPERTITY_PLOTOPTIONS_PIE_SIZE = "size";
 	private static final String PROPERTITY_PLOTOPTIONS_PIE_SLICEDOFFSET = "slicedOffset";
 	
 	private static final String PROPERTITY_PLOTOPTIONS_SCATTER = "scatter";
-	private static final String PROPERTITY_PLOTOPTIONS_SCATTER_LINEWIDTH = "lineWidth";
 	
 	private static final String PROPERTITY_PLOTOPTIONS_LINE = "line";
 	private static final String PROPERTITY_PLOTOPTIONS_LINE_STEP = "step";
@@ -394,9 +396,7 @@ public class Chart extends Component {
 		
 		JSONObject config = getConfig();
 		
-		if(view.getString(ComponentConfig.PROPERTITY_HEIGHT) == null)
 		config.remove(ComponentConfig.PROPERTITY_HEIGHT);
-		if(view.getString(ComponentConfig.PROPERTITY_WIDTH) == null)
 		config.remove(ComponentConfig.PROPERTITY_WIDTH);
 		config.remove("listeners");
 		map.put(CONFIG, getConfigString());
@@ -471,10 +471,25 @@ public class Chart extends Component {
 					}
 				}
 			}
+			if(PROPERTITY_CHART_STYLE.equals(key))
+				key = "style";
 			map.put(key, smap);	
 		}
 	}
-	
+	private void putColorCfg(CompositeMap parent,String key, Map map){
+		Map cfg = new HashMap();	
+		String linearGradient = "linearGradient";
+		String stops = "stops";
+		CompositeMap view = parent.getChild(key);
+		if(view != null){
+			putArrayCfg(view, linearGradient, cfg);
+			putArrayCfg(view, stops, cfg);
+			if(!cfg.isEmpty())
+				map.put(key, new JSONObject(cfg));
+		}else{
+			putStringCfg(parent, key, map);
+		}
+	}
 	
 	private void processChartConfig(ViewContext context){
 		Map chart = new HashMap();
@@ -489,11 +504,15 @@ public class Chart extends Component {
 			chart.put(PROPERTITY_CHART_POLAR, new Boolean(true));
 		}else
 			putStringCfg(view,PROPERTITY_CHART_TYPE,chart);
-		putStringCfg(view,PROPERTITY_CHART_BACKGROUNDCOLOR,chart);
+		putBooleanCfg(view,PROPERTITY_CHART_ALIGNTICKS,chart);
+		putBooleanCfg(view,PROPERTITY_CHART_ANIMATION,chart);
+		putColorCfg(view,PROPERTITY_CHART_BACKGROUNDCOLOR,chart);
 		putFloatCfg(view,PROPERTITY_CHART_BORDERRADIUS,chart);
 		putStringCfg(view,PROPERTITY_CHART_BORDERCOLOR,chart);
 		putFloatCfg(view,PROPERTITY_CHART_BORDERWIDTH,chart);
-		putStringCfg(view, PROPERTITY_CHART_CLASS_NAME, chart);
+		putStringCfg(view, PROPERTITY_CHART_CLASSNAME, chart);
+		putLongCfg(view, ComponentConfig.PROPERTITY_HEIGHT, chart);
+		putStringCfg(view, PROPERTITY_CHART_DEFAULTSERIESTYPE, chart);
 		putBooleanCfg(view, PROPERTITY_CHART_IGNORE_HIDDEN_SERIES, chart);
 		putBooleanCfg(view, PROPERTITY_CHART_INVERTED, chart);
 		putArrayCfg(view,PROPERTITY_CHART_MARGIN,chart);
@@ -501,7 +520,7 @@ public class Chart extends Component {
 		putIntCfg(view,PROPERTITY_CHART_MARGIN_RIGHT,chart);
 		putIntCfg(view,PROPERTITY_CHART_MARGIN_LEFT,chart);
 		putIntCfg(view,PROPERTITY_CHART_MARGIN_BOTTOM,chart);
-		putStringCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_COLOR, chart);
+		putColorCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_COLOR, chart);
 		putStringCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_IMAGE, chart);
 		putStringCfg(view, PROPERTITY_CHART_PLOT_BORDER_COLOR, chart);
 		putFloatCfg(view,PROPERTITY_CHART_PLOT_BORDER_WIDTH,chart);
@@ -515,8 +534,8 @@ public class Chart extends Component {
 		putIntCfg(view,PROPERTITY_CHART_SPACING_BOTTOM,chart);
 		putIntCfg(view,PROPERTITY_CHART_SPACING_LEFT,chart);
 		putStyleCfg(view,PROPERTITY_CHART_STYLE,chart);
-		putStringCfg(view, PROPERTITY_CHART_ZOOM_TYP, chart);
-		putStringCfg(view, PROPERTITY_CHART_ANGULAR, chart);
+		putLongCfg(view, ComponentConfig.PROPERTITY_HEIGHT, chart);
+		putStringCfg(view, PROPERTITY_CHART_ZOOMTYPE, chart);
 		putEvents(view,chart);
 		
 		addConfig("chart", new JSONObject(chart));
@@ -651,7 +670,7 @@ public class Chart extends Component {
 					}else if(PROPERTITY_PLOTOPTIONS_SERIES.equals(name)){
 						cfg.put(name, processPlotSeries(option));
 					}else if(PROPERTITY_PLOTOPTIONS_SCATTER.equals(name)){
-						cfg.put(name, processPlotScatter(option));
+						cfg.put(name, processPlotSeries(option));
 					}
 				}
 				
@@ -674,7 +693,6 @@ public class Chart extends Component {
 		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS, cfg);
 		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_CROPTHRESHOLD, cfg);
 		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH, cfg);
 		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING, cfg);
@@ -686,7 +704,7 @@ public class Chart extends Component {
 	
 	private JSONObject processPlotArea(CompositeMap view){
 		Map cfg = new HashMap();		
-		processFillColor(view,cfg);
+		putColorCfg(view,PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR,cfg);
 		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);
@@ -699,7 +717,6 @@ public class Chart extends Component {
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_BORDERWIDTH, cfg);
 		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_PIE_CENTER, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_INNERSIZE, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_PIE_SHOWINLEGEND, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIE_SIZE, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_SLICEDOFFSET, cfg);
 		processPlot(view,cfg);
@@ -707,12 +724,6 @@ public class Chart extends Component {
 	}
 	private JSONObject processPlotSeries(CompositeMap view){
 		Map cfg = new HashMap();		
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	private JSONObject processPlotScatter(CompositeMap view){
-		Map cfg = new HashMap();
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_SCATTER_LINEWIDTH, cfg); 
 		processPlot(view,cfg);
 		return new JSONObject(cfg);
 	}
@@ -743,20 +754,6 @@ public class Chart extends Component {
 		putLongCfg(view, PROPERTITY_PLOTOPTIONS_TURBOTHRESHOLD, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
 		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
-	}
-	private void processFillColor(CompositeMap parent, Map map){
-		Map cfg = new HashMap();	
-		String linearGradient = "linearGradient";
-		String stops = "stops";
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR);
-		if(view != null){
-			putArrayCfg(view, linearGradient, cfg);
-			putArrayCfg(view, stops, cfg);
-			if(!cfg.isEmpty())
-				map.put(PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR, new JSONObject(cfg));
-		}else{
-			putStringCfg(parent, PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR, map);
-		}
 	}
 	
 	private void processPlotMarker(CompositeMap parent, Map map, boolean includeStates){
@@ -855,6 +852,9 @@ public class Chart extends Component {
 			putIntCfg(view,PROPERTITY_TOOLTIP_BORDERWIDTH,cfg);
 			putBooleanCfg(view, PROPERTITY_TOOLTIP_ENABLED, cfg);
 			putFunctionCfg(view,PROPERTITY_TOOLTIP_FORMATTER,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_HEADERFORMAT,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_POINTFORMAT,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_FOOTERFORMAT,cfg);
 			putBooleanCfg(view, PROPERTITY_TOOLTIP_SHADOW, cfg);
 			putBooleanCfg(view, PROPERTITY_TOOLTIP_SHARED, cfg);
 			putIntCfg(view,PROPERTITY_TOOLTIP_SNAP,cfg);

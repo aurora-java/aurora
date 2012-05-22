@@ -2,129 +2,390 @@
 <ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
     <ss:elements>
-        <ss:element name="a:chart">
+        <ss:element name="a:chart_style">
             <ss:attributes>
-                <ss:attribute name="type" document="chart类型" type="a:chartType"/>
+                <ss:attribute name="style" document="样式" type="ss:String"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:chart_style1">
+            <ss:attributes>
                 <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
                 <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
                 <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:chart_style2">
+            <ss:attributes>
+                <ss:attribute name="backgroundColor" document="背景颜色" type="ss:String"/>
+                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_style1"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:chart_style3">
+            <ss:attributes>
+                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
+                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:chart_text">
+            <ss:attributes>
+                <ss:attribute name="align" document="水平对齐方式" type="a:alignType"/>
+                <ss:attribute name="x" document="水平位移" type="ss:int"/>
+                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_style"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:chart" document="图表">
+            <ss:attributes>
+                <ss:attribute name="alignTicks" default="true" document="对齐多个轴之间的刻度线" type="ss:boolean"/>
+                <ss:attribute name="animation" default="true" document="隐藏或显示series时的动画效果" type="ss:boolean"/>
                 <ss:attribute name="className" document="chart引用的样式类名" type="ss:String"/>
+                <ss:attribute name="defaultSeriesType" document="每个series的默认类型" type="ss:String"/>
+                <ss:attribute name="ignoreHiddenSeries" default="true" document="忽略隐藏的series" type="ss:boolean"/>
+                <ss:attribute name="inverted" default="false" document="是否将chart颠倒" type="ss:boolean"/>
+                <ss:attribute name="margin" default="null" document="四边的边距，格式： 10,10,0,0" type="ss:int"/>
                 <ss:attribute name="marginTop" document="上边距" type="ss:int"/>
                 <ss:attribute name="marginRight" document="右边距" type="ss:int"/>
                 <ss:attribute name="marginLeft" document="左边距" type="ss:int"/>
                 <ss:attribute name="marginBottom" document="下边距" type="ss:int"/>
+                <ss:attribute name="plotBackgroundColor" document="图形区域的背景颜色" type="ss:String"/>
+                <ss:attribute name="plotBackgroundImage" document="图形区域的背景图片" type="ss:String"/>
+                <ss:attribute name="plotBorderColor" default="rgba(255, 255, 255, .9)" document="图形区域的边框颜色" type="ss:String"/>
+                <ss:attribute name="plotBorderWidth" default="1" document="图形区域的边框宽度" type="ss:int"/>
+                <ss:attribute name="plotShadow" default="true" document="图形区域是否有阴影" type="ss:boolean"/>
+                <ss:attribute name="reflow" default="true" document="宽度在没有被设置的情况下，是否根据父节点的宽度的改变而自动改变" type="ss:boolean"/>
+                <ss:attribute name="selectionMarkerFill" default="rgba(69,114,167,0.25)" document="当可用鼠标拖拽调节图形缩放时，鼠标拖拽区域的颜色" type="ss:String"/>
+                <ss:attribute name="showAxes" default="false" document="是否显示初始坐标轴，这只适用于坐标轴因series动态添加而自动生成时" type="ss:boolean"/>
+                <ss:attribute name="spacingTop" default="10" document="图形区域的上边距" type="ss:int"/>
+                <ss:attribute name="spacingRight" default="10" document="图形区域的右边距" type="ss:int"/>
+                <ss:attribute name="spacingBottom" default="15" document="图形区域的下边距" type="ss:int"/>
+                <ss:attribute name="spacingLeft" default="10" document="图形区域的左边距" type="ss:int"/>
                 <ss:attribute name="chartStyle" document="chart的样式"/>
-                <ss:attribute name="inverted" document="是否将chart颠倒" type="ss:boolean"/>
+                <ss:attribute name="type" document="chart类型" type="a:chartType"/>
+                <ss:attribute name="zoomType" document="缩放类型" type="a:zoomType"/>
             </ss:attributes>
             <ss:arrays>
-                <ss:array name="a:xAxis" document="xAxis" indexField="name" type="a:xAxi"/>
-                <ss:array name="a:yAxis" document="yAxis" indexField="name" type="a:yAxi"/>
+                <ss:array name="a:xAxis" document="X轴" indexField="name" type="a:xAxi"/>
+                <ss:array name="a:yAxis" document="Y轴" indexField="name" type="a:yAxi"/>
             </ss:arrays>
             <ss:elements>
                 <ss:element ref="a:title"/>
+                <ss:element ref="a:subtitle"/>
                 <ss:element ref="a:tooltip"/>
                 <ss:element ref="a:legend"/>
                 <ss:element ref="a:plotOptions"/>
             </ss:elements>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:chart_style2"/>
             </ss:extensions>
-        </ss:element>
-        <ss:element name="a:Axi">
-            <ss:attributes>
-                <ss:attribute name="name" document="名称" type="ss:String"/>
-                <ss:attribute name="opposite" document="反向" type="ss:boolean"/>
-            </ss:attributes>
-            <ss:elements>
-                <ss:element ref="a:title"/>
-                <ss:element ref="a:labels"/>
-            </ss:elements>
         </ss:element>
         <ss:element name="a:xAxi">
-            <ss:extensions>
-                <ss:extension base="a:Axi"/>
-            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="allowDecimals" default="true" document="是否允许有小数位" type="ss:boolean"/>
+                <ss:attribute name="alternateGridColor" document="间隔的网格颜色" type="ss:String"/>
+                <ss:attribute name="categories" document="设定坐标轴上的标识，但不会覆盖通过name属性从dataset获取生成的坐标轴标识" type="ss:String"/>
+                <ss:attribute name="endOnTick" default="true" document="坐标轴是否以刻度线为末端" type="ss:boolean"/>
+                <ss:attribute name="gridLineColor" document="网格线的颜色" type="ss:String"/>
+                <ss:attribute name="gridLineDashStyle" default="Solid" document="网格线的样式" type="a:dashStyleType"/>
+                <ss:attribute name="gridLineWidth" document="网格线的宽度" type="ss:int"/>
+                <ss:attribute name="lineColor" document="坐标轴的颜色" type="ss:String"/>
+                <ss:attribute name="lineWidth" document="坐标轴的宽度" type="ss:int"/>
+                <ss:attribute name="id" document="可通过脚本chart.get(id)获得坐标轴对象" type="ss:String"/>
+                <ss:attribute name="max" document="坐标轴显示的最大值" type="ss:int"/>
+                <ss:attribute name="maxPadding" document="坐标轴显示的最大值离数据图形峰值的间距，如该值为0.05,则间距为峰值高度乘以0.05。当max属性被设置时，该属性无效。" type="ss:int"/>
+                <ss:attribute name="min" document="坐标轴显示的最小值" type="ss:int"/>
+                <ss:attribute name="minorGridLineColor" document="次级网格线的颜色" type="ss:String"/>
+                <ss:attribute name="minorGridLineDashStyle" default="Solid" document="次级网格线的样式" type="a:dashStyleType"/>
+                <ss:attribute name="minorGridLineWidth" document="次级网格线的宽度" type="ss:int"/>
+                <ss:attribute name="minorTickColor" document="次级刻度线的颜色" type="ss:String"/>
+                <ss:attribute name="minorTickInterval" document="次级刻度线的间隔值" type="ss:int"/>
+                <ss:attribute name="minorTickLength" document="次级刻度线的长度" type="ss:int"/>
+                <ss:attribute name="minorTickPosition" default="outside" document="次级刻度线的位置" type="a:tickPositionType"/>
+                <ss:attribute name="minorTickWidth" document="次级刻度线的宽度" type="ss:int"/>
+                <ss:attribute name="minPadding" document="坐标轴显示的最小值离数据图形谷值的间距，如该值为0.05,则间距为谷值高度乘以0.05。当min属性被设置时，该属性无效。" type="ss:int"/>
+                <ss:attribute name="minRange" document="坐标系缩放时的最小范围值" type="ss:int"/>
+                <ss:attribute name="name" document="组件name,对应dataset中field的name" type="ss:String"/>
+                <ss:attribute name="offset" document="坐标轴到图形区域的距离" type="ss:int"/>
+                <ss:attribute name="opposite" default="false" document="坐标轴是否在图形区域的另一边" type="ss:boolean"/>
+                <ss:attribute name="reversed" default="false" document="坐标轴反向" type="ss:boolean"/>
+                <ss:attribute name="showFirstLabel" default="true" document="显示坐标轴第一个刻度上的标识" type="ss:boolean"/>
+                <ss:attribute name="showLastLabel" default="true" document="显示坐标轴最后一个刻度上的标识" type="ss:boolean"/>
+                <ss:attribute name="offset" document="坐标轴到图形区域的距离" type="ss:int"/>
+                <ss:attribute name="startOfWeek" default="1" document="设定日期型坐标轴的刻度线上显示的日期。0 = Sunday, 1 = Monday." type="ss:int"/>
+                <ss:attribute name="tickColor" document="刻度线的颜色" type="ss:String"/>
+                <ss:attribute name="tickInterval" document="刻度线的间隔值" type="ss:int"/>
+                <ss:attribute name="tickLength" document="刻度线的长度" type="ss:int"/>
+                <ss:attribute name="tickLength" document="刻度线的长度" type="ss:String"/>
+                <ss:attribute name="tickmarkPlacement" document="坐标轴上的标识是在刻度线上还是在刻度线与刻度线之间" type="a:tickmarkPlacementType"/>
+                <ss:attribute name="tickPosition" default="outside" document="刻度线的位置" type="a:tickPositionType"/>
+                <ss:attribute name="tickWidth" document="刻度线的宽度" type="ss:int"/>
+                <ss:attribute name="tickInterval" document="刻度线的间隔像素值，只有在tickInterval为null时有效。" type="ss:int"/>
+                <ss:attribute name="type" document="坐标轴类型" type="ss:axisType"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:labels"/>
+                <ss:element ref="a:title"/>
+            </ss:elements>
+            <ss:arrays>
+                <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
+                <ss:array name="a:plotBands" document="网格区域配置" indexField="name" type="a:plotBand"/>
+                <ss:array name="a:plotLines" document="网格线配置" indexField="name" type="a:plotLine"/>
+            </ss:arrays>
         </ss:element>
         <ss:element name="a:yAxi">
+            <ss:elements>
+                <ss:element ref="a:stackLabels"/>
+            </ss:elements>
             <ss:extensions>
-                <ss:extension base="a:Axi"/>
+                <ss:extension base="a:xAxi"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="a:title">
+        <ss:element name="a:tooltip" document="跟踪浮动窗口">
             <ss:attributes>
-                <ss:attribute name="text" document="title的名称" type="ss:String"/>
-                <ss:attribute name="x" document="水平位移" type="ss:int"/>
-                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
-                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
-                <ss:attribute name="verticalAlign" document="垂直居中，靠上，靠下" type="a:vAlignType"/>
-                <ss:attribute name="style" document="title的样式"/>
-                <ss:attribute name="floating" document="是否浮动" type="ss:boolean"/>
+                <ss:attribute name="crosshairs" document="是否有十字线" type="ss:String"/>
+                <ss:attribute name="headerFormat" document="头格式化" type="ss:String"/>
+                <ss:attribute name="pointFormat" document="中端格式化" type="ss:String"/>
+                <ss:attribute name="footerFormat" document="脚格式化" type="ss:String"/>
+                <ss:attribute name="shared" default="false" document="是否让多有series共享tooltip" type="ss:boolean"/>
+                <ss:attribute name="snap" document="感应距离" type="ss:int"/>
+                <ss:attribute name="valueDecimals" document="显示值的小数点位" type="ss:int"/>
+                <ss:attribute name="valuePrefix" document="显示值的前缀" type="ss:String"/>
+                <ss:attribute name="valueSuffix" document="显示值的后缀" type="ss:String"/>
+                <ss:attribute name="xDateFormat" document="时期类型值的格式化" type="ss:String"/>
+                <ss:attribute name="useHTML" document="是否用html格式化" type="ss:boolean"/>
             </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_style"/>
+                <ss:extension base="a:chart_style2"/>
+                <ss:extension base="a:chart_style3"/>
+            </ss:extensions>
         </ss:element>
-        <ss:element name="a:tooltip">
+        <ss:element name="a:legend" document="图例说明框">
             <ss:attributes>
-                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
-                <ss:attribute name="backgroundColor" document="背景颜色" type="ss:String"/>
-                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
-                <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
-                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
-                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
-                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
-                <ss:attribute name="style" document="样式"/>
-            </ss:attributes>
-        </ss:element>
-        <ss:element name="a:legend">
-            <ss:attributes>
-                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
-                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
-                <ss:attribute name="layout" document="水平或垂直" type="a:layout"/>
-                <ss:attribute name="verticalAlign" document="垂直居中，靠上，靠下" type="a:vAlignType"/>
-                <ss:attribute name="width" document="宽度" type="ss:int"/>
-                <ss:attribute name="x" document="水平位移" type="ss:int"/>
-                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
-                <ss:attribute name="backgroundColor" document="背景颜色" type="ss:String"/>
-                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
-                <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
                 <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
                 <ss:attribute name="floating" document="是否悬浮" type="ss:boolean"/>
-                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
-                <ss:attribute name="style" document="样式"/>
+                <ss:attribute name="layout" document="水平或垂直" type="a:layout"/>
+                <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
+                <ss:attribute name="width" document="宽度" type="ss:int"/>
+                <ss:attribute name="itemHiddenStyle" document="隐藏series对应的legend_item的样式" type="a:String"/>
+                <ss:attribute name="itemHoverStyle" document="鼠标掠过series对应的legend_item的样式" type="a:String"/>
+                <ss:attribute name="itemStyle" document="series对应的legend_item的样式" type="a:String"/>
+                <ss:attribute name="itemStyle" document="series对应的legend_item的宽度" type="a:int"/>
+                <ss:attribute name="labelFormatter" document="格式function()" type="ss:String"/>
+                <ss:attribute name="lineHeight" document="行高" type="ss:int"/>
+                <ss:attribute name="margin" document="外边距" type="ss:int"/>
+                <ss:attribute name="reversed" document="series之间的顺序是否倒转" type="ss:boolean"/>
+                <ss:attribute name="rtl" document="符号和文字的位置是否对调" type="ss:boolean"/>
+                <ss:attribute name="symbolPadding" document="符号与文字的间距" type="ss:int"/>
+                <ss:attribute name="symbolWidth" document="符号宽度" type="ss:int"/>
             </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_text"/>
+                <ss:extension base="a:chart_style2"/>
+            </ss:extensions>
         </ss:element>
-        <ss:element name="a:plotOptions">
+        <ss:element name="a:plotOptions" document="图形配置参数">
             <ss:elements>
+                <ss:element ref="a:area"/>
+                <ss:element ref="a:areaspline"/>
+                <ss:element ref="a:bar"/>
+                <ss:element ref="a:column"/>
+                <ss:element ref="a:line"/>
                 <ss:element ref="a:pie"/>
+                <ss:element ref="a:series"/>
+                <ss:element ref="a:scatter"/>
+                <ss:element ref="a:spline"/>
             </ss:elements>
         </ss:element>
-        <ss:element name="a:pie">
+        <ss:element name="a:series" document="所有类型">
             <ss:attributes>
-                <ss:attribute name="allowPointSelect" document="是否允许指向选中" type="ss:boolean"/>
+                <ss:attribute name="allowPointSelect" document="是否允许点击选中" type="ss:boolean"/>
+                <ss:attribute name="animation" document="图形隐藏显示切换是否使用动画" type="ss:boolean"/>
+                <ss:attribute name="color" document="颜色" type="ss:String"/>
+                <ss:attribute name="connectNulls" default="false" document="数据中有null值时，是否链接该null值左右两侧的值" type="ss:boolean"/>
+                <ss:attribute name="cropThreshold" document="修剪的阈值" type="ss:int"/>
                 <ss:attribute name="cursor" document="光标显示类型" type="ss:String"/>
-                <ss:attribute name="showInLegend" document="在legend中显示" type="ss:boolean"/>
+                <ss:attribute name="dashStyle" document="线的样式" type="a:dashStyleType"/>
+                <ss:attribute name="enableMouseTracking" document="启用鼠标跟踪" type="ss:boolean"/>
+                <ss:attribute name="id" document="可通过脚本chart.get(id)获得series对象" type="ss:String"/>
+                <ss:attribute name="lineWidth" document="线宽" type="ss:int"/>
+                <ss:attribute name="pointStart" document="如果X轴没有定义值，该值设定X轴的起点值" type="ss:int"/>
+                <ss:attribute name="pointInterval" document="如果X轴没有定义值，该值设定点与点间隔的值" type="ss:int"/>
+                <ss:attribute name="selected" document="是否选中，如果showCheckbox等于 true，则多选框会显示是否选中" type="ss:boolean"/>
+                <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
+                <ss:attribute name="showCheckbox" default="false" document="是否有多选框" type="ss:boolean"/>
+                <ss:attribute name="showInLegend" default="true" document="是否在legend中显示" type="ss:boolean"/>
+                <ss:attribute name="stacking" document="series之间的叠加方式" type="a:stackingType"/>
+                <ss:attribute name="stickyTracking" default="true" document="鼠标粘性跟踪" type="ss:boolean"/>
+                <ss:attribute name="visible" default="true" document="是否显示" type="ss:boolean"/>
+                <ss:attribute name="cropThreshold" document="涡轮的阈值" type="ss:int"/>
+                <ss:attribute name="zIndex" document="所在层的index" type="ss:int"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:dataLabels"/>
+                <ss:element ref="a:tooltip"/>
             </ss:elements>
+            <ss:arrays>
+                <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
+            </ss:arrays>
         </ss:element>
-        <ss:element name="a:dataLabels">
+        <ss:element name="a:area" document="区域类型图">
             <ss:attributes>
-                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
-                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
-                <ss:attribute name="x" document="水平位移" type="ss:int"/>
-                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
-                <ss:attribute name="color" docement="颜色" type="ss:String"/>
-                <ss:attribute name="enabled" document="是否启用" type="ss:boolean"/>
-                <ss:attribute name="style" document="样式"/>
+                <ss:attribute name="fillColor" document="填充色" type="ss:String"/>
+                <ss:attribute name="fillOpacity" document="填充透明度" type="ss:int"/>
+                <ss:attribute name="lineColor" document="线色" type="ss:String"/>
+                <ss:attribute name="threshold" document="阈值" type="ss:int"/>
             </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:areaspline" document="区域揉线图">
+            <ss:extensions>
+                <ss:extension base="a:area"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:bar" document="栅型图">
+            <ss:attributes>
+                <ss:attribute name="colorByPoint" document="每个点是否选不同颜色" type="ss:boolean"/>
+                <ss:attribute name="groupPadding" document="每组数值的边距" type="ss:int"/>
+                <ss:attribute name="minPointLength" document="柱子显示的最小长度" type="ss:int"/>
+                <ss:attribute name="pointPadding" document="柱子间距" type="ss:int"/>
+                <ss:attribute name="pointPadding" document="柱子宽度" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+                <ss:extension base="a:chart_style1"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:column" document="柱型图">
+            <ss:extensions>
+                <ss:extension base="a:bar"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:line" document="线型图">
+            <ss:attributes>
+                <ss:attribute name="step" document="是否用阶的方式" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:pie" document="饼图">
+            <ss:attributes>
+                <ss:attribute name="borderColor" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="center" document="中心所在的位置，如 100,100 或者 50%,50%" type="ss:String"/>
+                <ss:attribute name="innerSize" document="内圈半径" type="ss:String"/>
+                <ss:attribute name="size" document="外圈半径" type="ss:String"/>
+                <ss:attribute name="slicedOffset" document="切片偏移" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:scatter" document="离散图">
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:spline" document="揉线图">
+            <ss:extensions>
+                <ss:extension base="a:series"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:subtitle" document="副标题">
+            <ss:attributes>
+                <ss:attribute name="floating" document="是否浮动" type="ss:boolean"/>
+                <ss:attribute name="text" document="文本" type="ss:String"/>
+                <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_text"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:title" document="标题">
+            <ss:attributes>
+                <ss:attribute name="margin" document="标题或副标题（有副标题时）与图形区域的间隔" type="a:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:subtitle"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:label">
+            <ss:attributes>
+                <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
+                <ss:attribute name="rotation" document="旋转度数" type="ss:int"/>
+                <ss:attribute name="text" document="文本" type="ss:String"/>
+                <ss:attribute name="textAlign" document="文本对齐方式" type="a:alignType"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_text"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:labels">
             <ss:attributes>
-                <ss:attribute name="formatter" document="格式function()" type="ss:String"/>
-                <ss:attribute name="align" document="水平居中，靠左，靠右" type="a:alignType"/>
-                <ss:attribute name="x" document="水平位移" type="ss:int"/>
-                <ss:attribute name="y" document="垂直位移" type="ss:int"/>
-                <ss:attribute name="style" document="样式"/>
+                <ss:attribute name="rotation" document="旋转度数" type="ss:int"/>
             </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_style3"/>
+                <ss:extension base="a:chart_text"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:dataLabels">
+            <ss:attributes>
+                <ss:attribute name="color" docement="颜色" type="ss:String"/>
+                <ss:attribute name="padding" document="内边距" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:chart_style2"/>
+                <ss:extension base="a:labels"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:stackLabels">
+            <ss:attributes>
+                <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
+                <ss:attribute name="textAlign" document="文本对齐方式" type="a:alignType"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:labels"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:plotBand">
+            <ss:attributes>
+                <ss:attribute name="color" document="网格块颜色" type="ss:String"/>
+                <ss:attribute name="from" document="网格块的开始值" type="ss:String"/>
+                <ss:attribute name="id" document="网格块的id，通过脚本Axis.removePlotBand(id)来移除" type="ss:int"/>
+                <ss:attribute name="to" document="网格块的结束值" type="ss:String"/>
+                <ss:attribute name="zIndex" document="网格块的层的index" type="ss:int"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:label"/>
+            </ss:elements>
+            <ss:arrays>
+                <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="a:plotLine">
+            <ss:attributes>
+                <ss:attribute name="color" document="网格线颜色" type="ss:String"/>
+                <ss:attribute name="dashStyle" document="网格线的样式" type="a:dashStyleType"/>
+                <ss:attribute name="id" document="网格线的id，通过脚本Axis.removePlotLine(id)来移除" type="ss:int"/>
+                <ss:attribute name="value" document="网格线所在的值" type="ss:String"/>
+                <ss:attribute name="width" document="网格线的宽度" type="ss:String"/>
+                <ss:attribute name="zIndex" document="网格线的层的index" type="ss:int"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:label"/>
+            </ss:elements>
+            <ss:arrays>
+                <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
+            </ss:arrays>
         </ss:element>
     </ss:elements>
     <ss:types>
@@ -133,6 +394,16 @@
                 <ss:enumerations>
                     <ss:enumeration value="line"/>
                     <ss:enumeration value="pie"/>
+                    <ss:enumeration value="polar"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:zoomType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="x"/>
+                    <ss:enumeration value="y"/>
+                    <ss:enumeration value="xy"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
@@ -150,6 +421,65 @@
                     <ss:enumeration value="top"/>
                     <ss:enumeration value="center"/>
                     <ss:enumeration value="bottom"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:dashStyleType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="Solid"/>
+                    <ss:enumeration value="ShortDash"/>
+                    <ss:enumeration value="ShortDot"/>
+                    <ss:enumeration value="ShortDashDot"/>
+                    <ss:enumeration value="ShortDashDotDot"/>
+                    <ss:enumeration value="Dot"/>
+                    <ss:enumeration value="Dash"/>
+                    <ss:enumeration value="LongDash"/>
+                    <ss:enumeration value="DashDot"/>
+                    <ss:enumeration value="LongDashDot"/>
+                    <ss:enumeration value="LongDashDotDot"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:tickPositionType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="inside"/>
+                    <ss:enumeration value="outside"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:tickmarkPlacementType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="on"/>
+                    <ss:enumeration value="between"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:axisType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="linear"/>
+                    <ss:enumeration value="logarithmic"/>
+                    <ss:enumeration value="datetime"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:stackingType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="normal"/>
+                    <ss:enumeration value="percent"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:axisType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="linear"/>
+                    <ss:enumeration value="logarithmic"/>
+                    <ss:enumeration value="datetime"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
