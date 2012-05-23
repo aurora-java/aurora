@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.GeneralException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
@@ -35,9 +36,13 @@ public class DefaultNoticeConsumer extends AbstractLocatableObject implements IN
 	}
 
 	@Override
-	public void onMessage(IMessage msg) throws Exception {
+	public void onMessage(IMessage msg){
 		String messageText = null;
-		messageText = msg.getText();
+		try {
+			messageText = msg.getText();
+		} catch (Exception e) {
+			throw new GeneralException(MessageCodes.JMSEXCEPTION_ERROR, new Object[]{e.getMessage()}, e);
+		}
 		List<IMessageListener> listeners = messageListeners.get(messageText);
 		if(listeners != null){
 			for(IMessageListener l:listeners){

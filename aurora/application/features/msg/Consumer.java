@@ -3,9 +3,9 @@ package aurora.application.features.msg;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ConfigurationFileException;
+import uncertain.exception.GeneralException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
@@ -34,8 +34,13 @@ public class Consumer extends AbstractLocatableObject implements IConsumer {
 		logger = LoggingContext.getLogger(this.getClass().getCanonicalName(), registry);
 		logger.log(Level.CONFIG,"start Consumer for topic:"+topic+" successfull!");
 	}
-	public void onMessage(IMessage msg) throws Exception {
-		String messageText = msg.getText();
+	public void onMessage(IMessage msg){
+		String messageText = null;
+		try {
+			messageText = msg.getText();
+		} catch (Exception e) {
+			throw new GeneralException(MessageCodes.JMSEXCEPTION_ERROR, new Object[]{e.getMessage()}, e);
+		}
 		String handlerName = (String)eventMap.get(messageText);
 		if(handlerName != null){
 			IMessageHandler handler = (IMessageHandler)stub.getMessageHandler(handlerName);
