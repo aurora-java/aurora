@@ -175,10 +175,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 	
 	private void processContent(BuildSession session, Writer out, CompositeMap model,CompositeMap c) throws Exception{
 		String content = c.getText();
-		if(c.getChilds() == null){
-			FormViewFieldConfig column = FormViewFieldConfig.getInstance(c);
-			out.write(model.getString(column.getName(),""));
-		}else if(content != null && !"".equals(content.trim())){
+		if(content != null && !"".equals(content.trim())){
 			Reader reader = null;
 			Template t = null;
 			StringWriter sw = null;
@@ -198,7 +195,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				if(reader != null) reader.close();
 				if(sw != null) sw.close();
 			}
-		}else{
+		}else if(c.getChilds() != null){
 			Iterator it = c.getChildIterator();
 			if(it != null){
 				while(it.hasNext()){
@@ -206,7 +203,9 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 					session.buildView(model, v);
 				}
 			}
-			
+		}else {
+			FormViewFieldConfig column = FormViewFieldConfig.getInstance(c);
+			out.write(model.getString(column.getName(),""));
 		}
 	}
 
