@@ -210,6 +210,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
         }
 
         public void run() {
+            mLogger.config("Request record thead start");
             try {
                 while (isRunning) {
                     //CompositeMap data = recordQueue.poll();
@@ -246,7 +247,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
                                     "Total "+num+"Request info will be discarded:");
                             continue;
                         }
-
+                        mLogger.config("Prepqre to save");
                         CompositeMap context = new CompositeMap("context");
                         SqlServiceContext sqlctx = SqlServiceContext
                                 .createSqlServiceContext(context);
@@ -267,6 +268,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
                         time = System.currentTimeMillis() - time;
                         processTime += time;
                         processedCount += num;
+                        mLogger.config("save finish");
                     }
 
                 }
