@@ -114,11 +114,13 @@ public class RequestRecorder extends AbstractLocatableObject implements
                 data.put("client_os_family", os[0]);
                 data.put("client_os", os[1]);
                 data.put("client_os_version", os[2]);
+
+                String p = UserAgentTools.getUserPlatform(agent);
+                if (p != null)
+                    data.put("client_platform", p);
             }
 
-            String p = UserAgentTools.getUserPlatform(agent);
-            if (p != null)
-                data.put("client_platform", p);
+
         }
         
         private Throwable getRootCause(Throwable exception) {
