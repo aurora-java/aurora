@@ -1,5 +1,7 @@
 package aurora.service.ws;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.resource.spi.IllegalStateException;
 import javax.servlet.ServletException;
@@ -50,30 +52,39 @@ public class WSLoginChecker extends AbstractEntry {
 
 	@Override
 	public void run(ProcedureRunner runner) throws Exception {
-		if (model == null)
-			throw BuiltinExceptionFactory.createAttributeMissing(this, "model");
 		CompositeMap context = runner.getContext();
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(context);
-		HttpServletRequest request = svc.getRequest();
-		if (!isSOAPRequest(request))
-			throw new IllegalStateException("This is not a soap request!");
-		CompositeMap bmRunContext = createBMContext(context, request);
-		
-		CompositeMap config = createAction(bmRunContext);
-		runBM(config, bmRunContext);
-		String fieldvalue = (String) bmRunContext.getObject(this.getField());
-		String checkvalue = getValue();
-		if (fieldvalue != null && fieldvalue.equals(checkvalue)) {
-			context.putBoolean("success", false);
+		try {
+			if (model == null)
+				throw BuiltinExceptionFactory.createAttributeMissing(this, "model");
+			HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(context);
+			HttpServletRequest request = svc.getRequest();
+			if (!isSOAPRequest(request))
+				throw new IllegalStateException("This is not a soap request!");
+			CompositeMap bmRunContext = createBMContext(context, request);
 
-			String msg = message == null ? checkvalue : message;
-			msg = LanguageUtil.getTranslatedMessage(registry, msg, context);
-
-			ErrorMessage em = new ErrorMessage(checkvalue, msg, null);
-			ServiceContext sc = ServiceContext.createServiceContext(context);
-			sc.setError(em.getObjectContext());
+			CompositeMap config = createAction(bmRunContext);
+			runBM(config, bmRunContext);
+			String fieldvalue = (String) bmRunContext.getObject(this.getField());
+			String checkvalue = getValue();
+			if (fieldvalue != null && fieldvalue.equals(checkvalue)) {
+				String msg = message == null ? checkvalue : message;
+				msg = LanguageUtil.getTranslatedMessage(registry, msg, context);
+				setError(context, checkvalue, msg);
+			}
+		} catch (Throwable e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			pw.close();
+			setError(context, "Exception", sw.toString());
 		}
+	}
 
+	private void setError(CompositeMap context, String code, String message) {
+		context.putBoolean("success", false);
+		ErrorMessage em = new ErrorMessage(code, message, null);
+		ServiceContext sc = ServiceContext.createServiceContext(context);
+		sc.setError(em.getObjectContext());
 	}
 
 	private boolean isSOAPRequest(HttpServletRequest svc) {
