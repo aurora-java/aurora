@@ -114,17 +114,12 @@ public class CacheBasedLookUpField {
 	}
 
 	private void addRecordCodeValueName(CompositeMap data, String lookupfiled, String lookupcode, String srcFieldName,String language) throws Exception {
-		List result = lookupProvider.getLookupList(language, lookupcode);
-		if(result == null)
-			return;
 		String code_value = data.getString(srcFieldName);
 		if(code_value==null)
 			return;
-		for(Object obj:result){
-			CompositeMap record = (CompositeMap)obj; 
-			if(code_value.equals(record.getString("code_value"))){
-				data.put(lookupfiled, record.getString("code_value_name"));
-			}
-		}
+		String prompt = lookupProvider.getLookupPrompt(language, lookupcode,code_value);
+		if(prompt == null)
+			return;
+		data.put(lookupfiled, prompt);
 	}
 }
