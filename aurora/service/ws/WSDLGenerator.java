@@ -44,6 +44,7 @@ public class WSDLGenerator {
 		xsdMap.put(short.class.getCanonicalName(), xsd.getPrefix() + ":short");
 		xsdMap.put(int.class.getCanonicalName(), xsd.getPrefix() + ":int");
 		xsdMap.put(long.class.getCanonicalName(), xsd.getPrefix() + ":long");
+		xsdMap.put(Long.class.getCanonicalName(), xsd.getPrefix() + ":long");
 		xsdMap.put(float.class.getCanonicalName(), xsd.getPrefix() + ":float");
 		xsdMap.put(double.class.getCanonicalName(), xsd.getPrefix() + ":double");
 		xsdMap.put(Double.class.getCanonicalName(), xsd.getPrefix() + ":double");
