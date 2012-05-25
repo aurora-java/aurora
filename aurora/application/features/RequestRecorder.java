@@ -210,7 +210,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
         }
 
         public void run() {
-            mLogger.config("Request record thead start");
+            mLogger.config("Request record thread start");
             try {
                 while (isRunning) {
                     //CompositeMap data = recordQueue.poll();
@@ -272,7 +272,10 @@ public class RequestRecorder extends AbstractLocatableObject implements
                     }
 
                 }
-            } finally {
+            }catch(Throwable thr){
+                mLogger.log(Level.SEVERE, "Error in request record thread", thr);
+            }
+            finally {
                 if (conn != null)
                     DBUtil.closeConnection(conn);
             }
@@ -292,6 +295,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
         mOcManager = (OCManager)mObjectReg.getInstanceOfType(OCManager.class);
         
         mLogger = LoggingContext.getLogger("aurora.monitor", mObjectReg);
+        mLogger.info("request recorder initialize");
         mDataSource = mDbFactory.getDataSource();
 
         if (mDataSource == null)
