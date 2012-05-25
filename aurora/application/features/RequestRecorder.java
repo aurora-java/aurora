@@ -212,7 +212,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
         }
 
         public void run() {
-            mLogger.config("Request record thread start");
+            //mLogger.config("Request record thread start");
             try {
                 while (isRunning) {
                     //CompositeMap data = recordQueue.poll();
@@ -228,7 +228,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
                             DBUtil.closeConnection(conn);
                             conn = null;
                         }
-                        mLogger.config("No data to save");
+                        //mLogger.config("No data to save");
                     } else {
                         long time = System.currentTimeMillis();
                         idleTime = 0;
@@ -250,7 +250,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
                                     "Total "+num+"Request info will be discarded:");
                             continue;
                         }
-                        mLogger.config("Prepqre to save");
+                        //mLogger.config("Prepqre to save");
                         CompositeMap context = new CompositeMap("context");
                         SqlServiceContext sqlctx = SqlServiceContext
                                 .createSqlServiceContext(context);
@@ -271,7 +271,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
                         time = System.currentTimeMillis() - time;
                         processTime += time;
                         processedCount += num;
-                        mLogger.config("save finish");
+                        //mLogger.config("save finish");
                     }
 
                 }
@@ -322,7 +322,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
 
     public int onServiceFinish(IService service) throws Exception {
 
-        mLogger.info("Prepare request for save:"+((HttpServiceInstance)service).getName());
+        //mLogger.info("Prepare request for save:"+((HttpServiceInstance)service).getName());
 
         requestCount++;
         ServiceContext ctx = service.getServiceContext();
@@ -373,7 +373,7 @@ public class RequestRecorder extends AbstractLocatableObject implements
             RuntimeContext.getInstance(request_data).setException(thr);
         }        
         recordQueue.offer(request_data);
-        mLogger.info("Request saved:"+((HttpServiceInstance)service).getName());
+        //mLogger.info("Request saved:"+((HttpServiceInstance)service).getName());
 
         // System.out.println("put data into queue " + request_data.toXML());
         return EventModel.HANDLE_NORMAL;
