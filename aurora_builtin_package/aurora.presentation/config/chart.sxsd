@@ -387,6 +387,52 @@
                 <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:element>
+        <ss:element name="a:dashboard" document="罗表盘组件">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="align" default="center" document="水平对齐方式" type="a:alignType"/>
+                <ss:attribute name="verticalAlign" default="middle" document="垂直对齐方式" type="a:vAlignType"/>
+                <ss:attribute name="padding" default="10" document="内边距" type="ss:int"/>
+                <ss:attribute name="max" default="1" document="最大值" type="ss:int"/>
+                <ss:attribute name="min" default="0" document="最小值" type="ss:int"/>
+                <ss:attribute name="borderWidth" default="4" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="borderColor" default="#4572A7" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="borderRadius" default="5" document="边框圆角" type="ss:int"/>
+                <ss:attribute name="marginTop" default="0" document="上外边距" type="ss:int"/>
+                <ss:attribute name="marginLeft" default="0" document="左外边距" type="ss:int"/>
+                <ss:attribute name="marginBottom" default="0" document="下外边距" type="ss:int"/>
+                <ss:attribute name="marginRight" default="0" document="右外边距" type="ss:int"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:title"/>
+                <ss:element ref="a:board"/>
+                <ss:element ref="a:pointer"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:board" document="罗表盘盘属性">
+            <ss:attributes>
+                <ss:attribute name="fillColor" default="gradient(linear,-50% 0,50% 0,color-stop(0,rgba(0,255,255,1)),color-stop(50%,rgba(255,255,0,1)),color-stop(100%,rgba(255,0,0,1)))" document="填充色" type="ss:String"/>
+                <ss:attribute name="startAngle" default="0" document="始端角度" type="ss:int"/>
+                <ss:attribute name="endAngle" default="180" document="末端角度" type="ss:int"/>
+                <ss:attribute name="fillOpacity" default="1" document="填充色透明度" type="ss:int"/>
+                <ss:attribute name="max" default="1" document="最大值" type="ss:int"/>
+                <ss:attribute name="min" default="0" document="最小值" type="ss:int"/>
+                <ss:attribute name="borderWidth" default="4" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="borderColor" default="#4572A7" document="边框颜色" type="ss:String"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:pointer" document="罗表盘指针属性">
+            <ss:attributes>
+                <ss:attribute name="fillColor" default="rgba(135,135,135,0.8)" document="填充色" type="ss:String"/>
+                <ss:attribute name="fillopacity" default="1" document="填充色透明度" type="ss:int"/>
+                <ss:attribute name="width" default="8" document="指针宽度" type="ss:int"/>
+                <ss:attribute name="dist" default="10" document="针尖离罗盘边缘的距离" type="ss:int"/>
+                <ss:attribute name="borderWidth" default="4" document="边框宽度" type="ss:int"/>
+                <ss:attribute name="borderColor" default="#4572A7" document="边框颜色" type="ss:String"/>
+            </ss:attributes>
+        </ss:element>
     </ss:elements>
     <ss:types>
         <ss:simpleType name="a:chartType">

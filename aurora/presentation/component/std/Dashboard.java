@@ -51,6 +51,17 @@ public class Dashboard extends Component {
 			addConfig(DashboardConfig.PROPERTITY_MAX, dc.getMax());
 		if (null != dc.getMin())
 			addConfig(DashboardConfig.PROPERTITY_MIN, dc.getMin());
+		if (null != dc.getMarginTop())
+			addConfig(DashboardConfig.PROPERTITY_MARGIN_TOP, dc.getMarginTop());
+		if (null != dc.getMarginLeft())
+			addConfig(DashboardConfig.PROPERTITY_MARGIN_LEFT,
+					dc.getMarginLeft());
+		if (null != dc.getMarginBottom())
+			addConfig(DashboardConfig.PROPERTITY_MARGIN_BOTTOM,
+					dc.getMarginBottom());
+		if (null != dc.getMarginRight())
+			addConfig(DashboardConfig.PROPERTITY_MARGIN_RIGHT,
+					dc.getMarginRight());
 		JSONObject board = dc.getBoard();
 		if (null != board)
 			addConfig(DashboardConfig.PROPERTITY_BOARD, board);
