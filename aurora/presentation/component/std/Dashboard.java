@@ -62,6 +62,15 @@ public class Dashboard extends Component {
 		if (null != dc.getMarginRight())
 			addConfig(DashboardConfig.PROPERTITY_MARGIN_RIGHT,
 					dc.getMarginRight());
+		if (null != dc.getBorderColor())
+			addConfig(DashboardConfig.PROPERTITY_BORDER_COLOR,
+					dc.getBorderColor());
+		if (null != dc.getBorderWidth())
+			addConfig(DashboardConfig.PROPERTITY_BORDER_WIDTH,
+					dc.getBorderWidth());
+		if (null != dc.getBorderRadius())
+			addConfig(DashboardConfig.PROPERTITY_BORDER_RADIUS,
+					dc.getBorderRadius());
 		JSONObject board = dc.getBoard();
 		if (null != board)
 			addConfig(DashboardConfig.PROPERTITY_BOARD, board);
