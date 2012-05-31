@@ -58,7 +58,11 @@ public class Ajax extends Component{
 			CompositeMap child = (CompositeMap) childs.next();
 			String key = child.getString("name");
 			String value = child.getString("value");
-			datas.put(key, value);
+			String bind = child.getString("bind");
+			Map m = new HashMap();
+			if(null != value)m.put("value", value);
+			if(null != bind)m.put("bind", bind);
+			datas.put(key, new JSONObject(m));
 		}
 		if(!datas.isEmpty())
 			config.put(PARAMETERS, new JSONObject(datas));
