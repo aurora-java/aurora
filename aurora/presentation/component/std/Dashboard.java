@@ -25,11 +25,11 @@ import aurora.presentation.component.std.config.DashboardConfig;
 public class Dashboard extends Component {
 
 	protected int getDefaultWidth() {
-		return 300;
+		return DashboardConfig.DEFAULT_WIDTH;
 	}
 
 	protected int getDefaultHeight() {
-		return 300;
+		return DashboardConfig.DEFAULT_HEIGHT;
 	}
 
 	public void onPreparePageContent(BuildSession session, ViewContext context)
@@ -45,39 +45,15 @@ public class Dashboard extends Component {
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		DashboardConfig dc = DashboardConfig.getInstance(view);
-		addConfig(DashboardConfig.PROPERTITY_PADDING,
-				new Integer(dc.getPadding()));
-		if (null != dc.getMax())
-			addConfig(DashboardConfig.PROPERTITY_MAX, dc.getMax());
-		if (null != dc.getMin())
-			addConfig(DashboardConfig.PROPERTITY_MIN, dc.getMin());
-		if (null != dc.getMarginTop())
-			addConfig(DashboardConfig.PROPERTITY_MARGIN_TOP, dc.getMarginTop());
-		if (null != dc.getMarginLeft())
-			addConfig(DashboardConfig.PROPERTITY_MARGIN_LEFT,
-					dc.getMarginLeft());
-		if (null != dc.getMarginBottom())
-			addConfig(DashboardConfig.PROPERTITY_MARGIN_BOTTOM,
-					dc.getMarginBottom());
-		if (null != dc.getMarginRight())
-			addConfig(DashboardConfig.PROPERTITY_MARGIN_RIGHT,
-					dc.getMarginRight());
-		if (null != dc.getBorderColor())
-			addConfig(DashboardConfig.PROPERTITY_BORDER_COLOR,
-					dc.getBorderColor());
-		if (null != dc.getBorderWidth())
-			addConfig(DashboardConfig.PROPERTITY_BORDER_WIDTH,
-					dc.getBorderWidth());
-		if (null != dc.getBorderRadius())
-			addConfig(DashboardConfig.PROPERTITY_BORDER_RADIUS,
-					dc.getBorderRadius());
+		JSONObject chart = dc.getChart();
 		JSONObject board = dc.getBoard();
+		JSONObject pointer = dc.getPointer();
+		JSONObject title = dc.getTitle();
+		addConfig(DashboardConfig.PROPERTITY_CHART, chart);
 		if (null != board)
 			addConfig(DashboardConfig.PROPERTITY_BOARD, board);
-		JSONObject pointer = dc.getPointer();
 		if (null != pointer)
 			addConfig(DashboardConfig.PROPERTITY_POINTER, pointer);
-		JSONObject title = dc.getTitle();
 		if (null != title)
 			addConfig(DashboardConfig.PROPERTITY_TITLE, title);
 		map.put(CONFIG, getConfigString());

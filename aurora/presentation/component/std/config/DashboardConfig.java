@@ -12,18 +12,20 @@ public class DashboardConfig extends ComponentConfig {
 
 	public static final String TAG_NAME = "dashboard";
 
-	public static final String PROPERTITY_ALIGN = "align";
-	public static final String PROPERTITY_VERTICAL_ALIGN = "verticalAlign";
-	public static final String PROPERTITY_PADDING = "padding";
-	public static final String PROPERTITY_MAX = "max";
-	public static final String PROPERTITY_MIN = "min";
-	public static final String PROPERTITY_MARGIN_TOP = "marginTop";
-	public static final String PROPERTITY_MARGIN_LEFT = "marginLeft";
-	public static final String PROPERTITY_MARGIN_BOTTOM = "marginBottom";
-	public static final String PROPERTITY_MARGIN_RIGHT = "marginRight";
-	public static final String PROPERTITY_BORDER_COLOR = "borderColor";
-	public static final String PROPERTITY_BORDER_WIDTH = "borderWidth";
-	public static final String PROPERTITY_BORDER_RADIUS = "borderRadius";
+	public static final String PROPERTITY_CHART = "chart";
+	private static final String PROPERTITY_ALIGN = "align";
+	private static final String PROPERTITY_VERTICAL_ALIGN = "verticalAlign";
+	private static final String PROPERTITY_PADDING = "padding";
+	private static final String PROPERTITY_MAX = "max";
+	private static final String PROPERTITY_MIN = "min";
+	private static final String PROPERTITY_MARGIN_TOP = "marginTop";
+	private static final String PROPERTITY_MARGIN_LEFT = "marginLeft";
+	private static final String PROPERTITY_MARGIN_BOTTOM = "marginBottom";
+	private static final String PROPERTITY_MARGIN_RIGHT = "marginRight";
+	private static final String PROPERTITY_BORDER_COLOR = "borderColor";
+	private static final String PROPERTITY_BORDER_WIDTH = "borderWidth";
+	private static final String PROPERTITY_BORDER_RADIUS = "borderRadius";
+	private static final String PROPERTITY_BACKGROUND_COLOR = "backgroundColor";
 
 	public static final String PROPERTITY_BOARD = "board";
 	private static final String PROPERTITY_BOARD_START_ANGLE = "startAngle";
@@ -53,14 +55,14 @@ public class DashboardConfig extends ComponentConfig {
 	private static final String PROPERTITY_BOARD_END_ON_TICK = "endOntick";
 	private static final String PROPERTITY_BOARD_SHOW_FIRST_LABEL = "showFirstLabel";
 	private static final String PROPERTITY_BOARD_SHOW_LAST_LABEL = "showLastLabel";
-	
+
 	private static final String PROPERTITY_LABELS = "labels";
 	private static final String PROPERTITY_LABELS_ENABLED = "enabled";
 	private static final String PROPERTITY_LABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_LABELS_X = "x";
 	private static final String PROPERTITY_LABELS_Y = "y";
 	private static final String PROPERTITY_LABELS_STYLE = "style";
-	
+
 	public static final String PROPERTITY_POINTER = "pointer";
 	private static final String PROPERTITY_POINTER_WIDTH = "width";
 	private static final String PROPERTITY_POINTER_DIST = "dist";
@@ -77,6 +79,9 @@ public class DashboardConfig extends ComponentConfig {
 	private static final String PROPERTITY_TITLE_X = "x";
 	private static final String PROPERTITY_TITLE_Y = "y";
 	private static final String PROPERTITY_TITLE_STYLE = "style";
+
+	public static final int DEFAULT_WIDTH = 300;
+	public static final int DEFAULT_HEIGHT = 300;
 
 	public static DashboardConfig getInstance() {
 		DashboardConfig model = new DashboardConfig();
@@ -167,100 +172,27 @@ public class DashboardConfig extends ComponentConfig {
 		}
 	}
 
-	public String getAlign() {
-		return getString(PROPERTITY_ALIGN.toLowerCase());
-	}
-
-	public void setAlign(String align) {
-		putString(PROPERTITY_ALIGN.toLowerCase(), align);
-	}
-
-	public String getVerticalAlign() {
-		return getString(PROPERTITY_VERTICAL_ALIGN.toLowerCase());
-	}
-
-	public void setVerticalAlign(String verticalAlign) {
-		putString(PROPERTITY_VERTICAL_ALIGN.toLowerCase(), verticalAlign);
-	}
-
-	public int getPadding() {
-		return getInt(PROPERTITY_PADDING.toLowerCase(), 50);
-	}
-
-	public void setPadding(int padding) {
-		putInt(PROPERTITY_PADDING.toLowerCase(), padding);
-	}
-
-	public Integer getMax() {
-		return getInteger(PROPERTITY_MAX.toLowerCase());
-	}
-
-	public void setMax(Integer max) {
-		putInt(PROPERTITY_MAX.toLowerCase(), max);
-	}
-
-	public Integer getMin() {
-		return getInteger(PROPERTITY_MIN.toLowerCase());
-	}
-
-	public void setMin(Integer min) {
-		putInt(PROPERTITY_MIN.toLowerCase(), min);
-	}
-
-	public Integer getMarginTop() {
-		return getInteger(PROPERTITY_MARGIN_TOP.toLowerCase());
-	}
-
-	public void setMarginTop(Integer marginTop) {
-		putInt(PROPERTITY_MARGIN_TOP.toLowerCase(), marginTop);
-	}
-
-	public Integer getMarginLeft() {
-		return getInteger(PROPERTITY_MARGIN_LEFT.toLowerCase());
-	}
-
-	public void setMarginLeft(Integer marginLeft) {
-		putInt(PROPERTITY_MARGIN_LEFT.toLowerCase(), marginLeft);
-	}
-
-	public Integer getMarginBottom() {
-		return getInteger(PROPERTITY_MARGIN_BOTTOM.toLowerCase());
-	}
-
-	public void setMarginBottom(Integer marginBottom) {
-		putInt(PROPERTITY_MARGIN_BOTTOM.toLowerCase(), marginBottom);
-	}
-
-	public Integer getMarginRight() {
-		return getInteger(PROPERTITY_MARGIN_RIGHT.toLowerCase());
-	}
-
-	public void setMarginRight(Integer marginRight) {
-		putInt(PROPERTITY_MARGIN_RIGHT.toLowerCase(), marginRight);
-	}
-
-	public Integer getBorderColor() {
-		return getInteger(PROPERTITY_BORDER_COLOR.toLowerCase());
-	}
-
-	public void setBorderColor(Integer borderColor) {
-		putInt(PROPERTITY_BORDER_COLOR.toLowerCase(), borderColor);
-	}
-
-	public Integer getBorderWidth() {
-		return getInteger(PROPERTITY_BORDER_WIDTH.toLowerCase());
-	}
-
-	public void setBorderWidth(Integer borderWidth) {
-		putInt(PROPERTITY_BORDER_WIDTH.toLowerCase(), borderWidth);
-	}
-
-	public Integer getBorderRadius() {
-		return getInteger(PROPERTITY_BORDER_RADIUS.toLowerCase());
-	}
-
-	public void setBorderRadius(Integer borderRadius) {
-		putInt(PROPERTITY_BORDER_RADIUS.toLowerCase(), borderRadius);
+	public JSONObject getChart() {
+		CompositeMap view = getObjectContext();
+		Map cfg = new HashMap();
+		cfg.put(PROPERTITY_WIDTH,
+				new Integer(view.getInt(PROPERTITY_WIDTH, DEFAULT_WIDTH)));
+		cfg.put(PROPERTITY_HEIGHT,
+				new Integer(view.getInt(PROPERTITY_HEIGHT, DEFAULT_HEIGHT)));
+		putStringCfg(view, PROPERTITY_ALIGN, cfg);
+		putStringCfg(view, PROPERTITY_VERTICAL_ALIGN, cfg);
+		putIntCfg(view, PROPERTITY_PADDING, cfg);
+		putIntCfg(view, PROPERTITY_MAX, cfg);
+		putIntCfg(view, PROPERTITY_MIN, cfg);
+		putIntCfg(view, PROPERTITY_MARGIN_TOP, cfg);
+		putIntCfg(view, PROPERTITY_MARGIN_LEFT, cfg);
+		putIntCfg(view, PROPERTITY_MARGIN_BOTTOM, cfg);
+		putIntCfg(view, PROPERTITY_MARGIN_RIGHT, cfg);
+		putStringCfg(view, PROPERTITY_BORDER_COLOR, cfg);
+		putIntCfg(view, PROPERTITY_BORDER_WIDTH, cfg);
+		putIntCfg(view, PROPERTITY_BORDER_RADIUS, cfg);
+		putStringCfg(view, PROPERTITY_BACKGROUND_COLOR, cfg);
+		return new JSONObject(cfg);
 	}
 
 	public JSONObject getBoard() {
@@ -269,7 +201,7 @@ public class DashboardConfig extends ComponentConfig {
 		if (null != view) {
 			putIntCfg(view, PROPERTITY_BOARD_START_ANGLE, cfg);
 			putIntCfg(view, PROPERTITY_BOARD_END_ANGLE, cfg);
-			putFloatCfg(view, PROPERTITY_BOARD_WIDTH, cfg);
+			putStringCfg(view, PROPERTITY_BOARD_WIDTH, cfg);
 			putStringCfg(view, PROPERTITY_BOARD_FILL_COLOR, cfg);
 			putFloatCfg(view, PROPERTITY_BOARD_FILL_OPACITY, cfg);
 			putStringCfg(view, PROPERTITY_BOARD_BORDER_COLOR, cfg);
@@ -294,14 +226,14 @@ public class DashboardConfig extends ComponentConfig {
 			putBooleanCfg(view, PROPERTITY_BOARD_END_ON_TICK, cfg);
 			putBooleanCfg(view, PROPERTITY_BOARD_SHOW_FIRST_LABEL, cfg);
 			putBooleanCfg(view, PROPERTITY_BOARD_SHOW_LAST_LABEL, cfg);
-			processLabels(view,cfg);
+			processLabels(view, cfg);
 		}
 		if (cfg.isEmpty())
 			return null;
 		else
 			return new JSONObject(cfg);
 	}
-	
+
 	public JSONObject getPointer() {
 		CompositeMap view = getObjectContext().getChild(PROPERTITY_POINTER);
 		Map cfg = new HashMap();
@@ -312,7 +244,7 @@ public class DashboardConfig extends ComponentConfig {
 			putFloatCfg(view, PROPERTITY_POINTER_FILL_OPACITY, cfg);
 			putStringCfg(view, PROPERTITY_POINTER_BORDER_COLOR, cfg);
 			putIntCfg(view, PROPERTITY_POINTER_BORDER_WIDTH, cfg);
-			processLabels(view,cfg);
+			processLabels(view, cfg);
 		}
 		if (cfg.isEmpty())
 			return null;
@@ -338,18 +270,18 @@ public class DashboardConfig extends ComponentConfig {
 		else
 			return new JSONObject(cfg);
 	}
-	
-	private void processLabels(CompositeMap parent,Map map){
+
+	private void processLabels(CompositeMap parent, Map map) {
 		CompositeMap view = parent.getChild(PROPERTITY_LABELS);
 		Map cfg = new HashMap();
-		if(null != view){
+		if (null != view) {
 			putBooleanCfg(view, PROPERTITY_LABELS_ENABLED, cfg);
 			putIntCfg(view, PROPERTITY_LABELS_ROTATION, cfg);
 			putStyleCfg(view, PROPERTITY_LABELS_STYLE, cfg);
 			putIntCfg(view, PROPERTITY_LABELS_X, cfg);
 			putIntCfg(view, PROPERTITY_LABELS_Y, cfg);
 		}
-		if(!cfg.isEmpty())
+		if (!cfg.isEmpty())
 			map.put(PROPERTITY_LABELS, new JSONObject(cfg));
 	}
 }
