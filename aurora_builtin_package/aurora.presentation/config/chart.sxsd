@@ -414,7 +414,7 @@
         <ss:element name="a:board" document="罗表盘盘属性">
             <ss:attributes>
                 <ss:attribute name="allowDecimals" default="true" document="是否允许有小数位" type="ss:boolean"/>
-                <ss:attribute name="fillColor" default="gradient(linear,-50% 0,50% 0,color-stop(0,rgba(0,255,255,1)),color-stop(50%,rgba(255,255,0,1)),color-stop(100%,rgba(255,0,0,1)))" document="填充色" type="ss:String"/>
+                <ss:attribute name="fillColor" default="gradient(linear,0 0,100% 0,color-stop(0,rgba(0,255,255,1)),color-stop(50%,rgba(255,255,0,1)),color-stop(100%,rgba(255,0,0,1)))" document="填充色" type="ss:String"/>
                 <ss:attribute name="startAngle" default="0" document="始端角度" type="ss:int"/>
                 <ss:attribute name="endAngle" default="180" document="末端角度" type="ss:int"/>
                 <ss:attribute name="width" default="40%" document="罗表盘宽度" type="ss:String"/>
