@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONString;
+
 import uncertain.composite.CompositeMap;
 import uncertain.event.Configuration;
 import uncertain.proc.IFeature;
@@ -23,6 +25,7 @@ public class Component implements IFeature {
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		addJavaScript(session, context, "base/zepto.js");
+		addJavaScript(session, context, "base/touch.js");
 		addStyleSheet(session, context, "base/touch-all-min.css");
 	}
 	
@@ -123,5 +126,18 @@ public class Component implements IFeature {
     public int attachTo(CompositeMap config_data, Configuration config) {
         this.view_config = config_data;
         return IFeature.NORMAL;
+    }
+    
+    class JSONFunction implements JSONString {
+    	private String funciton;
+
+    	public JSONFunction(String func) {
+    		funciton = func;
+    	}
+
+    	public String toJSONString() {
+    		return funciton;
+    	}
+
     }
 }
