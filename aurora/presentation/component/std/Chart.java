@@ -187,7 +187,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_AXIS_PLOTBANDS_TO = "to";
 	private static final String PROPERTITY_AXIS_PLOTBANDS_ZINDEX = "zIndex";
 	
-	private static final String PROPERTITY_AXIS_PLOT_LABEL = "label";
+	private static final String PROPERTITY_AXIS_PLOT_LABEL = "plotlabel";
 	private static final String PROPERTITY_AXIS_PLOT_LABEL_ALIGN = "align";
 	private static final String PROPERTITY_AXIS_PLOT_LABEL_TEXT = "text";
 	private static final String PROPERTITY_AXIS_PLOT_LABEL_VERTICALALIGN = "verticalAlign"; 
@@ -1149,7 +1149,7 @@ public class Chart extends Component {
 			putIntCfg(label, PROPERTITY_AXIS_PLOT_LABEL_Y, cfg);
 		}
 		if(!cfg.isEmpty())
-			map.put(PROPERTITY_AXIS_PLOT_LABEL, new JSONObject(cfg));
+			map.put("label", new JSONObject(cfg));
 	}
 	private void createTitle(CompositeMap view, Map map){
 		CompositeMap title = view.getChild(PROPERTITY_AXIS_TITLE);

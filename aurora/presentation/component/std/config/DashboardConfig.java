@@ -28,7 +28,7 @@ public class DashboardConfig extends ComponentConfig {
 	public static final String PROPERTITY_BOARD = "board";
 	private static final String PROPERTITY_BOARD_START_ANGLE = "startAngle";
 	private static final String PROPERTITY_BOARD_END_ANGLE = "endAngle";
-	private static final String PROPERTITY_BOARD_DASH_WIDTH = "dashWidth";
+	private static final String PROPERTITY_BOARD_WIDTH = "width";
 	private static final String PROPERTITY_BOARD_FILL_COLOR = "fillColor";
 	private static final String PROPERTITY_BOARD_FILL_OPACITY = "fillOpacity";
 	private static final String PROPERTITY_BOARD_BORDER_COLOR = "borderColor";
@@ -40,6 +40,8 @@ public class DashboardConfig extends ComponentConfig {
 	private static final String PROPERTITY_BOARD_TICK_POSITION = "tickPosition";
 	private static final String PROPERTITY_BOARD_TICK_INTERVAL = "tickInterval";
 	private static final String PROPERTITY_BOARD_TICK_ANGLE_INTERVAL = "tickAngleInterval";
+	private static final String PROPERTITY_BOARD_TICK_START_ANGLE = "tickStartAngle";
+	private static final String PROPERTITY_BOARD_TICK_END_ANGLE = "tickEndAngle";
 	private static final String PROPERTITY_BOARD_MINOR_TICK_COLOR = "minorTickColor";
 	private static final String PROPERTITY_BOARD_MINOR_TICK_WIDTH = "minorTickWidth";
 	private static final String PROPERTITY_BOARD_MINOR_TICK_LENGTH = "minorTickLength";
@@ -48,11 +50,13 @@ public class DashboardConfig extends ComponentConfig {
 	private static final String PROPERTITY_BOARD_MARGINAL_TICK_WIDTH = "marginalTickWidth";
 	private static final String PROPERTITY_BOARD_MARGINAL_TICK_LENGTH = "marginalTickLength";
 	private static final String PROPERTITY_BOARD_START_ON_TICK = "startOntick";
+	private static final String PROPERTITY_BOARD_END_ON_TICK = "endOntick";
 	private static final String PROPERTITY_BOARD_SHOW_FIRST_LABEL = "showFirstLabel";
 	private static final String PROPERTITY_BOARD_SHOW_LAST_LABEL = "showLastLabel";
 	
 	private static final String PROPERTITY_LABELS = "labels";
 	private static final String PROPERTITY_LABELS_ENABLED = "enabled";
+	private static final String PROPERTITY_LABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_LABELS_X = "x";
 	private static final String PROPERTITY_LABELS_Y = "y";
 	private static final String PROPERTITY_LABELS_STYLE = "style";
@@ -265,7 +269,7 @@ public class DashboardConfig extends ComponentConfig {
 		if (null != view) {
 			putIntCfg(view, PROPERTITY_BOARD_START_ANGLE, cfg);
 			putIntCfg(view, PROPERTITY_BOARD_END_ANGLE, cfg);
-			putFloatCfg(view, PROPERTITY_BOARD_DASH_WIDTH, cfg);
+			putFloatCfg(view, PROPERTITY_BOARD_WIDTH, cfg);
 			putStringCfg(view, PROPERTITY_BOARD_FILL_COLOR, cfg);
 			putFloatCfg(view, PROPERTITY_BOARD_FILL_OPACITY, cfg);
 			putStringCfg(view, PROPERTITY_BOARD_BORDER_COLOR, cfg);
@@ -277,6 +281,8 @@ public class DashboardConfig extends ComponentConfig {
 			putStringCfg(view, PROPERTITY_BOARD_TICK_POSITION, cfg);
 			putFloatCfg(view, PROPERTITY_BOARD_TICK_INTERVAL, cfg);
 			putFloatCfg(view, PROPERTITY_BOARD_TICK_ANGLE_INTERVAL, cfg);
+			putIntCfg(view, PROPERTITY_BOARD_TICK_START_ANGLE, cfg);
+			putIntCfg(view, PROPERTITY_BOARD_TICK_END_ANGLE, cfg);
 			putStringCfg(view, PROPERTITY_BOARD_MINOR_TICK_COLOR, cfg);
 			putIntCfg(view, PROPERTITY_BOARD_MINOR_TICK_WIDTH, cfg);
 			putIntCfg(view, PROPERTITY_BOARD_MINOR_TICK_LENGTH, cfg);
@@ -285,6 +291,7 @@ public class DashboardConfig extends ComponentConfig {
 			putIntCfg(view, PROPERTITY_BOARD_MARGINAL_TICK_WIDTH, cfg);
 			putIntCfg(view, PROPERTITY_BOARD_MARGINAL_TICK_LENGTH, cfg);
 			putBooleanCfg(view, PROPERTITY_BOARD_START_ON_TICK, cfg);
+			putBooleanCfg(view, PROPERTITY_BOARD_END_ON_TICK, cfg);
 			putBooleanCfg(view, PROPERTITY_BOARD_SHOW_FIRST_LABEL, cfg);
 			putBooleanCfg(view, PROPERTITY_BOARD_SHOW_LAST_LABEL, cfg);
 			processLabels(view,cfg);
@@ -337,6 +344,7 @@ public class DashboardConfig extends ComponentConfig {
 		Map cfg = new HashMap();
 		if(null != view){
 			putBooleanCfg(view, PROPERTITY_LABELS_ENABLED, cfg);
+			putIntCfg(view, PROPERTITY_LABELS_ROTATION, cfg);
 			putStyleCfg(view, PROPERTITY_LABELS_STYLE, cfg);
 			putIntCfg(view, PROPERTITY_LABELS_X, cfg);
 			putIntCfg(view, PROPERTITY_LABELS_Y, cfg);

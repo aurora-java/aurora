@@ -317,7 +317,7 @@
                 <ss:extension base="a:subtitle"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="a:label">
+        <ss:element name="a:plotLabel">
             <ss:attributes>
                 <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
                 <ss:attribute name="rotation" document="旋转度数" type="ss:int"/>
@@ -365,7 +365,7 @@
                 <ss:attribute name="zIndex" document="网格块的层的index" type="ss:int"/>
             </ss:attributes>
             <ss:elements>
-                <ss:element ref="a:label"/>
+                <ss:element ref="a:plotLabel"/>
             </ss:elements>
             <ss:arrays>
                 <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
@@ -381,7 +381,7 @@
                 <ss:attribute name="zIndex" document="网格线的层的index" type="ss:int"/>
             </ss:attributes>
             <ss:elements>
-                <ss:element ref="a:label"/>
+                <ss:element ref="a:plotLabel"/>
             </ss:elements>
             <ss:arrays>
                 <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
@@ -413,25 +413,43 @@
         </ss:element>
         <ss:element name="a:board" document="罗表盘盘属性">
             <ss:attributes>
+                <ss:attribute name="allowDecimals" default="true" document="是否允许有小数位" type="ss:boolean"/>
                 <ss:attribute name="fillColor" default="gradient(linear,-50% 0,50% 0,color-stop(0,rgba(0,255,255,1)),color-stop(50%,rgba(255,255,0,1)),color-stop(100%,rgba(255,0,0,1)))" document="填充色" type="ss:String"/>
                 <ss:attribute name="startAngle" default="0" document="始端角度" type="ss:int"/>
                 <ss:attribute name="endAngle" default="180" document="末端角度" type="ss:int"/>
+                <ss:attribute name="width" document="罗表盘宽度" type="ss:int"/>
                 <ss:attribute name="fillOpacity" default="1" document="填充色透明度" type="ss:int"/>
-                <ss:attribute name="max" default="1" document="最大值" type="ss:int"/>
-                <ss:attribute name="min" default="0" document="最小值" type="ss:int"/>
                 <ss:attribute name="borderWidth" default="4" document="边框宽度" type="ss:int"/>
                 <ss:attribute name="borderColor" default="#4572A7" document="边框颜色" type="ss:String"/>
+                <ss:attribute name="tickColor" default="#4572A7" document="刻度线颜色" type="ss:String"/>
+                <ss:attribute name="tickLength" default="25%" document="刻度线长度" type="ss:String"/>
+                <ss:attribute name="tickWidth" default="1" document="刻度线宽度" type="ss:int"/>
+                <ss:attribute name="tickInterval" document="刻度线单位值" type="ss:int"/>
+                <ss:attribute name="tickAngleInterval" default="30" document="刻度线单位角度" type="ss:int"/>
+                <ss:attribute name="tickStartAngle" default="10" document="始端刻度离始端边际的角度" type="ss:int"/>
+                <ss:attribute name="tickEndAngle" default="-10" document="末端刻度离末端边际的角度" type="ss:int"/>
+                <ss:attribute name="marginalTickColor" default="#000" document="边际刻度线颜色" type="ss:String"/>
+                <ss:attribute name="marginalTickLength" default="50%" document="边际刻度线长度" type="ss:String"/>
+                <ss:attribute name="marginalTickWidth" default="1" document="边际刻度线宽度" type="ss:int"/>
+                <ss:attribute name="startOntick" default="true" document="始端刻度在边际上" type="ss:boolean"/>
+                <ss:attribute name="endOntick" default="true" document="末端刻度在边际上" type="ss:boolean"/>
             </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:labels"/>
+            </ss:elements>
         </ss:element>
         <ss:element name="a:pointer" document="罗表盘指针属性">
             <ss:attributes>
-                <ss:attribute name="fillColor" default="rgba(135,135,135,0.8)" document="填充色" type="ss:String"/>
-                <ss:attribute name="fillopacity" default="1" document="填充色透明度" type="ss:int"/>
+                <ss:attribute name="fillColor" default="rgba(135,135,135,0.3)" document="填充色" type="ss:String"/>
+                <ss:attribute name="fillopacity" document="填充色透明度" type="ss:int"/>
                 <ss:attribute name="width" default="8" document="指针宽度" type="ss:int"/>
                 <ss:attribute name="dist" default="10" document="针尖离罗盘边缘的距离" type="ss:int"/>
                 <ss:attribute name="borderWidth" default="4" document="边框宽度" type="ss:int"/>
                 <ss:attribute name="borderColor" default="#4572A7" document="边框颜色" type="ss:String"/>
             </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:labels"/>
+            </ss:elements>
         </ss:element>
     </ss:elements>
     <ss:types>

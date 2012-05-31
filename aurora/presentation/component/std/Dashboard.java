@@ -74,7 +74,7 @@ public class Dashboard extends Component {
 		JSONObject board = dc.getBoard();
 		if (null != board)
 			addConfig(DashboardConfig.PROPERTITY_BOARD, board);
-		JSONObject pointer = dc.getBoard();
+		JSONObject pointer = dc.getPointer();
 		if (null != pointer)
 			addConfig(DashboardConfig.PROPERTITY_POINTER, pointer);
 		JSONObject title = dc.getTitle();
