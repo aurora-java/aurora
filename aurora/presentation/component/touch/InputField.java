@@ -15,6 +15,7 @@ public class InputField extends Component {
 	private static final String PROPERTITY_TYPE = "type";
 	private static final String PROPERTITY_PLACHOLDER = "placeholder";
 	private static final String PROPERTITY_REQUIRED = "required";
+	private static final String PROPERTITY_VALUE = "value";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return "input";
@@ -29,6 +30,7 @@ public class InputField extends Component {
 		String type = getDefaultClass(session, context);
 		map.put(PROPERTITY_TYPE, type);
 		map.put(PROPERTITY_PROMPT, view.getString(PROPERTITY_PROMPT,""));
+		map.put(PROPERTITY_VALUE, view.getString(PROPERTITY_VALUE,""));
 		
 		String ph = view.getString(PROPERTITY_PLACHOLDER, "");
 		if(!"".equals(ph)){
