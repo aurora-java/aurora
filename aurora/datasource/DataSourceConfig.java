@@ -35,6 +35,7 @@ public class DataSourceConfig implements ILifeCycle {
     IObjectRegistry mObjectRegistry;
     ILogger mLogger;
     OCManager mOCManager;
+    boolean flag=false;
 
     public DataSourceConfig(IObjectRegistry reg, OCManager ocManager) {
         mLogger = LoggingContext.getLogger("aurora.datasource", reg);
@@ -59,6 +60,10 @@ public class DataSourceConfig implements ILifeCycle {
     */
 
     public boolean startup() {
+    	if(flag)
+    		return true;
+    	else	
+    		flag=true;    	
         try {
             int length = mDatabaseConnections.length;
             DataSource ds = null;
