@@ -15,6 +15,7 @@ public class CheckDispatch extends AbstractEntry {
 	String field;
 	String value;
 	String dispatchUrl;
+	String dispathcType;
 	String message;
 	IObjectRegistry        registry;
 	
@@ -40,6 +41,7 @@ public class CheckDispatch extends AbstractEntry {
 			context.putBoolean("success", false);
             String url = TextParser.parse(this.getDispatchUrl(), context);
 			context.put("dispatch_url", url);
+			context.put("dispatch_type", getDispathcType());
 			
             String msg = message==null?checkvalue:message;
             msg = LanguageUtil.getTranslatedMessage(registry, msg, context);
@@ -79,6 +81,14 @@ public class CheckDispatch extends AbstractEntry {
 
 	public void setDispatchUrl(String dispatchUrl) {
 		this.dispatchUrl = dispatchUrl;
+	}
+
+	public String getDispathcType() {
+		return dispathcType == null ? "redirect" : dispathcType;
+	}
+
+	public void setDispathcType(String dispathcType) {
+		this.dispathcType = dispathcType;
 	}
 
 }

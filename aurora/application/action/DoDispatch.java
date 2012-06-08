@@ -23,7 +23,6 @@ public class DoDispatch {
 
 	Set arrayNameSet;
 	String output;
-	String type;
 
 	public void onDoDispatch(ServiceContext context) throws IOException,
 			JSONException, ServletException {
@@ -62,6 +61,7 @@ public class DoDispatch {
 			json.write(out);
 		} else {
 		    String url = context.getString("dispatch_url");
+		    String type = context.getString("dispatch_type");
 		    if(url!=null){
 		        String uri = svc.getRequest().getRequestURI();
 		        if(uri.indexOf(url)<0) {
