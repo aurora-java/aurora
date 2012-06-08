@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
@@ -22,9 +23,10 @@ public class DoDispatch {
 
 	Set arrayNameSet;
 	String output;
+	String type;
 
 	public void onDoDispatch(ServiceContext context) throws IOException,
-			JSONException {
+			JSONException, ServletException {
 		CompositeMap cm = context.getObjectContext();
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(cm);
@@ -62,8 +64,13 @@ public class DoDispatch {
 		    String url = context.getString("dispatch_url");
 		    if(url!=null){
 		        String uri = svc.getRequest().getRequestURI();
-		        if(uri.indexOf(url)<0)
-		            svc.getResponse().sendRedirect(url);
+		        if(uri.indexOf(url)<0) {
+		        	if("forward".equals(type)){
+		        		svc.getRequest().getRequestDispatcher(url).forward(svc.getRequest(), svc.getResponse());
+		        	}else{
+		        		svc.getResponse().sendRedirect(url);
+		        	}
+		        }
 		    }
 		}
 	}
