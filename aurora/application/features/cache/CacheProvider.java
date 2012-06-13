@@ -202,7 +202,8 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				}
 			} else if (ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)) {
 				if (childs == null) {
-					throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
+//					throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
+					return;
 				} else {
 					for (Object child : data.getChilds()) {
 						CompositeMap record = (CompositeMap) child;
@@ -221,7 +222,8 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				}
 			} else if (ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)) {
 				if (childs == null) {
-					throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
+//					throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
+					return;
 				} else {
 					for (Object child : data.getChilds()) {
 						CompositeMap record = (CompositeMap) child;
