@@ -678,7 +678,8 @@ public class Grid extends Component {
 				hasLockColumn = true;
 				List children = column.getChilds();
 				if(children == null){
-					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
+					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
+					float cwidth = hidden? 0 : column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					lockWidth +=cwidth;				
 				}				
@@ -711,14 +712,12 @@ public class Grid extends Component {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio' rowspan='"+column.getInt(ROW_SPAN)+"'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-							if(!hidden){
-								String prompt = getFieldPrompt(session, column, dataSet);
-								String headTitle = session.getLocalizedPrompt(prompt);
-								if(headTitle!=null && headTitle.equals(prompt)){
-									headTitle = uncertain.composite.TextParser.parse(prompt, model);
-								}
-								hsb.append("<TD class='grid-hc' atype='grid.head' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
+							String prompt = getFieldPrompt(session, column, dataSet);
+							String headTitle = session.getLocalizedPrompt(prompt);
+							if(headTitle!=null && headTitle.equals(prompt)){
+								headTitle = uncertain.composite.TextParser.parse(prompt, model);
 							}
+							hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 						}
 					}
 				}
@@ -752,7 +751,8 @@ public class Grid extends Component {
 			if(!column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false)){
 				List children = column.getChilds();
 				if(children == null){
-					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
+					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
+					float cwidth = hidden?0:column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					unlockWidth +=cwidth;				
 				}				
@@ -774,14 +774,12 @@ public class Grid extends Component {
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-					if(!hidden){
-						String prompt = getFieldPrompt(session, column, dataSet);
-						String headTitle = session.getLocalizedPrompt(prompt);
-						if(headTitle!=null && headTitle.equals(prompt)){
-							headTitle = uncertain.composite.TextParser.parse(prompt, model);
-						}
-						hsb.append("<TD class='grid-hc' atype='grid.head'  colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
+					String prompt = getFieldPrompt(session, column, dataSet);
+					String headTitle = session.getLocalizedPrompt(prompt);
+					if(headTitle!=null && headTitle.equals(prompt)){
+						headTitle = uncertain.composite.TextParser.parse(prompt, model);
 					}
+					hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
 				}
 			}
 			hsb.append("</TR>");
