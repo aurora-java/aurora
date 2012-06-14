@@ -47,33 +47,37 @@ public class Ajax extends Component {
 
 	private void processParameters(CompositeMap parent) {
 		CompositeMap parameters = parent.getChild(PARAMETERS);
-		Iterator childs = parameters.getChildIterator();
-		Map datas = new HashMap();
-		while (childs.hasNext()) {
-			CompositeMap child = (CompositeMap) childs.next();
-			String key = child.getString("name");
-			String value = child.getString("value");
-			String bind = child.getString("bind");
-			Map m = new HashMap();
-			if (null != value)
-				m.put("value", value);
-			if (null != bind)
-				m.put("bind", bind);
-			datas.put(key, new JSONObject(m));
+		if(null != parameters){
+			Iterator childs = parameters.getChildIterator();
+			Map datas = new HashMap();
+			while (childs.hasNext()) {
+				CompositeMap child = (CompositeMap) childs.next();
+				String key = child.getString("name");
+				String value = child.getString("value");
+				String bind = child.getString("bind");
+				Map m = new HashMap();
+				if (null != value)
+					m.put("value", value);
+				if (null != bind)
+					m.put("bind", bind);
+				datas.put(key, new JSONObject(m));
+			}
+			if (!datas.isEmpty())
+				addConfig(PARAMETERS, new JSONObject(datas));
 		}
-		if (!datas.isEmpty())
-			addConfig(PARAMETERS, new JSONObject(datas));
 	}
 
 	private void processEvents(CompositeMap parent) {
-		CompositeMap parameters = parent.getChild(EVENTS);
-		Iterator childs = parameters.getChildIterator();
-		Map datas = new HashMap();
-		while (childs.hasNext()) {
-			CompositeMap child = (CompositeMap) childs.next();
-			String key = child.getString("name");
-			String handler = child.getString("handler");
-			addConfig(key, new JSONFunction(handler));
+		CompositeMap events = parent.getChild(EVENTS);
+		if(null != events){
+			Iterator childs = events.getChildIterator();
+			Map datas = new HashMap();
+			while (childs.hasNext()) {
+				CompositeMap child = (CompositeMap) childs.next();
+				String key = child.getString("name");
+				String handler = child.getString("handler");
+				addConfig(key, new JSONFunction(handler));
+			}
 		}
 	}
 }
