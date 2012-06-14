@@ -39,7 +39,7 @@ public class SwitchButton extends Component {
 		String off = view.getString(PROPERTITY_OFF,"关");
 		addConfig(PROPERTITY_OFF, off);
 		map.put(PROPERTITY_OFF, off);
-		String value = view.getString(PROPERTITY_VALUE);
+		String value = view.getString(PROPERTITY_VALUE,"");
 		if(!"".equals(value)){
 			addConfig(PROPERTITY_VALUE, value);
 		}

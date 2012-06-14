@@ -14,7 +14,8 @@ import aurora.presentation.component.std.config.EventConfig;
 
 public class DateField extends Component {
 	private static final String DEFAULT_CLASS = "datefield";
-
+	private static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
@@ -35,6 +36,10 @@ public class DateField extends Component {
 			id = IDGenerator.getInstance().generate();
 		super.onCreateViewContent(session, context);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
+		String renderer = view.getString(PROPERTITY_DAY_RENDERER,"");
+		if(!"".equals(renderer)){
+			addConfig(PROPERTITY_DAY_RENDERER, new JSONFunction(renderer));
+		}
 		addEvents(view, model);
 		map.put("_id", id);
 		map.put(CONFIG, getConfigString());
