@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONString;
 
 import uncertain.composite.CompositeMap;
@@ -22,7 +24,9 @@ import aurora.presentation.markup.HtmlPageContext;
 public class Component implements IFeature {
 	CompositeMap  view_config;
 	protected static final String CLASS = "cls";
-	
+	protected static final String CONFIG = "config";
+	protected String id;
+	private JSONObject config = new JSONObject();
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		addJavaScript(session, context, "base/zepto.js");
 		addJavaScript(session, context, "base/touch.js");
@@ -38,8 +42,8 @@ public class Component implements IFeature {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
-		
-		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
+		if(null == id)
+			id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if (!"".equals(id)) {
 			String ids = "id=\""+id+"\"";
 			map.put(ComponentConfig.PROPERTITY_ID, ids);
@@ -127,6 +131,22 @@ public class Component implements IFeature {
         this.view_config = config_data;
         return IFeature.NORMAL;
     }
+    
+    protected String getConfigString() {
+		return config.toString();
+	}
+	
+	protected JSONObject getConfig(){
+		return config;
+	}
+    
+    protected void addConfig(String key, Object value) {
+		try {
+			config.put(key, value);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+	}
     
     class JSONFunction implements JSONString {
     	private String funciton;
