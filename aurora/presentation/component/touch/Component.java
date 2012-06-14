@@ -1,6 +1,7 @@
 package aurora.presentation.component.touch;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class Component implements IFeature {
 	CompositeMap  view_config;
 	protected static final String CLASS = "cls";
 	protected static final String CONFIG = "config";
+	protected static final String LISTENERS = "listeners";
 	protected String id;
 	private JSONObject config = new JSONObject();
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
@@ -126,6 +128,29 @@ public class Component implements IFeature {
 		}
 	}
 
+	protected void addEvents(CompositeMap view,CompositeMap model){
+		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
+		Map listeners = new HashMap();
+		if (events != null) {
+			List list = events.getChilds();
+			if (list != null) {
+				Iterator it = list.iterator();
+				while (it.hasNext()) {
+					CompositeMap event = (CompositeMap) it.next();
+					EventConfig eventConfig = EventConfig.getInstance(event);
+					String eventName = eventConfig.getEventName();// event.getString(ComponentConfig.PROPERTITY_EVENT_NAME,// "");
+					String handler = eventConfig.getHandler();// event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER,// "");
+					if (!"".equals(eventName) && !"".equals(handler))
+						handler = uncertain.composite.TextParser.parse(handler, model);
+					listeners.put(eventName, new JSONFunction(handler));
+				}
+
+			}
+		}
+		if(!listeners.isEmpty())
+			addConfig(LISTENERS, new JSONObject(listeners));
+	}
+	
     @Override
     public int attachTo(CompositeMap config_data, Configuration config) {
         this.view_config = config_data;
