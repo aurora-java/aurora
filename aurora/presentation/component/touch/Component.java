@@ -44,13 +44,14 @@ public class Component implements IFeature {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
-		if(null == id)
-			id = view.getString(ComponentConfig.PROPERTITY_ID, "");
-		if (!"".equals(id)) {
-			String ids = "id=\""+id+"\"";
-			map.put(ComponentConfig.PROPERTITY_ID, ids);
-		}
 		
+		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
+		if("".equals(id)){
+			id = IDGenerator.getInstance().generate();
+		}
+		String ids = "id=\""+id+"\"";
+		map.put(ComponentConfig.PROPERTITY_ID, ids);
+		addConfig(ComponentConfig.PROPERTITY_ID, id);
 		
 		String clazz = getDefaultClass(session, context);
 		String className = view.getString(ComponentConfig.PROPERTITY_CLASSNAME,"");
@@ -68,11 +69,7 @@ public class Component implements IFeature {
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
 		if (events != null) {
-			if ("".equals(id)) {
-				id = IDGenerator.getInstance().generate();
-			}
-			String ids = "id=\""+id+"\"";
-			map.put(ComponentConfig.PROPERTITY_ID, ids);
+			
 			
 			List list = events.getChilds();
 			if (list != null) {
