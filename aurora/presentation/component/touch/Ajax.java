@@ -40,12 +40,12 @@ public class Ajax extends Component {
 		if (null != view.getString(PROPERTITY_DATATYPE.toLowerCase()))
 			addConfig(PROPERTITY_DATATYPE,
 					view.getString(PROPERTITY_DATATYPE.toLowerCase()));
-		processParameters(view);
+		processParameters(view,model);
 		processEvents(view);
 		map.put(CONFIG, getConfigString());
 	}
 
-	private void processParameters(CompositeMap parent) {
+	private void processParameters(CompositeMap parent,CompositeMap model) {
 		CompositeMap parameters = parent.getChild(PARAMETERS);
 		if(null != parameters){
 			Iterator childs = parameters.getChildIterator();
@@ -53,7 +53,7 @@ public class Ajax extends Component {
 			while (childs.hasNext()) {
 				CompositeMap child = (CompositeMap) childs.next();
 				String key = child.getString("name");
-				String value = child.getString("value");
+				String value = uncertain.composite.TextParser.parse(child.getString("value"), model);
 				String bind = child.getString("bind");
 				Map m = new HashMap();
 				if (null != value)
