@@ -210,6 +210,9 @@ public class SOAPServiceInterpreter {
 		String soapParam = svc.getHeader(HEAD_SOAP_PARAMETER);
 		if (soapParam != null)
 			return true;
+		soapParam = svc.getParameter(HEAD_SOAP_PARAMETER);
+        if (soapParam != null)
+            return true;		
 		return false;
 	}
 
