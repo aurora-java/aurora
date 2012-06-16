@@ -5,6 +5,8 @@ package aurora.service.json;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,10 +90,21 @@ public class JSONServiceInterpreter {
     	if(!isJSONRequest(service_context))
     		 return;
         HttpServiceInstance svc = (HttpServiceInstance)ServiceInstance.getInstance(service_context.getObjectContext());
+        
         String output = null;
+        Set<String> arrays_set = null;
+        
         ServiceOutputConfig cfg = svc.getServiceOutputConfig();
-        if(cfg!=null)
+        if(cfg!=null){
             output = cfg.getOutput();
+            String names_str = cfg.getArrays();
+            if(names_str!=null){
+                String[] arrays = names_str.split(",");
+                arrays_set = new HashSet<String>();
+                for(String s:arrays)
+                    arrays_set.add(s);
+            }
+        }
         JSONObject json = new JSONObject();
         // Write success flag
         json.put("success", service_context.isSuccess());
@@ -111,7 +124,7 @@ public class JSONServiceInterpreter {
             } else
                 result = service_context.getModel();
             if (result != null) {
-                JSONObject o = JSONAdaptor.toJSONObject(result);
+                JSONObject o = JSONAdaptor.toJSONObject(result,arrays_set);
                 json.put("result", o);
             }
         }
