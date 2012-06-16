@@ -9,6 +9,8 @@ import uncertain.composite.DynamicObject;
 
 public class ServiceOutputConfig extends DynamicObject {
     
+    public static final String KEY_ARRAYS = "arrays";
+
     public static final String KEY_OUTPUT = "output";
     
     public static final String KEY_SERVICE_OUTPUT = "service-output";
@@ -25,6 +27,14 @@ public class ServiceOutputConfig extends DynamicObject {
 
     public void setOutput(String output) {
         super.putString(KEY_OUTPUT, output);
+    }
+    
+    public String getArrays(){
+        return getString(KEY_ARRAYS);
+    }
+    
+    public void setArrays(String arrays){
+        putString(KEY_ARRAYS, arrays);
     }
 
 }
