@@ -17,7 +17,7 @@ public class List extends Component {
 	private static final String PROPERTITY_RENDERER = "renderer";
 	private static final String PROPERTITY_CALLBACK = "callback";
 	private static final String PROPERTITY_SHOW_PAGEBAR = "showpagebar";
-	private static final String PROPERTITY_AUTO_QUERY = "autoQuery";
+	private static final String PROPERTITY_AUTO_QUERY = "autoquery";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
