@@ -32,7 +32,7 @@ public class Ajax extends Component {
 		if (null != view.getString(PROPERTITY_TYPE))
 			addConfig(PROPERTITY_TYPE, view.getString(PROPERTITY_TYPE));
 		if (null != view.getString(PROPERTITY_URL))
-			addConfig(PROPERTITY_URL, view.getString(PROPERTITY_URL));
+			addConfig(PROPERTITY_URL, uncertain.composite.TextParser.parse(view.getString(PROPERTITY_URL),model));
 		if (null != view.getInt(PROPERTITY_TIMEOUT))
 			addConfig(PROPERTITY_TIMEOUT, view.getInt(PROPERTITY_TIMEOUT));
 		if (null != view.getBoolean(PROPERTITY_ASYNC))
