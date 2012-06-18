@@ -17,6 +17,7 @@ public class List extends Component {
 	private static final String PROPERTITY_RENDERER = "renderer";
 	private static final String PROPERTITY_CALLBACK = "callback";
 	private static final String PROPERTITY_SHOW_PAGEBAR = "showpagebar";
+	private static final String PROPERTITY_AUTO_QUERY = "autoQuery";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -28,6 +29,7 @@ public class List extends Component {
 		addConfig(PROPERTITY_RENDERER, view.getString(PROPERTITY_RENDERER,""));
 		addConfig(PROPERTITY_CALLBACK, view.getString(PROPERTITY_CALLBACK,""));
 		addConfig(PROPERTITY_SHOW_PAGEBAR, view.getBoolean(PROPERTITY_SHOW_PAGEBAR,true));
+		addConfig(PROPERTITY_AUTO_QUERY, view.getBoolean(PROPERTITY_AUTO_QUERY,true));
 		map.put(CONFIG, getConfigString());
 	}
 }
