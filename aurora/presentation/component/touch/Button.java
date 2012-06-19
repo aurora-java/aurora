@@ -28,10 +28,13 @@ public class Button extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
-		
+		CompositeMap model = context.getModel();
 		
 		Map map = context.getMap();
 		map.put(PROPERTITY_TYPE, view.getString(PROPERTITY_TYPE, DEFAULT_TYPE));
-		map.put(PROPERTITY_TEXT, view.getString(PROPERTITY_TEXT,"button"));
+		String text = view.getString(PROPERTITY_TEXT,"button");
+		if(!"".equals(text))
+			text = uncertain.composite.TextParser.parse(text, model);
+		map.put(PROPERTITY_TEXT, text);
 	}
 }
