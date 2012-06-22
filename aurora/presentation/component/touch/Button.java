@@ -17,6 +17,7 @@ public class Button extends Component {
 	
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_TYPE = "type";
+	public static final String PROPERTITY_DISABLED = "disabled";
 	private static final String DEFAULT_CLASS = "btn";
 	private static final String DEFAULT_TYPE = "button";
 	
@@ -36,5 +37,7 @@ public class Button extends Component {
 		if(!"".equals(text))
 			text = uncertain.composite.TextParser.parse(text, model);
 		map.put(PROPERTITY_TEXT, text);
+		if(view.getBoolean(PROPERTITY_DISABLED,false))
+			map.put(PROPERTITY_DISABLED, "disabled = 'disabled'");
 	}
 }

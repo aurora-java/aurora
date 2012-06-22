@@ -55,11 +55,20 @@ public class Ajax extends Component {
 				String key = child.getString("name");
 				String value = uncertain.composite.TextParser.parse(child.getString("value"), model);
 				String bind = child.getString("bind");
+				String dataType = child.getString("datatype");
 				Map m = new HashMap();
 				if (null != value)
 					m.put("value", value);
 				if (null != bind)
 					m.put("bind", bind);
+				if(null != dataType){
+					m.put("datatype", dataType);
+					if (null != value){
+						if("java.lang.Long".equals(dataType)){
+							m.put("value", new Long(value));
+						}
+					}
+				}
 				datas.put(key, new JSONObject(m));
 			}
 			if (!datas.isEmpty())

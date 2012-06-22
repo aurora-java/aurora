@@ -17,7 +17,7 @@ public class SwitchButton extends Component {
 	public static final String PROPERTITY_ON_VALUE = "onvalue";
 	public static final String PROPERTITY_OFF_VALUE = "offvalue";
 	public static final String PROPERTITY_VALUE = "value";
-	public static final String PROPERTITY_DEFAULT_STATUS = "defaultvalue";
+	public static final String PROPERTITY_DEFAULT_STATUS = "defaultstatus";
 	private static final String DEFAULT_CLASS = "switch-button";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
