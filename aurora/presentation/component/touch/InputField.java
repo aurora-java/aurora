@@ -15,6 +15,7 @@ public class InputField extends Component {
 	private static final String PROPERTITY_TYPE = "type";
 	private static final String PROPERTITY_PLACHOLDER = "placeholder";
 	private static final String PROPERTITY_REQUIRED = "required";
+	private static final String PROPERTITY_DISABLED = "disabled";
 	private static final String PROPERTITY_VALUE = "value";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
@@ -43,5 +44,8 @@ public class InputField extends Component {
 			String rqs = "required=\""+rq+"\"";
 			map.put(PROPERTITY_REQUIRED, rqs);
 		}
+		
+		if(view.getBoolean(PROPERTITY_DISABLED,false))
+			map.put(PROPERTITY_DISABLED, "disabled = 'disabled'");
 	}
 }
