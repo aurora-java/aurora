@@ -142,7 +142,7 @@ public class LoggingConfig implements ILoggingConifg {
 		}
 		String traceFlag = "N";
 		boolean trace = perConfig.getTraceFlag(getObjectNameFromFile(file, baseDirFile));
-		if (trace) {
+		if (true) {
 			traceFlag = "Y";
 		}
 		record.put(TRACE_FLAG, traceFlag);
