@@ -86,6 +86,9 @@ public class ModelJoin extends AbstractEntry {
 		}
 		CompositeMap model =(CompositeMap)context.getObject("/model");
 		model.addChilds(cmrow.getChilds());
+		if(cmrow != null){
+			model.put("totalCount", cmrow.get("totalCount"));	
+		}
 	}
 
 }
