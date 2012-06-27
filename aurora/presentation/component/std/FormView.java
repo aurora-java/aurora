@@ -154,8 +154,9 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				out.write(">");
 				out.write(field.getPrompt());
 				out.write("</TD>");
-				out.write("<TD class='field' ");
-				out.write("width='");
+				out.write("<TD align='");
+				out.write(field.getAlign());
+				out.write("' class='field' width='");
 				out.write(""+field.getWidth());
 				out.write("%'>");
 				processContent(session,out,data,c);

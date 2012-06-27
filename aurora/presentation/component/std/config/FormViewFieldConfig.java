@@ -10,9 +10,13 @@ public class FormViewFieldConfig extends ComponentConfig {
 	
 	private static final String PROPERTITY_PROMPT_ALIGN = "promptalign";
 	
+	private static final String PROPERTITY_ALIGN = "align";
+	
 	private static final String PROPERTITY_PROMPT = "prompt";
 	
 	private static final String DEFAUTL_PROMPT_ALIGN = "left";
+	
+	private static final String DEFAUTL_ALIGN = "center";
 	
 	public static FormViewFieldConfig getInstance(){
 		FormViewFieldConfig model = new FormViewFieldConfig();
@@ -45,6 +49,14 @@ public class FormViewFieldConfig extends ComponentConfig {
 	
     public void setPromptAlign(String align){
         putString(PROPERTITY_PROMPT_ALIGN, align);
+    }
+    
+    public String getAlign(){
+    	return getString(PROPERTITY_ALIGN, DEFAUTL_ALIGN);
+    }
+    
+    public void setAlign(String align){
+    	putString(PROPERTITY_ALIGN, align);
     }
     
     
