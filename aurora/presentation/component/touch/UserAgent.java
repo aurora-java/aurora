@@ -7,7 +7,10 @@ import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 
 public class UserAgent {
-	static final String[] MOBILE_SPECIFIC_SUBSTRING = { "iPad", "iPhone",
+	
+	private static final int IS_MOBILE_CLIENT = 1;
+	
+	private static final String[] MOBILE_SPECIFIC_SUBSTRING = { "iPad", "iPhone",
 			"Android", "MIDP", "Opera Mobi", "Opera Mini", "BlackBerry",
 			"HP iPAQ", "IEMobile", "MSIEMobile", "Windows Phone", "HTC", "LG",
 			"MOT", "Nokia", "Symbian", "Fennec", "Maemo", "Tear", "Midori",
@@ -15,7 +18,7 @@ public class UserAgent {
 			"176x220", "320x320", "160x160", "webOS", "Palm", "Sagem",
 			"Samsung", "SGH", "SIE", "SonyEricsson", "MMP", "UCWEB" };
 
-	public static CompositeMap getUserAgent(IObjectRegistry registry) {
+	public static CompositeMap detectUserAgent(IObjectRegistry registry) {
 		CompositeMap result = new CompositeMap();
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
@@ -30,7 +33,7 @@ public class UserAgent {
 			if (userAgent.contains(mobile)
 					|| userAgent.contains(mobile.toUpperCase())
 					|| userAgent.contains(mobile.toLowerCase())) {
-				return 1;
+				return IS_MOBILE_CLIENT;
 			}
 		}
 		return 0;
