@@ -22,7 +22,7 @@ public class Version {
     }
     
     public static int getMinorVersion(){
-        return 2;
+        return 3;
     }
     
     public static int getBuild(){
