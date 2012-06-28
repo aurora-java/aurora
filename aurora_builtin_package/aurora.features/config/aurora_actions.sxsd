@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    $Author: zhoufan  
-    $Date: 2012-2-8 下午02:49:03  
-    $Revision: 1.0  
-    $Purpose: 
--->
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:t="aurora.application.action" xmlns:a="http://www.aurora-framework.org/application" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:elements>
         <ss:element name="a:session-copy" document="将HttpSession中的所有key/value映射，copy到运行时容器的/session路径中">
             <ss:extensions>
@@ -32,11 +26,6 @@
             </ss:extensions>
         </ss:element>
         <ss:element name="a:bm-access-check" document="通过预先配置的属性，从cache中按约定格式的key，检查当前用户是否有权限执行当前请求的BM操作">
-            <!--
-            <ss:attributes>
-                <ss:attribute name="errorMessage" document="如果没有权限，要显示的错误提示信息"/>
-            </ss:attributes>
--->
             <ss:extensions>
                 <ss:extension base="p:AbstractAction"/>
             </ss:extensions>
@@ -71,6 +60,43 @@
             <ss:extensions>
                 <ss:extension base="p:AbstractAction"/>
             </ss:extensions>
+        </ss:element>
+        <ss:element name="t:check" document="逻辑校验">
+            <ss:attributes>
+                <ss:attribute name="field" document="需要进行判断的字段，在context中的XPath路径，如/parameter/@head_id"/>
+                <ss:attribute name="operator" document="进行判断的操作符，可以是以下之一：null,not null,=,==,!=,&lt;&gt;,&gt;,&lt;,&gt;=,&lt;="/>
+                <ss:attribute name="value" document="进行判断的值，可使用${}标记"/>
+                <ss:attribute name="message" document="如果不满足指定的条件，抛出异常时显示的信息"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="t:and" document="逻辑‘与’操作判断">
+            <ss:attributes>
+                <ss:attribute name="resultpath" document="计算结果存放路径"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+            <ss:elements>
+                <ss:element ref="t:and"/>
+                <ss:element ref="t:check"/>
+                <ss:element ref="t:or"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="t:or" document="逻辑‘或’操作判断">
+            <ss:attributes>
+                <ss:attribute name="resultpath" document="计算结果存放路径"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="p:AbstractAction"/>
+            </ss:extensions>
+            <ss:elements>
+                <ss:element ref="t:and"/>
+                <ss:element ref="t:check"/>
+                <ss:element ref="t:or"/>
+            </ss:elements>
         </ss:element>
     </ss:elements>
 </ss:schema>
