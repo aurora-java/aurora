@@ -35,6 +35,8 @@ public class CacheBasedMessageProvider extends AbstractLocatableObject implement
 	}
 
 	public ILocalizedMessageProvider getLocalizedMessageProvider(String language_code) {
+		if(language_code == null)
+			language_code = defaultLang;
 		ILocalizedMessageProvider messageProvider = (ILocalizedMessageProvider)localMPMaps.get(language_code);
 		if(messageProvider == null){
 			messageProvider = new CacheBasedLocalizedMessageProvider(language_code,this);
