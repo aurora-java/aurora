@@ -56,15 +56,23 @@ public class Check extends Assert {
 		// Then test for expression that must specify 'value'
 		case EQUAL:
 		case NOTEQUAL:
-			if (value == null)
-				result = false;
 			value = TextParser.parse(value, context);
 			if (opid == EQUAL) {
-				if (!value.equals(test_field))
-					result = false;
+				if (test_field == null) {
+					result = (value == null);
+				} else if (isWrapClass(test_field.getClass())) {
+					result = value == null ? false : (test_field.toString()
+							.equals(value.toString()));
+				} else
+					result = test_field.equals(value);
 			} else {
-				if (value.equals(test_field))
-					result = false;
+				if (test_field == null) {
+					result = (value != null);
+				} else if (isWrapClass(test_field.getClass())) {
+					result = value == null ? true : (!test_field.toString()
+							.equals(value.toString()));
+				} else
+					result = !test_field.equals(value);
 			}
 			break;
 		// Here we got numeric expressions
@@ -115,6 +123,14 @@ public class Check extends Assert {
 				break;
 			} // end inner switch
 		} // end outter switch
+	}
+
+	public static boolean isWrapClass(Class<?> clz) {
+		try {
+			return ((Class<?>) clz.getField("TYPE").get(null)).isPrimitive();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }
