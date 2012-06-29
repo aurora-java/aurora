@@ -17,7 +17,15 @@ public class Test extends Check {
 		this.registry = registry;
 	}
 
-	private String errorMessage;
+	private String message;
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 	IObjectRegistry registry;
 
 	public Test() {
@@ -31,7 +39,7 @@ public class Test extends Check {
 			CompositeMap context = runner.getContext();
 			ServiceContext sc = ServiceContext.createServiceContext(context);
 			context.putBoolean("success", false);
-			String msg = errorMessage == null ? "" + checkvalue : errorMessage;
+			String msg = message == null ? "" + checkvalue : message;
 			msg = LanguageUtil.getTranslatedMessage(registry, msg, context);
 			ErrorMessage em = new ErrorMessage("" + checkvalue, msg, null);
 			sc.setError(em.getObjectContext());
@@ -39,12 +47,5 @@ public class Test extends Check {
 		}
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
 
 }
