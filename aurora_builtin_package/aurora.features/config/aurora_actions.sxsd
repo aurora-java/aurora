@@ -102,7 +102,7 @@
                 <ss:extension base="t:check"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="message" docuemnt="测试结果为true时，返回的错误消息代码"/>
+                <ss:attribute name="message" document="测试结果为true时，返回的错误消息代码"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="t:batch-test">
