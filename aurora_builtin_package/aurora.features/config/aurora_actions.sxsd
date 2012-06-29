@@ -64,9 +64,8 @@
         <ss:element name="t:check" document="逻辑校验">
             <ss:attributes>
                 <ss:attribute name="field" document="需要进行判断的字段，在context中的XPath路径，如/parameter/@head_id"/>
-                <ss:attribute name="operator" document="进行判断的操作符，可以是以下之一：null,not null,=,==,!=,&lt;&gt;,&gt;,&lt;,&gt;=,&lt;="/>
+                <ss:attribute name="operator" document="进行判断的操作符，可以是以下之一：null,not null,=,==,!=,&lt;&gt;,&gt;,&lt;,&gt;=,&lt;=\n缺省值：="/>
                 <ss:attribute name="value" document="进行判断的值，可使用${}标记"/>
-                <ss:attribute name="message" document="如果不满足指定的条件，抛出异常时显示的信息"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="p:AbstractAction"/>
@@ -96,6 +95,19 @@
                 <ss:element ref="t:and"/>
                 <ss:element ref="t:check"/>
                 <ss:element ref="t:or"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="t:test" document="逻辑校验，通过测试可以返回指定错误代码">
+            <ss:extensions>
+                <ss:extension base="t:check"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="message" docuemnt="测试结果为true时，返回的错误消息代码"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="t:batch-test">
+            <ss:elements>
+                <ss:element name="t:test"/>
             </ss:elements>
         </ss:element>
     </ss:elements>
