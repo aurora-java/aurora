@@ -29,8 +29,9 @@ public class Check extends Assert {
 		if (operator == null)
 			// throw new
 			// ConfigurationError("assert: 'operator' property must be set");
-			throw BuiltinExceptionFactory.createAttributeMissing(this,
-					"operator");
+			// throw BuiltinExceptionFactory.createAttributeMissing(this,
+			// "operator");
+			operator = "=";
 		int opid = operatorID(operator);
 		if (opid < 0)
 			// throw new
