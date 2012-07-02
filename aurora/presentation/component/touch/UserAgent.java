@@ -7,16 +7,16 @@ import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 
 public class UserAgent {
-	
+
 	private static final int IS_MOBILE_CLIENT = 1;
-	
-	private static final String[] MOBILE_SPECIFIC_SUBSTRING = { "iPad", "iPhone",
-			"Android", "MIDP", "Opera Mobi", "Opera Mini", "BlackBerry",
-			"HP iPAQ", "IEMobile", "MSIEMobile", "Windows Phone", "HTC", "LG",
-			"MOT", "Nokia", "Symbian", "Fennec", "Maemo", "Tear", "Midori",
-			"armv", "Windows CE", "WindowsCE", "Smartphone", "240x320",
-			"176x220", "320x320", "160x160", "webOS", "Palm", "Sagem",
-			"Samsung", "SGH", "SIE", "SonyEricsson", "MMP", "UCWEB" };
+
+	private static final String[] MOBILE_SPECIFIC_SUBSTRING = { "iPad",
+			"iPhone", "Android", "MIDP", "Opera Mobi", "Opera Mini",
+			"BlackBerry", "HP iPAQ", "IEMobile", "MSIEMobile", "Windows Phone",
+			"HTC", "LG", "MOT", "Nokia", "Symbian", "Fennec", "Maemo", "Tear",
+			"Midori", "armv", "Windows CE", "WindowsCE", "Smartphone",
+			"240x320", "176x220", "320x320", "160x160", "webOS", "Palm",
+			"Sagem", "Samsung", "SGH", "SIE", "SonyEricsson", "MMP", "UCWEB" };
 
 	public static CompositeMap detectUserAgent(IObjectRegistry registry) {
 		CompositeMap result = new CompositeMap();
@@ -29,6 +29,9 @@ public class UserAgent {
 	}
 
 	private static int touchClient(String userAgent) {
+		if (null == userAgent) {
+			return 0;
+		}
 		for (String mobile : MOBILE_SPECIFIC_SUBSTRING) {
 			if (userAgent.contains(mobile)
 					|| userAgent.contains(mobile.toUpperCase())
