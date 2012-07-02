@@ -125,7 +125,22 @@ public class Check extends Assert {
 		} // end outter switch
 	}
 
-	public static boolean isWrapClass(Class<?> clz) {
+	/**
+	 * to check whether a class is a warp class of primitive type<br/>
+	 * if clz is subclass of {@code Number} then return true(e.g.
+	 * {@code BigInteger,BigDecimal})<br/>
+	 * else if clz isPrimitive,return true<br/>
+	 * else if clz is wrap of primitive class ,e.g.
+	 * {@code Boolean,Integer,Double ,etc.}
+	 * 
+	 * @param clz
+	 * @return
+	 */
+	private static boolean isWrapClass(Class<?> clz) {
+		if (Number.class.isAssignableFrom(clz))
+			return true;
+		if (clz.isPrimitive())
+			return true;
 		try {
 			return ((Class<?>) clz.getField("TYPE").get(null)).isPrimitive();
 		} catch (Exception e) {
