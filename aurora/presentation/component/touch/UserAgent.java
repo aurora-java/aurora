@@ -24,6 +24,7 @@ public class UserAgent {
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(context);
 		String agent = svc.getRequest().getHeader("User-Agent");
+		if(agent != null) result.put("userAgent", agent.toLowerCase());
 		result.put("touch_client", touchClient(agent));
 		return result;
 	}
