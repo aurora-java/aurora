@@ -10,7 +10,7 @@ public class UserAgent {
 
 	private static final int IS_MOBILE_CLIENT = 1;
 
-	private static final String[] MOBILE_SPECIFIC_SUBSTRING = { "iPad",
+	private static final String[] MOBILE_SPECIFIC_SUBSTRING = {"hrms", "iPad",
 			"iPhone", "Android", "MIDP", "Opera Mobi", "Opera Mini",
 			"BlackBerry", "HP iPAQ", "IEMobile", "MSIEMobile", "Windows Phone",
 			"HTC", "LG", "MOT", "Nokia", "Symbian", "Fennec", "Maemo", "Tear",
@@ -24,7 +24,7 @@ public class UserAgent {
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
 				.getInstance(context);
 		String agent = svc.getRequest().getHeader("User-Agent");
-		if(agent != null) result.put("userAgent", agent.toLowerCase());
+		if(agent != null) result.put("text", agent.toLowerCase());
 		result.put("touch_client", touchClient(agent));
 		return result;
 	}
