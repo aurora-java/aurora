@@ -79,6 +79,8 @@ public class DataSet extends Component {
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_EDITABLE))
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_EDITABLE, sdfc.getEditable());
+				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_TOOLTIP))
+					field.putString(DataSetFieldConfig.PROPERTITY_TOOLTIP, sdfc.getTooltip());
 				
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				

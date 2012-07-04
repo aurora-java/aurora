@@ -14,7 +14,8 @@ public class DataSetFieldConfig extends DynamicObject  {
     public static final String PROPERTITY_RETURN_FIELD = "returnfield";
     public static final String PROPERTITY_VALUE_FIELD = "valuefield";
     public static final String PROPERTITY_VALIDATOR = "validator";
-    public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";    
+    public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";   
+    public static final String PROPERTITY_TOOLTIP = "tooltip";
     
     public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -90,6 +91,14 @@ public class DataSetFieldConfig extends DynamicObject  {
     }
     public void setDefaultValue(String value){
     	putString(PROPERTITY_DEFAULTVALUE, value);
+    }
+    
+    public void setTooltip(String tooltip){
+    	putString(PROPERTITY_TOOLTIP, tooltip);
+    }
+    
+    public String getTooltip(){
+    	return getString(PROPERTITY_TOOLTIP);
     }
     
     public CompositeMap getMapping(){
