@@ -47,7 +47,6 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 			
 			IFreeMarkerTemplateProvider provider = (IFreeMarkerTemplateProvider) mObjectRegistry.getInstanceOfType(IFreeMarkerTemplateProvider.class);
 			reader = new BufferedReader(new StringReader(view.getText()));
-			System.out.println(view + " ## " + provider);
 			t = new Template(view.getName(), reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
 			out = new StringWriter();
 			Map p = new HashMap();
