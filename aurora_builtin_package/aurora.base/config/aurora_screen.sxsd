@@ -129,6 +129,7 @@
             <ss:attributes>
                 <ss:attribute name="name" document="field的name" type=""/>
                 <ss:attribute name="required" default="false" document="是否必输" type="ss:boolean"/>
+                <ss:attribute name="requiredMessage" document="必输提示信息" type="ss:String"/>
                 <ss:attribute name="readOnly" default="false" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="returnField" document="ComboBox选中值的返回name"/>
                 <ss:attribute name="options" document="ComboBox的options,对应DataSet的id" type="a:DataSetReference"/>
