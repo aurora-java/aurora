@@ -14,6 +14,10 @@
 	<package-mapping packageName="aurora.service.lock"/>
 	<package-mapping packageName="aurora.service.ws"/>
 	<package-mapping packageName="aurora.application.features.msg"/>
-	<class-mapping className="aurora.service.ws.WebServiceInvoker" elementName="ws-invoker" nameSpace="http://www.aurora-framework.org/application"/>
 	<package-mapping packageName='uncertain.composite.transform'/>
+	<class-mapping className="aurora.service.ws.WebServiceInvoker" elementName="ws-invoker" nameSpace="http://www.aurora-framework.org/application"/>
+	<class-mapping className="aurora.application.features.transform.GroupTransformerElement" elementName="group-transform" nameSpace="http://www.aurora-framework.org/application"/>
+	<class-mapping className="aurora.application.features.transform.MapTransformerElement" elementName="map-transform" nameSpace="http://www.aurora-framework.org/application"/>
+	<class-mapping className="aurora.application.features.transform.TreeTransformerElement" elementName="tree-transform" nameSpace="http://www.aurora-framework.org/application"/>
+	<class-mapping className="aurora.application.features.transform.MatrixTransformerElement" elementName="matrix-transform" nameSpace="http://www.aurora-framework.org/application"/>		
 </class-registry>
