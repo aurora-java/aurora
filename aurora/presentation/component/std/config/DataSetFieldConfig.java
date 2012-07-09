@@ -8,6 +8,7 @@ public class DataSetFieldConfig extends DynamicObject  {
 	public static final String TAG_NAME = "field";
 	
 	public static final String PROPERTITY_REQUIRED = "required";
+	public static final String PROPERTITY_REQUIRED_MESSAGE = "requiredMessage";
 	public static final String PROPERTITY_READONLY = "readonly";
 	public static final String PROPERTITY_EDITABLE = "editable";
     public static final String PROPERTITY_PROMPT = "prompt";
@@ -42,6 +43,12 @@ public class DataSetFieldConfig extends DynamicObject  {
     }
     public void setRequired(boolean required){
     	putBoolean(PROPERTITY_REQUIRED, required);
+    }
+    public String getRequiredMessage(){
+    	return getString(PROPERTITY_REQUIRED_MESSAGE);
+    }
+    public void setRequiredMessage(String requiredMessage){
+    	putString(PROPERTITY_REQUIRED_MESSAGE, requiredMessage);
     }
     
     public boolean getReadOnly(){
