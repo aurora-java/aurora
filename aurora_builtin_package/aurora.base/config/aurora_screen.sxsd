@@ -155,6 +155,7 @@
                 <ss:attribute name="typeCase" document="textField中输入大小写类型" type="ss:String"/>
                 <ss:attribute name="fetchRemote" document="lov是否通过输入内容自动查询返回给文本框" type="ss:boolean"/>
                 <ss:attribute name="type" document="chart的类型,line或者pie" type="a:chartType"/>
+                <ss:attribute name="tooltip" document="该field对应的提示信息"/>
                 <!--end-->
             </ss:attributes>
             <ss:arrays>
