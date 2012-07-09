@@ -67,6 +67,8 @@
                 <ss:attribute name="chartStyle" document="chart的样式"/>
                 <ss:attribute name="type" document="chart类型" type="a:chartType"/>
                 <ss:attribute name="zoomType" document="缩放类型" type="a:zoomType"/>
+                <ss:attribute name="nameField" document="饼图绑定ds的field,用于显示名称" type="ss:String"/>
+                <ss:attribute name="valueField" document="饼图绑定ds的field,用于显示值" type="ss:String"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:xAxis" document="X轴" indexField="name" type="a:xAxi"/>

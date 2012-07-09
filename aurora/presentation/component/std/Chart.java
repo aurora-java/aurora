@@ -58,6 +58,8 @@ public class Chart extends Component {
 	private static final String PROPERTITY_CHART_ZOOMTYPE = "zoomType";
 	
 	private static final String PROPERTITY_CHART_POLAR = "polar";
+	private static final String PROPERTITY_CHART_NAME_FIELD = "namefield";
+	private static final String PROPERTITY_CHART_VALUE_FIELD = "valuefield";
 	
 	private static final String PROPERTITY_CREDITS = "credits";
 	private static final String PROPERTITY_CREDITS_ENABLED = "enabled";
@@ -536,6 +538,9 @@ public class Chart extends Component {
 		putStyleCfg(view,PROPERTITY_CHART_STYLE,chart);
 		putLongCfg(view, ComponentConfig.PROPERTITY_HEIGHT, chart);
 		putStringCfg(view, PROPERTITY_CHART_ZOOMTYPE, chart);
+		
+		putStringCfg(view, PROPERTITY_CHART_NAME_FIELD, chart);
+		putStringCfg(view, PROPERTITY_CHART_VALUE_FIELD, chart);
 		putEvents(view,chart);
 		
 		addConfig("chart", new JSONObject(chart));
