@@ -69,7 +69,7 @@ public class DataSourceConfig implements ILifeCycle {
             DataSource ds = null;
             ITransactionService ts = null;
             INamedDataSourceProvider dsProvider = new NamedDataSourceProvider();
-            DatabaseConnection dbConfig = null;
+            DatabaseConnection dbConfig = null;          
             if (useTransactionManager) {// xapool
                 TransactionManager tm = null;
                 ts = new TransactionService(true);
@@ -79,31 +79,47 @@ public class DataSourceConfig implements ILifeCycle {
                     ds = XADataSources.unpooledXADataSource(dbConfig.getUrl(),
                             dbConfig.getUserName(), dbConfig.getPassword(),
                             dbConfig.getDriverClass(), tm);
-                    if (dbConfig.getPool()) {
-                        ds = XADataSources
-                                .pooledXADataSource((XADataSource) ds);
-                        mOCManager.populateObject(dbConfig.config,
-                                (StandardXAPoolDataSource) ds);
+                    if (dbConfig.getPool()) {                    	
+                    	ds = XADataSources.pooledXADataSource((XADataSource) ds);
+                    	if(dbConfig.config != null)
+                    		mOCManager.populateObject(dbConfig.config,(StandardXAPoolDataSource) ds);
                     }
                     registryDataSource(ds, dbConfig, dsProvider);
                 }
             } else {// c3p0
-                if (length != 1) {
-                    mLogger.log(Level.SEVERE,
-                            "TransactionManager is disabled,please use only one datasource");
-                    throw new RuntimeException(
-                            "TransactionManager is disabled,please use only one datasource");
-                }
                 ts = new TransactionService(false);
-                dbConfig = mDatabaseConnections[0];
-                ds = DataSources.unpooledDataSource(dbConfig.getUrl(),
-                        dbConfig.getUserName(), dbConfig.getPassword());
-                ((DriverManagerDataSource) ds).setDriverClass(dbConfig
-                        .getDriverClass());
-                if (dbConfig.getPool() && dbConfig.config != null) {
-                    ds = DataSources.pooledDataSource(ds, dbConfig.config);
+                for (int i = 0; i < length; i++) {
+                	 dbConfig = mDatabaseConnections[i];
+                	 ds = DataSources.unpooledDataSource(dbConfig.getUrl(),
+                             dbConfig.getUserName(), dbConfig.getPassword());
+                     ((DriverManagerDataSource) ds).setDriverClass(dbConfig
+                             .getDriverClass());
+                     if(dbConfig.getName()!=null)
+                    	 ((DriverManagerDataSource) ds).setDescription(dbConfig.getName());
+                     if (dbConfig.getPool()) {
+                    	 if(dbConfig.config != null)
+                    		 ds = DataSources.pooledDataSource(ds, dbConfig.config);
+                    	 else
+                    		 ds=DataSources.pooledDataSource(ds);
+                     }
+                     registryDataSource(ds, dbConfig, dsProvider);
                 }
-                registryDataSource(ds, dbConfig, dsProvider);
+//              if (length != 1) {
+//              mLogger.log(Level.SEVERE,
+//                      "TransactionManager is disabled,please use only one datasource");
+//              throw new RuntimeException(
+//                      "TransactionManager is disabled,please use only one datasource");
+//          }
+//                dbConfig = mDatabaseConnections[0];
+//                ds = DataSources.unpooledDataSource(dbConfig.getUrl(),
+//                        dbConfig.getUserName(), dbConfig.getPassword());
+//                ((DriverManagerDataSource) ds).setDriverClass(dbConfig
+//                        .getDriverClass());
+//                if (dbConfig.getPool() && dbConfig.config != null) {
+//                    ds = DataSources.pooledDataSource(ds, dbConfig.config);
+//                }
+//                registryDataSource(ds, dbConfig, dsProvider);
+                
             }
             mObjectRegistry.registerInstance(INamedDataSourceProvider.class,
                     dsProvider);
