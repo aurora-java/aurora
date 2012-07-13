@@ -8,7 +8,7 @@ import aurora.application.script.engine.ScriptRunner;
 public class Script extends AbstractEntry {
 	String exp = "";
 	String resultpath = null;
-	boolean debug = false;
+	String debug = "false";
 
 	public String getResultpath() {
 		return resultpath;
@@ -18,11 +18,11 @@ public class Script extends AbstractEntry {
 		this.resultpath = resultpath;
 	}
 
-	public boolean isDebug() {
+	public String getDebug() {
 		return debug;
 	}
 
-	public void setDebug(boolean debug) {
+	public void setDebug(String debug) {
 		this.debug = debug;
 	}
 
@@ -42,7 +42,7 @@ public class Script extends AbstractEntry {
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);
-			if (debug) {
+			if (Boolean.parseBoolean(debug)) {
 				System.out.println("original script:" + sr.getOriginalScript());
 				System.out.println("parsed script:" + sr.getParsedScript());
 				System.out.println("result:" + res);
