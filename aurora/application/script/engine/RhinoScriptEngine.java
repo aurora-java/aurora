@@ -62,10 +62,10 @@ import aurora.application.script.SimpleBindings;
  * @author A. Sundararajan
  * @since 1.6
  */
-public final class RhinoScriptEngine extends AbstractScriptEngine implements
+public class RhinoScriptEngine extends AbstractScriptEngine implements
 		Invocable, Compilable {
 
-	private static final boolean DEBUG = false;
+	protected static final boolean DEBUG = false;
 
 	/*
 	 * Scope where standard JavaScript objects and our extensions to it are
