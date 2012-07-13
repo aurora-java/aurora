@@ -30,6 +30,7 @@ import aurora.presentation.component.std.config.LovConfig;
  * @version $Id: DataSet.java v 1.0 2010-8-24 下午01:28:18 IBM Exp $
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
+@SuppressWarnings("unchecked")
 public class DataSet extends Component {
 	
 	private static final String VALID_SCRIPT = "validscript";
@@ -56,6 +57,7 @@ public class DataSet extends Component {
         }
         field.put("displayFields",lovDisplayFields);
 	}
+	
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -218,7 +220,12 @@ public class DataSet extends Component {
 			}
 		}
 		if(list != null&&!list.isEmpty()){
-			dataHead.addAll(((CompositeMap)list.get(0)).keySet());
+			Iterator lit = list.iterator();
+			while(lit.hasNext()){
+				dataHead.addAll(((CompositeMap)lit.next()).keySet());
+			}
+			
+			
 			addConfig(DataSetConfig.PROPERTITY_DATA_HEAD, new JSONArray(dataHead));
 			Iterator dit = list.iterator();
 			while(dit.hasNext()){
