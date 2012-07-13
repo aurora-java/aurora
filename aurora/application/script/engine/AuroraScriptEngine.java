@@ -10,28 +10,27 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import uncertain.composite.CompositeMap;
 import aurora.application.script.ScriptContext;
 import aurora.application.script.ScriptEngine;
 import aurora.application.script.ScriptException;
-import aurora.application.script.scriptobject.ContextWraper;
+import aurora.application.script.scriptobject.CompositeMap;
 
 public class AuroraScriptEngine extends RhinoScriptEngine {
 
-	private CompositeMap context;
+	private uncertain.composite.CompositeMap context;
 
-	public AuroraScriptEngine(CompositeMap context) {
+	public AuroraScriptEngine(uncertain.composite.CompositeMap context) {
 		super();
 		this.context = context;
 	}
 
 	private void preDefine(Context cx, Scriptable scope) {
 		if (context != null) {
-			ContextWraper.init_data = context;
 			try {
-				ScriptableObject.defineClass(scope, ContextWraper.class);
+				ScriptableObject.defineClass(scope, CompositeMap.class);
 				Scriptable object = cx.newObject(scope,
-						ContextWraper.class.getSimpleName());
+						CompositeMap.class.getSimpleName(),
+						new Object[] { context });
 				ScriptableObject.defineProperty(scope, "ctx", object, 0);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
