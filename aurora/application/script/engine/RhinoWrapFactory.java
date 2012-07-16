@@ -69,7 +69,12 @@ final class RhinoWrapFactory extends WrapFactory {
 	// We use instance of this class to wrap security sensitive
 	// Java object. Please refer below.
 	private static class RhinoJavaObject extends NativeJavaObject {
-		RhinoJavaObject(Scriptable scope, Object obj, Class type) {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -626320966516911555L;
+
+		RhinoJavaObject(Scriptable scope, Object obj, Class<?> type) {
 			// we pass 'null' to object. NativeJavaObject uses
 			// passed 'type' to reflect fields and methods when
 			// object is null.
@@ -82,7 +87,7 @@ final class RhinoWrapFactory extends WrapFactory {
 	}
 
 	public Scriptable wrapAsJavaObject(Context cx, Scriptable scope,
-			Object javaObject, Class staticType) {
+			Object javaObject, Class<?> staticType) {
 		SecurityManager sm = System.getSecurityManager();
 		ClassShutter classShutter = RhinoClassShutter.getInstance();
 		if (javaObject instanceof ClassLoader) {
@@ -96,7 +101,7 @@ final class RhinoWrapFactory extends WrapFactory {
 		} else {
 			String name = null;
 			if (javaObject instanceof Class) {
-				name = ((Class) javaObject).getName();
+				name = ((Class<?>) javaObject).getName();
 			} else if (javaObject instanceof Member) {
 				Member member = (Member) javaObject;
 				// Check member access. Don't allow reflective access to
@@ -121,7 +126,7 @@ final class RhinoWrapFactory extends WrapFactory {
 		}
 
 		// we have got some non-reflective object.
-		Class dynamicType = javaObject.getClass();
+		Class<?> dynamicType = javaObject.getClass();
 		String name = dynamicType.getName();
 		if (!classShutter.visibleToScripts(name)) {
 			// Object of some sensitive class (such as sun.net.www.*
@@ -129,7 +134,7 @@ final class RhinoWrapFactory extends WrapFactory {
 			// We expose this object as though it is an object of some
 			// super class that is safe for access.
 
-			Class type = null;
+			Class<?> type = null;
 
 			// Whenever a Java Object is wrapped, we are passed with a
 			// staticType which is the type found from environment. For

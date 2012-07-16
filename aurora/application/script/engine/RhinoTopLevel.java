@@ -48,13 +48,18 @@ import aurora.application.script.SimpleScriptContext;
  * @since 1.6
  */
 public final class RhinoTopLevel extends ImporterTopLevel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4472377004724658343L;
+
 	RhinoTopLevel(Context cx, RhinoScriptEngine engine) {
 		super(cx);
 		this.engine = engine;
 
 		// initialize JSAdapter lazily. Reduces footprint & startup time.
 		new LazilyLoadedCtor(this, "JSAdapter",
-				"com.sun.script.javascript.JSAdapter", false);
+				"aurora.application.script.engine.JSAdapter", false);
 
 		/*
 		 * initialize JavaAdapter. We can't lazy initialize this because lazy
@@ -90,7 +95,7 @@ public final class RhinoTopLevel extends ImporterTopLevel {
 						ScriptableObject.getTopLevelScope(thisObj));
 			}
 		}
-		return cx.getUndefinedValue();
+		return Context.getUndefinedValue();
 	}
 
 	/**
@@ -119,7 +124,7 @@ public final class RhinoTopLevel extends ImporterTopLevel {
 				return res;
 			}
 		}
-		return cx.getUndefinedValue();
+		return Context.getUndefinedValue();
 	}
 
 	/**

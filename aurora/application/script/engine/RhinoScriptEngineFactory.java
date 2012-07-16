@@ -73,22 +73,18 @@ public class RhinoScriptEngineFactory implements ScriptEngineFactory {
 		}
 	}
 
-	@Override
 	public String getEngineName() {
 		return getProgram(ScriptEngine.NAME);
 	}
 
-	@Override
 	public String getEngineVersion() {
 		return getProgram(ScriptEngine.ENGINE_VERSION);
 	}
 
-	@Override
 	public String getLanguageName() {
 		return getProgram(ScriptEngine.LANGUAGE);
 	}
 
-	@Override
 	public String getLanguageVersion() {
 		return getProgram(ScriptEngine.LANGUAGE_VERSION);
 	}

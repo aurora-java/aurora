@@ -1,6 +1,9 @@
 package aurora.application.script.engine;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 
@@ -16,22 +19,47 @@ import aurora.application.script.ScriptException;
 import aurora.application.script.scriptobject.CompositeMap;
 
 public class AuroraScriptEngine extends RhinoScriptEngine {
+	public static final String aurora_core_js = "aurora-core.js";
+	private static String js = "";
+	static {
+		try {
+			InputStream is = AuroraScriptEngine.class
+					.getResourceAsStream(aurora_core_js);
+			if (is != null) {
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(is));
+				StringBuilder sb = new StringBuilder(1024);
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					sb.append(line);
+					sb.append('\n');
+				}
+				is.close();
+				br.close();
+				js = sb.toString();
+				sb = null;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-	private uncertain.composite.CompositeMap context;
+	private uncertain.composite.CompositeMap service_context;
 
 	public AuroraScriptEngine(uncertain.composite.CompositeMap context) {
 		super();
-		this.context = context;
+		this.service_context = context;
 	}
 
 	private void preDefine(Context cx, Scriptable scope) {
-		if (context != null) {
+		if (service_context != null) {
 			try {
 				ScriptableObject.defineClass(scope, CompositeMap.class);
 				Scriptable object = cx.newObject(scope,
 						CompositeMap.class.getSimpleName(),
-						new Object[] { context });
+						new Object[] { service_context });
 				ScriptableObject.defineProperty(scope, "ctx", object, 0);
+				cx.evaluateString(scope, js, aurora_core_js, 1, null);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (InstantiationException e) {

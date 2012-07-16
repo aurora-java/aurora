@@ -134,42 +134,42 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 		try {
 			topLevel = new RhinoTopLevel(cx, this);
 		} finally {
-			cx.exit();
+			Context.exit();
 		}
 
 		indexedProps = new HashMap<Object, Object>();
 
 		// construct object used to implement getInterface
 		implementor = new InterfaceImplementor(this) {
-			protected boolean isImplemented(Object thiz, Class<?> iface) {
-				Context cx = enterContext();
-				try {
-					if (thiz != null && !(thiz instanceof Scriptable)) {
-						thiz = cx.toObject(thiz, topLevel);
-					}
-					Scriptable engineScope = getRuntimeScope(context);
-					Scriptable localScope = (thiz != null) ? (Scriptable) thiz
-							: engineScope;
-					for (Method method : iface.getMethods()) {
-						// ignore methods of java.lang.Object class
-						if (method.getDeclaringClass() == Object.class) {
-							continue;
-						}
-						Object obj = ScriptableObject.getProperty(localScope,
-								method.getName());
-						if (!(obj instanceof Function)) {
-							return false;
-						}
-					}
-					return true;
-				} finally {
-					cx.exit();
-				}
-			}
+			// protected boolean isImplemented(Object thiz, Class<?> iface) {
+			// // Context cx = enterContext();
+			// try {
+			// if (thiz != null && !(thiz instanceof Scriptable)) {
+			// thiz = Context.toObject(thiz, topLevel);
+			// }
+			// Scriptable engineScope = getRuntimeScope(context);
+			// Scriptable localScope = (thiz != null) ? (Scriptable) thiz
+			// : engineScope;
+			// for (Method method : iface.getMethods()) {
+			// // ignore methods of java.lang.Object class
+			// if (method.getDeclaringClass() == Object.class) {
+			// continue;
+			// }
+			// Object obj = ScriptableObject.getProperty(localScope,
+			// method.getName());
+			// if (!(obj instanceof Function)) {
+			// return false;
+			// }
+			// }
+			// return true;
+			// } finally {
+			// Context.exit();
+			// }
+			// }
 
 			protected Object convertResult(Method method, Object res)
 					throws ScriptException {
-				Class desiredType = method.getReturnType();
+				Class<?> desiredType = method.getReturnType();
 				if (desiredType == Void.TYPE) {
 					return null;
 				} else {
@@ -206,7 +206,7 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 		} catch (IOException ee) {
 			throw new ScriptException(ee);
 		} finally {
-			cx.exit();
+			Context.exit();
 		}
 
 		return unwrapReturnValue(ret);
@@ -255,7 +255,7 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 			}
 
 			if (thiz != null && !(thiz instanceof Scriptable)) {
-				thiz = cx.toObject(thiz, topLevel);
+				thiz = Context.toObject(thiz, topLevel);
 			}
 
 			Scriptable engineScope = getRuntimeScope(context);
@@ -283,7 +283,7 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 			se.initCause(re);
 			throw se;
 		} finally {
-			cx.exit();
+			Context.exit();
 		}
 	}
 
@@ -343,7 +343,7 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 		try {
 			cx.evaluateString(newScope, printSource, "print", 1, null);
 		} finally {
-			cx.exit();
+			Context.exit();
 		}
 		return newScope;
 	}
@@ -363,15 +363,15 @@ public class RhinoScriptEngine extends AbstractScriptEngine implements
 				fileName = "<Unknown Source>";
 			}
 
-			Scriptable scope = getRuntimeScope(context);
-			Script scr = cx.compileReader(scope, script, fileName, 1, null);
+			// Scriptable scope = getRuntimeScope(context);
+			Script scr = cx.compileReader(script, fileName, 1, null);
 			ret = new RhinoCompiledScript(this, scr);
 		} catch (Exception e) {
 			if (DEBUG)
 				e.printStackTrace();
 			throw new ScriptException(e);
 		} finally {
-			cx.exit();
+			Context.exit();
 		}
 		return ret;
 	}

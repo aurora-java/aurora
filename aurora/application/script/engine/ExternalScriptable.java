@@ -350,7 +350,7 @@ final class ExternalScriptable implements Scriptable {
 	 *            the type hint
 	 * @return the default value
 	 */
-	public Object getDefaultValue(Class typeHint) {
+	public Object getDefaultValue(Class<?> typeHint) {
 		for (int i = 0; i < 2; i++) {
 			boolean tryToString;
 			if (typeHint == ScriptRuntime.StringClass) {
@@ -406,7 +406,7 @@ final class ExternalScriptable implements Scriptable {
 			try {
 				v = fun.call(cx, fun.getParentScope(), this, args);
 			} finally {
-				cx.exit();
+				Context.exit();
 			}
 			if (v != null) {
 				if (!(v instanceof Scriptable)) {
