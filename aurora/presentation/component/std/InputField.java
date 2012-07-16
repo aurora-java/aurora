@@ -45,6 +45,16 @@ public class InputField extends Field {
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
 		}
 		addConfig(InputFieldConfig.PROPERTITY_EDITABLE,new Boolean(view.getBoolean(InputFieldConfig.PROPERTITY_EDITABLE,true)));
+		
+		try{
+			Integer tabindex = view.getInt(InputFieldConfig.PROPERTITY_TABINDEX);
+			if(tabindex!=null){
+				map.put(InputFieldConfig.PROPERTITY_TABINDEX,tabindex);
+				addConfig(InputFieldConfig.PROPERTITY_TABINDEX,tabindex);
+			}
+		}catch(NumberFormatException e){
+			
+		}
 	}
 
 }

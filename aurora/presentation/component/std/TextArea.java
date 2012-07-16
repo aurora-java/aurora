@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.InputFieldConfig;
 
 public class TextArea extends Component {
 	
@@ -40,6 +41,16 @@ public class TextArea extends Component {
 			map.put(PROPERTITY_READONLY, "readonly");
 		}
 		addConfig(PROPERTITY_READONLY, Boolean.valueOf(readOnly));
-		map.put(CONFIG, getConfigString());
+		
+		try{
+			Integer tabindex = view.getInt(InputFieldConfig.PROPERTITY_TABINDEX);
+			if(tabindex!=null){
+				map.put(InputFieldConfig.PROPERTITY_TABINDEX,tabindex);
+				addConfig(InputFieldConfig.PROPERTITY_TABINDEX,tabindex);
+			}
+		}catch(NumberFormatException e){
+			
+		}
+		map.put(CONFIG, getConfigString());		
 	}
 }
