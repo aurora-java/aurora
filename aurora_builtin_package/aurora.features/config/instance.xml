@@ -128,6 +128,16 @@
 			<u:implement-types>
 				<u:type typeName="aurora.application.features.msg.IMessageStub" />
 			</u:implement-types>
-		</u:configurable-instance>					
+		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="task.config" >
+			<u:description>任务处理器</u:description>
+		</u:configurable-instance>
+		<u:configurable-instance configFile="excel-task.config" >
+			<u:description>异步生成Excel</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.application.task.excel.IExcelTask" />
+			</u:implement-types>
+		</u:configurable-instance>						
 	</u:instances>
 </u:instance-config>
