@@ -1,7 +1,10 @@
 package aurora.application.script.scriptobject;
 
+import java.util.List;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -85,12 +88,49 @@ public class CompositeMap extends ScriptableObject {
 		return d;
 	}
 
+	public NativeArray jsGet_children() {
+		@SuppressWarnings("unchecked")
+		List<uncertain.composite.CompositeMap> list = data.getChildsNotNull();
+		int length = list.size();
+		NativeArray arr = ScriptUtil.newArray(this, length);
+		for (int i = 0; i < length; i++) {
+			CompositeMap m = newMap();
+			m.setData(list.get(i));
+			arr.put(i, arr, m);
+		}
+		return arr;
+	}
+
+	public NativeArray jsFunction_getChildren() {
+		return jsGet_children();
+	}
+
 	public void jsFunction_put(String name, Object value) {
 		data.put(name, value);
 	}
 
 	public void jsFunction_putObject(String key, Object value) {
 		data.putObject(key, value, true);
+	}
+
+	/**
+	 * declare for JSAdapter
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	public void jsFunction___put__(String name, Object value) {
+		jsFunction_put(name, value);
+	}
+
+	/**
+	 * declare for JSAdapter
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public Object jsFunction___get__(String name) {
+		return jsFunction_get(name);
 	}
 
 	public Object jsFunction_getObject(String key) {
@@ -121,9 +161,41 @@ public class CompositeMap extends ScriptableObject {
 		return (CompositeMap) ScriptUtil.newObject(this, getClassName());
 	}
 
+	/**
+	 * toString method for java code
+	 */
 	public String toString() {
 		return getClassName() + ":"
 				+ Integer.toHexString(hashCode()).toUpperCase() + "\n"
-				+ (data == null ? "null" : data.toXML());
+				+ jsFunction_toXML();
+	}
+
+	/**
+	 * delegate for uncertain.composite.CompositeMap.toXML()
+	 * 
+	 * @return
+	 */
+	public String jsFunction_toXML() {
+		return data == null ? "null" : data.toXML();
+	}
+
+	/**
+	 * toString method for js code
+	 * 
+	 * @return
+	 */
+	public String jsFunction_toString() {
+		StringBuilder sb = new StringBuilder(100);
+		sb.append(getClassName());
+		sb.append("[name=");
+		sb.append(data.getName());
+		sb.append(';');
+		sb.append("propertyCount=");
+		sb.append(data.keySet().size());
+		sb.append(';');
+		sb.append("childCount=");
+		sb.append(data.getChildsNotNull().size());
+		sb.append(']');
+		return sb.toString();
 	}
 }
