@@ -15,5 +15,7 @@
 	<package-mapping packageName="aurora.service.ws"/>
 	<package-mapping packageName="aurora.application.features.msg"/>
 	<package-mapping packageName='uncertain.composite.transform'/>
-	<class-mapping className="aurora.service.ws.WebServiceInvoker" elementName="ws-invoker" nameSpace="http://www.aurora-framework.org/application"/>	
+	<class-mapping className="aurora.service.ws.WebServiceInvoker" elementName="ws-invoker" nameSpace="http://www.aurora-framework.org/application"/>
+	<package-mapping packageName='aurora.application.task'/>
+	<package-mapping packageName='aurora.application.task.excel'/>	
 </class-registry>
