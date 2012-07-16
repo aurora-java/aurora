@@ -32,13 +32,8 @@ public class ScriptRunner {
 
 	public Object run() throws ScriptException {
 		if (engine == null)
-			engine = new RhinoScriptEngine();
+			engine = new AuroraScriptEngine(context);
 		String str = getParsedScript();
 		return engine.eval(str);
-	}
-
-	public static void main(String[] args) throws ScriptException {
-		ScriptRunner exp = new ScriptRunner("var t='f';t");
-		System.out.println(exp.run());
 	}
 }
