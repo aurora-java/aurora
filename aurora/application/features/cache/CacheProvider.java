@@ -90,13 +90,11 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
 		if (stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
+		if(!stub.isStarted())
+			throw new IllegalStateException("JMS MessageStub is not started, please check the configuration.");
 		IConsumer consumer = stub.getConsumer(reloadTopic);
 		if(consumer == null){
-			if(!stub.isStarted()){
-				throw new IllegalStateException("MessageStub is not started, please check the configuration.");
-			}else{
-				throw new IllegalStateException("MessageStub does not define the reloadTopic '"+reloadTopic+"', please check the configuration.");
-			}
+			throw new IllegalStateException("MessageStub does not define the reloadTopic '"+reloadTopic+"', please check the configuration.");
 		}
 		if (!(consumer instanceof INoticerConsumer))
 			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
