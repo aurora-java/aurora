@@ -13,6 +13,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_NAVBAR = "navbar";
 	public static final String PROPERTITY_AUTO_FOCUS = "autofocus";
+	public static final String PROPERTITY_AUTO_APPEND = "autoappend";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_CAN_PASTE = "canpaste";
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
@@ -73,6 +74,12 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setAutoFocus(boolean focus){
 		putBoolean(PROPERTITY_AUTO_FOCUS, focus);
+	}
+	public boolean isAutoAppend(){
+		return getBoolean(PROPERTITY_AUTO_APPEND, true);		
+	}
+	public void setAutoAppend(boolean append){
+		putBoolean(PROPERTITY_AUTO_FOCUS, append);
 	}
 	public boolean isCanPaste(){
 		return getBoolean(PROPERTITY_CAN_PASTE, false);		

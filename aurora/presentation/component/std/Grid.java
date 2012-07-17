@@ -92,6 +92,7 @@ public class Grid extends Component {
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
+		if(!gc.isAutoAppend()) addConfig(GridConfig.PROPERTITY_AUTO_APPEND, new Boolean(gc.isAutoAppend()));
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
 		
@@ -402,7 +403,7 @@ public class Grid extends Component {
 					String type = item.getString("type");
 					if(!"".equals(type)){
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create(1)}");
 						}else if("delete".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
