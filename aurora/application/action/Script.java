@@ -1,14 +1,25 @@
 package aurora.application.action;
 
+import org.mozilla.javascript.JavaScriptException;
+
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
+import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
+import aurora.application.script.ScriptException;
 import aurora.application.script.engine.ScriptRunner;
 
 public class Script extends AbstractEntry {
-	String exp = "";
+	String exp = null;
 	String resultpath = null;
-	String debug = "false";
+	String cdata = null;
+	int lineno = -1;
+	private IObjectRegistry registry;
+
+	public Script(OCManager oc_manager, IObjectRegistry registry) {
+		this.registry = registry;
+	}
 
 	public String getResultpath() {
 		return resultpath;
@@ -16,14 +27,6 @@ public class Script extends AbstractEntry {
 
 	public void setResultpath(String resultpath) {
 		this.resultpath = resultpath;
-	}
-
-	public String getDebug() {
-		return debug;
-	}
-
-	public void setDebug(String debug) {
-		this.debug = debug;
 	}
 
 	public String getExp() {
@@ -37,18 +40,41 @@ public class Script extends AbstractEntry {
 	@Override
 	public void run(ProcedureRunner runner) {
 		CompositeMap context = runner.getContext();
-		ScriptRunner sr = new ScriptRunner(exp, context);
+		if (exp == null)
+			exp = cdata;
 		try {
+			ScriptRunner sr = new ScriptRunner(exp, context);
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);
-			if (Boolean.parseBoolean(debug)) {
-				System.out.println("original script:" + sr.getOriginalScript());
-				System.out.println("parsed script:" + sr.getParsedScript());
-				System.out.println("result:" + res);
+		} catch (ScriptException e) {
+			if (e.getCause() instanceof JavaScriptException) {
+				JavaScriptException jse = (JavaScriptException) e.getCause();
+				Object v = jse.getValue();
+				if (v instanceof String) {
+					ActionUtil.raiseApplicationError(runner, registry,
+							v.toString());
+					return;
+				}
 			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			StringBuilder sb = new StringBuilder(500);
+			sb.append("ScriptException<br/>\n");
+			sb.append("source:" + source + "<br/>\n");
+			sb.append("line :" + (lineno + e.getLineNumber() - 1) + "<br/>\n");
+			sb.append(e.getMessage() + "<br/>\n");
+			throw new RuntimeException(sb.toString());
+		} catch (Exception e1) {
+			throw new RuntimeException(e1);
 		}
+
+	}
+
+	@Override
+	public void beginConfigure(CompositeMap config) {
+		super.beginConfigure(config);
+		lineno = config.getLocationNotNull().getStartLine();
+		cdata = config.getText();
+		if (cdata == null)
+			cdata = "";
 	}
 }
