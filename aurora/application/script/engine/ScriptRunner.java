@@ -8,6 +8,7 @@ import aurora.application.script.ScriptException;
 public class ScriptRunner {
 	private String exp;
 	private ScriptEngine engine;
+	public static final String engine_key = "aurora_script_engine";
 
 	private CompositeMap context = null;
 
@@ -31,8 +32,11 @@ public class ScriptRunner {
 	}
 
 	public Object run() throws ScriptException {
-		if (engine == null)
+		engine = (ScriptEngine) context.get(engine_key);
+		if (engine == null) {
 			engine = new AuroraScriptEngine(context);
+			context.put(engine_key, engine);
+		}
 		String str = getParsedScript();
 		return engine.eval(str);
 	}
