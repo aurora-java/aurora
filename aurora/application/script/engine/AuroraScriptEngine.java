@@ -93,6 +93,7 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			} else {
 				msg = re.toString();
 			}
+			msg = formatExceptionMessage(msg);
 			ScriptException se = new ScriptException(msg, re.sourceName(), line);
 			se.initCause(re);
 			throw se;
@@ -103,6 +104,16 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		}
 
 		return unwrapReturnValue(ret);
+	}
+
+	private String formatExceptionMessage(String msg) {
+		int idx = msg.indexOf(':');
+		if (idx == -1)
+			return msg;
+		String s = msg.substring(0, idx);
+		if (s.indexOf("mozilla") != -1)
+			return msg.substring(idx + 1);
+		return msg;
 	}
 
 }
