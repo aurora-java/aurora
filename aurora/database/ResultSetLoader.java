@@ -134,4 +134,12 @@ public class ResultSetLoader {
         this.fieldNameCase = fieldNameCase;
     }
 
+    public String getElementName() {
+        return elementName;
+    }
+
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
+    }
+
 }
