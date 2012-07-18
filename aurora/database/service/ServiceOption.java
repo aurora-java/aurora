@@ -21,6 +21,8 @@ public class ServiceOption extends DynamicObject {
     public static final String KEY_CONNECTION_NAME = "connectionname";
     
     public static final String KEY_FIELD_CASE = "fieldcase";    
+
+    public static final String KEY_RECORD_NAME = "recordname";    
     
     public static final String KEY_UPDATE_PASSED_FIELD_ONLY = "updatepassedfieldonly";
     
@@ -123,5 +125,13 @@ public class ServiceOption extends DynamicObject {
     
     public void setUpdatePassedFieldOnly( boolean b ){
         putBoolean(KEY_UPDATE_PASSED_FIELD_ONLY, b);
+    }
+    
+    public void setRecordName( String record_name ){
+        putString(KEY_RECORD_NAME, record_name);
+    }
+    
+    public String getRecordName(){
+        return getString(KEY_RECORD_NAME);
     }
 }
