@@ -171,8 +171,11 @@ public class QuerySqlCreator extends AbstractSqlCreator {
         try {
             rs = runner.query(bmsc.getCurrentParameter());
             ResultSetLoader loader = new ResultSetLoader();
-            if (option != null)
+            if (option != null){
                 loader.setFieldNameCase(option.getFieldCase());
+                if(option.getRecordName()!=null)
+                    loader.setElementName(option.getRecordName());
+            }
             if (bmsc.getBusinessModel() != null
                     && bmsc.getBusinessModel().getFields() != null)
                 loader
