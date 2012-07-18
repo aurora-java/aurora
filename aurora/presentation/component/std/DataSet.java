@@ -13,6 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
+import aurora.application.IApplicationConfig;
 import aurora.application.features.ILookupCodeProvider;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
@@ -34,10 +38,16 @@ import aurora.presentation.component.std.config.LovConfig;
 public class DataSet extends Component {
 	
 	private static final String VALID_SCRIPT = "validscript";
-	IModelFactory mFactory;
+	private IModelFactory mFactory;
+	private ILookupCodeProvider lookupProvider;
+    private IObjectRegistry mRegistry;
+    private ApplicationConfig mApplicationConfig;
 	
-	public DataSet(IModelFactory factory) {
+	public DataSet(IObjectRegistry registry,IModelFactory factory, ILookupCodeProvider lookupProvider) {
+		this.mRegistry = registry;
         this.mFactory = factory;
+        this.lookupProvider = lookupProvider;
+        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
 	private void initLovService(String baseModel,BuildSession session,CompositeMap field) throws IOException{
@@ -65,6 +75,14 @@ public class DataSet extends Component {
 		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		JSONArray fieldList = new JSONArray(); 
+		
+		int mDefaultPageSize = -1;
+		if (mApplicationConfig != null) {
+	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+	   	     if (view_config != null) {
+	   	    	mDefaultPageSize = view_config.getDefaultPageSize();           
+	   	     }
+	   	}
 		
 		DataSetConfig dsc = DataSetConfig.getInstance(view);
 		CompositeMap fields = dsc.getFields();
@@ -202,7 +220,7 @@ public class DataSet extends Component {
 		}
 		String lcode = dsc.getLookupCode();
 		if(lcode!=null){
-			ILookupCodeProvider provider = session.getLookupProvider();
+			ILookupCodeProvider provider = this.lookupProvider;
 			if(provider!=null){
 				list = new ArrayList();
 				try {
@@ -277,7 +295,7 @@ public class DataSet extends Component {
 		}else{
 			addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
 		}
-		int page_size = session.getDefaultPageSize() < 0 ? dsc.getPageSize() : session.getDefaultPageSize();
+		int page_size = mDefaultPageSize < 0 ? dsc.getPageSize() : mDefaultPageSize;
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(page_size));
 		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
 		if(dsc.getSortType() !=null) addConfig(DataSetConfig.PROPERTITY_SORT_TYPE, dsc.getSortType());

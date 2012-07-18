@@ -12,17 +12,30 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
+import aurora.application.IApplicationConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.RadioConfig;
 
 /**
  * Radio
  * @version $Id: Radio.java v 1.0 2010-8-27 下午01:05:16 IBM Exp $
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
+ * 
  */
+@SuppressWarnings("unchecked")
 public class Radio extends Component {
+	
+	private IObjectRegistry mRegistry;
+	private ApplicationConfig mApplicationConfig;
+	
+	public Radio(IObjectRegistry registry) {
+		this.mRegistry = registry;
+        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
+    }
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
@@ -61,10 +74,19 @@ public class Radio extends Component {
 	}
 	
 	
+	
 	private void createOptions(BuildSession session,CompositeMap view,Map map, CompositeMap items,String layout,String labelField,String valueField,String expression) throws JSONException {
 		StringBuffer sb = new StringBuffer();
 		List children = items.getChilds();
 		List options = new ArrayList();
+		
+		String mDefaultRadioSeparator = null;
+		if (mApplicationConfig != null) {
+	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+	   	     if (view_config != null) {
+	   	    	mDefaultRadioSeparator = view_config.getDefaultRadioSeparator();      
+	   	     }
+	   	}
 		if(children!=null){
 			Iterator it = children.iterator();
 			while(it.hasNext()){
@@ -80,7 +102,7 @@ public class Radio extends Component {
 				
 				JSONObject option = new JSONObject(item);
 				options.add(option);
-				String radioSeparator = view.getString(RadioConfig.PROPERTITY_RADIO_SEPARATOR,session.getRadioSeparator() == null?":":session.getRadioSeparator());
+				String radioSeparator = view.getString(RadioConfig.PROPERTITY_RADIO_SEPARATOR,mDefaultRadioSeparator == null?":":mDefaultRadioSeparator);
 				
 				if(!"".equals(label)){
 					label = radioSeparator+label;

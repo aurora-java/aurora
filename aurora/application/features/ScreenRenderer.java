@@ -74,10 +74,6 @@ public class ScreenRenderer implements IFeature {
             if (view_config != null) {
                 mDefaultPackage = view_config.getDefaultPackage();
                 mDefaultTemplate = view_config.getDefaultTemplate();
-                mDefaultTitle = view_config.getDefaultTitle();
-                mDefaultPageSize = view_config.getDefaultPageSize();
-                mDefaultLabelSeparator = view_config.getDefaultLabelSeparator();
-                mDefaultRadioSeparator = view_config.getDefaultRadioSeparator();                
             }
         }
     }
@@ -91,7 +87,6 @@ public class ScreenRenderer implements IFeature {
     
     IDatabaseFactory databaseFactory;
     IObjectRegistry mRegistry;
-    ILookupCodeProvider lookupProvider;
     IMessageProvider mMessageProvider;
     
     
@@ -100,11 +95,8 @@ public class ScreenRenderer implements IFeature {
     ApplicationConfig mApplicationConfig;
     String mDefaultPackage;
     String mDefaultTemplate;
-    String mDefaultTitle = "";
     String mDefaultLabelSeparator;
-    String mDefaultRadioSeparator;
-    String mManifest = null;
-    int mDefaultPageSize;
+    
 //    String      mScreenCacheKey;
     boolean     mIsCache = false;
 
@@ -137,15 +129,12 @@ public class ScreenRenderer implements IFeature {
                         mDefaultTemplate);
             if (mScreen.getString(TemplateRenderer.KEY_PACKAGE) == null)
                 mScreen.putString(TemplateRenderer.KEY_PACKAGE, mDefaultPackage);
-            if (mScreen.getString(TemplateRenderer.KEY_TITLE) != null)
-                mDefaultTitle = mScreen.getString(TemplateRenderer.KEY_TITLE);
             if (mScreen.getString(TemplateRenderer.KEY_LABEL_SEPARATOR) != null)
             	mDefaultLabelSeparator = mScreen.getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
             if (mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE) != null)
                 setContentType(mScreen.getString(TemplateRenderer.KEY_CONTENT_TYPE));           
             //mContext.addChild(mScreen);
-            if (mScreen.getString(TemplateRenderer.KEY_MANIFEST) != null)
-                mManifest = mScreen.getString(TemplateRenderer.KEY_MANIFEST);
+            
             mContext.putBoolean("output", true);
         }
         return EventModel.HANDLE_NORMAL;
@@ -196,11 +185,6 @@ public class ScreenRenderer implements IFeature {
                     .getLocalizedMessageProvider(language_code);
             session.setMessageProvider(lp);
 
-            // TODO *** REFACTOR NEEDED ***
-            lookupProvider = (ILookupCodeProvider) mRegistry
-                    .getInstanceOfType(ILookupCodeProvider.class);
-            session.setLookupProvider(lookupProvider);
-
             // set theme
             Cookie[] cookies = request.getCookies();
             String appTheme = "default";
@@ -213,15 +197,11 @@ public class ScreenRenderer implements IFeature {
                     }
                 }
             }
-            session.setManifest(mManifest);
-            session.setTitle(mDefaultTitle);
-            session.setLabelSeparator(mDefaultLabelSeparator);
-            session.setRadioSeparator(mDefaultRadioSeparator);
+            session.getSessionContext().put(TemplateRenderer.KEY_LABEL_SEPARATOR, mDefaultLabelSeparator);
             session.setTheme(appTheme);
             session.setBaseConfig(mService.getServiceConfig());
             session.setInstanceOfType(IService.class, mService);
             session.setLogger(logger);
-            session.setDefaultPageSize(mDefaultPageSize);
             
             // register instance in current context
             ctx.setInstanceOfType(BuildSession.class, session);

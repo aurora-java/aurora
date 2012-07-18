@@ -7,14 +7,20 @@ import java.io.IOException;
 import java.util.Collection;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
 import uncertain.util.template.CompositeMapTagCreator;
 import uncertain.util.template.ITagContent;
 import uncertain.util.template.ITagCreatorRegistry;
 import uncertain.util.template.TagCreatorRegistry;
 import uncertain.util.template.TextTemplate;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
+import aurora.application.IApplicationConfig;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
+import aurora.presentation.PresentationManager;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.IDGenerator;
@@ -22,7 +28,19 @@ import aurora.presentation.component.std.IDGenerator;
 public class HtmlPage implements IViewBuilder, ISingleton {
     
     public static final String EVENT_PREPARE_PAGE_CONTENT = "PreparePageContent";
+    public static final String KEY_MANIFEST = "manifest";
+    public static final String KEY_TITLE = "title";
+    
+    private IObjectRegistry mRegistry;
+    private ApplicationConfig mApplicationConfig;
 
+    public HtmlPage(IObjectRegistry registry) {
+    	mRegistry = registry;
+    	mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
+ 
+    }
+    
+    
     /**
      * Handle ${page:content} in html page template
      * @author Zhou Fan
@@ -95,17 +113,26 @@ public class HtmlPage implements IViewBuilder, ISingleton {
         	String pageid = IDGenerator.getInstance().generate();
         	
         	//TODO Change title creation method
-        	String title = view.getString(TemplateRenderer.KEY_TITLE);
-        	if(title==null)
-        	    title = session.getTitle();
-        	if(title!=null){
+        	String defaultTitle = "";
+        	if (mApplicationConfig != null) {
+        	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+        	     if (view_config != null) {
+        	    	 defaultTitle = view_config.getDefaultTitle();             
+        	     }
+        	}
+        	String title = view.getString(KEY_TITLE, defaultTitle);
+        	if(title != null){
         	    title = session.getLocalizedPrompt(title);
         	    title = uncertain.composite.TextParser.parse(title, model);
-                view_context.getContextMap().put(TemplateRenderer.KEY_TITLE, title);
+                view_context.getContextMap().put(KEY_TITLE, title);
         	}
-        	if(session.getManifest()!=null){
-        		view_context.getContextMap().put(TemplateRenderer.KEY_MANIFEST, "manifest=\""+session.getManifest()+"\"");
+        	
+        	String mManifest = view.getString(KEY_MANIFEST);
+        	if(mManifest!=null){
+        		view_context.getContextMap().put(KEY_MANIFEST, "manifest=\""+mManifest+"\"");
         	}
+        	
+            
         	
         	view_context.getContextMap().put("pageid", pageid);
         	view_context.getContextMap().put("contextPath", session.getContextPath());

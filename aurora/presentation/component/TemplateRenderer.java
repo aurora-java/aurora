@@ -33,11 +33,10 @@ public class TemplateRenderer implements IViewBuilder, ISingleton {
     
     public static final String KEY_PACKAGE = "package";
     public static final String KEY_TEMPLATE = "template";
-    public static final String KEY_TITLE = "title";
     public static final String KEY_INDEX_FIELD = "indexfield";
     public static final String KEY_CONTENT_TYPE = "contenttype";
     public static final String KEY_LABEL_SEPARATOR = "labelseparator";
-    public static final String KEY_MANIFEST = "manifest";
+    
     
     private static final String DEFAULT_INDEX_FIELD = "id";
     

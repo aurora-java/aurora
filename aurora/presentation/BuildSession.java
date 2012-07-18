@@ -83,13 +83,6 @@ public class BuildSession {
     // session level tag creator registry
     ITagCreatorRegistry mSessionTagCreatorRegistry;
 
-    /** @todo refactor out */
-    String title;
-    String manifest;
-    String labelSeparator;
-    String radioSeparator;
-    ILookupCodeProvider lookupProvider;
-    int defaultPageSize;
 
     String language;
 
@@ -598,14 +591,6 @@ public class BuildSession {
                         creator);
     }
 
-    public ILookupCodeProvider getLookupProvider() {
-        return lookupProvider;
-    }
-
-    public void setLookupProvider(ILookupCodeProvider provider) {
-        lookupProvider = provider;
-    }
-
     public String getLanguage() {
         return language;
     }
@@ -620,46 +605,6 @@ public class BuildSession {
 
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    public String getManifest() {
-        return manifest;
-    }
-
-    public void setManifest(String manifest) {
-        this.manifest = manifest;
-    }
-    
-    
-    public String getLabelSeparator() {
-    	return labelSeparator;
-    }
-    
-    public void setLabelSeparator(String labelSeparator) {
-    	this.labelSeparator = labelSeparator;
-    }
-    public String getRadioSeparator() {
-    	return radioSeparator;
-    }
-    
-    public void setRadioSeparator(String radioSeparator) {
-    	this.radioSeparator = radioSeparator;
-    }
-    
-    public int getDefaultPageSize(){
-    	return defaultPageSize;
-    }
-    
-    public void setDefaultPageSize(int size){
-    	this.defaultPageSize = size;
     }
 
 }

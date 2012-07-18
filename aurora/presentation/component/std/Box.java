@@ -5,9 +5,9 @@ import java.io.Writer;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import aurora.presentation.BuildSession;
+import aurora.presentation.component.TemplateRenderer;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.service.http.WebContextInit;
 
 /**
  * Box
@@ -30,7 +30,9 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
-		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,session.getLabelSeparator() == null?":":session.getLabelSeparator());
+		
+		String defaultLabelSeparator = session.getSessionContext().getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
+		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,(defaultLabelSeparator == null ? ":" : defaultLabelSeparator));
 		
 		if(!"".equals(label)) {
 			StringBuffer str = new StringBuffer();
