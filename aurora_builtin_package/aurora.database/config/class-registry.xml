@@ -21,7 +21,6 @@
         <class-mapping className="aurora.database.actions.ModelInsert" elementName="model-insert" />
         <class-mapping className="aurora.database.actions.ModelDelete" elementName="model-delete" />
         <class-mapping className="aurora.database.actions.ModelJoin" elementName="model-join" />
-        <class-mapping className="aurora.database.actions.ModelJoin" elementName="model-join" />
         <class-mapping className="aurora.database.actions.ModelExecute" elementName="model-execute" />
         <class-mapping className="aurora.database.actions.ModelBatchUpdate" elementName="model-batch-update" />
         <class-mapping className="aurora.database.actions.BatchApply" elementName="batch-apply" />
