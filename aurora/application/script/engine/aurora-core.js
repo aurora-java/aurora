@@ -1,25 +1,23 @@
-function getSession(create){
-	session=ctx.getChild('session');
-	if(!session&&create){
-		session=new CompositeMap('session');
-		ctx.addChild(session);
-	}
-	return session;
+function $bm(model){
+	return new ModelService(model);
 }
 
-function getCookie(create){
-	cook=ctx.getChild('cookie');
-	if(!cook&&create){
-		cook=new CompositeMap('cookie');
-		ctx.addChild(cook);
-	}
-	return cook;
+function md5(data){
+	return String(Packages.aurora.application.util.MD5Util.md5Hex(data));
 }
 
-function getRequest(){
-	req=ctx.getChild('request');
+function des_encrypt(data){
+	return String(Packages.aurora.application.util.DesEncrypt.desEncrypt(data));
 }
 
+function des_decrypt(data){
+	return String(Packages.aurora.application.util.DesEncrypt.desDecrypt(data));
+}
+
+function method_invoke(para){
+	mi=new MethodInvoke();
+	mi.invoke(para);
+}
 
 function raise_app_error(code){
 	throw code;

@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import aurora.application.script.ScriptEngine;
-import aurora.application.script.ScriptEngineFactory;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 
 /**
  * Factory to create RhinoScriptEngine

@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeJavaClass;
@@ -36,9 +39,6 @@ import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Wrapper;
-
-import aurora.application.script.Bindings;
-import aurora.application.script.ScriptContext;
 
 /**
  * ExternalScriptable is an iimport java.util.ArrayList; import

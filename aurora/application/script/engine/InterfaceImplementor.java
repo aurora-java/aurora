@@ -32,8 +32,8 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
-import aurora.application.script.Invocable;
-import aurora.application.script.ScriptException;
+import javax.script.Invocable;
+import javax.script.ScriptException;
 
 /*
  * java.lang.reflect.Proxy based interface implementor. This is meant

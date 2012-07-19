@@ -1,11 +1,12 @@
 package aurora.application.script.engine;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
@@ -13,60 +14,52 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import aurora.application.script.ScriptContext;
-import aurora.application.script.ScriptEngine;
-import aurora.application.script.ScriptException;
 import aurora.application.script.scriptobject.CompositeMap;
+import aurora.application.script.scriptobject.ContextObject;
+import aurora.application.script.scriptobject.CookieObject;
+import aurora.application.script.scriptobject.ModelServiceObject;
+import aurora.application.script.scriptobject.ScriptUtil;
+import aurora.application.script.scriptobject.SessionObject;
 
 public class AuroraScriptEngine extends RhinoScriptEngine {
 	public static final String aurora_core_js = "aurora-core.js";
-	private static String js = "";
-	static {
-		try {
-			InputStream is = AuroraScriptEngine.class
-					.getResourceAsStream(aurora_core_js);
-			if (is != null) {
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(is));
-				StringBuilder sb = new StringBuilder(1024);
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-					sb.append('\n');
-				}
-				is.close();
-				br.close();
-				js = sb.toString();
-				sb = null;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	public static final String KEY_SERVICE_CONTEXT = "service_context";
+	public static final String KEY_SSO = "sso";
+	private static String js = ScriptUtil.loadAuroraCore();
 
 	private uncertain.composite.CompositeMap service_context;
 
 	public AuroraScriptEngine(uncertain.composite.CompositeMap context) {
 		super();
+		if (context == null)
+			throw new NullPointerException(
+					"init context for 'AuroraScriptEngine' can not be null.");
 		this.service_context = context;
 	}
 
 	private void preDefine(Context cx, Scriptable scope) {
-		if (service_context != null) {
-			try {
-				ScriptableObject.defineClass(scope, CompositeMap.class);
-				Scriptable object = cx.newObject(scope,
-						CompositeMap.class.getSimpleName(),
-						new Object[] { service_context });
-				ScriptableObject.defineProperty(scope, "ctx", object, 0);
-				cx.evaluateString(scope, js, aurora_core_js, 1, null);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
+		try {
+			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
+			ScriptableObject.defineClass(scope, CompositeMap.class);
+			ScriptableObject.defineClass(scope, ContextObject.class);
+			Scriptable object = cx.newObject(scope, ContextObject.CLASS_NAME);
+			ScriptableObject.defineProperty(scope, "$ctx", object, 0);
+			ScriptableObject.defineClass(scope, SessionObject.class);
+			object = cx.newObject(scope, SessionObject.CLASS_NAME);
+			ScriptableObject.defineProperty(scope, "$session", object, 0);
+			ScriptableObject.defineClass(scope, CookieObject.class);
+			object = cx.newObject(scope, CookieObject.CLASS_NAME);
+			ScriptableObject.defineProperty(scope, "$cookie", object, 0);
+
+			ScriptableObject.defineClass(scope, ModelServiceObject.class);
+
+			cx.evaluateString(scope, js, aurora_core_js, 1, null);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 	}
 

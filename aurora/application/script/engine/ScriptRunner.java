@@ -1,16 +1,19 @@
 package aurora.application.script.engine;
 
+import javax.script.ScriptException;
+
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
-import aurora.application.script.ScriptEngine;
-import aurora.application.script.ScriptException;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.script.scriptobject.ScriptShareObject;
 
 public class ScriptRunner {
 	private String exp;
-	private ScriptEngine engine;
+	private AuroraScriptEngine engine;
 	public static final String engine_key = "aurora_script_engine";
 
 	private CompositeMap context = null;
+	private ScriptShareObject sso;
 
 	public ScriptRunner(String script) {
 		this.exp = script;
@@ -19,6 +22,18 @@ public class ScriptRunner {
 	public ScriptRunner(String script, CompositeMap context) {
 		this.exp = script;
 		this.context = context;
+	}
+
+	public ScriptRunner(String script, CompositeMap context,
+			IObjectRegistry registry) {
+		this.exp = script;
+		this.context = context;
+		sso = (ScriptShareObject) context.get(AuroraScriptEngine.KEY_SSO);
+		if (sso == null) {
+			sso = new ScriptShareObject();
+			context.put(AuroraScriptEngine.KEY_SSO, sso);
+		}
+		sso.put(registry);
 	}
 
 	public String getOriginalScript() {
@@ -32,10 +47,10 @@ public class ScriptRunner {
 	}
 
 	public Object run() throws ScriptException {
-		engine = (ScriptEngine) context.get(engine_key);
+		engine = sso.getEngine();
 		if (engine == null) {
 			engine = new AuroraScriptEngine(context);
-			context.put(engine_key, engine);
+			sso.put(engine);
 		}
 		String str = getParsedScript();
 		return engine.eval(str);

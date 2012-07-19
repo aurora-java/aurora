@@ -25,6 +25,10 @@
 
 package aurora.application.script.engine;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -34,10 +38,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Synchronizer;
 import org.mozilla.javascript.Wrapper;
-
-import aurora.application.script.Bindings;
-import aurora.application.script.ScriptContext;
-import aurora.application.script.SimpleScriptContext;
 
 /**
  * This class serves as top level scope for Rhino. This class adds 3 top level

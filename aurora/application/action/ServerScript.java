@@ -1,5 +1,7 @@
 package aurora.application.action;
 
+import javax.script.ScriptException;
+
 import org.mozilla.javascript.JavaScriptException;
 
 import uncertain.composite.CompositeMap;
@@ -7,17 +9,16 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
-import aurora.application.script.ScriptException;
 import aurora.application.script.engine.ScriptRunner;
 
-public class Script extends AbstractEntry {
+public class ServerScript extends AbstractEntry {
 	String exp = null;
 	String resultpath = null;
 	String cdata = null;
 	int lineno = -1;
 	private IObjectRegistry registry;
 
-	public Script(OCManager oc_manager, IObjectRegistry registry) {
+	public ServerScript(OCManager oc_manager, IObjectRegistry registry) {
 		this.registry = registry;
 	}
 
@@ -43,7 +44,7 @@ public class Script extends AbstractEntry {
 		if (exp == null)
 			exp = cdata;
 		try {
-			ScriptRunner sr = new ScriptRunner(exp, context);
+			ScriptRunner sr = new ScriptRunner(exp, context, registry);
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);

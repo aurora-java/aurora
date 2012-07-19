@@ -25,16 +25,16 @@
 
 package aurora.application.script.engine;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
-
-import aurora.application.script.CompiledScript;
-import aurora.application.script.ScriptContext;
-import aurora.application.script.ScriptEngine;
-import aurora.application.script.ScriptException;
 
 /**
  * Represents compiled JavaScript code.
