@@ -97,12 +97,20 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 			try{
 				executeBM(queryTaskBM, context, task);
 				if (task == null || task.isEmpty()) {
-					Thread.sleep(1000);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						//e.printStackTrace();
+					}
 					continue;
 				}
 				Object task_id = task.get(TaskTableFields.TASK_ID);
 				if (task_id == null || "null".equals(task_id)) {
-					Thread.sleep(1000);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						//e.printStackTrace();
+					}
 					continue;
 				}
 				String strContext = task.getString(TaskTableFields.CONTEXT);
