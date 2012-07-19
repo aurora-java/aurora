@@ -10,7 +10,7 @@ public class PeriodModeCacheProvider extends CacheProvider {
 
 	protected int refreshInterval = -1;
 	private Thread periodThread;
-
+	private boolean shutdown = false;
 	public PeriodModeCacheProvider(IObjectRegistry registry,INamedCacheFactory cacheFactory) {
 		super(registry,cacheFactory);
 	}
@@ -25,13 +25,13 @@ public class PeriodModeCacheProvider extends CacheProvider {
 		if (refreshInterval > 0) {
 			periodThread = new Thread() {
 				public void run() {
-					while (true) {
+					while (!shutdown) {
 						try {
 							sleep(refreshInterval);
 							reload();
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, "", e);
-							throw new RuntimeException(e);
+//							throw new RuntimeException(e);
 						}
 					}
 				}
@@ -46,7 +46,9 @@ public class PeriodModeCacheProvider extends CacheProvider {
 	public void setRefreshInterval(int refreshInterval) {
 		this.refreshInterval = refreshInterval;
 	}
-	public void onShutdown(){
+	@Override
+	public void shutdown(){
+		shutdown = true;
 		if(periodThread != null && periodThread.isAlive()){
 			periodThread.interrupt();
 		}
