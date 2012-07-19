@@ -91,7 +91,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		if (stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
 		if(!stub.isStarted())
-			throw new IllegalStateException("JMS MessageStub is not started, please check the configuration.");
+			logger.warning("JMS MessageStub is not started, please check the configuration.");
 		IConsumer consumer = stub.getConsumer(reloadTopic);
 		if(consumer == null){
 			throw new IllegalStateException("MessageStub does not define the reloadTopic '"+reloadTopic+"', please check the configuration.");
@@ -173,7 +173,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
 			}
 			String type = getType();
-			List childs = data.getChilds();
+			List<CompositeMap> childs = data.getChilds();
 			if (ICacheProvider.VALUE_TYPE.value.name().equals(type)) {
 				if (childs == null) {
 					String key = TextParser.parse(getKey(), data);
@@ -229,7 +229,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 						List new_values = record.getChilds();
 						if (new_values == null)
 							throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
-						List<String> value_list = new LinkedList<String>();
+						List<CompositeMap> value_list = new LinkedList<CompositeMap>();
 						cache.setValue(key, value_list);
 						value_list.addAll(new_values);
 					}
