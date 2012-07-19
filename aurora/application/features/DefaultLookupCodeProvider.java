@@ -10,8 +10,12 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.IGlobalInstance;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import aurora.database.FetchDescriptor;
+import aurora.database.features.CacheBasedLookUpField;
+import aurora.database.features.LookUpField;
+import aurora.database.profile.IDatabaseFactory;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
@@ -124,6 +128,11 @@ public class DefaultLookupCodeProvider implements ILookupCodeProvider, IGlobalIn
 
     public void onInitialize() throws Exception {
         factory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
+        IDatabaseFactory databaseFactory = (IDatabaseFactory)registry.getInstanceOfType(IDatabaseFactory.class);
+		if(databaseFactory == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IDatabaseFactory.class);
+        LookUpField lookUpField = new LookUpField(databaseFactory, registry);
+        factory.setGlobalParticipant(lookUpField);
         init();
     }
 
