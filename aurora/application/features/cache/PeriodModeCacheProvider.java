@@ -27,7 +27,11 @@ public class PeriodModeCacheProvider extends CacheProvider {
 				public void run() {
 					while (!shutdown) {
 						try {
-							sleep(refreshInterval);
+							Thread.sleep(refreshInterval);
+						} catch (InterruptedException e) {
+							//e.printStackTrace();
+						}
+						try {
 							reload();
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, "", e);
