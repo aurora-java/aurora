@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.core.ILifeCycle;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
@@ -29,7 +30,7 @@ import aurora.service.IServiceFactory;
 import aurora.service.ServiceInvoker;
 import aurora.service.ServiceThreadLocal;
 
-public class TaskHandler extends AbstractLocatableObject {
+public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 
 	private IObjectRegistry mRegistry;
 
@@ -80,8 +81,7 @@ public class TaskHandler extends AbstractLocatableObject {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				try {
-					running = false;
-					onShutdown();
+					shutdown();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -321,12 +321,6 @@ public class TaskHandler extends AbstractLocatableObject {
 		}
 	}
 
-	public void onShutdown() throws Exception {
-		if (taskThread != null && taskThread.isAlive())
-			taskThread.interrupt();
-		taskThread = null;
-	}
-
 	public String getQueryTaskBM() {
 		return queryTaskBM;
 	}
@@ -378,6 +372,20 @@ public class TaskHandler extends AbstractLocatableObject {
 		exception.printStackTrace(pw);
 		pw.close();
 		return baos.toString();
+	}
+
+	@Override
+	public boolean startup() {
+		return true;
+	}
+
+	@Override
+	public void shutdown() {
+		running = false;
+		if (taskThread != null && taskThread.isAlive())
+			taskThread.interrupt();
+		taskThread = null;
+		
 	}
 	
 }
