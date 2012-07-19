@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.IdScriptableObject;
 import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Scriptable;
 
-public class CompositeMap extends ScriptableObject {
+public class CompositeMap extends IdScriptableObject {
 
 	private static final long serialVersionUID = 5555217288330437262L;
-
+	public static final String CLASS_NAME = "CompositeMap";
 	private uncertain.composite.CompositeMap data;
 
 	/**
@@ -74,18 +74,22 @@ public class CompositeMap extends ScriptableObject {
 
 	@Override
 	public String getClassName() {
-		return CompositeMap.class.getSimpleName();
+		return CLASS_NAME;
 	}
 
-	public Object jsFunction_get(String name) {
+	public Object jsFunction_get(Object name) {
 		Object d = data.get(name);
 		if (d instanceof uncertain.composite.CompositeMap) {
 			CompositeMap c = newMap();
 			c.setData((uncertain.composite.CompositeMap) d);
 			return c;
-		} else if (d instanceof NativeObject) {
+		} else if (d instanceof java.sql.Date) {
 		}
-		return d;
+		return Context.javaToJS(d, getTopLevelScope(this));
+	}
+
+	public int jsGet_length() {
+		return data.getChildsNotNull().size();
 	}
 
 	public NativeArray jsGet_children() {
@@ -113,39 +117,24 @@ public class CompositeMap extends ScriptableObject {
 		data.putObject(key, value, true);
 	}
 
-	/**
-	 * declare for JSAdapter
-	 * 
-	 * @param name
-	 * @param value
-	 */
-	public void jsFunction___put__(String name, Object value) {
-		jsFunction_put(name, value);
-	}
-
-	/**
-	 * declare for JSAdapter
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public Object jsFunction___get__(String name) {
-		return jsFunction_get(name);
-	}
-
 	public Object jsFunction_getObject(String key) {
 		Object d = data.getObject(key);
 		if (d instanceof uncertain.composite.CompositeMap) {
 			CompositeMap c = newMap();
 			c.setData((uncertain.composite.CompositeMap) d);
 			return c;
+		} else if (d instanceof java.sql.Date) {
 		}
-		return d;
+		Object obj = Context.javaToJS(d, getTopLevelScope(this));
+		return obj;
 	}
 
 	public CompositeMap jsFunction_getChild(String name) {
+		uncertain.composite.CompositeMap d = data.getChild(name);
+		if (d == null)
+			return null;
 		CompositeMap c = newMap();
-		c.setData(data.getChild(name));
+		c.setData(d);
 		return c;
 	}
 
@@ -158,7 +147,29 @@ public class CompositeMap extends ScriptableObject {
 	}
 
 	protected CompositeMap newMap() {
-		return (CompositeMap) ScriptUtil.newObject(this, getClassName());
+		return (CompositeMap) ScriptUtil.newObject(this,
+				CompositeMap.CLASS_NAME);
+	}
+
+	@Override
+	public boolean has(String name, Scriptable start) {
+		if (data.containsKey(name))
+			return true;
+		return super.has(name, start);
+	}
+
+	@Override
+	public Object get(String name, Scriptable start) {
+		Object obj = jsFunction_get(name);
+		if (obj != null)
+			return obj;
+		return super.get(name, start);
+	}
+
+	@Override
+	public void put(String name, Scriptable start, Object value) {
+		jsFunction_put(name, value);
+		super.put(name, start, value);
 	}
 
 	/**
