@@ -15,7 +15,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import aurora.application.script.scriptobject.CompositeMap;
-import aurora.application.script.scriptobject.ContextObject;
 import aurora.application.script.scriptobject.CookieObject;
 import aurora.application.script.scriptobject.ModelServiceObject;
 import aurora.application.script.scriptobject.ScriptUtil;
@@ -41,8 +40,9 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		try {
 			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 			ScriptableObject.defineClass(scope, CompositeMap.class);
-			ScriptableObject.defineClass(scope, ContextObject.class);
-			Scriptable object = cx.newObject(scope, ContextObject.CLASS_NAME);
+			// ScriptableObject.defineClass(scope, ContextObject.class);
+			Scriptable object = cx.newObject(scope, CompositeMap.CLASS_NAME,
+					new Object[] { service_context });
 			ScriptableObject.defineProperty(scope, "$ctx", object, 0);
 			ScriptableObject.defineClass(scope, SessionObject.class);
 			object = cx.newObject(scope, SessionObject.CLASS_NAME);

@@ -2,6 +2,7 @@ package aurora.application.script.scriptobject;
 
 import java.util.List;
 
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.IdScriptableObject;
@@ -146,6 +147,18 @@ public class CompositeMap extends IdScriptableObject {
 		}
 	}
 
+	public CompositeMap jsFunction_createChild(String name) {
+		CompositeMap map = newMap();
+		map.setData(data.createChild(name));
+		return map;
+	}
+
+	public CompositeMap jsFunction_createChildByTag(String path) {
+		CompositeMap m = newMap();
+		m.setData(data.createChildByTag(path));
+		return m;
+	}
+
 	protected CompositeMap newMap() {
 		return (CompositeMap) ScriptUtil.newObject(this,
 				CompositeMap.CLASS_NAME);
@@ -161,14 +174,15 @@ public class CompositeMap extends IdScriptableObject {
 	@Override
 	public Object get(String name, Scriptable start) {
 		Object obj = jsFunction_get(name);
-		if (obj != null)
+		if (ScriptUtil.isValid(obj))
 			return obj;
 		return super.get(name, start);
 	}
 
 	@Override
 	public void put(String name, Scriptable start, Object value) {
-		jsFunction_put(name, value);
+		if (!(value instanceof Callable))
+			jsFunction_put(name, value);
 		super.put(name, start, value);
 	}
 

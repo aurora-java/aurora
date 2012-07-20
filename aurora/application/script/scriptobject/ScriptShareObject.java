@@ -62,7 +62,7 @@ public class ScriptShareObject extends ScriptableObject {
 	}
 
 	public String toString() {
-		return "<" + getClassName() + " : " + map.size() + " elements>";
+		return "(" + getClassName() + " : " + map.size() + " elements)";
 	}
 
 	public String jsFunction_toString() {

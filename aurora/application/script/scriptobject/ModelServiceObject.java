@@ -10,10 +10,13 @@ import org.mozilla.javascript.ScriptableObject;
 import uncertain.composite.TextParser;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.script.engine.AuroraScriptEngine;
 import aurora.database.FetchDescriptor;
+import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.BusinessModelService;
+import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.ServiceOption;
+import aurora.database.service.SqlServiceContext;
 
 public class ModelServiceObject extends ScriptableObject {
 
@@ -27,16 +30,17 @@ public class ModelServiceObject extends ScriptableObject {
 	private DatabaseServiceFactory svcFactory;
 
 	private FetchDescriptor desc = FetchDescriptor.fetchAll();
+	private BusinessModelServiceContext serviceContext;
 
 	public ModelServiceObject() {
 		super();
-		context = (uncertain.composite.CompositeMap) Context
-				.getCurrentContext().getThreadLocal(
-						AuroraScriptEngine.KEY_SERVICE_CONTEXT);
+		context = ScriptUtil.getContext();
 		IObjectRegistry registry = ScriptUtil.getObjectRegistry(context);
-		UncertainEngine uEngine = (UncertainEngine) registry
-				.getInstanceOfType(UncertainEngine.class);
-		svcFactory = new DatabaseServiceFactory(uEngine);
+		if (registry != null) {
+			UncertainEngine uEngine = (UncertainEngine) registry
+					.getInstanceOfType(UncertainEngine.class);
+			svcFactory = new DatabaseServiceFactory(uEngine);
+		}
 	}
 
 	public ModelServiceObject(String model) {
@@ -44,6 +48,7 @@ public class ModelServiceObject extends ScriptableObject {
 		model = TextParser.parse(model, context);
 		try {
 			service = svcFactory.getModelService(model, context);
+			serviceContext = service.getServiceContext();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -105,26 +110,18 @@ public class ModelServiceObject extends ScriptableObject {
 	}
 
 	public void jsFunction_execute(Object parameter) {
-		if (!ScriptUtil.isValid(parameter))
-			parameter = context.getChild("parameter");
 		jsFunction_executeDml(parameter, "Execute");
 	}
 
 	public void jsFunction_insert(Object parameter) {
-		if (!ScriptUtil.isValid(parameter))
-			parameter = context.getChild("parameter");
 		jsFunction_executeDml(parameter, "Insert");
 	}
 
-	public void jsFunction_updateByPK(Object parameter) {
-		if (!ScriptUtil.isValid(parameter))
-			parameter = context.getChild("parameter");
+	public void jsFunction_update(Object parameter) {
 		jsFunction_executeDml(parameter, "Update");
 	}
 
-	public void jsFunction_deleteByPK(Object parameter) {
-		if (!ScriptUtil.isValid(parameter))
-			parameter = context.getChild("parameter");
+	public void jsFunction_delete(Object parameter) {
 		jsFunction_executeDml(parameter, "Delete");
 	}
 
@@ -135,11 +132,53 @@ public class ModelServiceObject extends ScriptableObject {
 			uncertain.composite.CompositeMap data = service.queryAsMap(
 					convert(parameter), desc);
 			CompositeMap map = (CompositeMap) ScriptUtil.newObject(this,
-					"CompositeMap");
+					CompositeMap.CLASS_NAME);
 			map.setData(data);
 			return map;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			jsSet_option(null);
+		}
+	}
+
+	public CompositeMap jsFunction_queryIntoMap(CompositeMap root,
+			Object parameter) {
+		if (!(root instanceof CompositeMap))
+			throw new RuntimeException("invalid root");
+		if (!ScriptUtil.isValid(parameter))
+			parameter = context.getChild("parameter");
+		try {
+			service.queryIntoMap(convert(parameter), desc, root.getData());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			jsSet_option(null);
+		}
+		return root;
+	}
+
+	public void jsFunction_query() {
+		try {
+			ServiceOption so = (ServiceOption) context
+					.get(SqlServiceContext.KEY_SERVICE_OPTION);
+			if (so != null) {
+				String path = so.getString("rootPath");
+				uncertain.composite.CompositeMap root = context;
+				if (path != null) {
+					root = (uncertain.composite.CompositeMap) context
+							.getObject(path);
+					if (root == null)
+						root = context.createChildByTag(path);
+				}
+				CompositeMapCreator cmc = new CompositeMapCreator(root);
+				serviceContext.setResultsetConsumer(cmc);
+			}
+			service.query();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			jsSet_option(null);
 		}
 	}
 
@@ -150,16 +189,48 @@ public class ModelServiceObject extends ScriptableObject {
 	 */
 	public void jsFunction_executeDml(Object parameter, String operation) {
 		try {
-			if (parameter == null || parameter == Context.getUndefinedValue())
+			if (!ScriptUtil.isValid(parameter))
 				parameter = context.getChild("parameter");
 			service.executeDml(convert(parameter), operation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			jsSet_option(null);
 		}
 	}
 
 	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	public Object jsGet_option() {
+		ServiceOption so = (ServiceOption) context
+				.get(SqlServiceContext.KEY_SERVICE_OPTION);
+		if (so == null)
+			return null;
+		uncertain.composite.CompositeMap map = so.getObjectContext();
+		NativeObject no = (NativeObject) ScriptUtil.newObject(this, "Object");
+		for (Object o : map.keySet()) {
+			if (o instanceof String)
+				ScriptableObject.putProperty(no, (String) o, map.get(o));
+		}
+		return no;
+	}
+
+	public void jsSet_option(Object obj) {
+		if (!(obj instanceof NativeObject)) {
+			context.put(SqlServiceContext.KEY_SERVICE_OPTION, null);
+			return;
+		}
+
+		NativeObject no = (NativeObject) obj;
+		ServiceOption so = ServiceOption.createInstance();
+		for (Object o : no.keySet()) {
+			if (o instanceof String) {
+				so.put(o, no.get(o));
+			}
+		}
+		context.put(SqlServiceContext.KEY_SERVICE_OPTION, so);
 	}
 }

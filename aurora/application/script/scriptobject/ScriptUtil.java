@@ -31,6 +31,8 @@ public class ScriptUtil {
 			uncertain.composite.CompositeMap context) {
 		ScriptShareObject sso = (ScriptShareObject) context
 				.get(AuroraScriptEngine.KEY_SSO);
+		if (sso == null)
+			return null;
 		return sso.getEngine();
 	}
 
@@ -38,6 +40,8 @@ public class ScriptUtil {
 			uncertain.composite.CompositeMap context) {
 		ScriptShareObject sso = (ScriptShareObject) context
 				.get(AuroraScriptEngine.KEY_SSO);
+		if (sso == null)
+			return null;
 		return sso.getObjectRegistry();
 	}
 
@@ -72,4 +76,5 @@ public class ScriptUtil {
 		}
 		return "";
 	}
+
 }
