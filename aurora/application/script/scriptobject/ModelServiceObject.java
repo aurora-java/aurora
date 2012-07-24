@@ -164,13 +164,7 @@ public class ModelServiceObject extends ScriptableObject {
 					.get(SqlServiceContext.KEY_SERVICE_OPTION);
 			if (so != null) {
 				String path = so.getString("rootPath");
-				uncertain.composite.CompositeMap root = context;
-				if (path != null) {
-					root = (uncertain.composite.CompositeMap) context
-							.getObject(path);
-					if (root == null)
-						root = context.createChildByTag(path);
-				}
+				uncertain.composite.CompositeMap root = getMapFromRootPath(path);
 				CompositeMapCreator cmc = new CompositeMapCreator(root);
 				serviceContext.setResultsetConsumer(cmc);
 			}
@@ -180,6 +174,17 @@ public class ModelServiceObject extends ScriptableObject {
 		} finally {
 			jsSet_option(null);
 		}
+	}
+
+	private uncertain.composite.CompositeMap getMapFromRootPath(String rootPath) {
+		uncertain.composite.CompositeMap model = context.getChild("model");
+		if (model == null)
+			model = context.createChild("model");
+		uncertain.composite.CompositeMap root = (uncertain.composite.CompositeMap) model
+				.getObject(rootPath);
+		if (root == null)
+			root = model.createChildByTag(rootPath);
+		return root;
 	}
 
 	/**
@@ -228,7 +233,10 @@ public class ModelServiceObject extends ScriptableObject {
 		ServiceOption so = ServiceOption.createInstance();
 		for (Object o : no.keySet()) {
 			if (o instanceof String) {
+				// The original key and lowcase key put the same value
+				// To avoid some CASE problem
 				so.put(o, no.get(o));
+				so.put(o.toString().toLowerCase(), no.get(o));
 			}
 		}
 		context.put(SqlServiceContext.KEY_SERVICE_OPTION, so);
