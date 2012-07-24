@@ -231,9 +231,11 @@ public class ModelServiceObject extends ScriptableObject {
 
 		NativeObject no = (NativeObject) obj;
 		ServiceOption so = ServiceOption.createInstance();
+		so.setFieldCase(Character.LOWERCASE_LETTER);
+		so.setQueryMode(ServiceOption.MODE_FREE_QUERY);
 		for (Object o : no.keySet()) {
 			if (o instanceof String) {
-				// The original key and lowcase key put the same value
+				// Put the same value at original key and lowercase key
 				// To avoid some CASE problem
 				so.put(o, no.get(o));
 				so.put(o.toString().toLowerCase(), no.get(o));
