@@ -412,6 +412,8 @@ public class Grid extends Component {
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
+						}else if("customize".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize()}");
 						}
 					}
 				}
