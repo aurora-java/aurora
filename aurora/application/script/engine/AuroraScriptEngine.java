@@ -40,20 +40,32 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		try {
 			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 			ScriptableObject.defineClass(scope, CompositeMap.class);
-			// ScriptableObject.defineClass(scope, ContextObject.class);
-			Scriptable object = cx.newObject(scope, CompositeMap.CLASS_NAME,
-					new Object[] { service_context });
-			ScriptableObject.defineProperty(scope, "$ctx", object, 0);
 			ScriptableObject.defineClass(scope, SessionObject.class);
-			object = cx.newObject(scope, SessionObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$session", object, 0);
 			ScriptableObject.defineClass(scope, CookieObject.class);
-			object = cx.newObject(scope, CookieObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$cookie", object, 0);
-
 			ScriptableObject.defineClass(scope, ModelServiceObject.class);
+			// ScriptableObject.defineClass(scope, ContextObject.class);
+			Scriptable ctx = cx.newObject(scope, CompositeMap.CLASS_NAME,
+					new Object[] { service_context });
+			ScriptableObject.defineProperty(scope, "$ctx", ctx, 0);
+			Scriptable ses = cx.newObject(scope, SessionObject.CLASS_NAME);
+			ScriptableObject.defineProperty(scope, "$session", ses, 0);
+			Scriptable cok = cx.newObject(scope, CookieObject.CLASS_NAME);
+			ScriptableObject.defineProperty(scope, "$cookie", cok, 0);
 
 			cx.evaluateString(scope, js, aurora_core_js, 1, null);
+			// seal all builtin objects,so user can not modify them
+			if (ctx instanceof ScriptableObject) {
+				ScriptableObject so = (ScriptableObject) ctx;
+				so.sealObject();
+			}
+			if (ses instanceof ScriptableObject) {
+				ScriptableObject so = (ScriptableObject) ses;
+				so.sealObject();
+			}
+			if (cok instanceof ScriptableObject) {
+				ScriptableObject so = (ScriptableObject) cok;
+				so.sealObject();
+			}
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
