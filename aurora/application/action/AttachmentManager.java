@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import oracle.sql.BLOB;
@@ -31,6 +34,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
 import com.mchange.v2.c3p0.C3P0ProxyConnection;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
@@ -117,7 +121,9 @@ public class AttachmentManager extends AbstractEntry{
 				String mimeType = rs.getString(3);
 				HttpServletResponse response = serviceInstance.getResponse();
 				response.setHeader("Content-Type", mimeType);//application/octet-stream
-				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
+				response.setHeader("Content-disposition", "attachment;" + processFileName(serviceInstance.getRequest(),fileName));
+//				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
+				
 				 try{                	
                 	Class.forName("org.apache.catalina.startup.Bootstrap");
                 	if (fileSize > 0)
@@ -159,7 +165,9 @@ public class AttachmentManager extends AbstractEntry{
 		                }
 		            }
 				}
+				response.setHeader("Connection", "close");
 			} finally{
+				
 				if (rs != null)
 					rs.close();
 				if (st != null)
@@ -398,31 +406,68 @@ public class AttachmentManager extends AbstractEntry{
 		this.actionType = actionType;
 	}
 	
-	public static String toUtf8String(String s) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if ((c >= 0) && (c <= 255)) {
-				sb.append(c);
-			} else {
-				byte[] b;
-				try {
-					b = Character.toString(c).getBytes("utf-8");
-				} catch (Exception ex) {
-					System.out.println(ex);
-					b = new byte[0];
-				}
-				for (int j = 0; j < b.length; j++) {
-					int k = b[j];
-					if (k < 0) {
-						k += 256;
-					}
-					sb.append("%" + Integer.toHexString(k).toUpperCase());
-				}
+	public String processFileName(HttpServletRequest request, String filename) throws UnsupportedEncodingException {
+		String userAgent = request.getHeader("User-Agent");
+		String new_filename = URLEncoder.encode(filename, "UTF8");
+		// 如果没有UA，则默认使用IE的方式进行编码，因为毕竟IE还是占多数的
+		String rtn = "filename=\"" + new_filename + "\"";
+		if (userAgent != null) {
+			userAgent = userAgent.toLowerCase();
+			// IE浏览器，只能采用URLEncoder编码
+			if (userAgent.indexOf("msie 6") != -1) {
+				rtn = "filename=\"" + new String(filename.getBytes("gb2312"),"iso-8859-1") + "\"";
+			}
+			else if (userAgent.indexOf("msie") != -1) {
+				rtn = "filename=\"" + new_filename + "\"";
+			}
+			// Opera浏览器只能采用filename*
+			else if (userAgent.indexOf("opera") != -1) {
+				rtn = "filename*=UTF-8''" + new_filename;
+			}
+			// Safari浏览器，只能采用ISO编码的中文输出
+			else if (userAgent.indexOf("safari") != -1) {
+				rtn = "filename=\""
+						+ new String(filename.getBytes("UTF-8"), "ISO8859-1")
+						+ "\"";
+			}
+			// Chrome浏览器，只能采用MimeUtility编码或ISO编码的中文输出
+			else if (userAgent.indexOf("applewebkit") != -1) {
+				new_filename = MimeUtility.encodeText(filename, "UTF8", "B");
+				rtn = "filename=\"" + new_filename + "\"";
+			}
+			// FireFox浏览器，可以使用MimeUtility或filename*或ISO编码的中文输出
+			else if (userAgent.indexOf("mozilla") != -1) {
+				rtn = "filename*=UTF-8''" + new_filename;
 			}
 		}
-		return sb.toString();
+		return rtn;
 	}
+	
+//	public static String toUtf8String(String s) {
+//		StringBuffer sb = new StringBuffer();
+//		for (int i = 0; i < s.length(); i++) {
+//			char c = s.charAt(i);
+//			if ((c >= 0) && (c <= 255)) {
+//				sb.append(c);
+//			} else {
+//				byte[] b;
+//				try {
+//					b = Character.toString(c).getBytes("utf-8");
+//				} catch (Exception ex) {
+//					System.out.println(ex);
+//					b = new byte[0];
+//				}
+//				for (int j = 0; j < b.length; j++) {
+//					int k = b[j];
+//					if (k < 0) {
+//						k += 256;
+//					}
+//					sb.append("%" + Integer.toHexString(k).toUpperCase());
+//				}
+//			}
+//		}
+//		return sb.toString();
+//	}
 
 	public String getUseSubFolder() {
 		return useSubFolder == null ? "true" : useSubFolder;
