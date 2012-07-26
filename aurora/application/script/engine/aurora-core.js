@@ -36,8 +36,10 @@ function raise_app_error(code){
 	throw code;
 }
 
-function $bm(model){
-	return new ModelService(model);
+function $bm(model,option){
+	var bm=new ModelService(model);
+	if(arguments.length==2 && option) bm.option=option;
+	return bm
 }
 
 function md5(data){
