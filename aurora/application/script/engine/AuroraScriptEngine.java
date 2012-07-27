@@ -25,6 +25,7 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 	public static final String KEY_SERVICE_CONTEXT = "service_context";
 	public static final String KEY_SSO = "sso";
 	private static String js = ScriptUtil.loadAuroraCore();
+	private Scriptable scope = null;
 
 	private uncertain.composite.CompositeMap service_context;
 
@@ -46,11 +47,14 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			// ScriptableObject.defineClass(scope, ContextObject.class);
 			Scriptable ctx = cx.newObject(scope, CompositeMap.CLASS_NAME,
 					new Object[] { service_context });
-			ScriptableObject.defineProperty(scope, "$ctx", ctx, 0);
+			ScriptableObject.defineProperty(scope, "$ctx", ctx,
+					ScriptableObject.READONLY);
 			Scriptable ses = cx.newObject(scope, SessionObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$session", ses, 0);
+			ScriptableObject.defineProperty(scope, "$session", ses,
+					ScriptableObject.READONLY);
 			Scriptable cok = cx.newObject(scope, CookieObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$cookie", cok, 0);
+			ScriptableObject.defineProperty(scope, "$cookie", cok,
+					ScriptableObject.READONLY);
 
 			cx.evaluateString(scope, js, aurora_core_js, 1, null);
 			// seal all builtin objects,so user can not modify them
@@ -66,6 +70,7 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 				ScriptableObject so = (ScriptableObject) cok;
 				so.sealObject();
 			}
+			ScriptImportor.organizeUserImport(cx, scope, service_context);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -82,11 +87,12 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 
 		Context cx = enterContext();
 		try {
-			Scriptable scope = getRuntimeScope(ctxt);
-			preDefine(cx, scope);
+			if (scope == null) {
+				scope = getRuntimeScope(ctxt);
+				preDefine(cx, scope);
+			}
 			String filename = (String) get(ScriptEngine.FILENAME);
 			filename = filename == null ? "<Unknown source>" : filename;
-
 			ret = cx.evaluateReader(scope, reader, filename, 1, null);
 		} catch (RhinoException re) {
 			if (DEBUG)
@@ -109,6 +115,16 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		}
 
 		return unwrapReturnValue(ret);
+	}
+
+	protected Scriptable getRuntimeScope(ScriptContext ctxt) {
+		Scriptable scope = super.getRuntimeScope(ctxt);
+		Context cx = Context.enter();
+		Scriptable rScope = cx.newObject(scope);
+		rScope.setParentScope(null);
+		rScope.setPrototype(scope);
+		Context.exit();
+		return rScope;
 	}
 
 	private String formatExceptionMessage(String msg) {
