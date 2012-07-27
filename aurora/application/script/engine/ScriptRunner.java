@@ -39,6 +39,14 @@ public class ScriptRunner {
 		return exp;
 	}
 
+	public void setImport(String import1) {
+		sso.put("import", import1);
+	}
+
+	public String getImport() {
+		return sso.get("import");
+	}
+
 	public String getParsedScript() {
 		if (context == null)
 			return exp;
