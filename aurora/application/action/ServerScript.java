@@ -12,6 +12,7 @@ import uncertain.proc.ProcedureRunner;
 import aurora.application.script.engine.ScriptRunner;
 
 public class ServerScript extends AbstractEntry {
+	String jsimport;
 	String exp = null;
 	String resultpath = null;
 	String cdata = null;
@@ -38,6 +39,14 @@ public class ServerScript extends AbstractEntry {
 		this.exp = exp;
 	}
 
+	public String getImport() {
+		return jsimport;
+	}
+
+	public void setImport(String import1) {
+		jsimport = import1;
+	}
+
 	@Override
 	public void run(ProcedureRunner runner) {
 		CompositeMap context = runner.getContext();
@@ -45,6 +54,7 @@ public class ServerScript extends AbstractEntry {
 			exp = cdata;
 		try {
 			ScriptRunner sr = new ScriptRunner(exp, context, registry);
+			sr.setImport(jsimport);
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);
