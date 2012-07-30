@@ -25,7 +25,7 @@ public class ScriptImportor {
 		String str = (String) sso.get("import");
 		if (str == null || str.trim().length() == 0)
 			return;
-		String[] jss = str.split(",");
+		String[] jss = str.split(";");
 		if (jss.length == 0)
 			return;
 		File webHome = SourceCodeUtil.getWebHome(sso.getObjectRegistry());
