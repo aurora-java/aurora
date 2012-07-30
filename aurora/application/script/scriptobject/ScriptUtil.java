@@ -51,7 +51,7 @@ public class ScriptUtil {
 	}
 
 	public static boolean isValid(Object obj) {
-		return !(obj == null || obj == Context.getUndefinedValue());
+		return !(obj == null || obj == Context.getUndefinedValue() || obj == Scriptable.NOT_FOUND);
 	}
 
 	public synchronized static final String loadAuroraCore() {

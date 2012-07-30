@@ -7,6 +7,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
 
+import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
@@ -26,7 +27,7 @@ public class ModelServiceObject extends ScriptableObject {
 	private static final long serialVersionUID = 8195408589085036558L;
 	public static final String CLASS_NAME = "ModelService";
 	private BusinessModelService service;
-	private uncertain.composite.CompositeMap context;
+	private CompositeMap context;
 	private DatabaseServiceFactory svcFactory;
 
 	private FetchDescriptor desc = FetchDescriptor.fetchAll();
@@ -90,14 +91,14 @@ public class ModelServiceObject extends ScriptableObject {
 		return new ModelServiceObject();
 	}
 
-	private uncertain.composite.CompositeMap convert(Object obj) {
-		if (obj instanceof CompositeMap) {// js CompositeMap
-			return ((CompositeMap) obj).getData();
-		} else if (obj instanceof uncertain.composite.CompositeMap)// uncertain
-																	// CompositeMap
-			return (uncertain.composite.CompositeMap) obj;
+	private CompositeMap convert(Object obj) {
+		if (obj instanceof CompositeMapObject) {// js CompositeMap
+			return ((CompositeMapObject) obj).getData();
+		} else if (obj instanceof CompositeMap)// uncertain
+												// CompositeMap
+			return (CompositeMap) obj;
 		else if (obj instanceof NativeObject) {// json object
-			uncertain.composite.CompositeMap map = new uncertain.composite.CompositeMap();
+			CompositeMap map = new CompositeMap();
 			NativeObject no = (NativeObject) obj;
 			for (Object o : no.keySet()) {
 				if (o instanceof String) {
@@ -106,7 +107,7 @@ public class ModelServiceObject extends ScriptableObject {
 			}
 			return map;
 		}
-		return new uncertain.composite.CompositeMap();
+		return new CompositeMap();
 	}
 
 	public void jsFunction_execute(Object parameter) {
@@ -125,14 +126,13 @@ public class ModelServiceObject extends ScriptableObject {
 		jsFunction_executeDml(parameter, "Delete");
 	}
 
-	public CompositeMap jsFunction_queryAsMap(Object parameter) {
+	public CompositeMapObject jsFunction_queryAsMap(Object parameter) {
 		if (!ScriptUtil.isValid(parameter))
 			parameter = context.getChild("parameter");
 		try {
-			uncertain.composite.CompositeMap data = service.queryAsMap(
-					convert(parameter), desc);
-			CompositeMap map = (CompositeMap) ScriptUtil.newObject(this,
-					CompositeMap.CLASS_NAME);
+			CompositeMap data = service.queryAsMap(convert(parameter), desc);
+			CompositeMapObject map = (CompositeMapObject) ScriptUtil.newObject(
+					this, CompositeMapObject.CLASS_NAME);
 			map.setData(data);
 			return map;
 		} catch (Exception e) {
@@ -142,9 +142,9 @@ public class ModelServiceObject extends ScriptableObject {
 		}
 	}
 
-	public CompositeMap jsFunction_queryIntoMap(CompositeMap root,
+	public CompositeMapObject jsFunction_queryIntoMap(CompositeMapObject root,
 			Object parameter) {
-		if (!(root instanceof CompositeMap))
+		if (!(root instanceof CompositeMapObject))
 			throw new RuntimeException("invalid root");
 		if (!ScriptUtil.isValid(parameter))
 			parameter = context.getChild("parameter");
@@ -164,7 +164,7 @@ public class ModelServiceObject extends ScriptableObject {
 					.get(SqlServiceContext.KEY_SERVICE_OPTION);
 			if (so != null) {
 				String path = so.getString("rootPath");
-				uncertain.composite.CompositeMap root = getMapFromRootPath(path);
+				CompositeMap root = getMapFromRootPath(path);
 				CompositeMapCreator cmc = new CompositeMapCreator(root);
 				serviceContext.setResultsetConsumer(cmc);
 			}
@@ -176,12 +176,11 @@ public class ModelServiceObject extends ScriptableObject {
 		}
 	}
 
-	private uncertain.composite.CompositeMap getMapFromRootPath(String rootPath) {
-		uncertain.composite.CompositeMap model = context.getChild("model");
+	private CompositeMap getMapFromRootPath(String rootPath) {
+		CompositeMap model = context.getChild("model");
 		if (model == null)
 			model = context.createChild("model");
-		uncertain.composite.CompositeMap root = (uncertain.composite.CompositeMap) model
-				.getObject(rootPath);
+		CompositeMap root = (CompositeMap) model.getObject(rootPath);
 		if (root == null)
 			root = model.createChildByTag(rootPath);
 		return root;
@@ -214,7 +213,7 @@ public class ModelServiceObject extends ScriptableObject {
 				.get(SqlServiceContext.KEY_SERVICE_OPTION);
 		if (so == null)
 			return null;
-		uncertain.composite.CompositeMap map = so.getObjectContext();
+		CompositeMap map = so.getObjectContext();
 		NativeObject no = (NativeObject) ScriptUtil.newObject(this, "Object");
 		for (Object o : map.keySet()) {
 			if (o instanceof String)
