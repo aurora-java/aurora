@@ -14,7 +14,7 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import aurora.application.script.scriptobject.CompositeMap;
+import aurora.application.script.scriptobject.CompositeMapObject;
 import aurora.application.script.scriptobject.CookieObject;
 import aurora.application.script.scriptobject.ModelServiceObject;
 import aurora.application.script.scriptobject.ScriptUtil;
@@ -40,15 +40,18 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 	private void preDefine(Context cx, Scriptable scope) {
 		try {
 			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
-			ScriptableObject.defineClass(scope, CompositeMap.class);
+			ScriptableObject.defineClass(scope, CompositeMapObject.class);
 			ScriptableObject.defineClass(scope, SessionObject.class);
 			ScriptableObject.defineClass(scope, CookieObject.class);
 			ScriptableObject.defineClass(scope, ModelServiceObject.class);
 			// ScriptableObject.defineClass(scope, ContextObject.class);
-			Scriptable ctx = cx.newObject(scope, CompositeMap.CLASS_NAME,
+			Scriptable ctx = cx.newObject(scope, CompositeMapObject.CLASS_NAME,
 					new Object[] { service_context });
 			ScriptableObject.defineProperty(scope, "$ctx", ctx,
 					ScriptableObject.READONLY);
+			// define property for $ctx
+			definePropertyForCtx(ctx.getPrototype(), cx, service_context);
+
 			Scriptable ses = cx.newObject(scope, SessionObject.CLASS_NAME);
 			ScriptableObject.defineProperty(scope, "$session", ses,
 					ScriptableObject.READONLY);
@@ -58,17 +61,10 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 
 			cx.evaluateString(scope, js, aurora_core_js, 1, null);
 			// seal all builtin objects,so user can not modify them
-			if (ctx instanceof ScriptableObject) {
-				ScriptableObject so = (ScriptableObject) ctx;
-				so.sealObject();
-			}
-			if (ses instanceof ScriptableObject) {
-				ScriptableObject so = (ScriptableObject) ses;
-				so.sealObject();
-			}
-			if (cok instanceof ScriptableObject) {
-				ScriptableObject so = (ScriptableObject) cok;
-				so.sealObject();
+			for (Object o : new Object[] { ctx, ses, cok }) {
+				if (o instanceof ScriptableObject) {
+					((ScriptableObject) o).sealObject();
+				}
 			}
 			ScriptImportor.organizeUserImport(cx, scope, service_context);
 		} catch (IllegalAccessException e) {
@@ -77,6 +73,19 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void definePropertyForCtx(Scriptable ctxp, Context cx,
+			uncertain.composite.CompositeMap service_context) {
+		String[] names = { "parameter", "session", "cookie", "model" };
+		for (String s : names) {
+			Object p = service_context.getChild(s);
+			if (p == null)
+				p = service_context.createChild(s);
+			ScriptableObject.defineProperty(ctxp.getPrototype(), s, cx
+					.newObject(ctxp, CompositeMapObject.CLASS_NAME,
+							new Object[] { p }), ScriptableObject.READONLY);
 		}
 	}
 
