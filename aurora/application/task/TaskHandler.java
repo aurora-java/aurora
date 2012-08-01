@@ -130,9 +130,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	public void executeTask(CompositeMap task, CompositeMap parameter) throws Exception {
 		String strContext = task.getString(TaskTableFields.CONTEXT);
+		strContext = new String(strContext.getBytes(), "UTF-8");
 		CompositeMap context = new CompositeMap();
 		if (strContext != null && !"".equals(strContext)) {
-			context = new CompositeLoader().loadFromString(strContext);
+			context = new CompositeLoader().loadFromString(strContext,"UTF-8");
 			clearInstance(context);
 		}
 		ServiceThreadLocal.setCurrentThreadContext(context);
