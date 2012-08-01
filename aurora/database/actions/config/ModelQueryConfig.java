@@ -21,4 +21,8 @@ public class ModelQueryConfig extends AbstractQueryActionConfig {
         if (getRootPath() == null)
             setRootPath(getModel());
     }
+    
+    public void setCacheKey( String key ){
+        putString("cachekey", key);
+    }
 }

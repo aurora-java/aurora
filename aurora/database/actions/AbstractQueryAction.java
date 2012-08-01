@@ -5,14 +5,19 @@ package aurora.database.actions;
 
 import java.util.List;
 
+import uncertain.cache.CacheUtil;
+import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
-import uncertain.composite.transform.Transformer;
 import uncertain.event.IContextAcceptable;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractDeferredEntry;
 import uncertain.proc.ProcedureRunner;
+import aurora.database.DatabaseConstant;
 import aurora.database.FetchDescriptor;
 import aurora.database.IResultSetConsumer;
 import aurora.database.rsconsumer.CompositeMapCreator;
@@ -21,6 +26,10 @@ import aurora.database.service.ServiceOption;
 import aurora.database.service.SqlServiceContext;
 
 public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
+    
+    public static final String KEY_DATA_CACHE_NAME = "DataCache";
+    
+    IObjectRegistry     mObjectReg;
     
     String      mode = ServiceOption.MODE_FREE_QUERY;
     String      parameter;
@@ -41,6 +50,8 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     
     IResultSetConsumer  rsConsummer;
     
+    String      cacheKey;
+    
     public String getConnectionName() {
         return connectionName;
     }
@@ -55,8 +66,9 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     
     protected abstract void cleanUp( CompositeMap context_map );
     
-    public AbstractQueryAction( OCManager oc_manager ){
+    public AbstractQueryAction( OCManager oc_manager, IObjectRegistry reg ){
         super(oc_manager);
+        this.mObjectReg = reg;
     }
     
     protected void transferServiceOption( ServiceOption option, String key ){
@@ -75,8 +87,30 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
     public void query( CompositeMap context_map ) throws Exception
     {
         super.doPopulate();
-        prepare( context_map );
+        ILogger logger = LoggingContext.getLogger(context_map, DatabaseConstant.AURORA_DATABASE_LOGGING_TOPIC);
         SqlServiceContext context = (SqlServiceContext)DynamicObject.cast(context_map, SqlServiceContext.class);
+        
+        String cache_key = null;        
+        boolean is_cache = false;
+        ICache  cache_for_data = null;
+        if(cacheKey!=null){
+            is_cache = true;
+            cache_for_data = CacheUtil.getNamedCache(mObjectReg,KEY_DATA_CACHE_NAME);
+            cache_key = TextParser.parse(cacheKey, context_map);
+            CompositeMap data = (CompositeMap)cache_for_data.getValue(cache_key);
+            if(data!=null){
+                logger.config("Cached data found with key "+cache_key);
+                // write cache to context
+                CompositeMap root_node = getMapFromRootPath(context.getModel(), TextParser.parse(this.rootPath,context.getObjectContext()));
+                root_node.copy(data);
+                return;
+            }else{
+                logger.config("Cached data not found with key "+cache_key+", doing normal database query");
+            }
+        }        
+
+        prepare( context_map );        
+
         //context.setTrace(trace);      
         ServiceOption option = ServiceOption.createInstance();
         option.setQueryMode(mode);
@@ -128,10 +162,19 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
             }
             context.setResultsetConsumer(consumer);
             doQuery(param, consumer, desc);
+            
+            // write data to cache
+            if(is_cache){
+                CompositeMap d = (CompositeMap)consumer.getResult();
+                d.setParent(null);
+                cache_for_data.setValue(cache_key, d);
+            }
+            /*
             if( transform_list != null && consumer instanceof  IRootMapAcceptable){ 
                 CompositeMap root = ((IRootMapAcceptable)consumer).getRoot();
                 Transformer.doBatchTransform( root, transform_list );
             }
+            */
         }finally{
             context.setServiceOption(null);
             context.setResultsetConsumer(null);
@@ -293,6 +336,14 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
 
     public void setAttribFromRequest(boolean attribFromRequest) {
         this.attribFromRequest = attribFromRequest;
+    }
+
+    public String getCacheKey() {
+        return cacheKey;
+    }
+
+    public void setCacheKey(String cacheKey) {
+        this.cacheKey = cacheKey;
     }
     
 }

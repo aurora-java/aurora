@@ -7,9 +7,9 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
 import uncertain.exception.BuiltinExceptionFactory;
-import uncertain.exception.GeneralException;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import aurora.bm.BusinessModel;
 import aurora.database.DatabaseConstant;
@@ -18,7 +18,6 @@ import aurora.database.IResultSetConsumer;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.BusinessModelServiceContext;
 import aurora.database.service.DatabaseServiceFactory;
-import aurora.database.service.SqlServiceContext;
 
 public class ModelQuery extends AbstractQueryAction {
  
@@ -30,8 +29,8 @@ public class ModelQuery extends AbstractQueryAction {
     
     BusinessModelServiceContext serviceContext; 
 
-    public ModelQuery( DatabaseServiceFactory  svcFactory, OCManager manager) {
-        super(manager);
+    public ModelQuery( DatabaseServiceFactory  svcFactory, OCManager manager, IObjectRegistry reg) {
+        super(manager, reg);
         this.svcFactory = svcFactory;
     }
     
