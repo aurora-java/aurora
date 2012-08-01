@@ -527,19 +527,19 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
-				logger.log(Level.CONFIG, "try to pop a task record from queue");
+				logger.log(Level.CONFIG, "try to pop a task record from queue,queue size="+taskQueue.size());
 				CompositeMap taskRecord = popTaskQueue();
 				try {
 					if (taskRecord == null || taskRecord.isEmpty()) {
 						Thread.sleep(1000);
 						continue;
 					}
+					logger.log(Level.CONFIG, "get a task record from queue,task="+taskRecord.toXML());
 					Object task_id = taskRecord.get(TaskTableFields.TASK_ID);
 					if (task_id == null || "null".equals(task_id)) {
 						Thread.sleep(1000);
 						continue;
 					}
-					logger.log(Level.CONFIG, "get a task record from queue,task="+taskRecord.toXML());
 					TaskExecutor task = new TaskExecutor(timeOutService, taskRecord, (CompositeMap) taskRecord.clone());
 					handleTaskService.submit(task);
 				} catch (Throwable e) {
