@@ -47,10 +47,10 @@ import aurora.service.IServiceFactory;
 import aurora.service.ServiceInvoker;
 import aurora.service.ServiceThreadLocal;
 
-public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,IMessageListener{
+public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, IMessageListener {
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	
+
 	private IObjectRegistry mRegistry;
 
 	private String queryTaskBM;
@@ -101,16 +101,16 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
 		if (stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
-		if(!stub.isStarted())
+		if (!stub.isStarted())
 			logger.warning("JMS MessageStub is not started, please check the configuration.");
 		IConsumer consumer = stub.getConsumer(topic);
-		if(consumer == null){
-			throw new IllegalStateException("MessageStub does not define the topic '"+topic+"', please check the configuration.");
+		if (consumer == null) {
+			throw new IllegalStateException("MessageStub does not define the topic '" + topic + "', please check the configuration.");
 		}
 		if (!(consumer instanceof INoticerConsumer))
 			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
 		((INoticerConsumer) consumer).addListener(message, this);
-		
+
 		mainThreadPool = Executors.newFixedThreadPool(2);
 		GetTask getTask = new GetTask();
 		handleTask = new HandleTask(threadCount);
@@ -181,7 +181,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			}
 		}
 	}
-	public CompositeMap queryBM(String bm_name,CompositeMap context, CompositeMap parameterMap) throws Exception {
+
+	public CompositeMap queryBM(String bm_name, CompositeMap context, CompositeMap parameterMap) throws Exception {
 		CompositeMap localContext = context;
 		if (localContext == null)
 			localContext = new CompositeMap();
@@ -339,7 +340,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			logger.log(Level.SEVERE, "", ex);
 		}
 	}
-	
+
 	public String getQueryTaskBM() {
 		return queryTaskBM;
 	}
@@ -347,7 +348,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 	public void setQueryTaskBM(String queryTaskBM) {
 		this.queryTaskBM = queryTaskBM;
 	}
-	
+
 	public String getUpdateTaskBM() {
 		return updateTaskBM;
 	}
@@ -452,34 +453,36 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 	private CompositeMap popTaskQueue() {
 		return taskQueue.poll();
 	}
-	private int getTaskId(CompositeMap taskRecord){
-		if(taskRecord == null)
+
+	private int getTaskId(CompositeMap taskRecord) {
+		if (taskRecord == null)
 			return -1;
 		return taskRecord.getInt(TaskTableFields.TASK_ID, -1);
 	}
+
 	class GetTask implements Callable<String> {
 		@Override
 		public String call() throws Exception {
 			int failedTime = 0;
 			int reTryTime = 10;
-			
+
 			CompositeMap lastTasks = new CompositeMap();
 			lastTasks.put(TaskTableFields.STATUS, "new");
 			CompositeMap newContext = new CompositeMap();
 			try {
 				lastTasks = queryBM(queryTaskBM, newContext, lastTasks);
-				if(lastTasks != null && lastTasks.getChilds() != null){
-					for(Object record:lastTasks.getChilds()){
-						addToTaskQueue((CompositeMap)record);
+				if (lastTasks != null && lastTasks.getChilds() != null) {
+					for (Object record : lastTasks.getChilds()) {
+						addToTaskQueue((CompositeMap) record);
 					}
 				}
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "", e);
 			}
-			
+
 			while (running) {
 				Number taskId = taskIdList.peek();
-				if (taskId == null || taskId.intValue() <0) {
+				if (taskId == null || taskId.intValue() < 0) {
 					Thread.sleep(1000);
 					continue;
 				}
@@ -492,8 +495,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 						Thread.sleep(1000);
 						continue;
 					}
-					logger.log(Level.CONFIG, "add record to queue,record:"+task.toXML());
-					addToTaskQueue((CompositeMap)task.getChilds().get(0));
+					logger.log(Level.CONFIG, "add record to queue,record:" + task.toXML());
+					addToTaskQueue((CompositeMap) task.getChilds().get(0));
 					taskIdList.poll();
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "", e);
@@ -527,14 +530,15 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
-//				logger.log(Level.CONFIG, "try to pop a task record from queue,queue size="+taskQueue.size());
+				// logger.log(Level.CONFIG,
+				// "try to pop a task record from queue,queue size="+taskQueue.size());
 				CompositeMap taskRecord = popTaskQueue();
 				try {
 					if (taskRecord == null || taskRecord.isEmpty()) {
 						Thread.sleep(1000);
 						continue;
 					}
-					logger.log(Level.CONFIG, "get a task record from queue,task="+taskRecord.toXML());
+					logger.log(Level.CONFIG, "get a task record from queue,task=" + taskRecord.toXML());
 					Object task_id = taskRecord.get(TaskTableFields.TASK_ID);
 					if (task_id == null || "null".equals(task_id)) {
 						Thread.sleep(1000);
@@ -576,68 +580,72 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 
 		@Override
 		public String call() throws Exception {
-			logger.log(Level.CONFIG, "create a thread to handle task");
-			String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
-			logger.log(Level.CONFIG, "Context:"+strContext);
-			CompositeMap context = new CompositeMap();
-			if (strContext != null && !"".equals(strContext)) {
-				context = new CompositeLoader().loadFromString(strContext);
-				clearInstance(context);
-			}
-			logger.log(Level.CONFIG, "create parameter");
-			ServiceThreadLocal.setCurrentThreadContext(context);
-			CompositeMap newPara = new CompositeMap();
-			newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-			newPara.put(TaskTableFields.STATUS, "running");
-			logger.log(Level.CONFIG, "update task status='running',task_id="+getTaskId(taskRecord));
 			try {
-				executeBM(updateTaskBM, context, newPara);
-			} catch (Throwable e) {
-				logger.log(Level.SEVERE, "", e);
-			}
-			logger.log(Level.CONFIG, "begin to execute task,task_id="+getTaskId(taskRecord));
-			int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME) + 1;
-			int current_retry_time = taskRecord.getInt(TaskTableFields.CURRENT_RETRY_TIME, 0);
-			int time_out = taskRecord.getInt(TaskTableFields.TIME_OUT);
-			StringBuilder excepiton = new StringBuilder();
-			String errorMessage = null;
-			for (; current_retry_time < execute_time; current_retry_time++) {
-				if(current_retry_time>0){
-					try {
-						parameter.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
-						executeBM(updateTaskBM, context, parameter);
-					} catch (Throwable e) {
-						logger.log(Level.SEVERE, "", e);
-					}
+				logger.log(Level.CONFIG, "create a thread to handle task");
+				String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
+				logger.log(Level.CONFIG, "Context:" + strContext);
+				CompositeMap context = new CompositeMap();
+				if (strContext != null && !"".equals(strContext)) {
+					context = new CompositeLoader().loadFromString(strContext);
+					clearInstance(context);
 				}
+				logger.log(Level.CONFIG, "create parameter");
+				ServiceThreadLocal.setCurrentThreadContext(context);
+				CompositeMap newPara = new CompositeMap();
+				newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
+				newPara.put(TaskTableFields.STATUS, "running");
+				logger.log(Level.CONFIG, "update task status='running',task_id=" + getTaskId(taskRecord));
 				try {
-					if (time_out != 0) {
-						errorMessage = executeTimeOutTask(time_out);
-						if (errorMessage == null || errorMessage.isEmpty()){
+					executeBM(updateTaskBM, context, newPara);
+				} catch (Throwable e) {
+					logger.log(Level.SEVERE, "", e);
+				}
+				logger.log(Level.CONFIG, "begin to execute task,task_id=" + getTaskId(taskRecord));
+				int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME) + 1;
+				int current_retry_time = taskRecord.getInt(TaskTableFields.CURRENT_RETRY_TIME, 0);
+				int time_out = taskRecord.getInt(TaskTableFields.TIME_OUT);
+				StringBuilder excepiton = new StringBuilder();
+				String errorMessage = null;
+				for (; current_retry_time < execute_time; current_retry_time++) {
+					if (current_retry_time > 0) {
+						try {
+							parameter.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
+							executeBM(updateTaskBM, context, parameter);
+						} catch (Throwable e) {
+							logger.log(Level.SEVERE, "", e);
+						}
+					}
+					try {
+						if (time_out != 0) {
+							errorMessage = executeTimeOutTask(time_out);
+							if (errorMessage == null || errorMessage.isEmpty()) {
+								excepiton = null;
+								break;
+							}
+							excepiton.append(errorMessage).append(LINE_SEPARATOR);
+						} else {
+							executeTask(taskRecord, parameter);
 							excepiton = null;
 							break;
 						}
-						excepiton.append(errorMessage).append(LINE_SEPARATOR);
-					} else {
-						executeTask(taskRecord, parameter);
-						excepiton = null;
-						break;
+					} catch (Exception e) {
+						excepiton.append(getFullStackTrace(e)).append(LINE_SEPARATOR);
 					}
-				} catch (Exception e) {
-					excepiton.append(getFullStackTrace(e)).append(LINE_SEPARATOR);
 				}
-			}
-			if (excepiton != null && excepiton.length() != 0) {
-				parameter.put(TaskTableFields.EXCEPTION, excepiton.toString());
-				logger.log(Level.SEVERE, excepiton.toString());
-			}
-			logger.log(Level.CONFIG, "update task status='done' or 'excepiton',task_id="+getTaskId(taskRecord));
-			try {
-				executeBM(finishTaskBM, context, parameter);
-			} catch (Throwable e) {
+				if (excepiton != null && excepiton.length() != 0) {
+					parameter.put(TaskTableFields.EXCEPTION, excepiton.toString());
+					logger.log(Level.SEVERE, excepiton.toString());
+				}
+				logger.log(Level.CONFIG, "update task status='done' or 'excepiton',task_id=" + getTaskId(taskRecord));
+				try {
+					executeBM(finishTaskBM, context, parameter);
+				} catch (Throwable e) {
+					logger.log(Level.SEVERE, "", e);
+				}
+				ServiceThreadLocal.remove();
+			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
 			}
-			ServiceThreadLocal.remove();
 			return "finished";
 		}
 
@@ -651,7 +659,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			} catch (Exception e) {
 				boolean successful = future.cancel(true);
 				if (!successful) {
-					logger.log(Level.WARNING, "Can not cancel the task:"+getTaskId(taskRecord));
+					logger.log(Level.WARNING, "Can not cancel the task:" + getTaskId(taskRecord));
 					return excepiton.toString();
 				} else {
 					excepiton.append(getFullStackTrace(e));
@@ -681,14 +689,14 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 	@Override
 	public void onMessage(IMessage message) {
 		try {
-			logger.log(Level.CONFIG, "receive a messsage:"+message.getText());
+			logger.log(Level.CONFIG, "receive a messsage:" + message.getText());
 			CompositeMap taskRecord = message.getProperties();
-			if(taskRecord == null)
+			if (taskRecord == null)
 				return;
 			int task_id = taskRecord.getInt(TaskTableFields.TASK_ID);
 			taskIdList.add(task_id);
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "Can not add the task:"+message);
+			logger.log(Level.WARNING, "Can not add the task:" + message);
 		}
 	}
 }
