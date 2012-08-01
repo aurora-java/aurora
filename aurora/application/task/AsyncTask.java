@@ -48,7 +48,6 @@ public class AsyncTask extends AbstractEntry {
 			if (procFilePath != null && procContent != null)
 				throw BuiltinExceptionFactory.createConflictAttributesExcepiton(this, "procFilePath,procContent");
 			procFilePath = TextParser.parse(procFilePath, context);
-			procContent = TextParser.parse(procContent, context);
 		}
 		if (TaskTableFields.PROCEDURE_TYPE.equals(taskType) || TaskTableFields.FUNCTION_TYPE.equals(taskType)) {
 			if (sql == null)
