@@ -93,6 +93,8 @@ public class AutoCrudServlet extends AbstractAutoServiceServlet {
             mq.setParameters(svc.getServiceContext().getParameter());
             // Set attribFromRequest flag, so that extra security check for certain attribute 
             // ( such as fetchAll ) will be enforced 
+            String cache_key = request.getParameter("_cachekey");
+            if(cache_key!=null)mq.setCacheKey(uri+"."+cache_key);
             mq.setAttribFromRequest(true);
             action_config = mq.getObjectContext();
             CompositeMap service_output = service_config.getChild("service-output");
