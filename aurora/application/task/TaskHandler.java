@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -33,6 +34,12 @@ import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
+import aurora.application.features.msg.IConsumer;
+import aurora.application.features.msg.IMessage;
+import aurora.application.features.msg.IMessageListener;
+import aurora.application.features.msg.IMessageStub;
+import aurora.application.features.msg.INoticerConsumer;
+import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
@@ -40,13 +47,14 @@ import aurora.service.IServiceFactory;
 import aurora.service.ServiceInvoker;
 import aurora.service.ServiceThreadLocal;
 
-public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
+public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,IMessageListener{
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
 	private IObjectRegistry mRegistry;
 
 	private String queryTaskBM;
+	private String updateTaskBM;
 	private String finishTaskBM;
 	private int threadCount = 2;
 
@@ -61,6 +69,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 	private Queue<CompositeMap> taskQueue = new ConcurrentLinkedQueue<CompositeMap>();
 	private ExecutorService mainThreadPool;
 	private HandleTask handleTask;
+	protected String topic = "task";
+	protected String message = "task_message";
+	private Queue<Number> taskIdList = new ConcurrentLinkedQueue<Number>();
 
 	public TaskHandler(IObjectRegistry registry) {
 		this.mRegistry = registry;
@@ -70,6 +81,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 		logger = LoggingContext.getLogger(this.getClass().getCanonicalName(), mRegistry);
 		if (queryTaskBM == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "queryTaskBM");
+		if (updateTaskBM == null)
+			throw BuiltinExceptionFactory.createAttributeMissing(this, "updateTaskBM");
 		if (finishTaskBM == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "finishTaskBM");
 		dataSource = (DataSource) mRegistry.getInstanceOfType(DataSource.class);
@@ -85,6 +98,19 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 		if (serviceFactory == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IServiceFactory.class, this.getClass().getName());
 
+		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
+		if (stub == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
+		if(!stub.isStarted())
+			logger.warning("JMS MessageStub is not started, please check the configuration.");
+		IConsumer consumer = stub.getConsumer(topic);
+		if(consumer == null){
+			throw new IllegalStateException("MessageStub does not define the topic '"+topic+"', please check the configuration.");
+		}
+		if (!(consumer instanceof INoticerConsumer))
+			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
+		((INoticerConsumer) consumer).addListener(message, this);
+		
 		mainThreadPool = Executors.newFixedThreadPool(2);
 		GetTask getTask = new GetTask();
 		handleTask = new HandleTask(threadCount);
@@ -153,6 +179,25 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 			if (key.toString().startsWith("_")) {
 				it.remove();
 			}
+		}
+	}
+	public CompositeMap queryBM(String bm_name,CompositeMap context, CompositeMap parameterMap) throws Exception {
+		CompositeMap localContext = context;
+		if (localContext == null)
+			localContext = new CompositeMap();
+		SqlServiceContext sqlContext = SqlServiceContext.createSqlServiceContext(localContext);
+		if (sqlContext == null)
+			throw new RuntimeException("Can not create SqlServiceContext for context:" + localContext.toXML());
+		Connection connection = getConnection();
+		connection.setAutoCommit(false);
+		sqlContext.setConnection(connection);
+		try {
+			BusinessModelService service = databaseServiceFactory.getModelService(bm_name, localContext);
+			CompositeMap resultMap = service.queryAsMap(parameterMap, FetchDescriptor.fetchAll());
+			return resultMap;
+		} finally {
+			if (sqlContext != null)
+				sqlContext.freeConnection();
 		}
 	}
 
@@ -294,13 +339,21 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 			logger.log(Level.SEVERE, "", ex);
 		}
 	}
-
+	
 	public String getQueryTaskBM() {
 		return queryTaskBM;
 	}
 
 	public void setQueryTaskBM(String queryTaskBM) {
 		this.queryTaskBM = queryTaskBM;
+	}
+	
+	public String getUpdateTaskBM() {
+		return updateTaskBM;
+	}
+
+	public void setUpdateTaskBM(String updateTaskBM) {
+		this.updateTaskBM = updateTaskBM;
 	}
 
 	public String getFinishTaskBM() {
@@ -317,6 +370,22 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 
 	public void setThreadCount(int threadCount) {
 		this.threadCount = threadCount;
+	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	private Connection getConnection() {
@@ -388,27 +457,43 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 			return -1;
 		return taskRecord.getInt(TaskTableFields.TASK_ID, -1);
 	}
-
 	class GetTask implements Callable<String> {
 		@Override
 		public String call() throws Exception {
 			int failedTime = 0;
 			int reTryTime = 10;
+			
+			CompositeMap lastTasks = new CompositeMap();
+			lastTasks.put(TaskTableFields.STATUS, "new");
+			CompositeMap newContext = new CompositeMap();
+			try {
+				lastTasks = queryBM(queryTaskBM, newContext, lastTasks);
+				if(lastTasks != null && lastTasks.getChilds() != null){
+					for(Object record:lastTasks.getChilds()){
+						addToTaskQueue((CompositeMap)record);
+					}
+				}
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "", e);
+			}
+			
 			while (running) {
+				Number taskId = taskIdList.peek();
+				if (taskId == null || taskId.intValue() <0) {
+					Thread.sleep(1000);
+					continue;
+				}
 				CompositeMap task = new CompositeMap();
+				task.put(TaskTableFields.TASK_ID, taskId.intValue());
 				CompositeMap context = new CompositeMap();
 				try {
-					executeBM(queryTaskBM, context, task);
-					if (task == null || task.isEmpty()) {
+					task = queryBM(queryTaskBM, context, task);
+					if (task == null || task.getChilds() == null) {
 						Thread.sleep(1000);
 						continue;
 					}
-					Object task_id = task.get(TaskTableFields.TASK_ID);
-					if (task_id == null || "null".equals(task_id)) {
-						Thread.sleep(1000);
-						continue;
-					}
-					addToTaskQueue(task);
+					addToTaskQueue((CompositeMap)task.getChilds().get(0));
+					taskIdList.poll();
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "", e);
 					failedTime++;
@@ -495,12 +580,28 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 				clearInstance(context);
 			}
 			ServiceThreadLocal.setCurrentThreadContext(context);
+			CompositeMap newPara = new CompositeMap();
+			newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
+			newPara.put(TaskTableFields.STATUS, "running");
+			try {
+				executeBM(updateTaskBM, context, newPara);
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "", e);
+			}
 			int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME) + 1;
 			int current_retry_time = taskRecord.getInt(TaskTableFields.CURRENT_RETRY_TIME, 0);
 			int time_out = taskRecord.getInt(TaskTableFields.TIME_OUT);
 			StringBuilder excepiton = new StringBuilder();
 			String errorMessage = null;
 			for (; current_retry_time < execute_time; current_retry_time++) {
+				if(current_retry_time>0){
+					try {
+						parameter.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
+						executeBM(updateTaskBM, context, parameter);
+					} catch (Throwable e) {
+						logger.log(Level.SEVERE, "", e);
+					}
+				}
 				try {
 					if (time_out != 0) {
 						errorMessage = executeTimeOutTask(time_out);
@@ -566,6 +667,19 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle {
 				executeTask(taskRecord, parameter);
 				return "finished";
 			}
+		}
+	}
+
+	@Override
+	public void onMessage(IMessage message) {
+		try {
+			CompositeMap taskRecord = message.getProperties();
+			if(taskRecord == null)
+				return;
+			int task_id = taskRecord.getInt(TaskTableFields.TASK_ID);
+			taskIdList.add(task_id);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Can not add the task:"+message);
 		}
 	}
 }
