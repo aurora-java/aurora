@@ -492,6 +492,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 						Thread.sleep(1000);
 						continue;
 					}
+					logger.log(Level.CONFIG, "add record to queue,record:"+task.toXML());
 					addToTaskQueue((CompositeMap)task.getChilds().get(0));
 					taskIdList.poll();
 				} catch (Throwable e) {
@@ -583,11 +584,13 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			CompositeMap newPara = new CompositeMap();
 			newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
 			newPara.put(TaskTableFields.STATUS, "running");
+			logger.log(Level.CONFIG, "update task status='running',task_id="+getTaskId(taskRecord));
 			try {
 				executeBM(updateTaskBM, context, newPara);
 			} catch (Throwable e) {
 				logger.log(Level.SEVERE, "", e);
 			}
+			logger.log(Level.CONFIG, "begin to execute task,task_id="+getTaskId(taskRecord));
 			int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME) + 1;
 			int current_retry_time = taskRecord.getInt(TaskTableFields.CURRENT_RETRY_TIME, 0);
 			int time_out = taskRecord.getInt(TaskTableFields.TIME_OUT);
@@ -623,7 +626,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 				parameter.put(TaskTableFields.EXCEPTION, excepiton.toString());
 				logger.log(Level.SEVERE, excepiton.toString());
 			}
-
+			logger.log(Level.CONFIG, "update task status='done' or 'excepiton',task_id="+getTaskId(taskRecord));
 			try {
 				executeBM(finishTaskBM, context, parameter);
 			} catch (Throwable e) {
@@ -673,6 +676,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 	@Override
 	public void onMessage(IMessage message) {
 		try {
+			logger.log(Level.CONFIG, "receive a messsage:"+message.getText());
 			CompositeMap taskRecord = message.getProperties();
 			if(taskRecord == null)
 				return;
