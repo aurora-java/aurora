@@ -584,9 +584,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				logger.log(Level.CONFIG, "create a thread to handle task");
 				String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
 				logger.log(Level.CONFIG, "Context:" + strContext);
+				strContext = new String(strContext.getBytes(), "UTF-8");
+				logger.log(Level.CONFIG, "after convert context:" + strContext);
 				CompositeMap context = new CompositeMap();
 				if (strContext != null && !"".equals(strContext)) {
-					context = new CompositeLoader().loadFromString(strContext);
+					context = new CompositeLoader().loadFromString(strContext,"UTF-8");
 					clearInstance(context);
 				}
 				logger.log(Level.CONFIG, "create parameter");
