@@ -527,6 +527,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
+				logger.log(Level.CONFIG, "try to pop a task record from queue");
 				CompositeMap taskRecord = popTaskQueue();
 				try {
 					if (taskRecord == null || taskRecord.isEmpty()) {
@@ -538,6 +539,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 						Thread.sleep(1000);
 						continue;
 					}
+					logger.log(Level.CONFIG, "get a task record from queue,task="+taskRecord.toXML());
 					TaskExecutor task = new TaskExecutor(timeOutService, taskRecord, (CompositeMap) taskRecord.clone());
 					handleTaskService.submit(task);
 				} catch (Throwable e) {
@@ -574,6 +576,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 
 		@Override
 		public String call() throws Exception {
+			logger.log(Level.CONFIG, "create a thread to handle task");
 			String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
 			CompositeMap context = new CompositeMap();
 			if (strContext != null && !"".equals(strContext)) {
