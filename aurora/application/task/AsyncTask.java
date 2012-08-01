@@ -1,15 +1,18 @@
 package aurora.application.task;
 
-import aurora.database.service.BusinessModelService;
-import aurora.database.service.IDatabaseServiceFactory;
-import aurora.database.service.SqlServiceContext;
+import java.util.List;
+
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.proc.AbstractEntry;
+import uncertain.proc.ProcedureConfigManager;
 import uncertain.proc.ProcedureRunner;
+import aurora.database.service.BusinessModelService;
+import aurora.database.service.IDatabaseServiceFactory;
+import aurora.database.service.SqlServiceContext;
 
-public class Task extends AbstractEntry {
+public class AsyncTask extends AbstractEntry {
 
 	private IDatabaseServiceFactory mDatabaseServiceFactory;
 
@@ -23,8 +26,10 @@ public class Task extends AbstractEntry {
 	private int priority;
 	private String taskType;
 	private String sql;
+	private int retryTime;
+	private int timeOut;
 
-	public Task(IDatabaseServiceFactory databaseServiceFactory) {
+	public AsyncTask(IDatabaseServiceFactory databaseServiceFactory) {
 		this.mDatabaseServiceFactory = databaseServiceFactory;
 	}
 
@@ -66,7 +71,8 @@ public class Task extends AbstractEntry {
 			parameters.put(TaskTableFields.CONTEXT, context.toXML());
 			parameters.put(TaskTableFields.PRIORITY, priority);
 			parameters.put(TaskTableFields.TASK_TYPE, taskType);
-			parameters.put(TaskTableFields.SQL, sql);
+			parameters.put(TaskTableFields.RETRY_TIME, retryTime);
+			parameters.put(TaskTableFields.TIME_OUT, timeOut);
 			BusinessModelService businessModelService = mDatabaseServiceFactory.getModelService(bm, runner.getContext());
 			businessModelService.execute(parameters);
 		} finally {
@@ -155,4 +161,27 @@ public class Task extends AbstractEntry {
 		this.sql = sql;
 	}
 
+	public int getRetryTime() {
+		return retryTime;
+	}
+
+	public void setRetryTime(int retryTime) {
+		this.retryTime = retryTime;
+	}
+
+	public int getTimeOut() {
+		return timeOut;
+	}
+
+	public void setTimeOut(int timeOut) {
+		this.timeOut = timeOut;
+	}
+	 public void beginConfigure(CompositeMap config){
+		 List<CompositeMap> childs = config.getChilds();
+		 if(childs == null || childs.isEmpty())
+			 return;
+		 CompositeMap proc_config = ProcedureConfigManager.createConfigNode("procedure");
+		 proc_config.addChilds(config.getChilds());
+		 this.procContent = proc_config.toXML();
+	 }
 }

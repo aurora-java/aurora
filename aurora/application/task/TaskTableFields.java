@@ -13,6 +13,9 @@ public interface TaskTableFields {
 	public static final String CONTEXT = "context";
 	public static final String SQL = "sql";
 	public static final String EXCEPTION = "exception";
+	public static final String RETRY_TIME="retry_time";
+	public static final String CURRENT_RETRY_TIME="current_retry_time";
+	public static final String TIME_OUT="time_out";
 	
 	
 	public static final String JAVA_TYPE = "JAVA";
