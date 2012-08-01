@@ -527,7 +527,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
-				logger.log(Level.CONFIG, "try to pop a task record from queue,queue size="+taskQueue.size());
+//				logger.log(Level.CONFIG, "try to pop a task record from queue,queue size="+taskQueue.size());
 				CompositeMap taskRecord = popTaskQueue();
 				try {
 					if (taskRecord == null || taskRecord.isEmpty()) {
@@ -578,11 +578,13 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle,I
 		public String call() throws Exception {
 			logger.log(Level.CONFIG, "create a thread to handle task");
 			String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
+			logger.log(Level.CONFIG, "Context:"+strContext);
 			CompositeMap context = new CompositeMap();
 			if (strContext != null && !"".equals(strContext)) {
 				context = new CompositeLoader().loadFromString(strContext);
 				clearInstance(context);
 			}
+			logger.log(Level.CONFIG, "create parameter");
 			ServiceThreadLocal.setCurrentThreadContext(context);
 			CompositeMap newPara = new CompositeMap();
 			newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
