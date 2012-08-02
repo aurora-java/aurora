@@ -512,24 +512,26 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				int failedTime = 0;
 				int reTryTime = 10;
 				connection = getConnection();
-				CompositeMap para = new CompositeMap();
-				para.put(TaskTableFields.STATUS, "new");
-				CompositeMap newContext = new CompositeMap();
-				try {
-					CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
-					if (oldTaskRecords != null && para.getChilds() != null) {
-						CompositeMap taskRecord = null;
-						for (Object obj : oldTaskRecords.getChilds()) {
-							taskRecord = (CompositeMap) obj;
-							para = new CompositeMap();
-							para.put(TaskTableFields.STATUS, "wait");
-							para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-							executeBM(connection,updateTaskBM, null, para);
-							addToTaskQueue(taskRecord);
+				if(oldTaskBM != null){
+					CompositeMap para = new CompositeMap();
+					para.put(TaskTableFields.STATUS, "new");
+					CompositeMap newContext = new CompositeMap();
+					try {
+						CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
+						if (oldTaskRecords != null && para.getChilds() != null) {
+							CompositeMap taskRecord = null;
+							for (Object obj : oldTaskRecords.getChilds()) {
+								taskRecord = (CompositeMap) obj;
+								para = new CompositeMap();
+								para.put(TaskTableFields.STATUS, "wait");
+								para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
+								executeBM(connection,updateTaskBM, null, para);
+								addToTaskQueue(taskRecord);
+							}
 						}
+					} catch (Throwable e) {
+						logger.log(Level.SEVERE, "", e);
 					}
-				} catch (Throwable e) {
-					logger.log(Level.SEVERE, "", e);
 				}
 				while (running) {
 					Number taskId = taskIdList.peek();
