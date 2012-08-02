@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -129,22 +128,20 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	}
 
 	public void executeTask(CompositeMap task, CompositeMap parameter) throws Exception {
-		String strContext = task.getString(TaskTableFields.CONTEXT);
-		strContext = new String(strContext.getBytes(), "UTF-8");
-		CompositeMap context = new CompositeMap();
-		if (strContext != null && !"".equals(strContext)) {
-			context = new CompositeLoader().loadFromString(strContext,"UTF-8");
-			clearInstance(context);
-		}
+		CompositeMap context = getContext(task);
+		if(context == null)
+			context = new CompositeMap();
 		ServiceThreadLocal.setCurrentThreadContext(context);
-		CompositeLoader loader = new CompositeLoader();
+		
 		int task_id = task.getInt(TaskTableFields.TASK_ID);
+		if (task_id == 0)
+			throw BuiltinExceptionFactory.createAttributeMissing(null, TaskTableFields.TASK_ID);
+		
 		String task_type = task.getString(TaskTableFields.TASK_TYPE);
 		String proc_file_path = task.getString(TaskTableFields.PROC_FILE_PATH);
 		String proc_content = task.getString(TaskTableFields.PROC_CONTENT);
 		String sql = task.getString(TaskTableFields.SQL);
-		if (task_id == 0)
-			throw BuiltinExceptionFactory.createAttributeMissing(null, TaskTableFields.TASK_ID);
+		
 		if (TaskTableFields.JAVA_TYPE.equals(task_type)) {
 			if (proc_file_path != null && !proc_file_path.equals("")) {
 				executeProc(proc_file_path, task_id, context);
@@ -152,7 +149,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				if (proc_content == null || "".equals(proc_content))
 					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + ","
 							+ TaskTableFields.PROC_CONTENT);
-				CompositeMap procedure_config = loader.loadFromString(proc_content);
+				CompositeMap procedure_config = loadFromString(proc_content);
 				executeProc(procedure_config, task_id, context);
 			}
 		} else if (TaskTableFields.PROCEDURE_TYPE.equals(task_type)) {
@@ -166,6 +163,23 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		} else {
 			throw new IllegalArgumentException("The " + task_type + " is not supported!");
 		}
+	}
+	private CompositeMap loadFromString(String content) throws Exception{
+		if(content == null)
+			return null;
+		CompositeMap context = null;
+		String newContent = new String(content.getBytes(), "UTF-8");
+		if (newContent != null && !"".equals(newContent)) {
+			context = new CompositeLoader().loadFromString(newContent, "UTF-8");
+			clearInstance(context);
+		}
+		return context;
+	}
+	private CompositeMap getContext(CompositeMap taskRecord) throws Exception{
+		if(taskRecord == null)
+			return null;
+		String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
+		return loadFromString(strContext);
 	}
 
 	private void clearInstance(CompositeMap context) {
@@ -238,7 +252,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	}
 
 	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context) {
-		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_config });
+		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_config.toXML()});
 		Procedure proc = null;
 		try {
 			proc = procedureManager.createProcedure(procedure_config);
@@ -252,7 +266,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		if (proc == null)
 			throw new IllegalArgumentException("Procedure can not be null!");
 		try {
-			logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { proc.getName() });
 			String name = "task." + taskId;
 			if (context != null) {
 				context.putObject("/parameter/@task_id", taskId, true);
@@ -496,8 +509,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 						Thread.sleep(1000);
 						continue;
 					}
-					logger.log(Level.CONFIG, "add record to queue,record:" + task.toXML());
-					addToTaskQueue((CompositeMap) task.getChilds().get(0));
+					CompositeMap newTask = (CompositeMap) task.getChilds().get(0);
+					logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(newTask));
+					addToTaskQueue(newTask);
 					taskIdList.poll();
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "", e);
@@ -531,15 +545,13 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
-				// logger.log(Level.CONFIG,
-				// "try to pop a task record from queue,queue size="+taskQueue.size());
 				CompositeMap taskRecord = popTaskQueue();
 				try {
 					if (taskRecord == null || taskRecord.isEmpty()) {
 						Thread.sleep(1000);
 						continue;
 					}
-					logger.log(Level.CONFIG, "get a task record from queue,task=" + taskRecord.toXML());
+					logger.log(Level.CONFIG, "get a task record from queue,task is" +LINE_SEPARATOR+LINE_SEPARATOR+taskRecord.toXML());
 					Object task_id = taskRecord.get(TaskTableFields.TASK_ID);
 					if (task_id == null || "null".equals(task_id)) {
 						Thread.sleep(1000);
@@ -582,21 +594,14 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		@Override
 		public String call() throws Exception {
 			try {
-				logger.log(Level.CONFIG, "create a thread to handle task");
-				String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
-				logger.log(Level.CONFIG, "Context:" + strContext);
-				strContext = new String(strContext.getBytes(), "UTF-8");
-				logger.log(Level.CONFIG, "after convert context:" + strContext);
-				CompositeMap context = new CompositeMap();
-				if (strContext != null && !"".equals(strContext)) {
-					context = new CompositeLoader().loadFromString(strContext,"UTF-8");
-					clearInstance(context);
-				}
-				logger.log(Level.CONFIG, "create parameter");
+				CompositeMap context = getContext(taskRecord);
+				if(context == null)
+					context = new CompositeMap();
 				ServiceThreadLocal.setCurrentThreadContext(context);
 				CompositeMap newPara = new CompositeMap();
 				newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
 				newPara.put(TaskTableFields.STATUS, "running");
+				
 				logger.log(Level.CONFIG, "update task status='running',task_id=" + getTaskId(taskRecord));
 				try {
 					executeBM(updateTaskBM, context, newPara);
@@ -639,16 +644,16 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					parameter.put(TaskTableFields.EXCEPTION, excepiton.toString());
 					logger.log(Level.SEVERE, excepiton.toString());
 				}
-				logger.log(Level.CONFIG, "update task status='done' or 'excepiton',task_id=" + getTaskId(taskRecord));
+				logger.log(Level.CONFIG, "finish task,task_id=" + getTaskId(taskRecord));
 				try {
 					executeBM(finishTaskBM, context, parameter);
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "", e);
 				}
-				ServiceThreadLocal.remove();
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
 			}
+			ServiceThreadLocal.remove();
 			return "finished";
 		}
 
@@ -667,7 +672,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				} else {
 					excepiton.append(getFullStackTrace(e));
 				}
-
 			}
 			return excepiton.toString();
 		}
@@ -683,7 +687,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 			@Override
 			public String call() throws Exception {
-				executeTask(taskRecord, parameter);
+				try {
+					executeTask(taskRecord, parameter);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, "", e);
+				}
 				return "finished";
 			}
 		}
