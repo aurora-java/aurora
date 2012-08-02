@@ -542,7 +542,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		@Override
 		public String call() throws Exception {
 			timeOutService = Executors.newCachedThreadPool();
-			handleTaskService = new ThreadPoolExecutor(mThreadCount / 2, mThreadCount, 0L, TimeUnit.MILLISECONDS,
+			handleTaskService = new ThreadPoolExecutor(mThreadCount, mThreadCount*2, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>());
 			while (running) {
 				CompositeMap taskRecord = popTaskQueue();
@@ -617,8 +617,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				for (; current_retry_time < execute_time; current_retry_time++) {
 					if (current_retry_time > 0) {
 						try {
-							parameter.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
-							executeBM(updateTaskBM, context, parameter);
+							newPara.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
+							executeBM(updateTaskBM, context, newPara);
 						} catch (Throwable e) {
 							logger.log(Level.SEVERE, "", e);
 						}
