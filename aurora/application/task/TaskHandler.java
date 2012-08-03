@@ -206,7 +206,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		SqlServiceContext sqlContext = SqlServiceContext.createSqlServiceContext(localContext);
 		if (sqlContext == null)
 			throw new RuntimeException("Can not create SqlServiceContext for context:" + localContext.toXML());
-		connection.setAutoCommit(false);
 		sqlContext.setConnection(connection);
 //		try {
 			BusinessModelService service = databaseServiceFactory.getModelService(bm_name, localContext);
@@ -518,7 +517,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					CompositeMap newContext = new CompositeMap();
 					try {
 						CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
-						if (oldTaskRecords != null && para.getChilds() != null) {
+						if (oldTaskRecords != null && oldTaskRecords.getChilds() != null) {
 							CompositeMap taskRecord = null;
 							for (Object obj : oldTaskRecords.getChilds()) {
 								taskRecord = (CompositeMap) obj;
