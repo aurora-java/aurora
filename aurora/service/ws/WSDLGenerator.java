@@ -2,6 +2,7 @@ package aurora.service.ws;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Clob;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class WSDLGenerator {
 		xsdMap.put(BigDecimal.class.getCanonicalName(), xsd.getPrefix() + ":decimal");
 		xsdMap.put(Calendar.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
 		xsdMap.put(Date.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
+		xsdMap.put(Clob.class.getCanonicalName(), xsd.getPrefix() + ":string");
 	}
 
 	public WSDLGenerator(BusinessModel model, String location) {
