@@ -721,8 +721,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			StringBuilder excepiton = new StringBuilder();
 			Future<String> future = timeOutService.submit(callableTask);
 			try {
-				future.get(timeOut, TimeUnit.MILLISECONDS);
-				return excepiton.toString();
+				String result = future.get(timeOut, TimeUnit.MILLISECONDS);
+				return result;
 			} catch (Exception e) {
 				boolean successful = future.cancel(true);
 				if (!successful) {
@@ -751,8 +751,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					executeTask(connection,taskRecord, parameter);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, "", e);
+					return getFullStackTrace(e);
 				}
-				return "finished";
+				return null;
 			}
 		}
 	}
