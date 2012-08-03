@@ -514,7 +514,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				connection = getConnection();
 				if(oldTaskBM != null){
 					CompositeMap para = new CompositeMap();
-					para.put(TaskTableFields.STATUS, "new");
+					para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_NEW);
 					CompositeMap newContext = new CompositeMap();
 					try {
 						CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
@@ -523,7 +523,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							for (Object obj : oldTaskRecords.getChilds()) {
 								taskRecord = (CompositeMap) obj;
 								para = new CompositeMap();
-								para.put(TaskTableFields.STATUS, "wait");
+								para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_WAIT);
 								para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
 								executeBM(connection,updateTaskBM, null, para);
 								addToTaskQueue(taskRecord);
@@ -668,7 +668,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				String errorMessage = null;
 				CompositeMap newPara = new CompositeMap();
 				newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-				newPara.put(TaskTableFields.STATUS, "running");
+				newPara.put(TaskTableFields.STATUS, TaskTableFields.STATUS_RUNNING);
 				try {
 					executeBM(connection,updateTaskBM, context, newPara);
 				} catch (Throwable e) {

@@ -22,5 +22,11 @@ public interface TaskTableFields {
 	public static final String JAVA_TYPE = "JAVA";
 	public static final String FUNCTION_TYPE = "FUNCTION";
 	public static final String PROCEDURE_TYPE = "PROCEDURE";
+	
+	public static final String STATUS_NEW = "new";
+	public static final String STATUS_WAIT = "wait";
+	public static final String STATUS_RUNNING = "running";
+	public static final String STATUS_EXCEPTION = "exception";
+	public static final String STATUS_DONE = "done";
 
 }
