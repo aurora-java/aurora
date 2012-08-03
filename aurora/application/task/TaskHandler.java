@@ -183,11 +183,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
 		return loadFromString(strContext);
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	private void clearInstance(CompositeMap context) {
 		if (context == null)
 			return;
+		@SuppressWarnings("unchecked")
 		Iterator<Map.Entry<Object,Object>> it = context.entrySet().iterator();
 		if (it == null)
 			return;
@@ -438,10 +438,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	private String getFullStackTrace(Throwable exception) {
 		String message = getExceptionStackTrace(exception);
-		if (message.length() > 4000)
-			message = message.substring(0, 4000);
 		return message;
-
 	}
 
 	private String getExceptionStackTrace(Throwable exception) {
