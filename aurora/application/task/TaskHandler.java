@@ -184,14 +184,15 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		return loadFromString(strContext);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void clearInstance(CompositeMap context) {
 		if (context == null)
 			return;
-		Iterator it = context.entrySet().iterator();
+		Iterator<Map.Entry<Object,Object>> it = context.entrySet().iterator();
 		if (it == null)
 			return;
 		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
+			Map.Entry<Object,Object> entry = (Map.Entry<Object,Object>) it.next();
 			Object key = entry.getKey();
 			if (key.toString().startsWith("_")) {
 				it.remove();
@@ -513,7 +514,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				connection = getConnection();
 				if(oldTaskBM != null){
 					CompositeMap para = new CompositeMap();
-					para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_NEW);
+					para.put("not_finished", "Y");
 					CompositeMap newContext = new CompositeMap();
 					try {
 						CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
@@ -721,7 +722,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		private String executeTimeOutTask(Connection connection,int timeOut) {
 			CallableTask callableTask = new CallableTask(connection,taskRecord, parameter);
 			StringBuilder excepiton = new StringBuilder();
-			Future future = timeOutService.submit(callableTask);
+			Future<String> future = timeOutService.submit(callableTask);
 			try {
 				future.get(timeOut, TimeUnit.MILLISECONDS);
 				return excepiton.toString();
