@@ -3,7 +3,9 @@ package aurora.application.task;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -71,7 +73,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	protected String topic = "task";
 	protected String message = "task_message";
 	private Queue<Number> taskIdList = new ConcurrentLinkedQueue<Number>();
-    private Queue<Connection> connectionQueue = new ConcurrentLinkedQueue<Connection>();
+	private Queue<Connection> connectionQueue = new ConcurrentLinkedQueue<Connection>();
+
 	public TaskHandler(IObjectRegistry registry) {
 		this.mRegistry = registry;
 	}
@@ -127,7 +130,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		});
 	}
 
-	public void executeTask(Connection connection,CompositeMap task, CompositeMap parameter) throws Exception {
+	public void executeTask(Connection connection, CompositeMap task) throws Exception {
 		CompositeMap context = getContext(task);
 		if (context == null)
 			context = new CompositeMap();
@@ -139,27 +142,26 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 		String task_type = task.getString(TaskTableFields.TASK_TYPE);
 		String proc_file_path = task.getString(TaskTableFields.PROC_FILE_PATH);
-		String proc_content = task.getString(TaskTableFields.PROC_CONTENT);
+		CompositeMap proc_content = getProcContext(task);
 		String sql = task.getString(TaskTableFields.SQL);
 
 		if (TaskTableFields.JAVA_TYPE.equals(task_type)) {
 			if (proc_file_path != null && !proc_file_path.equals("")) {
 				executeProc(proc_file_path, task_id, context);
 			} else {
-				if (proc_content == null || "".equals(proc_content))
+				if (proc_content == null)
 					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + ","
 							+ TaskTableFields.PROC_CONTENT);
-				CompositeMap procedure_config = loadFromString(proc_content);
-				executeProc(procedure_config, task_id, context);
+				executeProc(proc_content, task_id, context);
 			}
 		} else if (TaskTableFields.PROCEDURE_TYPE.equals(task_type)) {
 			if (sql == null || "".equals(sql))
 				throw BuiltinExceptionFactory.createAttributeMissing(null, TaskTableFields.SQL);
-			execDbProc(connection,context, sql);
+			execDbProc(connection, context, sql);
 		} else if (TaskTableFields.FUNCTION_TYPE.equals(task_type)) {
 			if (sql == null || "".equals(sql))
 				throw BuiltinExceptionFactory.createAttributeMissing(null, TaskTableFields.SQL);
-			execDbFun(connection,context, sql);
+			execDbFun(connection, context, sql);
 		} else {
 			throw new IllegalArgumentException("The " + task_type + " is not supported!");
 		}
@@ -176,23 +178,54 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		}
 		return context;
 	}
-
+	
+	private CompositeMap getProcContext(CompositeMap taskRecord) throws Exception {
+		if (taskRecord == null)
+			return null;
+		Object proc_content = taskRecord.get(TaskTableFields.PROC_CONTENT);
+		if(proc_content == null)
+			return null;
+		String str_Proc_content = null;
+		if(proc_content instanceof Clob){
+			str_Proc_content = clobToString((Clob)proc_content);
+		}else{
+			str_Proc_content = proc_content.toString();
+		}
+		return loadFromString(str_Proc_content);
+	}
+	
 	private CompositeMap getContext(CompositeMap taskRecord) throws Exception {
 		if (taskRecord == null)
 			return null;
-		String strContext = taskRecord.getString(TaskTableFields.CONTEXT);
+		Object context = taskRecord.get(TaskTableFields.CONTEXT);
+		if(context == null)
+			return null;
+		String strContext = null;
+		if(context instanceof Clob){
+			strContext = clobToString((Clob)context);
+		}else{
+			strContext = context.toString();
+		}
 		return loadFromString(strContext);
 	}
-	
+	private String clobToString(Clob clob) throws Exception
+    {   
+        Reader inStreamDoc = clob.getCharacterStream();   
+        char[] tempDoc = new char[(int) clob.length()];   
+        inStreamDoc.read(tempDoc);   
+        inStreamDoc.close();   
+        return new String(tempDoc);   
+    }  
+
 	private void clearInstance(CompositeMap context) {
 		if (context == null)
 			return;
 		@SuppressWarnings("unchecked")
-		Iterator<Map.Entry<Object,Object>> it = context.entrySet().iterator();
+		Iterator<Map.Entry<Object, Object>> it = context.entrySet().iterator();
 		if (it == null)
 			return;
 		while (it.hasNext()) {
-			Map.Entry<Object,Object> entry = (Map.Entry<Object,Object>) it.next();
+			Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) it.next();
 			Object key = entry.getKey();
 			if (key.toString().startsWith("_")) {
 				it.remove();
@@ -208,25 +241,25 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		if (sqlContext == null)
 			throw new RuntimeException("Can not create SqlServiceContext for context:" + localContext.toXML());
 		sqlContext.setConnection(connection);
-//		try {
-			BusinessModelService service = databaseServiceFactory.getModelService(bm_name, localContext);
-			CompositeMap resultMap = service.queryAsMap(parameterMap, FetchDescriptor.fetchAll());
-			return resultMap;
-//		}
-//		finally {
-//			if (sqlContext != null)
-//				sqlContext.freeConnection();
-//		}
+		// try {
+		BusinessModelService service = databaseServiceFactory.getModelService(bm_name, localContext);
+		CompositeMap resultMap = service.queryAsMap(parameterMap, FetchDescriptor.fetchAll());
+		return resultMap;
+		// }
+		// finally {
+		// if (sqlContext != null)
+		// sqlContext.freeConnection();
+		// }
 	}
 
-	public void executeBM(Connection connection,String bm_name, CompositeMap context, CompositeMap parameterMap) throws Exception {
+	public void executeBM(Connection connection, String bm_name, CompositeMap context, CompositeMap parameterMap) throws Exception {
 		CompositeMap localContext = context;
 		if (localContext == null)
 			localContext = new CompositeMap();
 		SqlServiceContext sqlContext = SqlServiceContext.createSqlServiceContext(localContext);
 		if (sqlContext == null)
 			throw new RuntimeException("Can not create SqlServiceContext for context:" + localContext.toXML());
-//		Connection connection = getConnection();
+		// Connection connection = getConnection();
 		connection.setAutoCommit(false);
 		sqlContext.setConnection(connection);
 		try {
@@ -236,11 +269,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		} catch (Exception ex) {
 			rollbackConnection(connection);
 			throw new RuntimeException(ex);
-		} 
-//		finally {
-//			if (sqlContext != null)
-//				sqlContext.freeConnection();
-//		}
+		}
+		// finally {
+		// if (sqlContext != null)
+		// sqlContext.freeConnection();
+		// }
 	}
 
 	protected void executeProc(String procedure_name, int taskId, CompositeMap context) {
@@ -277,16 +310,17 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 			}
 		} catch (Exception ex) {
-			logger.log(Level.SEVERE, "Error when invoking procedure " + proc.getName(), ex);
+			// logger.log(Level.SEVERE, "Error when invoking procedure " +
+			// proc.getName(), ex);
 			throw new RuntimeException(ex);
 		}
 	}
 
-	private String execDbFun(Connection connection,CompositeMap context, String function) throws Exception {
+	private String execDbFun(Connection connection, CompositeMap context, String function) throws Exception {
 		SqlServiceContext sqlContext = SqlServiceContext.createSqlServiceContext(context);
 		if (sqlContext == null)
 			throw new RuntimeException("Can not create SqlServiceContext for context:" + context.toXML());
-//		Connection connection = getConnection();
+		// Connection connection = getConnection();
 		sqlContext.setConnection(connection);
 		String errorMessage = null;
 		CallableStatement proc = null;
@@ -307,18 +341,18 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			throw new RuntimeException(e);
 		} finally {
 			closeStatement(proc);
-//			if (sqlContext != null)
-//				sqlContext.freeConnection();
+			// if (sqlContext != null)
+			// sqlContext.freeConnection();
 		}
 		return errorMessage;
 
 	}
 
-	private void execDbProc(Connection connection,CompositeMap context, String executePkg) throws Exception {
+	private void execDbProc(Connection connection, CompositeMap context, String executePkg) throws Exception {
 		SqlServiceContext sqlContext = SqlServiceContext.createSqlServiceContext(context);
 		if (sqlContext == null)
 			throw new RuntimeException("Can not create SqlServiceContext for context:" + context.toXML());
-//		Connection connection = getConnection();
+		// Connection connection = getConnection();
 		sqlContext.setConnection(connection);
 		CallableStatement proc = null;
 		try {
@@ -333,8 +367,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			throw new RuntimeException(e);
 		} finally {
 			closeStatement(proc);
-//			if (sqlContext != null)
-//				sqlContext.freeConnection();
+			// if (sqlContext != null)
+			// sqlContext.freeConnection();
 		}
 	}
 
@@ -473,9 +507,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					logger.log(Level.SEVERE, "Task " + task.toString() + " can not shutdown!");
 			}
 		}
-		if(connectionQueue != null){
+		if (connectionQueue != null) {
 			Connection connection = connectionQueue.poll();
-			while(connection != null){
+			while (connection != null) {
 				closeConnection(connection);
 				connection = connectionQueue.poll();
 			}
@@ -509,7 +543,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				int failedTime = 0;
 				int reTryTime = 10;
 				connection = getConnection();
-				if(oldTaskBM != null){
+				if (oldTaskBM != null) {
 					CompositeMap para = new CompositeMap();
 					para.put("not_finished", "Y");
 					CompositeMap newContext = new CompositeMap();
@@ -522,7 +556,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 								para = new CompositeMap();
 								para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_WAIT);
 								para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-								executeBM(connection,updateTaskBM, null, para);
+								executeBM(connection, updateTaskBM, null, para);
 								addToTaskQueue(taskRecord);
 							}
 						}
@@ -540,12 +574,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					task.put(TaskTableFields.TASK_ID, taskId.intValue());
 					CompositeMap context = new CompositeMap();
 					try {
-						executeBM(connection,fetchTaskBM, context, task);
+						executeBM(connection, fetchTaskBM, context, task);
 						if (task == null || getTaskId(task) == -1) {
 							Thread.sleep(1000);
 							continue;
 						}
-//						CompositeMap newTask = (CompositeMap) task.getChilds().get(0);
 						logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(task));
 						addToTaskQueue(task);
 						taskIdList.poll();
@@ -566,6 +599,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 						taskIdList.poll();
 					}
 				}
+			} catch (InterruptedException e) {
+				// ignore
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
 			} finally {
@@ -586,10 +621,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 		@Override
 		public String call() throws Exception {
-			try{
+			try {
 				timeOutService = Executors.newCachedThreadPool();
 				handleTaskService = Executors.newFixedThreadPool(mThreadCount);
-				for(int i=0;i<mThreadCount;i++){
+				for (int i = 0; i < mThreadCount; i++) {
 					connectionQueue.add(getConnection());
 				}
 				while (running) {
@@ -599,19 +634,22 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							Thread.sleep(1000);
 							continue;
 						}
-						logger.log(Level.CONFIG, "get a task record from queue,task is" + LINE_SEPARATOR + LINE_SEPARATOR + taskRecord.toXML());
+						logger.log(Level.CONFIG,
+								"get a task record from queue,task is" + LINE_SEPARATOR + LINE_SEPARATOR + taskRecord.toXML());
 						Object task_id = taskRecord.get(TaskTableFields.TASK_ID);
 						if (task_id == null || "null".equals(task_id)) {
 							Thread.sleep(1000);
 							continue;
 						}
-						TaskExecutor task = new TaskExecutor(timeOutService, taskRecord, (CompositeMap) taskRecord.clone());
+						TaskExecutor task = new TaskExecutor(timeOutService, taskRecord);
 						handleTaskService.submit(task);
+					} catch (InterruptedException e) {
+						// ignore
 					} catch (Throwable e) {
 						logger.log(Level.SEVERE, "", e);
 					}
 				}
-			}catch(Exception e){
+			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
 			}
 			return "finished";
@@ -633,63 +671,59 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	class TaskExecutor implements Callable<String> {
 		private CompositeMap taskRecord;
-		private CompositeMap parameter;
 		private ExecutorService timeOutService;
 
-		public TaskExecutor(ExecutorService timeOutService, CompositeMap taskRecord, CompositeMap parameter) {
+		public TaskExecutor(ExecutorService timeOutService, CompositeMap taskRecord) {
 			this.timeOutService = timeOutService;
 			this.taskRecord = taskRecord;
-			this.parameter = parameter;
 		}
 
 		@Override
 		public String call() throws Exception {
-			Connection connection =  connectionQueue.poll();
-			while(connection == null){
-				logger.log(Level.SEVERE,"Can not get database connection!");
+			Connection connection = connectionQueue.poll();
+			while (connection == null) {
+				logger.log(Level.SEVERE, "Can not get database connection!");
 				Thread.sleep(1000);
 				connection = connectionQueue.poll();
 			}
+			CompositeMap para = new CompositeMap();
+			CompositeMap context = new CompositeMap();
+			para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
 			try {
-				
-				CompositeMap context = getContext(taskRecord);
-				if (context == null)
-					context = new CompositeMap();
+				context = getContext(taskRecord);
 				ServiceThreadLocal.setCurrentThreadContext(context);
 
 				logger.log(Level.CONFIG, "begin to execute task,task_id=" + getTaskId(taskRecord));
-				int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME,0) + 1;
+				int execute_time = taskRecord.getInt(TaskTableFields.RETRY_TIME, 0) + 1;
 				int current_retry_time = taskRecord.getInt(TaskTableFields.CURRENT_RETRY_TIME, 0);
 				int time_out = taskRecord.getInt(TaskTableFields.TIME_OUT);
 				StringBuilder excepiton = new StringBuilder();
 				String errorMessage = null;
-				CompositeMap newPara = new CompositeMap();
-				newPara.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-				newPara.put(TaskTableFields.STATUS, TaskTableFields.STATUS_RUNNING);
+				para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_RUNNING);
 				try {
-					executeBM(connection,updateTaskBM, context, newPara);
+					executeBM(connection, updateTaskBM, context, para);
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "", e);
 				}
 				for (; current_retry_time < execute_time; current_retry_time++) {
 					if (current_retry_time > 0) {
 						try {
-							newPara.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
-							executeBM(connection,updateTaskBM, context, newPara);
+							para.put(TaskTableFields.CURRENT_RETRY_TIME, current_retry_time);
+							executeBM(connection, updateTaskBM, context, para);
 						} catch (Throwable e) {
 							logger.log(Level.SEVERE, "", e);
 						}
 					}
 					try {
 						if (time_out != 0) {
-							errorMessage = executeTimeOutTask(connection,time_out);
+							errorMessage = executeTimeOutTask(connection, time_out);
 							if (errorMessage == null || errorMessage.isEmpty()) {
 								excepiton = null;
 								break;
 							}
 							excepiton.append(errorMessage).append(LINE_SEPARATOR);
 						} else {
-							executeTask(connection,taskRecord, parameter);
+							executeTask(connection, taskRecord);
 							excepiton = null;
 							break;
 						}
@@ -698,26 +732,33 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 					}
 				}
 				if (excepiton != null && excepiton.length() != 0) {
-					parameter.put(TaskTableFields.EXCEPTION, excepiton.toString());
+					para.put(TaskTableFields.EXCEPTION, excepiton.toString());
 					logger.log(Level.SEVERE, excepiton.toString());
 				}
 				logger.log(Level.CONFIG, "finish task,task_id=" + getTaskId(taskRecord));
-				try {
-					executeBM(connection,finishTaskBM, context, parameter);
-				} catch (Throwable e) {
-					logger.log(Level.SEVERE, "", e);
-				}
+				logger.log(Level.CONFIG, "pass parameter =" + para.toXML());
+				updateFinishStatus(connection, context, para);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "", e);
-			}finally{
+				para.put(TaskTableFields.EXCEPTION, getFullStackTrace(e));
+				updateFinishStatus(connection, context, para);
+			} finally {
 				connectionQueue.add(connection);
 			}
 			ServiceThreadLocal.remove();
 			return "finished";
 		}
 
-		private String executeTimeOutTask(Connection connection,int timeOut) {
-			CallableTask callableTask = new CallableTask(connection,taskRecord, parameter);
+		private void updateFinishStatus(Connection connection, CompositeMap context, CompositeMap newPara) {
+			try {
+				executeBM(connection, finishTaskBM, context, newPara);
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "", e);
+			}
+		}
+
+		private String executeTimeOutTask(Connection connection, int timeOut) {
+			CallableTask callableTask = new CallableTask(connection, taskRecord);
 			StringBuilder excepiton = new StringBuilder();
 			Future<String> future = timeOutService.submit(callableTask);
 			try {
@@ -737,20 +778,19 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 		class CallableTask implements Callable<String> {
 			private CompositeMap taskRecord;
-			private CompositeMap parameter;
 			private Connection connection;
-			public CallableTask(Connection connection,CompositeMap taskRecord, CompositeMap parameter) {
+
+			public CallableTask(Connection connection, CompositeMap taskRecord) {
 				this.connection = connection;
 				this.taskRecord = taskRecord;
-				this.parameter = parameter;
 			}
 
 			@Override
 			public String call() throws Exception {
 				try {
-					executeTask(connection,taskRecord, parameter);
+					executeTask(connection, taskRecord);
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "", e);
+					// logger.log(Level.SEVERE, "", e);
 					return getFullStackTrace(e);
 				}
 				return null;
