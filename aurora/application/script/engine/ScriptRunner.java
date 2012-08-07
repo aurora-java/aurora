@@ -5,6 +5,7 @@ import javax.script.ScriptException;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.ProcedureRunner;
 import aurora.application.script.scriptobject.ScriptShareObject;
 
 public class ScriptRunner {
@@ -40,11 +41,11 @@ public class ScriptRunner {
 	}
 
 	public void setImport(String import1) {
-		sso.put("import", import1);
+		sso.put(ScriptShareObject.KEY_IMPORT, import1);
 	}
 
 	public String getImport() {
-		return sso.get("import");
+		return sso.get(ScriptShareObject.KEY_IMPORT);
 	}
 
 	public String getParsedScript() {
@@ -61,5 +62,9 @@ public class ScriptRunner {
 		}
 		String str = getParsedScript();
 		return engine.eval(str);
+	}
+
+	public void setProcedureRunner(ProcedureRunner runner) {
+		sso.put(ScriptShareObject.KEY_RUNNER, runner);
 	}
 }

@@ -22,7 +22,7 @@ public class ScriptImportor {
 				.get(AuroraScriptEngine.KEY_SSO);
 		if (sso == null)
 			return;
-		String str = (String) sso.get("import");
+		String str = (String) sso.get(ScriptShareObject.KEY_IMPORT);
 		if (str == null || str.trim().length() == 0)
 			return;
 		String[] jss = str.split(";");
