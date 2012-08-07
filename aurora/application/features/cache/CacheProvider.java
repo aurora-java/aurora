@@ -3,6 +3,8 @@ package aurora.application.features.cache;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 
 import uncertain.cache.ConcurrentCache;
@@ -62,6 +64,10 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	protected ICache cache;
 	protected INamedCacheFactory mCacheFactory;
 	protected IMessageStub messageStub;
+	protected boolean shutdown = false;
+
+	protected Timer reloadTimer;
+	protected Object reloadLock = new Object();
 
 	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory) {
 		this.mRegistry = registry;
@@ -83,18 +89,18 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		dsFactory = (IDatabaseServiceFactory) mRegistry.getInstanceOfType(IDatabaseServiceFactory.class);
 		if (dsFactory == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IDatabaseServiceFactory.class, this.getClass().getName());
-		//
 		if (reloadMessage == null) {
 			reloadMessage = cacheName + "_reload";
 		}
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
 		if (stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
-		if(!stub.isStarted())
+		if (!stub.isStarted())
 			logger.warning("JMS MessageStub is not started, please check the configuration.");
 		IConsumer consumer = stub.getConsumer(reloadTopic);
-		if(consumer == null){
-			throw new IllegalStateException("MessageStub does not define the reloadTopic '"+reloadTopic+"', please check the configuration.");
+		if (consumer == null) {
+			throw new IllegalStateException("MessageStub does not define the reloadTopic '" + reloadTopic
+					+ "', please check the configuration.");
 		}
 		if (!(consumer instanceof INoticerConsumer))
 			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
@@ -108,7 +114,28 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		initResourcePath();
 		if (loadOnStartup)
 			initCacheData();
+		initReloadTimer();
 		inited = true;
+	}
+
+	protected void initReloadTimer() {
+		reloadTimer = new Timer(getCacheName() + "_reload_timer");
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				while (!shutdown) {
+					synchronized (reloadLock) {
+						try {
+							reloadLock.wait();
+						} catch (InterruptedException e) {
+						}
+						if (!shutdown)
+							reload();
+					}
+				}
+			}
+		};
+		reloadTimer.schedule(timerTask, 0);
 	}
 
 	private void initResourcePath() {
@@ -151,10 +178,9 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			} else {
 				executeProc(loadProc, null);
 			}
-		}catch(Exception ex){ 
-            throw new RuntimeException(ex);
-        } 
-		finally {
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
 			writeUnLock();
 		}
 	}
@@ -173,6 +199,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
 			}
 			String type = getType();
+			@SuppressWarnings("unchecked")
 			List<CompositeMap> childs = data.getChilds();
 			if (ICacheProvider.VALUE_TYPE.value.name().equals(type)) {
 				if (childs == null) {
@@ -200,13 +227,13 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				}
 			} else if (ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)) {
 				if (childs == null) {
-//					throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
 					return;
 				} else {
 					for (Object child : data.getChilds()) {
 						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
-						List new_values = record.getChilds();
+						@SuppressWarnings("unchecked")
+						List<Object> new_values = record.getChilds();
 						if (new_values == null)
 							throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
 						List<String> value_list = new LinkedList<String>();
@@ -220,13 +247,13 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				}
 			} else if (ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)) {
 				if (childs == null) {
-//					throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
 					return;
 				} else {
 					for (Object child : data.getChilds()) {
 						CompositeMap record = (CompositeMap) child;
 						String key = TextParser.parse(getKey(), record);
-						List new_values = record.getChilds();
+						@SuppressWarnings("unchecked")
+						List<CompositeMap> new_values = record.getChilds();
 						if (new_values == null)
 							throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
 						List<CompositeMap> value_list = new LinkedList<CompositeMap>();
@@ -293,7 +320,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			loadOnStartup = true;
 			initCacheData();
 			setLastReloadDate(new Date());
-		}finally {
+		} finally {
 			writeUnLock();
 		}
 	}
@@ -500,8 +527,12 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	@Override
 	public void onMessage(IMessage message) {
 		try {
-			if (reloadMessage.equals(message.getText()))
-				reload();
+			if (reloadMessage.equals(message.getText())) {
+				synchronized (reloadLock) {
+					reloadLock.notify();
+				}
+			}
+			// reload();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "reload failed!", e);
 		}
@@ -521,7 +552,12 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	@Override
 	public void shutdown() {
-
+		shutdown = true;
+		synchronized (reloadLock) {
+			reloadLock.notify();
+		}
+		if (reloadTimer != null)
+			reloadTimer.cancel();
 	}
 
 }
