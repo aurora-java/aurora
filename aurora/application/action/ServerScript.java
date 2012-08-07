@@ -55,6 +55,7 @@ public class ServerScript extends AbstractEntry {
 		try {
 			ScriptRunner sr = new ScriptRunner(exp, context, registry);
 			sr.setImport(jsimport);
+			sr.setProcedureRunner(runner);
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);
