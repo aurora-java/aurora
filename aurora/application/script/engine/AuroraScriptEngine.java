@@ -14,6 +14,7 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import aurora.application.script.scriptobject.ActionEntryObject;
 import aurora.application.script.scriptobject.CompositeMapObject;
 import aurora.application.script.scriptobject.CookieObject;
 import aurora.application.script.scriptobject.ModelServiceObject;
@@ -39,11 +40,12 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 
 	private void preDefine(Context cx, Scriptable scope) {
 		try {
-			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
+			// cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 			ScriptableObject.defineClass(scope, CompositeMapObject.class);
 			ScriptableObject.defineClass(scope, SessionObject.class);
 			ScriptableObject.defineClass(scope, CookieObject.class);
 			ScriptableObject.defineClass(scope, ModelServiceObject.class);
+			ScriptableObject.defineClass(scope, ActionEntryObject.class);
 			// ScriptableObject.defineClass(scope, ContextObject.class);
 			Scriptable ctx = cx.newObject(scope, CompositeMapObject.CLASS_NAME,
 					new Object[] { service_context });
@@ -66,7 +68,6 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 					((ScriptableObject) o).sealObject();
 				}
 			}
-			ScriptImportor.organizeUserImport(cx, scope, service_context);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -93,13 +94,14 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 	public Object eval(Reader reader, ScriptContext ctxt)
 			throws ScriptException {
 		Object ret;
-
 		Context cx = enterContext();
+		cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 		try {
 			if (scope == null) {
 				scope = getRuntimeScope(ctxt);
 				preDefine(cx, scope);
 			}
+			ScriptImportor.organizeUserImport(cx, scope, service_context);
 			String filename = (String) get(ScriptEngine.FILENAME);
 			filename = filename == null ? "<Unknown source>" : filename;
 			ret = cx.evaluateReader(scope, reader, filename, 1, null);
