@@ -16,6 +16,8 @@ public class ScriptShareObject extends ScriptableObject {
 
 	public static final String KEY_ENGINE = "aurora-script-engine";
 	public static final String KEY_REGISTRY = "iobject-registry";
+	public static final String KEY_IMPORT = "import";
+	public static final String KEY_RUNNER = "procedure-runner";
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 
 	@Override

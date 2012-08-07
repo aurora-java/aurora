@@ -12,6 +12,7 @@ import org.mozilla.javascript.ScriptableObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.ProcedureRunner;
 import aurora.application.script.engine.AuroraScriptEngine;
 
 public class ScriptUtil {
@@ -27,8 +28,7 @@ public class ScriptUtil {
 		return (NativeArray) ctx.newArray(topScope, length);
 	}
 
-	public static AuroraScriptEngine getEngine(
-			uncertain.composite.CompositeMap context) {
+	public static AuroraScriptEngine getEngine(CompositeMap context) {
 		ScriptShareObject sso = (ScriptShareObject) context
 				.get(AuroraScriptEngine.KEY_SSO);
 		if (sso == null)
@@ -36,8 +36,7 @@ public class ScriptUtil {
 		return sso.getEngine();
 	}
 
-	public static IObjectRegistry getObjectRegistry(
-			uncertain.composite.CompositeMap context) {
+	public static IObjectRegistry getObjectRegistry(CompositeMap context) {
 		ScriptShareObject sso = (ScriptShareObject) context
 				.get(AuroraScriptEngine.KEY_SSO);
 		if (sso == null)
@@ -45,9 +44,21 @@ public class ScriptUtil {
 		return sso.getObjectRegistry();
 	}
 
-	public static uncertain.composite.CompositeMap getContext() {
+	public static CompositeMap getContext() {
 		return (CompositeMap) Context.getCurrentContext().getThreadLocal(
 				AuroraScriptEngine.KEY_SERVICE_CONTEXT);
+	}
+
+	public static ProcedureRunner getProcedureRunner() {
+		CompositeMap ctx = getContext();
+		ScriptShareObject sso = (ScriptShareObject) ctx
+				.get(AuroraScriptEngine.KEY_SSO);
+		ProcedureRunner runner = sso.get(ScriptShareObject.KEY_RUNNER);
+		if (runner == null) {
+			runner = new ProcedureRunner();
+			runner.setContext(ctx);
+		}
+		return runner;
 	}
 
 	public static boolean isValid(Object obj) {
