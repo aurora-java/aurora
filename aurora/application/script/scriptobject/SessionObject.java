@@ -8,6 +8,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import uncertain.composite.CompositeMap;
+import aurora.application.action.HttpSessionCopy;
 import aurora.application.action.HttpSessionOperate;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
@@ -64,6 +65,14 @@ public class SessionObject extends ScriptableObject {
 		if (session != null) {
 			session.invalidate();
 		}
+	}
+
+	public void jsFunction_copy() {
+		init();
+		HttpSession ses = request.getSession();
+		if (ses == null)
+			return;
+		HttpSessionCopy.copySession(context, ses);
 	}
 
 	public void initSession() {
