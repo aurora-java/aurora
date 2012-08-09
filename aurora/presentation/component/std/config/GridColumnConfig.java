@@ -21,6 +21,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_EXPORT_FIELD = "exportfield";
 	public static final String PROPERTITY_EDITOR_FUNCTION = "editorfunction";
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
+	public static final String PROPERTITY_MAX_ADJUST_WIDTH = "maxadjustwidth";
 	
 	
 	private static final String DEFAULT_ALIGN = "left";
@@ -120,6 +121,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setAutoAdjust(boolean autoAdjust){
 		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
+	}
+	public void setMaxAdjustWidth(int maxAdjustWidth) {
+		putInt(PROPERTITY_MAX_ADJUST_WIDTH, maxAdjustWidth);
+	}
+
+	public int getMaxAdjustWidth() {
+		return getInt(PROPERTITY_MAX_ADJUST_WIDTH, 300);
 	}
 	public String getPrompt(){
 		return getString(PROPERTITY_PROMPT);		
