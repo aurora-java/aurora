@@ -137,7 +137,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		if (oldTaskBM != null) {
 			try {
 				CompositeMap context = new CompositeMap();
-
 				Message msg = new Message(message, null);
 				executeBM(connection, oldTaskBM, context, new CompositeMap());
 				messageStub.getDispatcher().send(topic, msg, context);
