@@ -1,7 +1,6 @@
 package aurora.application.task;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.sql.CallableStatement;
@@ -39,6 +38,7 @@ import aurora.application.features.msg.IMessage;
 import aurora.application.features.msg.IMessageListener;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.INoticerConsumer;
+import aurora.application.features.msg.Message;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
@@ -72,8 +72,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	private HandleTask handleTask;
 	protected String topic = "task";
 	protected String message = "task_message";
-	private Queue<Number> taskIdList = new ConcurrentLinkedQueue<Number>();
 	private Queue<Connection> connectionQueue = new ConcurrentLinkedQueue<Connection>();
+	private Object fetchNewTaskLock = new Object();
 
 	public TaskHandler(IObjectRegistry registry) {
 		this.mRegistry = registry;
@@ -113,12 +113,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
 		((INoticerConsumer) consumer).addListener(message, this);
 
-		mainThreadPool = Executors.newFixedThreadPool(2);
-		GetTask getTask = new GetTask();
-		handleTask = new HandleTask(threadCount);
-		mainThreadPool.submit(getTask);
-		mainThreadPool.submit(handleTask);
-
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				try {
@@ -128,6 +122,32 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				}
 			}
 		});
+
+		mainThreadPool = Executors.newFixedThreadPool(2);
+		GetTask getTask = new GetTask();
+		handleTask = new HandleTask(threadCount);
+		mainThreadPool.submit(getTask);
+		mainThreadPool.submit(handleTask);
+		resetUnfinishedTaskStatus(stub);
+
+	}
+
+	private void resetUnfinishedTaskStatus(IMessageStub messageStub) {
+		Connection connection = getConnection();
+		if (oldTaskBM != null) {
+			try {
+				CompositeMap context = new CompositeMap();
+
+				Message msg = new Message(message, null);
+				executeBM(connection, oldTaskBM, context, new CompositeMap());
+				messageStub.getDispatcher().send(topic, msg, context);
+				context.clear();
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "", e);
+			} finally {
+				closeConnection(connection);
+			}
+		}
 	}
 
 	public void executeTask(Connection connection, CompositeMap task) throws Exception {
@@ -178,44 +198,44 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		}
 		return context;
 	}
-	
+
 	private CompositeMap getProcContext(CompositeMap taskRecord) throws Exception {
 		if (taskRecord == null)
 			return null;
 		Object proc_content = taskRecord.get(TaskTableFields.PROC_CONTENT);
-		if(proc_content == null)
+		if (proc_content == null)
 			return null;
 		String str_Proc_content = null;
-		if(proc_content instanceof Clob){
-			str_Proc_content = clobToString((Clob)proc_content);
-		}else{
+		if (proc_content instanceof Clob) {
+			str_Proc_content = clobToString((Clob) proc_content);
+		} else {
 			str_Proc_content = proc_content.toString();
 		}
 		return loadFromString(str_Proc_content);
 	}
-	
+
 	private CompositeMap getContext(CompositeMap taskRecord) throws Exception {
 		if (taskRecord == null)
 			return null;
 		Object context = taskRecord.get(TaskTableFields.CONTEXT);
-		if(context == null)
+		if (context == null)
 			return null;
 		String strContext = null;
-		if(context instanceof Clob){
-			strContext = clobToString((Clob)context);
-		}else{
+		if (context instanceof Clob) {
+			strContext = clobToString((Clob) context);
+		} else {
 			strContext = context.toString();
 		}
 		return loadFromString(strContext);
 	}
-	private String clobToString(Clob clob) throws Exception
-    {   
-        Reader inStreamDoc = clob.getCharacterStream();   
-        char[] tempDoc = new char[(int) clob.length()];   
-        inStreamDoc.read(tempDoc);   
-        inStreamDoc.close();   
-        return new String(tempDoc);   
-    }  
+
+	private String clobToString(Clob clob) throws Exception {
+		Reader inStreamDoc = clob.getCharacterStream();
+		char[] tempDoc = new char[(int) clob.length()];
+		inStreamDoc.read(tempDoc);
+		inStreamDoc.close();
+		return new String(tempDoc);
+	}
 
 	private void clearInstance(CompositeMap context) {
 		if (context == null)
@@ -310,8 +330,6 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 			}
 		} catch (Exception ex) {
-			// logger.log(Level.SEVERE, "Error when invoking procedure " +
-			// proc.getName(), ex);
 			throw new RuntimeException(ex);
 		}
 	}
@@ -493,6 +511,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	@Override
 	public void shutdown() {
 		running = false;
+		synchronized (fetchNewTaskLock) {
+			fetchNewTaskLock.notify();
+		}
 		try {
 			handleTask.shutdown();
 		} catch (Exception e) {
@@ -541,62 +562,46 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		public String call() throws Exception {
 			try {
 				int failedTime = 0;
-				int reTryTime = 10;
+				int retryTime = 10;
+				boolean hasNext = false;
 				connection = getConnection();
-				if (oldTaskBM != null) {
-					CompositeMap para = new CompositeMap();
-					para.put("not_finished", "Y");
-					CompositeMap newContext = new CompositeMap();
-					try {
-						CompositeMap oldTaskRecords = queryBM(connection, oldTaskBM, newContext, para);
-						if (oldTaskRecords != null && oldTaskRecords.getChilds() != null) {
-							CompositeMap taskRecord = null;
-							for (Object obj : oldTaskRecords.getChilds()) {
-								taskRecord = (CompositeMap) obj;
-								para = new CompositeMap();
-								para.put(TaskTableFields.STATUS, TaskTableFields.STATUS_WAIT);
-								para.put(TaskTableFields.TASK_ID, getTaskId(taskRecord));
-								executeBM(connection, updateTaskBM, null, para);
-								addToTaskQueue(taskRecord);
+				while (running) {
+					synchronized (fetchNewTaskLock) {
+						if (!hasNext) {
+							fetchNewTaskLock.wait();
+						}
+						if (!running)
+							break;
+						CompositeMap task = new CompositeMap();
+						CompositeMap context = new CompositeMap();
+						try {
+							executeBM(connection, fetchTaskBM, context, task);
+							if (task == null || getTaskId(task) == -1) {
+								continue;
+							}
+							logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(task));
+							addToTaskQueue(task);
+							int record_count = task.getInt("record_count", -1);
+							if (record_count > 1) {
+								hasNext = true;
+							} else {
+								hasNext = false;
+							}
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, "", e);
+							failedTime++;
+							if (failedTime < retryTime) {
+								closeConnection(connection);
+								connection = getConnection();
+								logger.log(Level.SEVERE, "It has failed " + failedTime
+										+ " time when get task from database,please check the configuration!");
+								continue;
+							} else {
+								logger.log(Level.SEVERE, "It has failed " + failedTime
+										+ " time when get task from database! It will quit now.");
+								break;
 							}
 						}
-					} catch (Throwable e) {
-						logger.log(Level.SEVERE, "", e);
-					}
-				}
-				while (running) {
-					Number taskId = taskIdList.peek();
-					if (taskId == null || taskId.intValue() < 0) {
-						Thread.sleep(1000);
-						continue;
-					}
-					CompositeMap task = new CompositeMap();
-					task.put(TaskTableFields.TASK_ID, taskId.intValue());
-					CompositeMap context = new CompositeMap();
-					try {
-						executeBM(connection, fetchTaskBM, context, task);
-						if (task == null || getTaskId(task) == -1) {
-							Thread.sleep(1000);
-							continue;
-						}
-						logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(task));
-						addToTaskQueue(task);
-						taskIdList.poll();
-					} catch (IOException e) {
-						logger.log(Level.SEVERE, "", e);
-						failedTime++;
-						if (failedTime > reTryTime) {
-							logger.log(Level.SEVERE, "It has failed " + failedTime + " time when get task from database! It will quit now.");
-							break;
-						} else {
-							closeConnection(connection);
-							connection = getConnection();
-							logger.log(Level.SEVERE, "It has failed " + failedTime
-									+ " time when get task from database,please check the configuration!");
-							continue;
-						}
-					} catch (SQLException e) {
-						taskIdList.poll();
 					}
 				}
 			} catch (InterruptedException e) {
@@ -802,11 +807,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	public void onMessage(IMessage message) {
 		try {
 			logger.log(Level.CONFIG, "receive a messsage:" + message.getText());
-			CompositeMap taskRecord = message.getProperties();
-			if (taskRecord == null)
-				return;
-			int task_id = taskRecord.getInt(TaskTableFields.TASK_ID);
-			taskIdList.add(task_id);
+			synchronized (fetchNewTaskLock) {
+				fetchNewTaskLock.notify();
+			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Can not add the task:" + message);
 		}
