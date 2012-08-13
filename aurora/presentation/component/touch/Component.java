@@ -30,8 +30,8 @@ public class Component implements IFeature {
 	protected String id;
 	private JSONObject config = new JSONObject();
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
-		addJavaScript(session, context, "base/zepto.js");
-		addJavaScript(session, context, "base/touch.js");
+		addJavaScript(session, context, "base/zepto.min.js");
+		addJavaScript(session, context, "base/touch-min.js");
 		addStyleSheet(session, context, "base/touch-all-min.css");
 	}
 	

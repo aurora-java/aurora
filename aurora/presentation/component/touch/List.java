@@ -18,6 +18,13 @@ public class List extends Component {
 	private static final String PROPERTITY_CALLBACK = "callback";
 	private static final String PROPERTITY_SHOW_PAGEBAR = "showpagebar";
 	private static final String PROPERTITY_AUTO_QUERY = "autoquery";
+	private static final String PROPERTITY_SELECTABLE = "selectable";
+	
+	protected static final String DEFAULT_CLASS = "list";
+	@Override
+	protected String getDefaultClass(BuildSession session, ViewContext context) {
+		return DEFAULT_CLASS;
+	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -30,6 +37,7 @@ public class List extends Component {
 		addConfig(PROPERTITY_CALLBACK, view.getString(PROPERTITY_CALLBACK,""));
 		addConfig(PROPERTITY_SHOW_PAGEBAR, view.getBoolean(PROPERTITY_SHOW_PAGEBAR,true));
 		addConfig(PROPERTITY_AUTO_QUERY, view.getBoolean(PROPERTITY_AUTO_QUERY,true));
+		addConfig(PROPERTITY_SELECTABLE, view.getBoolean(PROPERTITY_SELECTABLE,false));
 		map.put(CONFIG, getConfigString());
 	}
 }
