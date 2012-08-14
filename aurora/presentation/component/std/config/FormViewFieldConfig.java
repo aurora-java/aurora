@@ -73,7 +73,7 @@ public class FormViewFieldConfig extends ComponentConfig {
     }
     
     public int getWidth(){
-        return getInt(PROPERTITY_WIDTH,85);
+        return getInt(PROPERTITY_WIDTH,0);
     }
     public void setWidth(int width){
         putInt(PROPERTITY_WIDTH, width);
