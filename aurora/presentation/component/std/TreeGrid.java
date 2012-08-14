@@ -4,11 +4,18 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
+import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.TreeConfig;
 
 public class TreeGrid extends Grid {
+
+	public TreeGrid(IObjectRegistry registry, IModelFactory factory) {
+		super(registry, factory);
+	}
+
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);

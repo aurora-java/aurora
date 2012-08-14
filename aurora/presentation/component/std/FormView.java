@@ -27,6 +27,11 @@ import freemarker.template.Template;
 @SuppressWarnings("unchecked")
 public class FormView extends Component implements IViewBuilder, ISingleton{
 	
+	private static final String VIEW_TYPE = "viewtype";
+	private static final String DEFAULT_VIEW_TYPE = "advance";
+	private static final String WIDTH_UNIT = "widthunit";
+	private static final String DEFAULT_WIDTH_UNIT = "percent";
+	
 	IObjectRegistry mObjectRegistry;
 
 	public FormView(IObjectRegistry rg) {
@@ -56,10 +61,21 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 		}
 		Writer out = session.getWriter();
 		try {
-			generateTitleHead(out,lc,data);
-			generateTable(out,lc);
-			generateFields(session,out,lc,data);
-			generateFooter(out,lc);
+			String vt = view.getString(VIEW_TYPE,DEFAULT_VIEW_TYPE);
+			String wu = view.getString(WIDTH_UNIT,DEFAULT_WIDTH_UNIT);
+			
+			if(DEFAULT_VIEW_TYPE.equalsIgnoreCase(vt)) {
+				generateADTitleHead(out,lc,data);
+				generateADTable(out,lc);
+				generateADFields(session,out,lc,data,wu);
+				generateADFooter(out,lc);
+			}else{
+				generateTitleHead(out,lc,data);
+				generateTable(out,lc);
+				generateFields(session,out,lc,data,wu);
+				generateFooter(out,lc);
+			}
+			
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
@@ -127,7 +143,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 	}
 	
 	
-	private void generateFields(BuildSession session,Writer out, FormViewConfig lc, CompositeMap data) throws Exception {
+	private void generateFields(BuildSession session,Writer out, FormViewConfig lc, CompositeMap data,String wu) throws Exception {
 		out.write("<TBODY>");
 		List childs = lc.getSections();
 		Iterator it = childs.iterator();
@@ -150,15 +166,20 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				out.write(lc.getPromptAlign());
 				out.write("' class='label' width='");
 				out.write(""+labelWidth);
-				out.write("%'");
+				out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
 				out.write(">");
 				out.write(field.getPrompt());
 				out.write("</TD>");
 				out.write("<TD align='");
 				out.write(field.getAlign());
-				out.write("' class='field' width='");
-				out.write(""+field.getWidth());
-				out.write("%'>");
+				out.write("' class='field'");
+				int w = field.getWidth();
+				if(w!=0){
+					out.write(" width='");
+					out.write(""+w);
+					out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+				}
+				out.write(">");
 				processContent(session,out,data,c);
 				out.write("</TD>");
 			}
@@ -168,6 +189,105 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				
 		out.write("</TBODY>");
 	}
+	
+	
+	
+	private void generateADTitleHead(Writer out, FormViewConfig lc, CompositeMap model) throws ViewCreationException, IOException{
+		String title = lc.getTitle();
+		String style = lc.getStyle();
+		out.write("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0' class='adFormWrap'>");
+		out.write("<TR>");
+		out.write("<TD class='tl' width='14'>");
+		out.write("</TD>");
+		out.write("<TD>");
+		out.write("<DIV class='adFormView' ");
+		if(style !=null){
+			out.write(" style='");
+			out.write(style);
+			out.write("'");			
+		}
+		out.write(">");
+		if(title != null){
+			out.write("<TABLE cellSpacing='0' cellPadding='0' border='0' style='margin-top:10px;position:relative;left:-1px'><TR><TD class='title' >");
+			out.write(title);
+			out.write("</TD><TD class='tr'></TD></TR></TABLE>");
+		}
+		
+	}
+	
+	private void generateADTable(Writer out, FormViewConfig lc) throws IOException{
+		out.write("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
+		String defaultClass = "";
+		String className = lc.getClassName();
+		if(className !=null){
+			defaultClass += " " + className;
+		}
+		String style = lc.getTableStyle();
+		if(style != null){
+			out.write(" style='");
+			out.write(style);
+			out.write("'");
+		}
+		out.write(" class='");
+		out.write(defaultClass);
+		out.write("'>");
+	}
+	
+	
+	private void generateADFields(BuildSession session,Writer out, FormViewConfig lc, CompositeMap data,String wu) throws Exception {
+		out.write("<TBODY>");
+		List childs = lc.getSections();
+		Iterator it = childs.iterator();
+		int labelWidth = lc.getPromptWidth();
+		int i=0;
+		while(it.hasNext()){
+			CompositeMap section = (CompositeMap)it.next();
+			out.write("<TR><TD>");
+			out.write("<TABLE cellSpacing='0' cellPadding='0' width='100%' border='0'");
+			if(i==0)out.write(" class='top'");
+			if(!it.hasNext())out.write(" class='bottom'");
+			out.write("><TBODY><TR>");
+			Iterator cit = section.getChildIterator();
+			while(cit.hasNext()){
+				CompositeMap c = (CompositeMap)cit.next();
+				FormViewFieldConfig field = FormViewFieldConfig.getInstance(c);
+				Integer fw = field.getPromptWidth();
+				labelWidth = fw == null ? labelWidth : fw;
+				out.write("<TD align='");
+				out.write(lc.getPromptAlign());
+				out.write("' class='label' width='");
+				out.write(""+labelWidth);
+				out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+				out.write(">");
+				out.write(field.getPrompt());
+				out.write("</TD>");
+				out.write("<TD align='");
+				out.write(field.getAlign());
+				out.write("' class='field'");
+				int w = field.getWidth();
+				if(w!=0){
+					out.write(" width='");
+					out.write(""+w);
+					out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+				}
+				out.write(">");
+				processContent(session,out,data,c);
+				out.write("</TD>");
+			}
+			out.write("</TR></TBODY></TABLE>");
+			i++;
+		}
+				
+		out.write("</TBODY>");
+	}
+	
+	private void generateADFooter(Writer out, FormViewConfig lc) throws IOException {
+		out.write("</TABLE></DIV>");
+		out.write("</TD>");
+		out.write("</TR>");
+		out.write("</TABLE>");
+	}
+	
 	
 	private void generateFooter(Writer out, FormViewConfig lc) throws IOException {
 		out.write("</TABLE></DIV>");

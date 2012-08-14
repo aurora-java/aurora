@@ -12,7 +12,13 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
 import aurora.application.AuroraApplication;
+import aurora.application.IApplicationConfig;
+import aurora.application.features.ILookupCodeProvider;
+import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -54,6 +60,18 @@ public class Grid extends Component {
 	private static final String TYPE_ROW_RADIO = "rowradio";
 	private static final String TYPE_ROW_NUMBER = "rownumber";
 	
+	
+	private IModelFactory mFactory;
+    private IObjectRegistry mRegistry;
+    private ApplicationConfig mApplicationConfig;
+	
+	
+	public Grid(IObjectRegistry registry,IModelFactory factory) {
+		this.mRegistry = registry;
+        this.mFactory = factory;
+        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
+    }
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
@@ -67,9 +85,21 @@ public class Grid extends Component {
 	
 	@SuppressWarnings("unchecked")
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
-		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		int mDefaultMarginSize = -1;
+		if (mApplicationConfig != null) {
+	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+	   	     if (view_config != null) {
+	   	    	mDefaultMarginSize = view_config.getDefaultMarginWidth();           
+	   	     }
+	   	     if(mDefaultMarginSize != -1){
+	   	    	 view.putInt(PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
+	   	     }
+	   	}
+		
+		
 		CompositeMap model = context.getModel();
+		super.onCreateViewContent(session, context);
 		GridConfig gc = GridConfig.getInstance(view);
 		Map map = context.getMap();
 		boolean hasToolBar = creatToolBar(session,context);

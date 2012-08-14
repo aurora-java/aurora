@@ -44,7 +44,7 @@ public class Component {
 
 		addStyleSheet(session, context, "base/Aurora-all-min.css");
 		addJavaScript(session, context, "base/ext-core-min.js");
-		addJavaScript(session, context, "base/Aurora-all.js");
+		addJavaScript(session, context, "base/Aurora-all-min.js");
 		addJavaScript(session, context, "locale/aurora-lang-" + session.getLanguage() + ".js");
 
 	}
@@ -83,7 +83,9 @@ public class Component {
 		map.put(ComponentConfig.OLD_WIDTH, width);
 		Integer marginWidth = view.getInt(PROPERTITY_MARGIN_WIDTH);
 		if (marginWidth != null && vw != null) {
-			width = new Integer((vw.intValue() - marginWidth.intValue()) > width.intValue() ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
+			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
+			//TIP:非标准做法,中集特殊要求！
+			//width = new Integer((vw.intValue() - marginWidth.intValue()) < width.intValue() ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
 			addConfig(PROPERTITY_MARGIN_WIDTH, marginWidth);
 		}
 		return width;
@@ -109,7 +111,8 @@ public class Component {
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
 		Integer marginHeight = view.getInt(PROPERTITY_MARGIN_HEIGHT);
 		if (marginHeight != null && vh != null) {
-			height = new Integer((vh.intValue() - marginHeight.intValue()) > height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
+//			height = new Integer((vh.intValue() - marginHeight.intValue()) > height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
+			height = new Integer((vh.intValue() - marginHeight.intValue()) > 0 ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
 			addConfig(PROPERTITY_MARGIN_HEIGHT, marginHeight);
 		}
 		return height;

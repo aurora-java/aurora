@@ -17,6 +17,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_LABEL_SEPARATOR = "defaultlabelseparator";
 	public static final String KEY_DEFAULT_RADIO_SEPARATOR = "defaultradioseparator";
 	public static final String KEY_DEFAULT_PAGE_SIZE = "defaultpagesize";
+	public static final String KEY_DEFAULT_MARGIN_WIDTH = "defaultmarginwidth";
 
 	public String getDefaultPackage() {
 		return getString(KEY_DEFAULT_PACKAGE);
@@ -48,6 +49,14 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultLabelSeparator(String radioseparator) {
 		putString(KEY_DEFAULT_LABEL_SEPARATOR, radioseparator);
+	}
+	
+	public int getDefaultMarginWidth() {
+		return getInt(KEY_DEFAULT_MARGIN_WIDTH,-1);
+	}
+
+	public void setDefaultMarginWidth(int w) {
+		putInt(KEY_DEFAULT_MARGIN_WIDTH, w);
 	}
 
 	public String getDefaultRadioSeparator() {
