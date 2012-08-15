@@ -70,10 +70,10 @@ public class ServerScript extends AbstractEntry {
 				}
 			}
 			StringBuilder sb = new StringBuilder(500);
-			sb.append("ScriptException<br/>\n");
-			sb.append("source:" + source + "<br/>\n");
-			sb.append("line :" + (lineno + e.getLineNumber() - 1) + "<br/>\n");
-			sb.append(e.getMessage() + "<br/>\n");
+			sb.append("ScriptException\n");
+			sb.append("source:" + source + "\n");
+			sb.append("line :" + (lineno + e.getLineNumber() - 1) + "\n");
+			sb.append(e.getMessage() + "\n");
 			throw new RuntimeException(sb.toString());
 		} catch (Exception e1) {
 			throw new RuntimeException(e1);
