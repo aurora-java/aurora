@@ -15,6 +15,7 @@
         </ss:complexType>
         <ss:complexType name="a:RectangleComponent" document="具有尺寸的特性">
             <ss:attributes>
+                <ss:attribute name="hidden" document="组件是否隐藏" type="ss:string"/>
                 <ss:attribute name="width" document="组件的宽度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="height" document="组件的高度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="marginWidth" document="组件的边缘宽度,单位是像素(px)" type="ss:int"/>
