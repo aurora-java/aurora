@@ -30,6 +30,7 @@ import aurora.service.ServiceInstance;
 
 public class CustomizationDataProvider extends AbstractLocatableObject implements ICustomizationDataProvider, IGlobalInstance {
 
+	public static final String DEFAULT_CUSTOM_DATA = "_customization_data";
 	public static final String KEY_DIMENSION_INIT_PROC = "dimension_init_proc";
 	IObjectRegistry registry;
 	CompositeMap dimensions = null;
@@ -142,6 +143,7 @@ public class CustomizationDataProvider extends AbstractLocatableObject implement
 					throw new RuntimeException(e);
 				}
 		}
+		context.putObject(DEFAULT_CUSTOM_DATA, result);
 		return result;
 	}
 
