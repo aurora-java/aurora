@@ -11,6 +11,8 @@ import org.json.JSONString;
 
 import uncertain.composite.CompositeMap;
 import aurora.application.config.ScreenConfig;
+import aurora.application.features.cstm.CustomSourceCode;
+import aurora.application.features.cstm.CustomizationDataProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -316,6 +318,40 @@ public class Component {
 			}
 		}
 		return dataset;
+	}
+	
+	public boolean isHidden(CompositeMap view, CompositeMap model){
+		CompositeMap cd = model.getParent().getChild(CustomizationDataProvider.DEFAULT_CUSTOM_DATA);
+		if(cd!=null){
+			List list = cd.getChilds();
+			Iterator it = list.iterator();
+			String fid = view.getString(ComponentConfig.PROPERTITY_ID, "");
+			while(it.hasNext()){
+				CompositeMap record = (CompositeMap)it.next();
+				String id = record.getString(CustomSourceCode.KEY_ID_VALUE);
+				String mt = record.getString(CustomSourceCode.KEY_MOD_TYPE);
+				String ak = record.getString(CustomSourceCode.KEY_ATTRIB_KEY);
+				String av = record.getString(CustomSourceCode.KEY_ATTRIB_VALUE);
+				if("set_attrib".equals(mt) && id.equals(fid)&&"hidden".equals(ak)&&"true".equals(av)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public int getChildLength(CompositeMap view, CompositeMap model){
+		int count = 0;
+		Iterator it = view.getChildIterator();
+		while(it.hasNext()){
+			CompositeMap field = (CompositeMap)it.next();
+			if(isHidden(field,model)){
+				continue;
+			}else{
+				count ++;
+			}
+		}
+		return count;
 	}
 }
 

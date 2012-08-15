@@ -76,6 +76,9 @@ public class Tab extends Component {
 				
 				while(it.hasNext()){
 					CompositeMap tab = (CompositeMap)it.next();
+					if(isHidden(tab, model)) continue;
+					
+					
 					Integer bodywidth = (Integer)map.get("bodywidth");
 					Integer bodyheight = (Integer)map.get("bodyheight");
 					String ref = tab.getString(PROPERTITY_REF, "");
@@ -120,7 +123,7 @@ public class Tab extends Component {
 				int i = 0;
 				while(it.hasNext()){
 					CompositeMap tab = (CompositeMap)it.next();
-					
+					if(isHidden(tab, model)) continue;
 					String prompt = tab.getString(ComponentConfig.PROPERTITY_PROMPT, "");
 					prompt = session.getLocalizedPrompt(prompt);
 					int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);

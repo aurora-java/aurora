@@ -57,6 +57,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	}
 	
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		if(isHidden(field, model)) return;
 		Writer out = session.getWriter();
 		int padding = view.getInt(PROPERTITY_PADDING, 3);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
@@ -183,14 +184,16 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		}else if(rows == UNLIMITED && columns != UNLIMITED) {
 			List children = view.getChilds();
 			if(children!=null){
-				rows = (int)Math.ceil((double)view.getChilds().size()/columns);
+				int cl = getChildLength(view,model);
+				rows = (int)Math.ceil((double)cl/columns);
 			}else{
 				rows = 1;				
 			}
 		} else if(rows != UNLIMITED && columns == UNLIMITED) {
 			List children = view.getChilds();
 			if(children!=null){
-				columns = (int)Math.ceil((double)view.getChilds().size()/rows);
+				int cl = getChildLength(view,model);
+				columns = (int)Math.ceil((double)cl/rows);
 			}else{
 				columns = 1;				
 			}
@@ -208,7 +211,8 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 						for( int k=0; k<columns; k++){
 							if(it.hasNext()){
 								CompositeMap field = (CompositeMap)it.next();
-								buildCell(session,model,view, field);	
+								if(isHidden(field, model))k--;
+								buildCell(session,model,view, field);
 							}else{
 								out.write("<th class='layout-th'></th><td class='layout-td-cell'></td>");
 //								break;
