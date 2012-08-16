@@ -190,14 +190,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		if (content == null)
 			return null;
 		CompositeMap context = null;
-		String newContent = new String(content.getBytes(), "UTF-8");
-		if (newContent != null && !"".equals(newContent)) {
-			context = new CompositeLoader().loadFromString(newContent, "UTF-8");
+		if (content != null && !"".equals(content)) {
+			context = new CompositeLoader().loadFromString(content, "UTF-8");
 			clearInstance(context);
 		}
 		return context;
 	}
-
 	private CompositeMap getProcContext(CompositeMap taskRecord) throws Exception {
 		if (taskRecord == null)
 			return null;
