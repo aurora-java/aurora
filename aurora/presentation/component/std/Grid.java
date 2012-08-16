@@ -302,13 +302,14 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false))
 						column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
-						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false));
+						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
+						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, hidden);
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))
 						column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
-						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getString(COLUMN_TYPE)==null?true:false));
+						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, hidden?false:column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getString(COLUMN_TYPE)==null?true:false));
 					
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
