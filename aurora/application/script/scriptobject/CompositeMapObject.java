@@ -6,6 +6,7 @@ import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -56,6 +57,11 @@ public class CompositeMapObject extends ScriptableObject {
 			return new CompositeMapObject(
 					(CompositeMap) (((CompositeMapObject) args[0]).getData()
 							.clone()));
+		else if (args[0] instanceof NativeJavaObject) {
+			NativeJavaObject njo = (NativeJavaObject) args[0];
+			return jsConstructor(cx, new Object[] { njo.unwrap() }, ctorObj,
+					inNewExpr);
+		}
 		return new CompositeMapObject();// unknown arguments
 	}
 
@@ -82,6 +88,17 @@ public class CompositeMapObject extends ScriptableObject {
 
 	public int jsGet_length() {
 		return data.getChildsNotNull().size();
+	}
+
+	public Object jsFunction_getData() {
+		return getData();
+	}
+
+	public void jsFunction_setData(Object obj) {
+		if (obj instanceof NativeJavaObject) {
+			NativeJavaObject njo = (NativeJavaObject) obj;
+			setData((CompositeMap) njo.unwrap());
+		}
 	}
 
 	public NativeArray jsGet_children() {
