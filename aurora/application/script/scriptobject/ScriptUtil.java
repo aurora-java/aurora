@@ -29,19 +29,30 @@ public class ScriptUtil {
 	}
 
 	public static AuroraScriptEngine getEngine(CompositeMap context) {
-		ScriptShareObject sso = (ScriptShareObject) context
-				.get(AuroraScriptEngine.KEY_SSO);
+		ScriptShareObject sso = getSso();
 		if (sso == null)
 			return null;
 		return sso.getEngine();
 	}
 
 	public static IObjectRegistry getObjectRegistry(CompositeMap context) {
-		ScriptShareObject sso = (ScriptShareObject) context
-				.get(AuroraScriptEngine.KEY_SSO);
+		ScriptShareObject sso = getSso();
 		if (sso == null)
 			return null;
 		return sso.getObjectRegistry();
+	}
+
+	public static Object getInstanceOfType(String className) {
+		CompositeMap map = getContext();
+		try {
+			Class<?> cls = Class.forName(className);
+			IObjectRegistry ior = getObjectRegistry(map);
+			if (ior == null)
+				return null;
+			return ior.getInstanceOfType(cls);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static CompositeMap getContext() {
@@ -49,11 +60,14 @@ public class ScriptUtil {
 				AuroraScriptEngine.KEY_SERVICE_CONTEXT);
 	}
 
+	public static ScriptShareObject getSso() {
+		return (ScriptShareObject) getContext().get(AuroraScriptEngine.KEY_SSO);
+	}
+
 	public static ProcedureRunner getProcedureRunner() {
 		CompositeMap ctx = getContext();
-		ScriptShareObject sso = (ScriptShareObject) ctx
-				.get(AuroraScriptEngine.KEY_SSO);
-		ProcedureRunner runner = sso.get(ScriptShareObject.KEY_RUNNER);
+		ScriptShareObject sso = getSso();
+		ProcedureRunner runner = sso.getProcedureRunner();
 		if (runner == null) {
 			runner = new ProcedureRunner();
 			runner.setContext(ctx);
