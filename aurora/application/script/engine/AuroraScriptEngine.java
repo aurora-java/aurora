@@ -95,6 +95,7 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			throws ScriptException {
 		Object ret;
 		Context cx = enterContext();
+		cx.setOptimizationLevel(9);// FIXME
 		cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 		try {
 			if (scope == null) {
