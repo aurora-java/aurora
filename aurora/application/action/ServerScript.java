@@ -2,13 +2,12 @@ package aurora.application.action;
 
 import javax.script.ScriptException;
 
-import org.mozilla.javascript.JavaScriptException;
-
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
+import aurora.application.script.engine.InterruptException;
 import aurora.application.script.engine.ScriptRunner;
 
 public class ServerScript extends AbstractEntry {
@@ -16,6 +15,8 @@ public class ServerScript extends AbstractEntry {
 	String exp = null;
 	String resultpath = null;
 	String cdata = null;
+	String optimizeLevel = null;
+
 	int lineno = -1;
 	private IObjectRegistry registry;
 
@@ -47,6 +48,14 @@ public class ServerScript extends AbstractEntry {
 		jsimport = import1;
 	}
 
+	public String getOptimizeLevel() {
+		return optimizeLevel;
+	}
+
+	public void setOptimizeLevel(String optimizeLevel) {
+		this.optimizeLevel = optimizeLevel;
+	}
+
 	@Override
 	public void run(ProcedureRunner runner) {
 		CompositeMap context = runner.getContext();
@@ -56,19 +65,13 @@ public class ServerScript extends AbstractEntry {
 			ScriptRunner sr = new ScriptRunner(exp, context, registry);
 			sr.setImport(jsimport);
 			sr.setProcedureRunner(runner);
+			sr.setOptimizeLevel(optimizeLevel);
 			Object res = sr.run();
 			if (resultpath != null)
 				context.putObject(resultpath, res, true);
+		} catch (InterruptException ie) {
+			ActionUtil.raiseApplicationError(runner, registry, ie.getMessage());
 		} catch (ScriptException e) {
-			if (e.getCause() instanceof JavaScriptException) {
-				JavaScriptException jse = (JavaScriptException) e.getCause();
-				Object v = jse.getValue();
-				if (v instanceof String) {
-					ActionUtil.raiseApplicationError(runner, registry,
-							v.toString());
-					return;
-				}
-			}
 			StringBuilder sb = new StringBuilder(500);
 			sb.append("ScriptException\n");
 			sb.append("source:" + source + "\n");
