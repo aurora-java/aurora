@@ -10,10 +10,11 @@ import aurora.application.script.scriptobject.ScriptShareObject;
 
 public class ScriptRunner {
 	private String exp;
-	private AuroraScriptEngine engine;
 
 	private CompositeMap context = null;
 	private ScriptShareObject sso;
+
+	private String optimizeLevel;
 
 	public ScriptRunner(String script) {
 		this.exp = script;
@@ -55,16 +56,22 @@ public class ScriptRunner {
 	}
 
 	public Object run() throws ScriptException {
-		engine = sso.getEngine();
+		AuroraScriptEngine engine = sso.getEngine();
 		if (engine == null) {
 			engine = new AuroraScriptEngine(context);
 			sso.put(engine);
 		}
 		String str = getParsedScript();
+		if (optimizeLevel != null && optimizeLevel.length() > 0)
+			engine.setOptimizeLevel(Integer.parseInt(optimizeLevel));
 		return engine.eval(str);
 	}
 
 	public void setProcedureRunner(ProcedureRunner runner) {
 		sso.put(ScriptShareObject.KEY_RUNNER, runner);
+	}
+
+	public void setOptimizeLevel(String optimizeLevel) {
+		this.optimizeLevel = optimizeLevel;
 	}
 }
