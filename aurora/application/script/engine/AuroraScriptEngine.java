@@ -1,36 +1,56 @@
 package aurora.application.script.engine;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.TopLevel;
+import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.Wrapper;
 
+import uncertain.cache.INamedCacheFactory;
+import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.script.scriptobject.ActionEntryObject;
 import aurora.application.script.scriptobject.CompositeMapObject;
 import aurora.application.script.scriptobject.CookieObject;
 import aurora.application.script.scriptobject.ModelServiceObject;
 import aurora.application.script.scriptobject.ScriptUtil;
 import aurora.application.script.scriptobject.SessionObject;
+import aurora.service.ServiceInstance;
 
-public class AuroraScriptEngine extends RhinoScriptEngine {
+public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 	public static final String aurora_core_js = "aurora-core.js";
 	public static final String KEY_SERVICE_CONTEXT = "service_context";
 	public static final String KEY_SSO = "sso";
 	private static String js = ScriptUtil.loadAuroraCore();
-	private Scriptable scope = null;
+	private TopLevel scope = null;
+	static {
+		RhinoException.useMozillaStackStyle(false);
+		ContextFactory.initGlobal(new ContextFactory() {
+			protected Context makeContext() {
+				Context cx = super.makeContext();
+				cx.setLanguageVersion(Context.VERSION_1_8);
+				cx.setOptimizationLevel(-1);
+				cx.setClassShutter(RhinoClassShutter.getInstance());
+				cx.setWrapFactory(RhinoWrapFactory.getInstance());
+				return cx;
+			}
+		});
+	}
 
-	private uncertain.composite.CompositeMap service_context;
+	private CompositeMap service_context;
+	private int optimizeLevel = -1;
 
-	public AuroraScriptEngine(uncertain.composite.CompositeMap context) {
+	public AuroraScriptEngine(CompositeMap context) {
 		super();
 		if (context == null)
 			throw new NullPointerException(
@@ -40,13 +60,11 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 
 	private void preDefine(Context cx, Scriptable scope) {
 		try {
-			// cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 			ScriptableObject.defineClass(scope, CompositeMapObject.class);
 			ScriptableObject.defineClass(scope, SessionObject.class);
 			ScriptableObject.defineClass(scope, CookieObject.class);
 			ScriptableObject.defineClass(scope, ModelServiceObject.class);
 			ScriptableObject.defineClass(scope, ActionEntryObject.class);
-			// ScriptableObject.defineClass(scope, ContextObject.class);
 			Scriptable ctx = cx.newObject(scope, CompositeMapObject.CLASS_NAME,
 					new Object[] { service_context });
 			ScriptableObject.defineProperty(scope, "$ctx", ctx,
@@ -60,14 +78,18 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			Scriptable cok = cx.newObject(scope, CookieObject.CLASS_NAME);
 			ScriptableObject.defineProperty(scope, "$cookie", cok,
 					ScriptableObject.READONLY);
-
-			cx.evaluateString(scope, js, aurora_core_js, 1, null);
+			if (js.length() > 0)
+				cx.evaluateString(scope, js, aurora_core_js, 1, null);
 			// seal all builtin objects,so user can not modify them
-			for (Object o : new Object[] { ctx, ses, cok }) {
-				if (o instanceof ScriptableObject) {
-					((ScriptableObject) o).sealObject();
-				}
-			}
+			// for (Object o : new Object[] { ctx, ses, cok }) {
+			// if (o instanceof ScriptableObject) {
+			// ((ScriptableObject) o).sealObject();
+			// }
+			// }
+			this.scope.defineFunctionProperties(new String[] { "print",
+					"println", "raise_app_error", "$instance", "$cache",
+					"$config", "$bm" }, AuroraScriptEngine.class,
+					ScriptableObject.DONTENUM);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -78,7 +100,7 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 	}
 
 	private void definePropertyForCtx(Scriptable ctxp, Context cx,
-			uncertain.composite.CompositeMap service_context) {
+			CompositeMap service_context) {
 		String[] names = { "parameter", "session", "cookie", "model" };
 		for (String s : names) {
 			Object p = service_context.getChild(s);
@@ -90,25 +112,21 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		}
 	}
 
-	@Override
-	public Object eval(Reader reader, ScriptContext ctxt)
-			throws ScriptException {
-		Object ret;
-		Context cx = enterContext();
-		cx.setOptimizationLevel(9);// FIXME
-		cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
+	public Object eval(String exp) throws ScriptException {
+		Object ret = null;
+		Context cx = Context.enter();
 		try {
+			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
+			cx.setOptimizationLevel(optimizeLevel);
 			if (scope == null) {
-				scope = getRuntimeScope(ctxt);
+				scope = new ImporterTopLevel(cx);
 				preDefine(cx, scope);
 			}
 			ScriptImportor.organizeUserImport(cx, scope, service_context);
-			String filename = (String) get(ScriptEngine.FILENAME);
-			filename = filename == null ? "<Unknown source>" : filename;
-			ret = cx.evaluateReader(scope, reader, filename, 1, null);
+			ret = cx.evaluateString(scope, exp, "<Unknown source>", -1, null);
 		} catch (RhinoException re) {
-			if (DEBUG)
-				re.printStackTrace();
+			if (re.getCause() instanceof InterruptException)
+				throw (InterruptException) re.getCause();
 			int line = (line = re.lineNumber()) == 0 ? -1 : line;
 			String msg;
 			if (re instanceof JavaScriptException) {
@@ -120,23 +138,17 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 			ScriptException se = new ScriptException(msg, re.sourceName(), line);
 			se.initCause(re);
 			throw se;
-		} catch (IOException ee) {
-			throw new ScriptException(ee);
+		} catch (Exception e2) {
+			throw new ScriptException(e2);
 		} finally {
 			Context.exit();
 		}
 
-		return unwrapReturnValue(ret);
-	}
-
-	protected Scriptable getRuntimeScope(ScriptContext ctxt) {
-		Scriptable scope = super.getRuntimeScope(ctxt);
-		Context cx = Context.enter();
-		Scriptable rScope = cx.newObject(scope);
-		rScope.setParentScope(null);
-		rScope.setPrototype(scope);
-		Context.exit();
-		return rScope;
+		if (ret instanceof Wrapper) {
+			ret = ((Wrapper) ret).unwrap();
+		} else if (ret instanceof Undefined)
+			ret = null;
+		return ret;
 	}
 
 	private String formatExceptionMessage(String msg) {
@@ -149,4 +161,60 @@ public class AuroraScriptEngine extends RhinoScriptEngine {
 		return msg;
 	}
 
+	public static synchronized void print(Context cx, Scriptable thisObj,
+			Object[] args, Function funObj) {
+		for (int i = 0; i < args.length; i++) {
+			if (i > 0)
+				System.out.print(" ");
+			// Convert the arbitrary JavaScript value into a string form.
+			String s = Context.toString(args[i]);
+			System.out.print(s);
+		}
+	}
+
+	public static synchronized void println(Context cx, Scriptable thisObj,
+			Object[] args, Function funObj) {
+		print(cx, thisObj, args, funObj);
+		System.out.println();
+	}
+
+	public static synchronized void raise_app_error(String err_code)
+			throws InterruptException {
+		throw new InterruptException(err_code);
+	}
+
+	public static Object $instance(String className) {
+		return ScriptUtil.getInstanceOfType(className);
+	}
+
+	public static Object $cache(String cacheName) {
+		CompositeMap ctx = ScriptUtil.getContext();
+		IObjectRegistry reg = ScriptUtil.getObjectRegistry(ctx);
+		INamedCacheFactory cf = (INamedCacheFactory) reg
+				.getInstanceOfType(INamedCacheFactory.class);
+		return cf.getNamedCache(cacheName);
+	}
+
+	public static Object $config(Context cx, Scriptable thisObj, Object[] args,
+			Function funObj) {
+		ServiceInstance si = ServiceInstance.getInstance(ScriptUtil
+				.getContext());
+		cx.evaluateString(thisObj,
+				"importClass(Packages.uncertain.composite.CompositeUtil)",
+				"<Import CompositeUtil>", -1, null);
+		return si.getServiceConfigData();
+	}
+
+	public static Object $bm(Context cx, Scriptable thisObj, Object[] args,
+			Function funObj) {
+		ModelServiceObject bm = (ModelServiceObject) cx.newObject(thisObj,
+				ModelServiceObject.CLASS_NAME, args);
+		if (args.length > 1)
+			bm.jsSet_option(args[1]);
+		return bm;
+	}
+
+	public void setOptimizeLevel(int level) {
+		optimizeLevel = level;
+	}
 }
