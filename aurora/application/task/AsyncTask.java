@@ -35,7 +35,8 @@ public class AsyncTask extends AbstractEntry {
 
 	@Override
 	public void run(ProcedureRunner runner) throws Exception {
-		CompositeMap context = runner.getContext();
+		CompositeMap context = (CompositeMap)runner.getContext().clone();
+		String strContext = context.toXML();
 		if (bm == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "bm");
 		bm = TextParser.parse(bm, context);
@@ -67,13 +68,14 @@ public class AsyncTask extends AbstractEntry {
 			parameters.put(TaskTableFields.EXECUTOR_INSTANCE, executorInstance);
 			parameters.put(TaskTableFields.PROC_FILE_PATH, procFilePath);
 			parameters.put(TaskTableFields.PROC_CONTENT, procContent);
-			parameters.put(TaskTableFields.CONTEXT, context.toXML());
+			parameters.put(TaskTableFields.CONTEXT, strContext);
 			parameters.put(TaskTableFields.PRIORITY, priority);
 			parameters.put(TaskTableFields.TASK_TYPE, taskType);
 			parameters.put(TaskTableFields.RETRY_TIME, retryTime);
 			parameters.put(TaskTableFields.TIME_OUT, timeOut);
-			BusinessModelService businessModelService = mDatabaseServiceFactory.getModelService(bm, runner.getContext());
+			BusinessModelService businessModelService = mDatabaseServiceFactory.getModelService(bm, context);
 			businessModelService.execute(parameters);
+			
 		} finally {
 			if (sqlServiceContext != null)
 				sqlServiceContext.freeConnection();
