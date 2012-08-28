@@ -39,6 +39,9 @@ public class AsyncTask extends AbstractEntry {
 
 	@Override
 	public void run(ProcedureRunner runner) throws Exception {
+		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(runner.getContext(), SqlServiceContext.class); 
+		sqlServiceContext.initConnection(objectRegistry, null);
+		
 		CompositeMap context = (CompositeMap)runner.getContext().clone();
 		String strContext = context.toXML();
 		if (bm == null)
@@ -60,8 +63,6 @@ public class AsyncTask extends AbstractEntry {
 			sql = TextParser.parse(sql, context);
 		}
 //		SqlServiceContext sqlServiceContext = null;
-		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(context, SqlServiceContext.class); 
-		sqlServiceContext.initConnection(objectRegistry, null);
 		try {
 //			sqlServiceContext = mDatabaseServiceFactory.createContextWithConnection();
 			CompositeMap parameters = context.getChild("parameter");
