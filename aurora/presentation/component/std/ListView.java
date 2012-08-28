@@ -45,7 +45,7 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 		StringBuffer sb = new StringBuffer();
 		generateTable(sb,lc);
 		generateHead(sb,lc,session);
-		generateList((CompositeMap)model.getObject(lc.getDataModel()),sb,lc);
+		generateList(model,sb,lc);
 		generateFooter(sb,lc);
 		Writer out = session.getWriter();
 		try {
@@ -95,7 +95,8 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 	}
 	
 	
-	private void generateList(CompositeMap data, StringBuffer sb, ListViewConfig lc) throws ViewCreationException, IOException {
+	private void generateList(CompositeMap model, StringBuffer sb, ListViewConfig lc) throws ViewCreationException, IOException {
+		CompositeMap data = (CompositeMap)model.getObject(lc.getDataModel());
 		sb.append("<TBODY>");
 		List list = null;
 		if(data!= null){
@@ -117,7 +118,7 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 						CompositeMap c = (CompositeMap)cit.next();
 						ListViewColumnConfig column = ListViewColumnConfig.getInstance(c);
 						sb.append("<TD align='").append(column.getAlign()).append("'");
-						sb.append(">").append(processContent(record,c)).append("</TD>");//TODO:process type
+						sb.append(">").append(processContent(model,record,c)).append("</TD>");//TODO:process type
 					}
 					i++;
 					sb.append("</TR>");
@@ -128,7 +129,7 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 		sb.append("</TBODY>");
 	}
 	
-	private String processContent(CompositeMap record,CompositeMap c) throws IOException,ViewCreationException{
+	private String processContent(CompositeMap model,CompositeMap record,CompositeMap c) throws IOException,ViewCreationException{
 		String content = c.getText();
 		if(content != null){
 			Reader reader = null;
@@ -140,6 +141,7 @@ public class ListView extends Component implements IViewBuilder, ISingleton {
 				t = new Template(c.getName(), reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
 				out = new StringWriter();
 				Map p = new HashMap();
+				p.put("model", model);
 				p.put("record", record);
 				t.process(p, out);
 				out.flush();
