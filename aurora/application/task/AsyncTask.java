@@ -3,8 +3,10 @@ package aurora.application.task;
 import java.util.List;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.DynamicObject;
 import uncertain.composite.TextParser;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureConfigManager;
 import uncertain.proc.ProcedureRunner;
@@ -28,8 +30,10 @@ public class AsyncTask extends AbstractEntry {
 	private String sql;
 	private int retryTime;
 	private int timeOut;
+	private IObjectRegistry objectRegistry;
 
-	public AsyncTask(IDatabaseServiceFactory databaseServiceFactory) {
+	public AsyncTask(IObjectRegistry objectRegistry,IDatabaseServiceFactory databaseServiceFactory) {
+		this.objectRegistry = objectRegistry;
 		this.mDatabaseServiceFactory = databaseServiceFactory;
 	}
 
@@ -55,9 +59,11 @@ public class AsyncTask extends AbstractEntry {
 				throw BuiltinExceptionFactory.createAttributeMissing(this, "taskType");
 			sql = TextParser.parse(sql, context);
 		}
-		SqlServiceContext sqlServiceContext = null;
+//		SqlServiceContext sqlServiceContext = null;
+//		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(context, SqlServiceContext.class); 
+//		sqlServiceContext.initConnection(objectRegistry, null);
 		try {
-			sqlServiceContext = mDatabaseServiceFactory.createContextWithConnection();
+//			sqlServiceContext = mDatabaseServiceFactory.createContextWithConnection();
 			CompositeMap parameters = context.getChild("parameter");
 			if(parameters == null){
 				parameters = new CompositeMap("parameter");
@@ -77,8 +83,8 @@ public class AsyncTask extends AbstractEntry {
 			businessModelService.execute(parameters);
 			
 		} finally {
-			if (sqlServiceContext != null)
-				sqlServiceContext.freeConnection();
+//			if (sqlServiceContext != null)
+//				sqlServiceContext.freeConnection();
 		}
 	}
 
