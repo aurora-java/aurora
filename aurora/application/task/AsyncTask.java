@@ -60,8 +60,8 @@ public class AsyncTask extends AbstractEntry {
 			sql = TextParser.parse(sql, context);
 		}
 //		SqlServiceContext sqlServiceContext = null;
-//		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(context, SqlServiceContext.class); 
-//		sqlServiceContext.initConnection(objectRegistry, null);
+		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(context, SqlServiceContext.class); 
+		sqlServiceContext.initConnection(objectRegistry, null);
 		try {
 //			sqlServiceContext = mDatabaseServiceFactory.createContextWithConnection();
 			CompositeMap parameters = context.getChild("parameter");
