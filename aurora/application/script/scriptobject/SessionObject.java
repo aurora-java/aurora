@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.mozilla.javascript.Callable;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -28,15 +30,26 @@ public class SessionObject extends ScriptableObject {
 
 	public SessionObject() {
 		super();
+	}
+
+	public SessionObject(CompositeMap ctx) {
+		super();
 		hso = new HttpSessionOperate();
-		context = ScriptUtil.getContext();
+		context = ctx;
 		sessionMap = context.getChild("session");
 	}
 
+	public static SessionObject jsConstructor(Context cx, Object[] args,
+			Function ctorObj, boolean inNewExpr) {
+		return new SessionObject((CompositeMap) args[0]);
+	}
+
 	private void init() {
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
-				.getInstance(context);
-		request = svc.getRequest();
+		if (request == null) {
+			HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
+					.getInstance(context);
+			request = svc.getRequest();
+		}
 	}
 
 	public CompositeMap getContext() {
@@ -69,13 +82,13 @@ public class SessionObject extends ScriptableObject {
 
 	public void jsFunction_copy() {
 		init();
-		HttpSession ses = request.getSession();
-		if (ses == null)
-			return;
+		HttpSession ses = request.getSession(false);
 		HttpSessionCopy.copySession(context, ses);
 	}
 
 	public void initSession() {
+		if (context == null)
+			return;
 		if (sessionMap == null)
 			sessionMap = context.createChild("session");
 		if (sessionObject == null) {
@@ -103,7 +116,7 @@ public class SessionObject extends ScriptableObject {
 	@Override
 	public boolean has(String name, Scriptable start) {
 		initSession();
-		if (sessionMap.containsKey(name))
+		if (sessionMap != null && sessionMap.containsKey(name))
 			return true;
 		return super.has(name, start);
 	}
@@ -111,7 +124,8 @@ public class SessionObject extends ScriptableObject {
 	@Override
 	public Object get(String name, Scriptable start) {
 		initSession();
-		Object o = sessionObject.get(name, start);
+		Object o = sessionObject == null ? null : sessionObject
+				.get(name, start);
 		if (ScriptUtil.isValid(o))
 			return o;
 		return super.get(name, start);
@@ -120,7 +134,7 @@ public class SessionObject extends ScriptableObject {
 	@Override
 	public void put(String name, Scriptable start, Object value) {
 		initSession();
-		if (!(value instanceof Callable))
+		if (sessionMap != null && !(value instanceof Callable))
 			sessionMap.put(name, value);
 		if (!isSealed())
 			super.put(name, start, value);

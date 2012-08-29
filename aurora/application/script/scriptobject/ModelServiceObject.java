@@ -35,6 +35,10 @@ public class ModelServiceObject extends ScriptableObject {
 
 	public ModelServiceObject() {
 		super();
+	}
+
+	public ModelServiceObject(String model) {
+		super();
 		context = ScriptUtil.getContext();
 		IObjectRegistry registry = ScriptUtil.getObjectRegistry(context);
 		if (registry != null) {
@@ -42,10 +46,6 @@ public class ModelServiceObject extends ScriptableObject {
 					.getInstanceOfType(UncertainEngine.class);
 			svcFactory = new DatabaseServiceFactory(uEngine);
 		}
-	}
-
-	public ModelServiceObject(String model) {
-		this();
 		model = TextParser.parse(model, context);
 		try {
 			service = svcFactory.getModelService(model, context);
@@ -53,6 +53,16 @@ public class ModelServiceObject extends ScriptableObject {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static ModelServiceObject jsConstructor(Context cx, Object[] args,
+			Function ctorObj, boolean inNewExpr) {
+		if (args.length == 0 || args[0] == Context.getUndefinedValue())
+			return new ModelServiceObject();
+		if (args[0] instanceof String) {
+			return new ModelServiceObject((String) args[0]);
+		}
+		return new ModelServiceObject();
 	}
 
 	public Object jsGet_fetchDescriptor() {
@@ -79,16 +89,6 @@ public class ModelServiceObject extends ScriptableObject {
 		o = no.get("fetchAll");
 		fd.setFetchAll(Boolean.TRUE.equals(o));
 		desc = fd;
-	}
-
-	public static ModelServiceObject jsConstructor(Context cx, Object[] args,
-			Function ctorObj, boolean inNewExpr) {
-		if (args.length == 0 || args[0] == Context.getUndefinedValue())
-			return new ModelServiceObject();
-		if (args[0] instanceof String) {
-			return new ModelServiceObject((String) args[0]);
-		}
-		return new ModelServiceObject();
 	}
 
 	private CompositeMap convert(Object obj) {

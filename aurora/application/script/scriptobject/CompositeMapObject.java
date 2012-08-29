@@ -222,6 +222,18 @@ public class CompositeMapObject extends ScriptableObject {
 	}
 
 	/**
+	 * define special property for only this object,(NOT on prototype and its
+	 * java CompositeMap data )<br/>
+	 * e.g. define property for $ctx
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	public void definePrivateProperty(String name, Object value) {
+		super.put(name, this, value);
+	}
+
+	/**
 	 * toString method for java code
 	 */
 	public String toString() {
