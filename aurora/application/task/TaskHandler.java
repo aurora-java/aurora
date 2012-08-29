@@ -322,9 +322,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			String name = "task." + taskId;
 			if (context != null) {
 				context.putObject("/parameter/@task_id", taskId, true);
-				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context,connection);
+				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
+//				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context,connection);
 			} else {
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
+//				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, connection);
 			}
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
