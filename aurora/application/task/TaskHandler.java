@@ -166,12 +166,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 		if (TaskTableFields.JAVA_TYPE.equals(task_type)) {
 			if (proc_file_path != null && !proc_file_path.equals("")) {
-				executeProc(proc_file_path, task_id, context);
+				executeProc(proc_file_path, task_id, context,connection);
 			} else {
 				if (proc_content == null)
 					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + ","
 							+ TaskTableFields.PROC_CONTENT);
-				executeProc(proc_content, task_id, context);
+				executeProc(proc_content, task_id, context,connection);
 			}
 		} else if (TaskTableFields.PROCEDURE_TYPE.equals(task_type)) {
 			if (sql == null || "".equals(sql))
@@ -293,7 +293,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		// }
 	}
 
-	protected void executeProc(String procedure_name, int taskId, CompositeMap context) {
+	protected void executeProc(String procedure_name, int taskId, CompositeMap context,Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_name });
 		Procedure proc = null;
 		try {
@@ -301,10 +301,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(this, procedure_name, ex);
 		}
-		executeProc(taskId, proc, context);
+		executeProc(taskId, proc,context,connection);
 	}
 
-	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context) {
+	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context,Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_config.toXML() });
 		Procedure proc = null;
 		try {
@@ -312,17 +312,17 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(this, String.valueOf(taskId), ex);
 		}
-		executeProc(taskId, proc, context);
+		executeProc(taskId, proc, context,connection);
 	}
 
-	protected void executeProc(int taskId, Procedure proc, CompositeMap context) {
+	protected void executeProc(int taskId, Procedure proc, CompositeMap context,Connection connection) {
 		if (proc == null)
 			throw new IllegalArgumentException("Procedure can not be null!");
 		try {
 			String name = "task." + taskId;
 			if (context != null) {
 				context.putObject("/parameter/@task_id", taskId, true);
-				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
+				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context,connection);
 			} else {
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 			}

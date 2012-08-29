@@ -4,6 +4,9 @@
  */
 package aurora.service;
 
+import java.sql.Connection;
+
+import aurora.database.service.SqlServiceContext;
 import uncertain.composite.CompositeMap;
 import uncertain.proc.Procedure;
 
@@ -37,5 +40,34 @@ public class ServiceInvoker {
             context.clear();
         }
     }
+
+	public static void invokeProcedureWithTransaction(String service_name, Procedure app_proc, IServiceFactory service_factory,
+			CompositeMap context, Connection borrowConnection) throws Exception {
+		ServiceContext scx = ServiceContext.createServiceContext(context);
+		SqlServiceContext ctx = SqlServiceContext.createSqlServiceContext(context);
+		ctx.setConnection(borrowConnection);
+		try {
+			service_factory.beginService(context);
+			IService service = (IService) service_factory.createService(service_name, context);
+			service.invoke(app_proc);
+			service.release();
+		} catch (Exception ex) {
+			scx.setSuccess(false);
+			throw ex;
+		} finally {
+			ctx.getAllConnection().remove(borrowConnection);
+			service_factory.finishService(context);
+		}
+	}
+
+	public static void invokeProcedureWithTransaction(String service_name, Procedure app_proc, IServiceFactory service_factory,
+			Connection borrowConnection) throws Exception {
+		CompositeMap context = new CompositeMap(service_name + "context");
+		try {
+			invokeProcedureWithTransaction(service_name, app_proc, service_factory, context, borrowConnection);
+		} finally {
+			context.clear();
+		}
+	}
 
 }
