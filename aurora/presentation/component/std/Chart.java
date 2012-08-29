@@ -242,6 +242,7 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_AXIS_LABELS = "labels";
 	private static final String PROPERTITY_AXIS_LABELS_ALIGN = "align";
+	private static final String PROPERTITY_AXIS_LABELS_ENABLED = "enabled";
 	private static final String PROPERTITY_AXIS_LABELS_FORMATTER = "formatter";
 	private static final String PROPERTITY_AXIS_LABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_AXIS_LABELS_STAGGERLINES = "staggerLines"; 
@@ -950,6 +951,7 @@ public class Chart extends Component {
 		Map cfg = new HashMap();
 		if(view !=null) {
 			putStringCfg(view,PROPERTITY_AXIS_LABELS_ALIGN,cfg);
+			putBooleanCfg(view,PROPERTITY_AXIS_LABELS_ENABLED,cfg);
 			putFunctionCfg(view,PROPERTITY_AXIS_LABELS_FORMATTER,cfg);
 			putIntCfg(view,PROPERTITY_AXIS_LABELS_ROTATION,cfg);
 			putIntCfg(view,PROPERTITY_AXIS_LABELS_STAGGERLINES,cfg);
