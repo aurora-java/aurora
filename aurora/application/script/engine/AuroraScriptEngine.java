@@ -32,9 +32,12 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 	public static final String KEY_SERVICE_CONTEXT = "service_context";
 	public static final String KEY_SSO = "sso";
 	private static String js = ScriptUtil.loadAuroraCore();
-	private TopLevel scope = null;
+	private static TopLevel topLevel = null;
+	private Scriptable scope = null;
 	static {
 		RhinoException.useMozillaStackStyle(false);
+		initTopLevel(Context.enter());
+		Context.exit();
 		ContextFactory.initGlobal(new ContextFactory() {
 			protected Context makeContext() {
 				Context cx = super.makeContext();
@@ -59,56 +62,54 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 	}
 
 	private void preDefine(Context cx, Scriptable scope) {
-		try {
-			ScriptableObject.defineClass(scope, CompositeMapObject.class);
-			ScriptableObject.defineClass(scope, SessionObject.class);
-			ScriptableObject.defineClass(scope, CookieObject.class);
-			ScriptableObject.defineClass(scope, ModelServiceObject.class);
-			ScriptableObject.defineClass(scope, ActionEntryObject.class);
-			Scriptable ctx = cx.newObject(scope, CompositeMapObject.CLASS_NAME,
-					new Object[] { service_context });
-			ScriptableObject.defineProperty(scope, "$ctx", ctx,
-					ScriptableObject.READONLY);
-			// define property for $ctx
-			definePropertyForCtx(ctx.getPrototype(), cx, service_context);
+		Scriptable ctx = cx.newObject(scope, CompositeMapObject.CLASS_NAME,
+				new Object[] { service_context });
+		ScriptableObject.defineProperty(scope, "$ctx", ctx,
+				ScriptableObject.READONLY);
+		// define property for $ctx
+		definePropertyForCtx((CompositeMapObject) ctx, cx, service_context);
 
-			Scriptable ses = cx.newObject(scope, SessionObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$session", ses,
-					ScriptableObject.READONLY);
-			Scriptable cok = cx.newObject(scope, CookieObject.CLASS_NAME);
-			ScriptableObject.defineProperty(scope, "$cookie", cok,
-					ScriptableObject.READONLY);
-			if (js.length() > 0)
-				cx.evaluateString(scope, js, aurora_core_js, 1, null);
-			// seal all builtin objects,so user can not modify them
-			// for (Object o : new Object[] { ctx, ses, cok }) {
-			// if (o instanceof ScriptableObject) {
-			// ((ScriptableObject) o).sealObject();
-			// }
-			// }
-			this.scope.defineFunctionProperties(new String[] { "print",
-					"println", "raise_app_error", "$instance", "$cache",
-					"$config", "$bm" }, AuroraScriptEngine.class,
-					ScriptableObject.DONTENUM);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		Scriptable ses = cx.newObject(scope, SessionObject.CLASS_NAME,
+				new Object[] { service_context });
+		ScriptableObject.defineProperty(scope, "$session", ses,
+				ScriptableObject.READONLY);
+		Scriptable cok = cx.newObject(scope, CookieObject.CLASS_NAME);
+		ScriptableObject.defineProperty(scope, "$cookie", cok,
+				ScriptableObject.READONLY);
 	}
 
-	private void definePropertyForCtx(Scriptable ctxp, Context cx,
+	private void definePropertyForCtx(CompositeMapObject ctx, Context cx,
 			CompositeMap service_context) {
 		String[] names = { "parameter", "session", "cookie", "model" };
 		for (String s : names) {
 			Object p = service_context.getChild(s);
 			if (p == null)
 				p = service_context.createChild(s);
-			ScriptableObject.defineProperty(ctxp.getPrototype(), s, cx
-					.newObject(ctxp, CompositeMapObject.CLASS_NAME,
-							new Object[] { p }), ScriptableObject.READONLY);
+			ctx.definePrivateProperty(s, cx.newObject(ctx,
+					CompositeMapObject.CLASS_NAME, new Object[] { p }));
+		}
+	}
+
+	private static void initTopLevel(Context cx) {
+		topLevel = new ImporterTopLevel(cx);
+		try {
+			ScriptableObject.defineClass(topLevel, CompositeMapObject.class);
+			ScriptableObject.defineClass(topLevel, SessionObject.class);
+			ScriptableObject.defineClass(topLevel, CookieObject.class);
+			ScriptableObject.defineClass(topLevel, ModelServiceObject.class);
+			ScriptableObject.defineClass(topLevel, ActionEntryObject.class);
+			topLevel.defineFunctionProperties(new String[] { "print",
+					"println", "raise_app_error", "$instance", "$cache",
+					"$config", "$bm" }, AuroraScriptEngine.class,
+					ScriptableObject.DONTENUM);
+			if (js.length() > 0)
+				cx.evaluateString(topLevel, js, aurora_core_js, 1, null);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -119,7 +120,9 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 			cx.putThreadLocal(KEY_SERVICE_CONTEXT, service_context);
 			cx.setOptimizationLevel(optimizeLevel);
 			if (scope == null) {
-				scope = new ImporterTopLevel(cx);
+				scope = cx.newObject(topLevel);
+				scope.setParentScope(null);
+				scope.setPrototype(topLevel);
 				preDefine(cx, scope);
 			}
 			ScriptImportor.organizeUserImport(cx, scope, service_context);
@@ -161,8 +164,8 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		return msg;
 	}
 
-	public static synchronized void print(Context cx, Scriptable thisObj,
-			Object[] args, Function funObj) {
+	public static void print(Context cx, Scriptable thisObj, Object[] args,
+			Function funObj) {
 		for (int i = 0; i < args.length; i++) {
 			if (i > 0)
 				System.out.print(" ");
@@ -172,8 +175,8 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		}
 	}
 
-	public static synchronized void println(Context cx, Scriptable thisObj,
-			Object[] args, Function funObj) {
+	public static void println(Context cx, Scriptable thisObj, Object[] args,
+			Function funObj) {
 		print(cx, thisObj, args, funObj);
 		System.out.println();
 	}
