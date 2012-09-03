@@ -10,6 +10,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.TopLevel;
@@ -102,8 +103,10 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 					"println", "raise_app_error", "$instance", "$cache",
 					"$config", "$bm" }, AuroraScriptEngine.class,
 					ScriptableObject.DONTENUM);
-			if (js.length() > 0)
-				cx.evaluateString(topLevel, js, aurora_core_js, 1, null);
+			Script scr = CompiledScriptCache.getInstance().getScript(js, cx,
+					aurora_core_js);
+			if (scr != null)
+				scr.exec(cx, topLevel);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -113,7 +116,7 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		}
 	}
 
-	public Object eval(String exp) throws ScriptException {
+	public Object eval(String source) throws ScriptException {
 		Object ret = null;
 		Context cx = Context.enter();
 		try {
@@ -126,7 +129,9 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 				preDefine(cx, scope);
 			}
 			ScriptImportor.organizeUserImport(cx, scope, service_context);
-			ret = cx.evaluateString(scope, exp, "<Unknown source>", -1, null);
+			Script scr = CompiledScriptCache.getInstance()
+					.getScript(source, cx);
+			ret = scr == null ? null : scr.exec(cx, scope);
 		} catch (RhinoException re) {
 			if (re.getCause() instanceof InterruptException)
 				throw (InterruptException) re.getCause();
@@ -181,7 +186,7 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		System.out.println();
 	}
 
-	public static synchronized void raise_app_error(String err_code)
+	public static void raise_app_error(String err_code)
 			throws InterruptException {
 		throw new InterruptException(err_code);
 	}

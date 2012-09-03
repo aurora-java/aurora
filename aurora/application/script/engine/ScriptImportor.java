@@ -1,11 +1,9 @@
 package aurora.application.script.engine;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
 import uncertain.composite.CompositeMap;
@@ -46,20 +44,8 @@ public class ScriptImportor {
 	private static void addImport(Context cx, Scriptable scope, File jsFile) {
 		if (jsFile == null || !jsFile.exists() || !jsFile.isFile())
 			return;
-		FileReader fr = null;
-		try {
-			fr = new FileReader(jsFile);
-			cx.evaluateReader(scope, fr, jsFile.getName(), 1, null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (fr != null)
-					fr.close();
-			} catch (IOException e) {
-			}
-		}
+		Script script = CompiledScriptCache.getInstance().getScript(jsFile, cx);
+		if (script != null)
+			script.exec(cx, scope);
 	}
 }
