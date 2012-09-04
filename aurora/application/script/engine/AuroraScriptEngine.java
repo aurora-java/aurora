@@ -19,11 +19,14 @@ import org.mozilla.javascript.Wrapper;
 
 import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
+import uncertain.core.UncertainEngine;
+import uncertain.mbean.MBeanRegister;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.script.scriptobject.ActionEntryObject;
 import aurora.application.script.scriptobject.CompositeMapObject;
 import aurora.application.script.scriptobject.CookieObject;
 import aurora.application.script.scriptobject.ModelServiceObject;
+import aurora.application.script.scriptobject.ScriptShareObject;
 import aurora.application.script.scriptobject.ScriptUtil;
 import aurora.application.script.scriptobject.SessionObject;
 import aurora.service.ServiceInstance;
@@ -32,6 +35,7 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 	public static final String aurora_core_js = "aurora-core.js";
 	public static final String KEY_SERVICE_CONTEXT = "service_context";
 	public static final String KEY_SSO = "sso";
+	private static boolean mbeanregistered = false;
 	private static String js = ScriptUtil.loadAuroraCore();
 	private static TopLevel topLevel = null;
 	private Scriptable scope = null;
@@ -60,6 +64,16 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 			throw new NullPointerException(
 					"init context for 'AuroraScriptEngine' can not be null.");
 		this.service_context = context;
+		if (!mbeanregistered) {
+			mbeanregistered = true;
+			IObjectRegistry or = ((ScriptShareObject) service_context
+					.get(KEY_SSO)).getObjectRegistry();
+			UncertainEngine engine = (UncertainEngine) or
+					.getInstanceOfType(UncertainEngine.class);
+			String mbean_name = engine.getMBeanName("cache", "name=script");
+			MBeanRegister.resiterMBean(mbean_name,
+					CompiledScriptCache.getInstance());
+		}
 	}
 
 	private void preDefine(Context cx, Scriptable scope) {
@@ -207,9 +221,11 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 			Function funObj) {
 		ServiceInstance si = ServiceInstance.getInstance(ScriptUtil
 				.getContext());
-		cx.evaluateString(thisObj,
-				"importClass(Packages.uncertain.composite.CompositeUtil)",
-				"<Import CompositeUtil>", -1, null);
+		Script scr = CompiledScriptCache.getInstance().getScript(
+				"importClass(Packages.uncertain.composite.CompositeUtil)", cx,
+				"<Import CompositeUtil>");
+		if (scr != null)
+			scr.exec(cx, thisObj);
 		return si.getServiceConfigData();
 	}
 

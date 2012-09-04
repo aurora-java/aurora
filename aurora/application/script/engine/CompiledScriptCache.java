@@ -3,7 +3,9 @@ package aurora.application.script.engine;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
@@ -16,20 +18,13 @@ import org.mozilla.javascript.Script;
  * @author jessen
  * 
  */
-public class CompiledScriptCache {
+public class CompiledScriptCache implements CompiledScriptCacheMBean {
 	private static CompiledScriptCache instance = new CompiledScriptCache();
 
-	private ConcurrentHashMap<Key, Script> scriptCache = new ConcurrentHashMap<Key, Script>(
-			256);
-	/**
-	 * The script file cache with timestamp, so if a script file is modified, it
-	 * will be replaced when next access
-	 */
-	private ConcurrentHashMap<Key, Object[]> libScriptCache = new ConcurrentHashMap<Key, Object[]>(
+	private ConcurrentHashMap<Key, Value> scriptCache = new ConcurrentHashMap<Key, Value>(
 			256);
 
 	private CompiledScriptCache() {
-
 	}
 
 	public static CompiledScriptCache getInstance() {
@@ -48,12 +43,15 @@ public class CompiledScriptCache {
 	public synchronized Script getScript(String source, Context cx,
 			String sourceName) {
 		Key k = new Key(source, cx.getOptimizationLevel());
-		Script s = scriptCache.get(k);
-		if (s == null) {
-			s = cx.compileString(source, sourceName, 0, null);
-			scriptCache.put(k, s);
+		Value v = scriptCache.get(k);
+		if (v == null) {
+			v = new Value(cx.compileString(source, sourceName, 0, null));
+			scriptCache.put(k, v);
+		} else {
+			v.lastUseTime = System.currentTimeMillis();
+			v.hits.incrementAndGet();
 		}
-		return s;
+		return v.script;
 	}
 
 	/**
@@ -77,16 +75,14 @@ public class CompiledScriptCache {
 	 */
 	public synchronized Script getScript(File file, Context cx) {
 		Key k = new Key(file, cx.getOptimizationLevel());
-		Object[] objs = libScriptCache.get(k);
-		Script script = null;
-		if (objs != null && k.lastModif == (Long) objs[1])
-			script = (Script) objs[0];
-		if (script == null) {
+		Value v = scriptCache.get(k);
+		if (v == null || k.lastModif != v.lastModif) {
 			FileReader fr = null;
 			try {
 				fr = new FileReader(file);
-				script = cx.compileReader(fr, file.getName(), 0, null);
-				libScriptCache.put(k, new Object[] { script, k.lastModif });
+				v = new Value(cx.compileReader(fr, file.getName(), 0, null),
+						k.lastModif);
+				scriptCache.put(k, v);
 			} catch (Exception e) {
 				return null;
 			} finally {
@@ -96,8 +92,11 @@ public class CompiledScriptCache {
 					} catch (IOException e) {
 					}
 			}
+		} else {
+			v.lastUseTime = System.currentTimeMillis();
+			v.hits.incrementAndGet();
 		}
-		return script;
+		return v.script;
 	}
 
 	static class Key {
@@ -139,6 +138,48 @@ public class CompiledScriptCache {
 				return o2 == null;
 			return o1.equals(o2);
 		}
+
+	}
+
+	static class Value {
+		Script script;
+		long lastModif;// only for file
+		long compiledTime;
+		long lastUseTime;
+		AtomicInteger hits = new AtomicInteger(0);
+
+		Value(Script scr) {
+			this.script = scr;
+			this.compiledTime = System.currentTimeMillis();
+		}
+
+		Value(Script scr, long lastModif) {
+			this(scr);
+			this.lastModif = lastModif;
+		}
+	}
+
+	@Override
+	public int getScriptSize() {
+		return scriptCache.size();
+	}
+
+	@Override
+	public void clearScriptCache() {
+		scriptCache.clear();
+	}
+
+	@Override
+	public String getScriptDetail(int idx) {
+		if (idx < 0 || idx >= scriptCache.size())
+			return "Index outof bounds";
+		Key k = (Key) scriptCache.keySet().toArray()[idx];
+		Value v = scriptCache.get(k);
+		return String
+				.format("compiled script object:%s\ncompiled at:%s\nlast use at:%s\nhits:%d\nsource detail:\n%s",
+						v.script, new Date(v.compiledTime), new Date(
+								v.lastUseTime), v.hits.intValue(),
+						k.source == null ? k.file : k.source);
 
 	}
 }
