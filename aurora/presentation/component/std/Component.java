@@ -332,7 +332,10 @@ public class Component {
 				String mt = record.getString(CustomSourceCode.KEY_MOD_TYPE);
 				String ak = record.getString(CustomSourceCode.KEY_ATTRIB_KEY);
 				String av = record.getString(CustomSourceCode.KEY_ATTRIB_VALUE);
-				if("set_attrib".equals(mt) && id.equals(fid)&&"hidden".equals(ak)&&"true".equals(av)){
+				String an = record.getString(CustomSourceCode.KEY_ARRAY_NAME);
+				String idf = record.getString(CustomSourceCode.KEY_INDEX_FIELD);
+				String idv = record.getString(CustomSourceCode.KEY_INDEX_VALUE);
+				if("set_attrib".equals(mt) && id.equals(fid)&&"hidden".equals(ak)&&"true".equals(av)&&an==null&&idf==null&&idv==null){
 					return true;
 				}
 			}
