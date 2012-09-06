@@ -117,6 +117,7 @@
             <ss:attributes>
                 <ss:attribute name="exp" document="script表达式\n一般只用于很简单的语句,复杂语句块请用CDATA段"/>
                 <ss:attribute name="import" document="导入外部js文件,&apos;;&apos;分隔多个\n&apos;/&apos;开头表示相对于标准路径(WEB-INF/server-script)\n否则,相对于当前文件路径"/>
+                <ss:attribute name="optimizeLevel" document="脚本优化级别\n可选值:整数 -1..9\n默认值-1"/>
             </ss:attributes>
         </ss:element>
     </ss:elements>
