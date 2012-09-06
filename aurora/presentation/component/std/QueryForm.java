@@ -18,6 +18,7 @@ import aurora.presentation.component.std.config.FormConfig;
 public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String DEFAULT_TABLE_CLASS = "layout-table";
 	private static final String DEFAULT_WRAP_CLASS = "form_body_wrap";
+	private static final String DEFAULT_HEAD_CLASS = "form_head";
 	private static final String FORM_HEAD = "formHead";
 	private static final String FORM_BODY = "formBody";
 	
@@ -48,6 +49,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		int height = getComponentHeight(model, view, map).intValue();
 		
 		String className = DEFAULT_TABLE_CLASS + " layout-form layout-title " + cls;
+		String title = session.getLocalizedPrompt(view.getString(FormConfig.PROPERTITY_TITLE, ""));
+		
 		Writer out = session.getWriter();
 		try{
 			out.write("<table cellspacing='0' cellpadding='0' class='"+className+"' id='"+id+"'");
@@ -57,7 +60,13 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			}
 			out.write(">");
 			CompositeMap formHead = view.getChild(FORM_HEAD);
-			out.write("<thead><tr><th>");
+			out.write("<thead>");
+			if(!"".equals(title)) {
+				out.write("<tr><th class='"+DEFAULT_HEAD_CLASS+"'>");
+				out.write(title);
+				out.write("</th></tr>");
+			}
+			out.write("<tr><th>");
 			if(null!=formHead){
 				Iterator it = formHead.getChildIterator();
 				if(null !=it){
