@@ -138,6 +138,9 @@
 			<u:implement-types>
 				<u:type typeName="aurora.application.task.excel.IExcelTask" />
 			</u:implement-types>
-		</u:configurable-instance>						
+		</u:configurable-instance>
+		<u:configurable-instance configFile="compiled-script-cache.config" >
+            <u:description>编译script缓存配置</u:description>
+        </u:configurable-instance>						
 	</u:instances>
 </u:instance-config>
