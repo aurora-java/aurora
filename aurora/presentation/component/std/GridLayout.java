@@ -223,8 +223,11 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 				}
 			}
 			buildBottom(session, model, view);
+			out.flush();
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
+		} finally {
+			out.close();
 		}
 //		addBoxScript(id, session, view);
 	}

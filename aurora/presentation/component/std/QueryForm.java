@@ -95,8 +95,11 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			out.write("<script>");
 			out.write("new $A.QueryForm({id:'"+id+"',isopen:"+open+"})");
 			out.write("</script>");
+			out.flush();
 		}catch (Exception e) {
 			throw new ViewCreationException(e);
+		}finally {
+			out.close();
 		}
 	}
 
