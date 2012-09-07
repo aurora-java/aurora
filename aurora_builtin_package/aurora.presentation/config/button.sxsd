@@ -10,7 +10,7 @@
                 <ss:attribute name="text" document="按钮的文本" type="bm:Prompts" />
                 <ss:attribute name="click" document="按钮的点击事件" type="ss:string"/>
                 <ss:attribute name="icon" document="按钮的图片"/>
-                <ss:attribute name="title" document="按钮的提示信息"/>
+                <ss:attribute name="title" document="按钮的提示信息" type="bm:Prompts"/>
                 <ss:attribute name="disabled" default="true" document="按钮的可用状态" type="ss:boolean"/>
                 <ss:attribute name="type" document="预定义功能类型\nadd|save|delete|clear"/>
                 <!--add by shengbo.huang @2011/11/3-->

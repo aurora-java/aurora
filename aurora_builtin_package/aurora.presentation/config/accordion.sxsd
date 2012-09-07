@@ -16,7 +16,7 @@
         </ss:element>
         <ss:element name="a:accordion" document="AccordionPanel组件的accordion页">
             <ss:attributes>
-                <ss:attribute name="prompt" document="accordion的prompt" use="required"/>
+                <ss:attribute name="prompt" document="accordion的prompt" use="required" type="bm:Prompts"/>
                 <ss:attribute name="ref" document="accordion的引用screen" type="a:URLReference"/>
                 <ss:attribute name="selected" default="false" document="accordion页是否展开" type="ss:boolean"/>
             </ss:attributes>

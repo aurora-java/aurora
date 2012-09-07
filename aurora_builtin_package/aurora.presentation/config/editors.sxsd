@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
     <ss:elements>
         <ss:element name="a:textField" document="文本输入框">
@@ -145,7 +145,7 @@
                 <ss:attribute name="lovLabelWidth" document="lov弹出窗口查询条件字段描述的宽度" type="ss:int"/>
                 <ss:attribute name="lovAutoQuery" default="true" document="Lov窗口是否自动查询" type="ss:boolean"/>
                 <ss:attribute name="lovUrl" document="自定义URL"/>
-                <ss:attribute name="title" document="Lov弹出窗口的title"/>
+                <ss:attribute name="title" document="Lov弹出窗口的title" type="bm:Prompts"/>
                 <ss:attribute name="autoCompleteRenderer" document="autoComplete的渲染函数"/>
             </ss:attributes>
         </ss:element>
@@ -191,7 +191,7 @@
             <ss:attributes>
                 <ss:attribute name="column" document="列数" type="ss:int"/>
                 <ss:attribute name="model" document="指定model"/>
-                <ss:attribute name="title" document="标题"/>
+                <ss:attribute name="title" document="标题" type="bm:Prompts"/>
                 <ss:attribute name="labelWidth" document="prompt的宽度" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>
