@@ -31,6 +31,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected static final String PROPERTITY_CELLSPACING = "cellspacing";
 	protected static final String PROPERTITY_VALIDALIGN = "validalign";
 	protected static final String PROPERTITY_PADDING = "padding";
+	protected static final String PROPERTITY_WRAPPER_ADJUST = "wrapperadjust";
 	
 	protected static final String TITLE_CLASS = "layout-title";
 	protected static final String DEFAULT_TABLE_CLASS = "layout-table";
@@ -60,14 +61,20 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		if(isHidden(field, model)) return;
 		Writer out = session.getWriter();
 		int padding = view.getInt(PROPERTITY_PADDING, 3);
+		String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
+		boolean wrapperAdjust= view.getBoolean(PROPERTITY_WRAPPER_ADJUST,false);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
+		beforeBuildCell(session, model, view, field);
+		out.write("<td class='");
 		if(builder instanceof GridLayout){
-			beforeBuildCell(session, model, view, field);
-			out.write("<td class='"+DEFAULT_TD_CONTAINER+"' style='padding:"+padding+"px'>");
+			out.write(DEFAULT_TD_CONTAINER);
 		} else{
-			beforeBuildCell(session, model, view, field);
-			out.write("<td class='"+DEFAULT_TD_CELL +"' style='padding:"+padding+"px'>");
+			out.write(DEFAULT_TD_CELL);
 		}
+		if(wrapperAdjust && null!=width){
+			out.write("' width='"+width);
+		}
+		out.write("' style='padding:"+padding+"px'>");
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			
 //			addInvalidMsg(field, out);

@@ -11,7 +11,6 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FormConfig;
 
@@ -71,6 +70,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				Iterator it = formHead.getChildIterator();
 				if(null !=it){
 					formHead.setName("hBox");
+					formHead.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
 					CompositeMap btn = formHead.getChild("expandButton");
 					if(null != btn){
 						btn.setName("button");
