@@ -22,7 +22,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String FORM_HEAD = "formHead";
 	private static final String FORM_BODY = "formBody";
 	
-	private static final String PROPERTITY_OPEN = "open";
+	private static final String PROPERTITY_EXPAND = "expand";
 	
 	protected int getDefaultWidth(){
 		return 0;
@@ -44,7 +44,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		}
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-		boolean open = view.getBoolean(PROPERTITY_OPEN, true);
+		boolean open = view.getBoolean(PROPERTITY_EXPAND, true);
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 		
@@ -71,6 +71,11 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				Iterator it = formHead.getChildIterator();
 				if(null !=it){
 					formHead.setName("hBox");
+					CompositeMap btn = formHead.getChild("expandButton");
+					if(null != btn){
+						btn.setName("button");
+						btn.put("click", "function(){$('"+id+"').trigger()}");
+					}
 					session.buildView(model, formHead);
 				}
 			}
