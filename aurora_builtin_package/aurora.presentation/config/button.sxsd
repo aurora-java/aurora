@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
     <ss:attributes/>
     <ss:elements>
         <ss:element name="a:button" document="按钮组件">
@@ -7,7 +7,7 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="text" document="按钮的文本" type="ss:string"/>
+                <ss:attribute name="text" document="按钮的文本" type="bm:Prompts" />
                 <ss:attribute name="click" document="按钮的点击事件" type="ss:string"/>
                 <ss:attribute name="icon" document="按钮的图片"/>
                 <ss:attribute name="title" document="按钮的提示信息"/>

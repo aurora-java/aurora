@@ -135,7 +135,7 @@
                 <ss:attribute name="options" document="ComboBox的options,对应DataSet的id" type="a:DataSetReference"/>
                 <ss:attribute name="displayField" document="ComboBox的displayField"/>
                 <ss:attribute name="valueField" document="ComboBox的valueField"/>
-                <ss:attribute name="prompt" document="field的prompt"/>
+                <ss:attribute name="prompt" document="field的prompt" type="bm:Prompts"/>
                 <ss:attribute name="title" document="Lov弹出窗口的title"/>
                 <ss:attribute name="lovService" document="Lov对应的model" type="bm:ModelReference"/>
                 <ss:attribute name="lovWidth" document="lov弹出窗口的宽度" type="ss:int"/>

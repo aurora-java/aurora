@@ -31,6 +31,8 @@
         <ss:simpleType name="bm:ModelReference" base="ss:string" document="对其他BM的引用" editor="bm:ModelReferenceEditor" referenceType="bm:model"/>
         <ss:simpleType name="bm:LocalFieldReference" base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor" referenceType="bm:localField"/>
         <ss:simpleType name="bm:ForeignFieldReference" base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor" referenceType="bm:foreignField"/>
+        <ss:simpleType name="bm:Prompts" base="ss:string" document="对应字段的prompt" />
+       
         <ss:complexType name="bm:AbstractOperation">
             <ss:attributes>
                 <ss:attribute name="name" use="required"/>
@@ -42,7 +44,7 @@
             <ss:attributes>
                 <ss:attribute name="name" document="字段的名称" type="bm:LocalFieldReference" use="required"/>
                 <ss:attribute name="datatype" default="string" document="数据类型"/>
-                <ss:attribute name="prompt" document="字段描述"/>
+                <ss:attribute name="prompt" document="字段描述" type="bm:Prompts"/>
                 <ss:attribute name="physicalName" document="对应的数据库字段名称"/>
                 <ss:attribute name="databaseType" document="对应的数据库的数据类型"/>
                 <ss:attribute name="required" document="是否必须" type="ss:boolean"/>
