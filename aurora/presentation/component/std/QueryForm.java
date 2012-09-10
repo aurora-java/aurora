@@ -43,7 +43,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		}
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-		boolean open = view.getBoolean(PROPERTITY_EXPAND, true);
+		boolean open = view.getBoolean(PROPERTITY_EXPAND, false);
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 		
