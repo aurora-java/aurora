@@ -2,13 +2,10 @@ package aurora.application.script.engine;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.script.ScriptException;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
@@ -130,7 +127,7 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		}
 	}
 
-	public Object eval(String source) throws ScriptException {
+	public Object eval(String source) throws Exception {
 		Object ret = null;
 		Context cx = Context.enter();
 		try {
@@ -149,19 +146,7 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		} catch (RhinoException re) {
 			if (re.getCause() instanceof InterruptException)
 				throw (InterruptException) re.getCause();
-			int line = (line = re.lineNumber()) == 0 ? -1 : line;
-			String msg;
-			if (re instanceof JavaScriptException) {
-				msg = String.valueOf(((JavaScriptException) re).getValue());
-			} else {
-				msg = re.toString();
-			}
-			msg = formatExceptionMessage(msg);
-			ScriptException se = new ScriptException(msg, re.sourceName(), line);
-			se.initCause(re);
-			throw se;
-		} catch (Exception e2) {
-			throw new ScriptException(e2);
+			throw re;
 		} finally {
 			Context.exit();
 		}
@@ -171,16 +156,6 @@ public class AuroraScriptEngine /* extends RhinoScriptEngine */{
 		} else if (ret instanceof Undefined)
 			ret = null;
 		return ret;
-	}
-
-	private String formatExceptionMessage(String msg) {
-		int idx = msg.indexOf(':');
-		if (idx == -1)
-			return msg;
-		String s = msg.substring(0, idx);
-		if (s.indexOf("mozilla") != -1)
-			return msg.substring(idx + 1);
-		return msg;
 	}
 
 	public static void print(Context cx, Scriptable thisObj, Object[] args,

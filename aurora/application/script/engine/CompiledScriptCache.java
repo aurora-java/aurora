@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Script;
 
 /**
@@ -59,7 +60,7 @@ public class CompiledScriptCache implements CompiledScriptCacheMBean {
 		Key k = new Key(source, cx.getOptimizationLevel());
 		Value v = scriptCache.get(k);
 		if (v == null) {
-			v = new Value(cx.compileString(source, sourceName, 0, null));
+			v = new Value(cx.compileString(source, sourceName, 1, null));
 			autoClear();
 			synchronized (scriptCache) {
 				scriptCache.put(k, v);
@@ -97,10 +98,12 @@ public class CompiledScriptCache implements CompiledScriptCacheMBean {
 			FileReader fr = null;
 			try {
 				fr = new FileReader(file);
-				v = new Value(cx.compileReader(fr, file.getName(), 0, null),
+				v = new Value(cx.compileReader(fr, file.getName(), 1, null),
 						k.lastModif);
+			} catch (RhinoException re) {
+				throw re;
 			} catch (Exception e) {
-				return null;
+				throw new RuntimeException(e);
 			} finally {
 				if (fr != null)
 					try {

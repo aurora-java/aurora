@@ -42,8 +42,6 @@ public class ScriptImportor {
 	}
 
 	private static void addImport(Context cx, Scriptable scope, File jsFile) {
-		if (jsFile == null || !jsFile.exists() || !jsFile.isFile())
-			return;
 		Script script = CompiledScriptCache.getInstance().getScript(jsFile, cx);
 		if (script != null)
 			script.exec(cx, scope);

@@ -1,7 +1,5 @@
 package aurora.application.script.engine;
 
-import javax.script.ScriptException;
-
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
@@ -55,7 +53,7 @@ public class ScriptRunner {
 		return TextParser.parse(exp, context);
 	}
 
-	public Object run() throws ScriptException {
+	public Object run() throws Exception {
 		AuroraScriptEngine engine = sso.getEngine();
 		if (engine == null) {
 			engine = new AuroraScriptEngine(context);

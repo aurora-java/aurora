@@ -2,6 +2,8 @@ package aurora.application.action;
 
 import javax.script.ScriptException;
 
+import org.mozilla.javascript.RhinoException;
+
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
@@ -57,7 +59,7 @@ public class ServerScript extends AbstractEntry {
 	}
 
 	@Override
-	public void run(ProcedureRunner runner) {
+	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
 		if (exp == null)
 			exp = cdata;
@@ -71,17 +73,20 @@ public class ServerScript extends AbstractEntry {
 				context.putObject(resultpath, res, true);
 		} catch (InterruptException ie) {
 			ActionUtil.raiseApplicationError(runner, registry, ie.getMessage());
-		} catch (ScriptException e) {
+		} catch (RhinoException re) {
+			String srcName = re.sourceName();
+			int line = re.lineNumber();
+			if ("<Unknown source>".equals(srcName))
+				line += lineno - 1;
 			StringBuilder sb = new StringBuilder(500);
-			sb.append("ScriptException\n");
-			sb.append("source:" + source + "\n");
-			sb.append("line :" + (lineno + e.getLineNumber() - 1) + "\n");
-			sb.append(e.getMessage() + "\n");
-			throw new RuntimeException(sb.toString());
-		} catch (Exception e1) {
-			throw new RuntimeException(e1);
+			sb.append("\n");
+			sb.append("source  : " + source + " --> " + srcName + "\n");
+			sb.append("lineno  : " + line + "\n");
+			sb.append("line src: " + re.lineSource() + "\n");
+			sb.append("message : " + re.getMessage() + "\n");
+			// e.printStackTrace();
+			throw new ScriptException(sb.toString());
 		}
-
 	}
 
 	@Override
