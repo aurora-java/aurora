@@ -28,7 +28,7 @@ public class CompositeMapObject extends ScriptableObject {
 
 	public CompositeMapObject(String name) {
 		this();
-		jsSet_name(name);
+		data.setName(name);
 	}
 
 	public CompositeMapObject(CompositeMap data) {
@@ -51,9 +51,25 @@ public class CompositeMapObject extends ScriptableObject {
 		if (args[0] instanceof CompositeMap)// init data
 											// with argument
 			return new CompositeMapObject((CompositeMap) args[0]);
-		else if (args[0] instanceof String)// compositemap name
-			return new CompositeMapObject((String) args[0]);
-		else if (args[0] instanceof CompositeMapObject)// new copy of data
+		else if (args[0] instanceof String) {
+			if (args.length == 1)// compositemap name
+				return new CompositeMapObject((String) args[0]);
+			if (args.length == 2 && (args[1] instanceof String)) {
+				// compositemap prefix and name
+				CompositeMapObject cmo = new CompositeMapObject(
+						(String) args[1]);
+				cmo.data.setPrefix((String) args[0]);
+				return cmo;
+			}
+			if (args.length == 3 && (args[1] instanceof String)
+					&& (args[2] instanceof String)) {
+				// compositemap prefix ,namespace uri and name
+				CompositeMapObject cmo = new CompositeMapObject(
+						(String) args[2]);
+				cmo.data.setNameSpace((String) args[0], (String) args[1]);
+				return cmo;
+			}
+		} else if (args[0] instanceof CompositeMapObject)// new copy of data
 			return new CompositeMapObject(
 					(CompositeMap) (((CompositeMapObject) args[0]).getData()
 							.clone()));
@@ -63,14 +79,6 @@ public class CompositeMapObject extends ScriptableObject {
 					inNewExpr);
 		}
 		return new CompositeMapObject();// unknown arguments
-	}
-
-	public String jsGet_name() {
-		return data.getName();
-	}
-
-	public void jsSet_name(String name) {
-		data.setName(name);
 	}
 
 	public CompositeMap getData() {
@@ -112,6 +120,22 @@ public class CompositeMapObject extends ScriptableObject {
 			arr.put(i, arr, m);
 		}
 		return arr;
+	}
+
+	public String jsFunction_getPrefix() {
+		return data.getPrefix();
+	}
+
+	public void jsFunction_setPrefix(String p) {
+		data.setPrefix(p);
+	}
+
+	public String jsFunction_getNamespaceURI() {
+		return data.getNamespaceURI();
+	}
+
+	public void jsFunction_setNameSpaceURI(String uri) {
+		data.setNameSpaceURI(uri);
 	}
 
 	public NativeArray jsFunction_getChildren() {
