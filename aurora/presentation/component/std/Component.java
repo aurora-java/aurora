@@ -86,7 +86,7 @@ public class Component {
 		Integer marginWidth = view.getInt(PROPERTITY_MARGIN_WIDTH);
 		if (marginWidth != null && vw != null) {
 			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
-			//TIP:非标准做法,中集特殊要求！
+			//非标准做法,中集特殊要求！
 			//width = new Integer((vw.intValue() - marginWidth.intValue()) < width.intValue() ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
 			addConfig(PROPERTITY_MARGIN_WIDTH, marginWidth);
 		}
