@@ -61,8 +61,6 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		if(isHidden(field, model)) return;
 		Writer out = session.getWriter();
 		int padding = view.getInt(PROPERTITY_PADDING, 3);
-		String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
-		boolean wrapperAdjust= view.getBoolean(PROPERTITY_WRAPPER_ADJUST,false);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
@@ -71,8 +69,20 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		} else{
 			out.write(DEFAULT_TD_CELL);
 		}
-		if(wrapperAdjust && null!=width){
-			out.write("' width='"+width);
+		if(view.getBoolean(PROPERTITY_WRAPPER_ADJUST,true)){
+			String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
+//			if(null == width){
+//				try{
+//					Class kls = (Class) session.getCurrentPackage().getClassRegistry().getFeatures(field).get(0);
+//					width = Component.class.getDeclaredMethod("getDefaultWidth").invoke(kls.newInstance()).toString();
+//				}catch (Exception e) {
+//				}
+//			}
+			if(null!=width 
+//					&& Integer.parseInt(width)>0
+			){
+				out.write("' width='"+width);
+			}
 		}
 		out.write("' style='padding:"+padding+"px'>");
 		session.buildView(model, field);
