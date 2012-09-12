@@ -29,6 +29,7 @@
                 <!--add by shengbo.huang @2011/11/3-->
                 <ss:attribute name="showBorder" document="是否显示边框" type="ss:boolean"/>
                 <!--end-->
+                <ss:attribute name="wrapperAdjust" default="true" document="当控件设置了width时，cell宽度自适应控件" type="ss:boolean"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
@@ -98,17 +99,17 @@
     		<ss:elements>
                 <ss:element ref="a:formButton"/>
             </ss:elements>
-        <ss:element>
+        </ss:element>
         <ss:element name="a:formBody" document="queryForm体部">
         	<ss:extensions>
         		<ss:extension base="a:box"/>
     		</ss:extensions>
-        <ss:element>
+        </ss:element>
         <ss:element name="a:formButton" document="queryForm按钮，用于展开和关闭queryForm体部">
         	<ss:extensions>
         		<ss:extension base="a:button"/>
     		</ss:extensions>
-        <ss:element>
+        </ss:element>
         <ss:element name="a:fieldSet">
             <ss:extensions>
                 <ss:extension base="a:box"/>
