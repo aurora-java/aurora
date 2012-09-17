@@ -97,5 +97,13 @@ public class Relation extends DynamicObject {
         }
         return refs;
     }
+    
+    public boolean isNeedDatabaseJoin(){
+        return getBoolean(BusinessModel.KEY_NEED_DATABASE_JOIN, true);
+    }
+    
+    public void setNeedDatabaseJoin(boolean b){
+        putBoolean(BusinessModel.KEY_NEED_DATABASE_JOIN,b);
+    }
 
 }

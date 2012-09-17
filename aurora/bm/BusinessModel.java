@@ -3,6 +3,7 @@
  */
 package aurora.bm;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,10 +13,10 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
-import uncertain.core.ConfigurationError;
 import uncertain.datatype.DataType;
 import uncertain.datatype.DataTypeRegistry;
 import uncertain.exception.BuiltinExceptionFactory;
+import uncertain.exception.GeneralException;
 import uncertain.ocm.OCManager;
 import aurora.application.AuroraApplication;
 import aurora.database.profile.IDatabaseFactory;
@@ -85,6 +86,12 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     public static final String KEY_MAX_PAGE_SIZE = "maxpagesize";
     
     public static final String KEY_COUNT_SQL="count-sql";
+    
+    public static final String KEY_USE_CACHE_JOIN = "usecachejoin";
+    
+    public static final String KEY_HAS_CACHE_JOIN_FIELDS = "hascachejoinfields";
+    
+    public static final String KEY_NEED_DATABASE_JOIN = "_needdatabasejoin";
 
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -470,10 +477,38 @@ public class BusinessModel extends DynamicObject implements Cloneable {
         while(it.hasNext()){
             CompositeMap relation_map = (CompositeMap)it.next();
             Relation relation = Relation.getInstance(relation_map);
+            // check if has cache join
+            try{
+                BusinessModel model = modelFactory.getModel(relation.getReferenceModel());
+                if(model.getUseCacheJoin()){
+                    relation.setNeedDatabaseJoin(false);
+                }
+            }catch(IOException ex){
+                throw new GeneralException("aurora.bm.error_loading_bm",new Object[]{relation.getReferenceModel()},relation_map.asLocatable());
+            }
             String name = relation.getName().toLowerCase();
             relationMap.put(name, relation);
             relationArray[n++] = relation;
-        }        
+        }
+        // scan fields, and mark field that ref to a BM using cache join to be not for select
+        for( Field fld: fieldsArray){
+            if(fld.isReferenceField())
+            {
+                String model = null;
+                try{
+                    model = fld.getReferredModelName();
+                    BusinessModel md = modelFactory.getModel(model);
+                    if(md.getUseCacheJoin()){
+                        setHasCacheJoinFields(true);
+                        fld.setForSelect(false);
+                        fld.setCacheJoinField(true);
+                    }
+                }catch(IOException ex){
+                    throw new GeneralException("aurora.bm.error_loading_bm",new Object[]{model},fld.getObjectContext().asLocatable());
+                }
+            }
+        }
+
     }
     
     public Relation getRelation(String name){
@@ -811,5 +846,21 @@ public class BusinessModel extends DynamicObject implements Cloneable {
     
     public CompositeMap getCountSql(){
     	return getObjectContext().getChild(KEY_COUNT_SQL);
+    }
+    
+    public boolean getUseCacheJoin(){
+        return getBoolean(KEY_USE_CACHE_JOIN, false);
+    }
+    
+    public void setUseCacheJoin( boolean b){
+        putBoolean(KEY_USE_CACHE_JOIN, b);
+    }
+    
+    public boolean hasCacheJoinFields(){
+        return getBoolean(KEY_HAS_CACHE_JOIN_FIELDS,false);
+    }
+    
+    public void setHasCacheJoinFields(boolean b){
+        putBoolean(KEY_HAS_CACHE_JOIN_FIELDS, b);
     }
 }

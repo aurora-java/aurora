@@ -15,6 +15,7 @@ import aurora.service.validation.IParameter;
 
 public class Field extends DynamicObject implements IParameter {
     
+    public static final String KEY_IS_CACHE_JOIN_FIELD = "_iscachejoinfield";
     public static final String KEY_RELATION_NAME = "relationname";
     public static final String KEY_SOURCE_MODEL = "sourcemodel";
     public static final String KEY_SOURCE_FIELD = "sourcefield";
@@ -450,6 +451,15 @@ public class Field extends DynamicObject implements IParameter {
             getReferredField();
         }
     }
+    
+    public boolean isCacheJoinField(){
+        return getBoolean(KEY_IS_CACHE_JOIN_FIELD, false);
+    }
+    
+    public void setCacheJoinField(boolean b){
+        putBoolean(KEY_IS_CACHE_JOIN_FIELD,b);
+    }
+
     
     
 

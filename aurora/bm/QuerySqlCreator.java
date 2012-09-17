@@ -81,6 +81,10 @@ public class QuerySqlCreator extends AbstractSqlCreator {
                                         + "' in model config for field "
                                         + f.getObjectContext().toXML());
                 }
+                // check if relation needs database join
+                if(!relation.isNeedDatabaseJoin())
+                    continue;
+                
                 if (!ref_map.containsKey(key)) {
                     ref_map.put(key, relation);
                     need_create_join = true;
