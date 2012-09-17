@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.util.template.TextTemplate;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
 /**
@@ -33,4 +35,16 @@ public class TextField extends InputField {
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		map.put(CONFIG, getConfigString());
 	}
+	
+	
+
+	public void onLoadTemplate(BuildSession session, ViewContext view_context ) throws IOException{
+	     CompositeMap view = view_context.getView();
+	     if(view.getBoolean("round", false)){
+	          TextTemplate template = session.getTemplateByName("toundTextField.tplt");
+	          view_context.setTemplate(template);
+	     }
+	}
+
+	
 }
