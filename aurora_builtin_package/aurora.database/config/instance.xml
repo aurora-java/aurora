@@ -34,5 +34,16 @@
 			</u:implement-types>
 		</u:configurable-instance>
 
+		<u:configurable-instance configFile="bm-data-cache.config">
+			<u:description>提供BM的数据缓存管理</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.bm.ICachedDataProvider" />
+			</u:implement-types>
+		</u:configurable-instance>		
+
 	</u:instances>
 </u:instance-config>
