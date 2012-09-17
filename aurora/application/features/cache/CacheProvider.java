@@ -93,18 +93,21 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			reloadMessage = cacheName + "_reload";
 		}
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
-		if (stub == null)
+		
+		if (eventHandlers!=null && stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
-		if (!stub.isStarted())
-			logger.warning("JMS MessageStub is not started, please check the configuration.");
-		IConsumer consumer = stub.getConsumer(reloadTopic);
-		if (consumer == null) {
-			throw new IllegalStateException("MessageStub does not define the reloadTopic '" + reloadTopic
-					+ "', please check the configuration.");
+		if (stub!=null){
+		    if(!stub.isStarted())
+		        logger.warning("JMS MessageStub is not started, please check the configuration.");
+    		IConsumer consumer = stub.getConsumer(reloadTopic);
+    		if (consumer == null) {
+    			throw new IllegalStateException("MessageStub does not define the reloadTopic '" + reloadTopic
+    					+ "', please check the configuration.");
+    		}
+    		if (!(consumer instanceof INoticerConsumer))
+    			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
+    		((INoticerConsumer) consumer).addListener(reloadMessage, this);
 		}
-		if (!(consumer instanceof INoticerConsumer))
-			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
-		((INoticerConsumer) consumer).addListener(reloadMessage, this);
 		CacheProviderRegistry.put(cacheName, this);
 		if (eventHandlers != null) {
 			for (int i = 0; i < eventHandlers.length; i++) {
