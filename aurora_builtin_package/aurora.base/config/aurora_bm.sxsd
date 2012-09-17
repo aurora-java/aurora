@@ -31,8 +31,7 @@
         <ss:simpleType name="bm:ModelReference" base="ss:string" document="对其他BM的引用" editor="bm:ModelReferenceEditor" referenceType="bm:model"/>
         <ss:simpleType name="bm:LocalFieldReference" base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor" referenceType="bm:localField"/>
         <ss:simpleType name="bm:ForeignFieldReference" base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor" referenceType="bm:foreignField"/>
-        <ss:simpleType name="bm:Prompts" base="ss:string" document="对应字段的prompt" />
-       
+        <ss:simpleType name="bm:Prompts" base="ss:string" document="对应字段的prompt"/>
         <ss:complexType name="bm:AbstractOperation">
             <ss:attributes>
                 <ss:attribute name="name" use="required"/>
@@ -64,11 +63,9 @@
                 <ss:attribute name="multiLanguage" document="是否属于多语言字段"/>
                 <ss:attribute name="multiLanguageDescField" document="多语言关联的字段"/>
                 <ss:attribute name="forceUpdate" document="如果设置为true，即使客户端没有传递该参数，该字段也会被拼接到update语句中"/>
-                <!--原型开发用-->
                 <ss:attribute name="defaultEditor" document="field的默认编辑器(可用值：textField、numberField、comboBox、lov、checkBox、datePicker、dateTimePicker)"/>
-                <!--comboBox,lov-->
                 <ss:attribute name="options" document="当defaultEditor是comboBox、lov时需要设定的关联bm"/>
-              </ss:attributes>
+            </ss:attributes>
         </ss:element>
         <ss:element name="bm:ref-field">
             <ss:attributes>
@@ -147,14 +144,6 @@
                 <ss:extension base="bm:AbstractOperation"/>
             </ss:extensions>
         </ss:element>
-        <!--
-        <ss:element name="bm:operation-in-procedure" document="通过执行一个流程，来完成指定的操作">
-            <ss:extensions>
-                <ss:extension base="p:procedure"/>
-                <ss:extension base="bm:AbstractOperation"/>
-            </ss:extensions>
-        </ss:element>
-        -->
         <ss:element name="bm:cascade-operation" document="定义一个级联操作，对主记录进行更新后，再将参数中的子记录提交到对应的BM，执行级联更新">
             <ss:attributes>
                 <ss:attribute name="inputPath" document="detail记录在主记录中的访问路径，如&quot;EMPLOYEE-LIST&quot;"/>
@@ -175,7 +164,7 @@
                 <ss:attribute name="accessControlMode" document="权限控制方式，如果该BM有父BM，缺省情况下该BM的权限控制方式与父BM相同，如果accessControlMode设置为separate，则该BM使用自己的权限控制设置，与父BM无关"/>
                 <ss:attribute name="allowFetchAll" document="是否允许将所有查询结果，不分页地传递给客户端" type="ss:boolean"/>
                 <ss:attribute name="maxPageSize" default="500" document="每页允许的最大记录数"/>
-                <!--原型工具-->
+                <ss:attribute name="useCacheJoin" document="是否启用cache数据来替代数据库join" type="ss:boolean"/>
                 <ss:attribute name="defaultDisplayField" document="默认的界面显示用的field"/>
             </ss:attributes>
             <ss:elements>
