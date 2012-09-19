@@ -70,4 +70,7 @@ public class CacheProviderRegistry {
 		provider.reload();
 		return true;
 	}
+	public static void remove(String cacheName){
+		providerMap.remove(cacheName);
+	}
 }
