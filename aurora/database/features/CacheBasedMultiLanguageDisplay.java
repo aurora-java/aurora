@@ -51,9 +51,6 @@ public class CacheBasedMultiLanguageDisplay {
 					Field f = fields[j];
 					if (f.getName().equalsIgnoreCase(multiLanguageDescField)) {
 						if (!f.isExpression()) {
-							/*
-							 * TODO query和select的区别							 * 
-							 */
 							f.setForQuery(false);
 							f.setForSelect(false);
 							break;
