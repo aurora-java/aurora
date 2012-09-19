@@ -3,16 +3,19 @@ package aurora.application.features.cache;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import aurora.bm.ICachedDataProvider;
+import aurora.bm.IModelFactory;
+
 import uncertain.cache.INamedCacheFactory;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 
 public class PeriodModeCacheProvider extends CacheProvider {
 
-	protected int refreshInterval = -1;
+	protected int refreshInterval = 3600000;//1 hour
 
-	public PeriodModeCacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory) {
-		super(registry, cacheFactory);
+	public PeriodModeCacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory,ICachedDataProvider cacheDataProvider,IModelFactory modelFactory) {
+		super(registry, cacheFactory,cacheDataProvider,modelFactory);
 	}
 
 	public void initialize() {
