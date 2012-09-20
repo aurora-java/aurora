@@ -1,5 +1,6 @@
 package aurora.application.features.cache;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,9 @@ import aurora.application.features.msg.IMessage;
 import aurora.application.features.msg.IMessageListener;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.INoticerConsumer;
+import aurora.bm.BusinessModel;
+import aurora.bm.ICachedDataProvider;
+import aurora.bm.IModelFactory;
 import aurora.database.FetchDescriptor;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
@@ -41,13 +45,15 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 	protected String cacheName;
 	protected String loadProc;
 	protected String refreshProc;
+	// 'baseBM' usually used by ICachedDataProvider for cache join
+	protected String baseBM;
 	protected String loadBM;
 	protected String refreshBM;
 	protected boolean loadOnStartup = true;
 	protected IEventHandler[] eventHandlers;
 	protected String value = "${@value}";
 	protected String type = "value";
-	protected String key = "${@key}";
+	protected String key;
 	protected boolean isConcurrent = true;
 	protected String groupByFields;
 	protected String cacheDesc;
@@ -68,10 +74,15 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	protected Timer reloadTimer;
 	protected Object reloadLock = new Object();
+	
+	private ICachedDataProvider mCacheDataProvider;
+	private IModelFactory mModelFactory;
 
-	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory) {
+	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory,ICachedDataProvider cacheDataProvider,IModelFactory modelFactory) {
 		this.mRegistry = registry;
 		this.mCacheFactory = cacheFactory;
+		this.mCacheDataProvider = cacheDataProvider;
+		this.mModelFactory = modelFactory;
 	}
 
 	public void initialize() {
@@ -108,7 +119,6 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
     			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
     		((INoticerConsumer) consumer).addListener(reloadMessage, this);
 		}
-		CacheProviderRegistry.put(cacheName, this);
 		if (eventHandlers != null) {
 			for (int i = 0; i < eventHandlers.length; i++) {
 				eventHandlers[i].init(this, mRegistry);
@@ -119,6 +129,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			initCacheData();
 		initReloadTimer();
 		inited = true;
+		CacheProviderRegistry.put(cacheName, this);
 	}
 
 	protected void initReloadTimer() {
@@ -162,6 +173,13 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				refreshProc = loadProc;
 			}
 		}
+		if(baseBM != null){
+			if(loadBM ==null)
+				loadBM = baseBM;
+			if(refreshBM == null)
+				refreshBM = baseBM;
+		}
+		//it maybe no need to refresh,so it no need to check  'refreshBM == null && refreshProc == null';
 		if (refreshBM != null && refreshProc != null) {
 			throw BuiltinExceptionFactory.createConflictAttributesExcepiton(this, "refreshBM,refreshProc");
 		}
@@ -400,6 +418,14 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		this.refreshProc = refreshProc;
 	}
 
+	public String getBaseBM() {
+		return baseBM;
+	}
+
+	public void setBaseBM(String baseBM) {
+		this.baseBM = baseBM;
+	}
+
 	public String getLoadBM() {
 		return loadBM;
 	}
@@ -543,6 +569,11 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	@Override
 	public boolean startup() {
+		if(baseBM != null){
+			setDefaultConfigForBaseBM();
+		}
+		if(key == null)
+			key = "${@key}";
 		cache = mCacheFactory.getNamedCache(cacheName);
 		if (cache == null)
 			throw new GeneralException("uncertain.cache.named_cache_not_found", new Object[] { cache }, this);
@@ -552,10 +583,35 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 		return true;
 	}
+	private void setDefaultConfigForBaseBM(){
+		BusinessModel model;
+		try {
+			model = mModelFactory.getModel(baseBM);
+		} catch (IOException e) {
+			throw BuiltinExceptionFactory.createResourceLoadException(this, baseBM, e);
+		}
+		if(key == null){
+			key = mCacheDataProvider.getCacheKey(model);
+		}
+		if(cacheName == null){
+			cacheName = mCacheDataProvider.getCacheName(model);
+		}
+		if(cacheDesc == null)
+			cacheDesc = cacheName;
+		setType(ICacheProvider.VALUE_TYPE.record.name());
+		if(eventHandlers == null){
+			EntityReloadHandler entityReloadHandler= new EntityReloadHandler();
+			entityReloadHandler.setEntity(model.getBaseTable());
+			entityReloadHandler.setReloadBM(baseBM);
+			entityReloadHandler.setTopic(getReloadTopic());
+			setEventHandlers(new IEventHandler[]{entityReloadHandler});
+		}
+	}
 
 	@Override
 	public void shutdown() {
 		shutdown = true;
+		CacheProviderRegistry.remove(cacheName);
 		synchronized (reloadLock) {
 			reloadLock.notify();
 		}
