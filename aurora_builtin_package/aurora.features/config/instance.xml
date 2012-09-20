@@ -11,6 +11,9 @@
 
 		<u:configurable-instance configFile="cache.config">
 			<u:description>实现INamedCacheFactory接口，提供可配置的cache服务</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.bm.ICachedDataProvider" />
+			</u:required-instances>
 		</u:configurable-instance>
 
 		<u:configurable-instance configFile="session-info-provider.config" >
@@ -56,6 +59,7 @@
 			<u:description>基于数据库的多语言实现</u:description>
 			<u:required-instances>
 				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
 			</u:required-instances>
 			<u:implement-types>
 				<u:type typeName="aurora.i18n.IMessageProvider" />
@@ -64,6 +68,9 @@
 		
 		<u:configurable-instance configFile="multi-language-description.config" >
 			<u:description>多语言实现</u:description>
+			<u:required-instances>
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
+			</u:required-instances>
 		</u:configurable-instance>
 
 		<u:configurable-instance configFile="request-record.config" >
@@ -110,6 +117,7 @@
 			<u:description>提供值列表特性的实现</u:description>
 			<u:required-instances>
 				<u:type typeName="aurora.database.service.DatabaseServiceFactory" />
+				<u:type typeName="uncertain.cache.INamedCacheFactory" />
 			</u:required-instances>
 			<u:implement-types>
 				<u:type typeName="aurora.application.features.ILookupCodeProvider" />
@@ -139,5 +147,14 @@
 				<u:type typeName="aurora.application.task.excel.IExcelTask" />
 			</u:implement-types>
 		</u:configurable-instance>
+		<u:configurable-instance configFile="bm-cached-data.config" >
+			<u:description>关联数据缓存</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.bm.ICachedDataProvider" />
+			</u:implement-types>
+		</u:configurable-instance>						
 	</u:instances>
 </u:instance-config>
