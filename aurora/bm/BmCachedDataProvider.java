@@ -4,96 +4,69 @@
  */
 package aurora.bm;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import uncertain.cache.CacheBuiltinExceptionFactory;
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.core.ILifeCycle;
+import uncertain.ocm.IObjectRegistry;
 import aurora.database.IResultSetConsumer;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.IDatabaseServiceFactory;
+import aurora.database.sql.Join;
 
 public class BmCachedDataProvider implements ICachedDataProvider, ILifeCycle {
     
     String  cacheKey;
     String  cacheName;
-    String  cacheFactoryName;
     
-    INamedCacheFactory      cacheFactory;
+    IObjectRegistry      mRegistry;
     IDatabaseServiceFactory dbServiceFactory;
     
-    public BmCachedDataProvider(INamedCacheFactory factory, IDatabaseServiceFactory dbs){
-        this.cacheFactory = factory;
+    
+    public BmCachedDataProvider(IObjectRegistry objectRegistry,IDatabaseServiceFactory dbs){
+        this.mRegistry = objectRegistry;
         this.dbServiceFactory = dbs;
     }
 
-    @Override
-    public ICache getCachedData(String business_model_name) {
-        return cacheFactory.getNamedCache(business_model_name);
-    }
+	@Override
+	public String getCacheName(BusinessModel model) {
+		if(cacheName != null)
+			return cacheName;
+		return model.getName();
+	}
 
-    @Override
-    public INamedCacheFactory getCacheFactoryForData() {
-        return cacheFactory;
-    }
-/*
-    @Override
-    public String getCacheKey(BusinessModel model, CompositeMap record) {
-        String key = null;
-        if(cacheKey==null)
-            key = generateDefaultCacheKey(model,record);
-        else
-            key = TextParser.parse(cacheKey, record);
-        return model.getName()+"." +key;
-    }
-    
-    private String generateDefaultCacheKey(BusinessModel model, CompositeMap record){
-        Field[] flds = model.getPrimaryKeyFields();
-        if(flds==null || flds.length==0)
-            throw new IllegalArgumentException("Business model "+model.getName()+" must has primary key");
-        StringBuffer key = new StringBuffer();
-        for(int i=0; i<flds.length; i++){
-            if(i>0)key.append(".");
-            Object value = record.get(flds[i].getName());
-            if(value==null)
-                throw new IllegalArgumentException("primary key field can not be null:"+record.toXML());
-            key.append(value);
-        }
-        return key.toString();
-    }
-*/    
-    private String generateLookupCacheKey(String foreign_bm_name, Field ref_field, CompositeMap record){
-        Relation relation = null;
-        String rname = ref_field.getRelationName();
-        if(rname==null){
-            for(Relation r:ref_field.getOwner().getRelations())
-                if(r.getReferenceModel().equals( ref_field.getSourceModel())){
-                    relation = r;
-                    break;
-                }
-                        
-        }else{
-            relation = ref_field.getOwner().getRelation(rname);
-        }
-        
-        StringBuffer key = new StringBuffer(foreign_bm_name+".");
-        for(int i=0; i<relation.getReferences().length; i++){
-            Reference ref = relation.getReferences()[i];
-            if(i>0)key.append(".");
-            Object value = record.get(ref.getLocalField());
-            if(value==null) value = "";
-            key.append(value);
-        }
-        
-        return key.toString();
-    }
+	@Override
+	public String getCacheKey(BusinessModel model) {
+		if (cacheKey != null)
+			return cacheKey;
+		Field[] flds = model.getPrimaryKeyFields();
+		if (flds == null || flds.length == 0)
+			throw new IllegalArgumentException("Business model " + model.getName() + " must has primary key");
+		HashSet<String> fields = new HashSet<String>();
+		for (int i = 0; i < flds.length; i++) {
+			fields.add(flds[i].getName());
+		}
+		return model.getName() + "." + generateKey(fields);
+	}
+	@Override
+	public String getParsedCacheKey(BusinessModel model, CompositeMap record) {
+		if(record == null)
+			return null;
+		String cacheKey = getCacheKey(model);
+		return TextParser.parse(cacheKey, record);
+	}
 
     @Override
     public boolean startup() {
         if(dbServiceFactory instanceof DatabaseServiceFactory){
-            ((DatabaseServiceFactory)dbServiceFactory).setGlobalParticipant(this);
+        	 ((DatabaseServiceFactory)dbServiceFactory).setGlobalParticipant(this);
         }
         return true;
     }
@@ -101,36 +74,92 @@ public class BmCachedDataProvider implements ICachedDataProvider, ILifeCycle {
     @Override
     public void shutdown() {
     }
-    
-    public void onFetchResultSet(BusinessModel model, IResultSetConsumer rs){
-        if(!model.hasCacheJoinFields())
-            return;
-        Object o = rs.getResult();
-        if(!(o instanceof CompositeMap))
-            return;
-        CompositeMap data = (CompositeMap)o;
-        Iterator it = data.getChildIterator();
-        if(it==null)
-            return;
-        if(model.getFields()==null)
-            return;
-        while(it.hasNext()){
-            CompositeMap record = (CompositeMap)it.next();
-            for(Field f:model.getFields()){
-                if(!f.isCacheJoinField())
-                    continue;
-                BusinessModel bm = f.getRefferedModel();
-                ICache cache = getCachedData(bm.getName());
-                if(cache==null)
-                    throw new IllegalArgumentException(bm.getName()+ "has no cached data");
-                String lookup_key = generateLookupCacheKey(bm.getName(),f,record);
-                CompositeMap master_data = (CompositeMap)cache.getValue(lookup_key);
-                if(master_data!=null){
-                    record.put(f.getName(), master_data.get(f.getSourceField()));
-                }
-            }
-            System.out.println();
-        }
-    }
+
+    public void postFetchResultSet(BusinessModel model, IResultSetConsumer consumer) throws Exception {
+		List<RelationFields> cacheJoinList = model.getCacheJoinList();
+		if (cacheJoinList== null || cacheJoinList.size() == 0)
+			return;
+		
+		Object result = consumer.getResult();
+		if (!(result instanceof CompositeMap))
+			return;
+		CompositeMap data = (CompositeMap) result;
+		if (data.getChilds() == null)
+			return;
+		
+		INamedCacheFactory nameCacheFactory = (INamedCacheFactory) mRegistry.getInstanceOfType(INamedCacheFactory.class);
+		String lookup_key = null;
+		Relation relation = null;
+		ICache cache = null;
+		CompositeMap cachedRecord = null;
+		for (@SuppressWarnings("unchecked")
+		Iterator<CompositeMap> it = data.getChildIterator(); it.hasNext();) {
+			CompositeMap record = it.next();
+			for (RelationFields  relationField: cacheJoinList) {
+				relation = relationField.getRelation();
+				lookup_key = generateLookupCacheKey(relation,record);
+				cache = nameCacheFactory.getNamedCache(relation.getReferenceModel());
+				if(cache == null)
+						throw CacheBuiltinExceptionFactory.createNamedCacheNotFound(null, relation.getReferenceModel());
+				cachedRecord = (CompositeMap)cache.getValue(lookup_key);
+				if (cachedRecord == null) {
+					if (Join.TYPE_INNER_JOIN.equalsIgnoreCase(relation.getJoinType()+" JOIN"))
+						it.remove();
+					continue;
+				}
+				for(Field fld:relationField.getFieldSet()){
+					record.put(fld.getName(), ((CompositeMap) cachedRecord).get(fld.getSourceField()));
+				}
+			}
+		}
+	}
+
+	private String generateLookupCacheKey(Relation relation, CompositeMap record){
+		String recordKey = generateKey(getRelationCacheLocalFields(relation));
+		String lookupCacheKey = relation.getReferenceModel()+"."+TextParser.parse(recordKey, record);
+		return lookupCacheKey;
+	}
+	private String generateKey(Set<String> fieldNames) {
+		if(fieldNames == null)
+			return null;
+		StringBuffer sb = new StringBuffer();
+		for (String fieldName : fieldNames) {
+			sb.append("${@" + fieldName.toLowerCase() + "}.");
+		}
+		String cacheKey = sb.substring(0, sb.length() - 1);
+		return cacheKey;
+	}
+	private HashSet<String> getRelationCacheLocalFields(Relation relation){
+		HashSet<String> localFieldList = new HashSet<String>();
+		Reference[] refs = relation.getReferences();
+		if (refs != null) {
+			for (int i = 0; i < refs.length; i++) {
+				Reference ref = refs[i];
+				// not support expression
+				String exp = ref.getExpression();
+				if (exp != null)
+					return null;
+				localFieldList.add(ref.getLocalField().toLowerCase());
+			}
+		}
+		return localFieldList;
+	}
+
+	public String getCacheKey() {
+		return cacheKey;
+	}
+
+	public void setCacheKey(String cacheKey) {
+		this.cacheKey = cacheKey;
+	}
+
+	public String getCacheName() {
+		return cacheName;
+	}
+
+	public void setCacheName(String cacheName) {
+		this.cacheName = cacheName;
+	}
+
 
 }
