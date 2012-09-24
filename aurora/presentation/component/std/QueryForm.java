@@ -35,6 +35,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String PROPERTITY_DEFAULT_QUERY_FIELD = "defaultqueryfield";
 	private static final String PROPERTITY_DEFAULT_QUERY_HINT = "defaultqueryhint";
 	private static final String PROPERTITY_DEFAULT_QUERY_PROMPT = "defaultqueryprompt";
+	private static final String PROPERTITY_QUERY_HOOK = "queryhook";
 	IObjectRegistry	mObjectRegistry;
 	private ISchemaManager schemaManager ;
 	private String ds;
@@ -73,7 +74,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				+ view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String title = session.getLocalizedPrompt(view.getString(
 				PROPERTITY_TITLE, ""));
-
+		String queryhook = view.getString(PROPERTITY_QUERY_HOOK);
+		String queryfield = view.getString(PROPERTITY_DEFAULT_QUERY_FIELD);
 		Writer out = session.getWriter();
 		try {
 			out.write("<table cellspacing='0' cellpadding='0' class='"
@@ -99,7 +101,9 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			buildBody(view, session, model, height);
 			out.write("</div></td></tr></tbody></table>");
 			out.write("<script>");
-			out.write("new $A.QueryForm({id:'" + id + "',isopen:" + open + "});");
+			out.write("new $A.QueryForm({id:'" + id + "',isopen:" + open + ",");
+			out.write(null == queryhook ? "queryfield:'"+queryfield+"'": "queryhook:"+queryhook);
+			out.write("});");
 			if (null != ds)
 				out.write("$('" + id + "').bind('" + ds + "');");
 			out.write("</script>");
