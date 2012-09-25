@@ -151,7 +151,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			formToolBar.addChild(searchField);
 			formToolBar.addChild(btn);
 		} else {
-			searchField = findTextFieldAndCreateExpandButton(formToolBar);
+			searchField = findTextField(formToolBar);
 			formToolBar.setName("hBox");
 			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE);
 		}
@@ -210,33 +210,23 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			}
 		}
 	}
-	private CompositeMap findTextFieldAndCreateExpandButton(CompositeMap parent) {
-		CompositeMap textField = null;
+	private CompositeMap findTextField(CompositeMap parent) {
 		boolean findTextField = false;
 		QualifiedName qName = new QualifiedName(
 				AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "textField");
-		QualifiedName qName2 = new QualifiedName(
-				AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "expandButton");
 		if (null != parent) {
 			Iterator it = parent.getChildIterator();
 			if (null != it) {
 				while (it.hasNext()) {
 					CompositeMap child = (CompositeMap) it.next();
 					if (qName.equals(child.getQName())) {
-						if (!findTextField) {
-							textField = child;
-							findTextField = true;
-						}
-					} else if (qName2.equals(child.getQName())) {
-						child.setName("button");
-						child.putString("click", "function(){$('" + id
-								+ "').trigger()}");
-					} else {
-						textField = findTextFieldAndCreateExpandButton(child);
+						return child;
+					}else {
+						return findTextField(child);
 					}
 				}
 			}
 		}
-		return textField;
+		return null;
 	}
 }
