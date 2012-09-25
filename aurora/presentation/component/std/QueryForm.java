@@ -134,7 +134,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 					"width:100%");
 			CompositeMap btn = new CompositeMap("button");
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("search"));
+			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
 			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
 					+ "').doSearch()}");
