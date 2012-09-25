@@ -21,6 +21,7 @@ import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
 public class QueryForm extends Component implements IViewBuilder, ISingleton {
@@ -134,6 +135,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		String queryPrompt = view.getString(PROPERTITY_DEFAULT_QUERY_PROMPT);
 		String queryId = id + "_query";
 		String style = "";
+		String searchFunction = "function(){$('" + id + "').doSearch()}";
 		if (null == formToolBar || null == formToolBar.getChildIterator()) {
 			formToolBar = new CompositeMap("hBox");
 			formToolBar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
@@ -146,8 +148,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
-					+ "').doSearch()}");
+			btn.putString(Button.PROPERTITY_CLICK, searchFunction);
 			formToolBar.addChild(searchField);
 			formToolBar.addChild(btn);
 		} else {
@@ -157,6 +158,17 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		}
 		if (null != searchField) {
 			searchField.putString(ComponentConfig.PROPERTITY_ID, queryId);
+			CompositeMap events = searchField.getChild(EventConfig.PROPERTITY_EVENTS);
+			if(null == events){
+				events = new CompositeMap(EventConfig.PROPERTITY_EVENTS);
+				events.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				searchField.addChild(events);
+			}
+			CompositeMap event = new CompositeMap("event");
+			event.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			event.putString(EventConfig.PROPERTITY_EVENT_NAME, "enterdown");
+			event.putString(EventConfig.PROPERTITY_EVENT_HANDLER, searchFunction);
+			events.addChild(event);
 			if (null != hint) {
 				searchField.putString(TextFieldConfig.PROPERTITY_EMPTYTEXT,
 						hint);
