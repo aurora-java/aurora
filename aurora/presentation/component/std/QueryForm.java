@@ -32,6 +32,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 
 	private static final String PROPERTITY_EXPAND = "expand";
 	private static final String PROPERTITY_TITLE = "title";
+	private static final String PROPERTITY_RESULT_TARGET = "resulttarget";
 	private static final String PROPERTITY_DEFAULT_QUERY_FIELD = "defaultqueryfield";
 	private static final String PROPERTITY_DEFAULT_QUERY_HINT = "defaultqueryhint";
 	private static final String PROPERTITY_DEFAULT_QUERY_PROMPT = "defaultqueryprompt";
@@ -39,6 +40,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	IObjectRegistry	mObjectRegistry;
 	private ISchemaManager schemaManager ;
 	private String ds;
+	private CompositeMap formToolBar;
+	private CompositeMap formBody;
 	protected int getDefaultWidth() {
 		return 0;
 	}
@@ -65,6 +68,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			id = IDGenerator.getInstance().generate();
 		}
 		ds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		String result_ds = view.getString(PROPERTITY_RESULT_TARGET);
 		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		boolean open = view.getBoolean(PROPERTITY_EXPAND, false);
 		int width = getComponentWidth(model, view, map).intValue();
@@ -78,6 +82,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		String queryfield = view.getString(PROPERTITY_DEFAULT_QUERY_FIELD);
 		Writer out = session.getWriter();
 		try {
+			processFormToolBar(view, session, model);
+			boolean hasBody = processFormBody(view, session, model, height);
 			out.write("<table cellspacing='0' cellpadding='0' class='"
 					+ className + "' id='" + id + "'");
 			if (width != 0)
@@ -91,17 +97,21 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 						+ "</th></tr>");
 			}
 			out.write("<tr><th>");
-			buildToolBar(view, session, model);
-			out.write("</th></tr></thead><tbody><tr><td><div class='"
-					+ DEFAULT_WRAP_CLASS + "'");
-			if (!open) {
-				out.write(" style='height:0'");
-			}
-			out.write(">");
-			buildBody(view, session, model, height);
-			out.write("</div></td></tr></tbody></table>");
+			session.buildView(model, formToolBar);
+			out.write("</th></tr></thead>");
+			if(hasBody){
+				out.write("<tbody><tr><td><div class='"
+						+ DEFAULT_WRAP_CLASS + "'");
+				if (!open) {
+					out.write(" style='height:0'");
+				}
+				out.write(">");
+				session.buildView(model, formBody);
+				out.write("</div></td></tr></tbody>");
+			}else open = false;
+			out.write("</table>");
 			out.write("<script>");
-			out.write("new $A.QueryForm({id:'" + id + "',isopen:" + open + ",");
+			out.write("new $A.QueryForm({id:'" + id + "',isopen:" + open +",resulttarget:'"+result_ds+ "',");
 			out.write(null == queryhook ? "queryfield:'"+queryfield+"'": "queryhook:"+queryhook);
 			out.write("});");
 			if (null != ds)
@@ -116,17 +126,17 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		return null;
 	}
 
-	private void buildToolBar(CompositeMap view, BuildSession session,
+	private void processFormToolBar(CompositeMap view, BuildSession session,
 			CompositeMap model) throws Exception {
-		CompositeMap formHead = view.getChild(FORM_TOOL_BAR);
+		formToolBar = view.getChild(FORM_TOOL_BAR);
 		CompositeMap searchField = null;
 		String hint = view.getString(PROPERTITY_DEFAULT_QUERY_HINT);
 		String queryPrompt = view.getString(PROPERTITY_DEFAULT_QUERY_PROMPT);
 		String queryId = id + "_query";
 		String style = "";
-		if (null == formHead || null == formHead.getChildIterator()) {
-			formHead = new CompositeMap("hBox");
-			formHead.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+		if (null == formToolBar || null == formToolBar.getChildIterator()) {
+			formToolBar = new CompositeMap("hBox");
+			formToolBar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			searchField = new CompositeMap("textField");
 			searchField
 					.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
@@ -138,12 +148,12 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
 			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
 					+ "').doSearch()}");
-			formHead.addChild(searchField);
-			formHead.addChild(btn);
+			formToolBar.addChild(searchField);
+			formToolBar.addChild(btn);
 		} else {
-			searchField = findTextFieldAndCreateExpandButton(formHead);
-			formHead.setName("hBox");
-			style = formHead.getString(ComponentConfig.PROPERTITY_STYLE);
+			searchField = findTextFieldAndCreateExpandButton(formToolBar);
+			formToolBar.setName("hBox");
+			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE);
 		}
 		if (null != searchField) {
 			searchField.putString(ComponentConfig.PROPERTITY_ID, queryId);
@@ -156,22 +166,28 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 						session.getLocalizedPrompt(queryPrompt));
 			}
 		}
-		formHead.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
-		formHead.putString("style", "width:100%;"+style);
-		session.buildView(model, formHead);
+		formToolBar.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
+		formToolBar.putString("style", "width:100%;"+style);
 	}
 
-	private void buildBody(CompositeMap view, BuildSession session,
+	private boolean processFormBody(CompositeMap view, BuildSession session,
 			CompositeMap model, int height) throws Exception {
-		CompositeMap formBody = view.getChild(FORM_BODY);
+		formBody = view.getChild(FORM_BODY);
 		if (null != formBody && null != formBody.getChildIterator()) {
-				bindDataset(formBody);
-				formBody.setName("box");
-				if (height != 0)
-					formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
-				
-				session.buildView(model, formBody);
+			bindDataset(formBody);
+			formBody.setName("box");
+			if (height != 0)
+				formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
+			CompositeMap btn = new CompositeMap("button");
+			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_MORE"));
+			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
+			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
+					+ "').trigger()}");
+			formToolBar.addChild(btn);
+			return true;
 		}
+		return false;
 	}
 	private void bindDataset(CompositeMap parent){
 		if(null!= ds && null != parent){
