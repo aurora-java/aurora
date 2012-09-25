@@ -123,6 +123,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		String hint = view.getString(PROPERTITY_DEFAULT_QUERY_HINT);
 		String queryPrompt = view.getString(PROPERTITY_DEFAULT_QUERY_PROMPT);
 		String queryId = id + "_query";
+		String style = "";
 		if (null == formHead || null == formHead.getChildIterator()) {
 			formHead = new CompositeMap("hBox");
 			formHead.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
@@ -133,7 +134,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 					"width:100%");
 			CompositeMap btn = new CompositeMap("button");
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			btn.putString(Button.PROPERTITY_TEXT, "搜索");
+			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("search"));
+			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
 			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
 					+ "').doSearch()}");
 			formHead.addChild(searchField);
@@ -141,6 +143,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		} else {
 			searchField = findTextFieldAndCreateExpandButton(formHead);
 			formHead.setName("hBox");
+			style = formHead.getString(ComponentConfig.PROPERTITY_STYLE);
 		}
 		if (null != searchField) {
 			searchField.putString(ComponentConfig.PROPERTITY_ID, queryId);
@@ -154,6 +157,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			}
 		}
 		formHead.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
+		formHead.putString("style", "width:100%;"+style);
 		session.buildView(model, formHead);
 	}
 
