@@ -170,8 +170,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			event.putString(EventConfig.PROPERTITY_EVENT_HANDLER, searchFunction);
 			events.addChild(event);
 			if (null != hint) {
-				searchField.putString(TextFieldConfig.PROPERTITY_EMPTYTEXT,
-						hint);
+				searchField.putString(TextFieldConfig.PROPERTITY_EMPTYTEXT,session.getLocalizedPrompt(hint));
 			}
 			if (null != queryPrompt) {
 				searchField.putString(ComponentConfig.PROPERTITY_PROMPT,
