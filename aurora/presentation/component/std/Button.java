@@ -13,31 +13,41 @@ public class Button extends Field {
 	
 	public static final String CLASSNAME_WRAP = "item-btn";
 	public static final String PROPERTITY_TEXT = "text";
+	public static final String PROPERTITY_TEXT_HEIGHT = "text_height";
 	public static final String PROPERTITY_ICON = "icon";
 	public static final String BUTTON_STYLE = "btnstyle";
 	public static final String BUTTON_CLASS = "btnclass";
 	public static final String PROPERTITY_CLICK = "click";
 	public static final String PROPERTITY_TITLE = "title";
 	public static final String PROPERTITY_DISABLED = "disabled";
+	private static final String PROPERTITY_ICON_ALIGN = "iconalign";
 	private static final int DEFAULT_HEIGHT = 16;
 	private static final int DEFAULT_WIDTH = 60;
-	
+	private static final int DEFAULT_ALIGN_TOP_HEIGHT = 36;
+	private static final int DEFAULT_ALIGN_TOP_WIDTH = 50;
+	private boolean isAlignTop = false;
 	protected int getDefaultWidth(){
-		return DEFAULT_WIDTH;
+		return isAlignTop?DEFAULT_ALIGN_TOP_WIDTH:DEFAULT_WIDTH;
 	}
 	
 	protected int getDefaultHeight(){
-		return DEFAULT_HEIGHT;
+		return isAlignTop?DEFAULT_ALIGN_TOP_HEIGHT:DEFAULT_HEIGHT;
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
 		String text = view.getString(PROPERTITY_TEXT, "");
 		String icon = view.getString(PROPERTITY_ICON, "");
+		String align = view.getString(PROPERTITY_ICON_ALIGN, "left");
 		String wrapClass = CLASSNAME_WRAP;
 		if(!"".equals(icon)){
 			if(!"".equals(text)){
-				wrapClass += " item-btn-icon-text";
+				if("top".equals(align)){
+					isAlignTop = true;
+					wrapClass += " item-btn-icon-text-top";
+				}else{
+					wrapClass += " item-btn-icon-text";
+				}
 			}else{
 				wrapClass += " item-btn-icon";
 			}
@@ -68,6 +78,9 @@ public class Button extends Field {
 		if(!"".equals(icon)){
 			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+uncertain.composite.TextParser.parse(icon, model)+");";
 		}
+		Integer text_height = (Integer) map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		if(isAlignTop)text_height=null;
+		map.put(PROPERTITY_TEXT_HEIGHT, text_height);
 //		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
 		map.put(PROPERTITY_TEXT, text);
 		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
