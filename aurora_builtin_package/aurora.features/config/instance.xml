@@ -147,14 +147,12 @@
 				<u:type typeName="aurora.application.task.excel.IExcelTask" />
 			</u:implement-types>
 		</u:configurable-instance>
-		<u:configurable-instance configFile="bm-cached-data.config" >
+		<u:configurable-instance configFile="bm-cached-join.config" >
 			<u:description>关联数据缓存</u:description>
 			<u:required-instances>
 				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
-			</u:required-instances>
-			<u:implement-types>
 				<u:type typeName="aurora.bm.ICachedDataProvider" />
-			</u:implement-types>
+			</u:required-instances>
 		</u:configurable-instance>						
 	</u:instances>
 </u:instance-config>
