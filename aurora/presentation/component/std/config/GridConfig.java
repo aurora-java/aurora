@@ -18,6 +18,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_CAN_PASTE = "canpaste";
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
+	public static final String PROPERTITY_TAB_INDEX = "tabindex";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -100,7 +101,12 @@ public class GridConfig extends ComponentConfig {
 	public void setNavBar(boolean nb){
 		putBoolean(PROPERTITY_NAVBAR, nb);
 	}
-	
+	public int getTabIndex(){
+        return getInt(PROPERTITY_TAB_INDEX,-1);
+    }
+    public void setTabIndex(int width){
+        putInt(PROPERTITY_TAB_INDEX, width);
+    }
 	public CompositeMap getColumns(){
 		CompositeMap context = getObjectContext();
     	CompositeMap columns = context.getChild(PROPERTITY_COLUMNS);

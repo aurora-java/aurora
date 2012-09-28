@@ -19,6 +19,7 @@ public class Button extends Field {
 	public static final String BUTTON_CLASS = "btnclass";
 	public static final String PROPERTITY_CLICK = "click";
 	public static final String PROPERTITY_TITLE = "title";
+	public static final String PROPERTITY_TAB_INDEX = "tabindex";
 	public static final String PROPERTITY_DISABLED = "disabled";
 	private static final String PROPERTITY_ICON_ALIGN = "iconalign";
 	private static final int DEFAULT_HEIGHT = 16;
@@ -85,6 +86,7 @@ public class Button extends Field {
 		map.put(PROPERTITY_TEXT, text);
 		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
 		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));
+		map.put(PROPERTITY_TAB_INDEX, new Integer(view.getInt(PROPERTITY_TAB_INDEX, -1)));
 		map.put(BUTTON_STYLE, btnstyle);
 		map.put(CONFIG, getConfigString());
 	}

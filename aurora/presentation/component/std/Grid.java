@@ -135,7 +135,7 @@ public class Grid extends Component {
 		map.put("gridstyle", style);		
 		createGridEditors(session,context);
 		
-		
+		map.put(GridConfig.PROPERTITY_TAB_INDEX, new Integer(gc.getTabIndex()));
 	}
 	
 	
