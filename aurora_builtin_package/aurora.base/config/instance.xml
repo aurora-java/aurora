@@ -10,5 +10,10 @@
 			</u:implement-types>
  -->			
 		</u:configurable-instance>
+		 <u:configurable-instance configFile="bm-cached-data-provider.config" >
+		 	<u:implement-types>
+				<u:type typeName="aurora.bm.ICachedDataProvider" />
+			</u:implement-types>
+		</u:configurable-instance>
 	</u:instances>
 </u:instance-config>
