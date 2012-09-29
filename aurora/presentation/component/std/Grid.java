@@ -434,6 +434,7 @@ public class Grid extends Component {
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					if(!"".equals(type)){
+						String fileName = item.getString("filename","");
 						if("add".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
@@ -443,7 +444,12 @@ public class Grid extends Component {
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
+						}else if("excel2007".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -126px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
+						}else if("txt".equalsIgnoreCase(type)){
+							String separator = item.getString("separator","");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -107px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"','"+separator+"')}");
 						}else if("customize".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize()}");
 						}
