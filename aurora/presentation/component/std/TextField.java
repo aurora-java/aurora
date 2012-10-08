@@ -5,10 +5,8 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.util.template.TextTemplate;
-
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
 /**
@@ -22,11 +20,20 @@ public class TextField extends InputField {
 	
 	public static String INPUT_TYPE = "inputtype";
 	public static String DEFAULT_INPUT_TYPE = "input";
+	public static String IS_ROUND_BORDER = "isroundborder";
+	private static final String TEMPLATE_ROUND_TEXTFILED = "roundTextField.tplt";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
+		
+		
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
+		boolean isRoundBorder = view.getBoolean(IS_ROUND_BORDER, false);
+		if(isRoundBorder){
+			context.setTemplate(session.getTemplateByName(TEMPLATE_ROUND_TEXTFILED));
+		}
+		
 		
 		String typeCase = view.getString(TextFieldConfig.PROPERTITY_TYPE_CASE, "");
 		if(!"".equals(typeCase)) {
