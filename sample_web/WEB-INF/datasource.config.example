@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dc:data-source-config xmlns:dc="aurora.datasource" useTransactionManager="false">
+<dc:data-source-config xmlns:dc="aurora.datasource" useTransactionManager="true">
 	<dc:database-connections>			
 		<dc:database-connection driverClass="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.11.242:1521:hrms" userName="scott" password="tiger" pool="true"/>
 		<!--
