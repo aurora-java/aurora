@@ -31,7 +31,7 @@ public class HotKey extends Component  implements IViewBuilder, ISingleton {
 					CompositeMap key = (CompositeMap) it.next();
 					String bind = key.getString(PROPERTITY_BIND);
 					String handler = key.getString(PROPERTITY_HANDLER);
-					out.write("$A.HotKey.addHandler('"+bind+"',"+handler+")");
+					out.write("$A.HotKey.addHandler('"+bind+"',"+handler+");");
 				}
 				out.write("</script>");
 			}
