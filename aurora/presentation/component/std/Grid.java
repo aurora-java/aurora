@@ -303,7 +303,8 @@ public class Grid extends Component {
 						column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
 						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-						if(hidden)continue;
+//						if(hidden)continue;
+						if(hidden) column.putInt(GridColumnConfig.PROPERTITY_WIDTH, 0);
 						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, hidden);
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));

@@ -48,8 +48,10 @@ public class NumberFieldConfig extends InputFieldConfig {
 		putBoolean(PROPERTITY_ALLOWNEGATIVE, allowed);
 	}
 	
-	public int getDecimalPrecision(){
-		return getInt(PROPERTITY_DECIMALPRECISION, 2);
+	public int getDecimalPrecision(CompositeMap model){
+		String pre = getString(PROPERTITY_DECIMALPRECISION,"2");
+		pre = uncertain.composite.TextParser.parse(pre, model);
+		return Integer.valueOf(pre);
 	}
 	public void setDecimalPrecision(int precision){
 		putInt(PROPERTITY_DECIMALPRECISION,precision);

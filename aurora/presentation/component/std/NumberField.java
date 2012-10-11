@@ -12,6 +12,7 @@ public class NumberField extends TextField {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
+		CompositeMap model = context.getModel();
 		CompositeMap view = context.getView();
 		
 		NumberFieldConfig nfc = NumberFieldConfig.getInstance(view);
@@ -20,7 +21,7 @@ public class NumberField extends TextField {
 		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
 		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, new Boolean(false));
 		
-		addConfig(NumberFieldConfig.PROPERTITY_DECIMALPRECISION, new Integer(nfc.getDecimalPrecision()));
+		addConfig(NumberFieldConfig.PROPERTITY_DECIMALPRECISION, new Integer(nfc.getDecimalPrecision(model)));
 		
 		Map map = context.getMap();		
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
