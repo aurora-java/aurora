@@ -92,7 +92,7 @@ public class Accordion extends Component {
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
 		sb.append(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)));
-		sb.append("</DIV><DIV class='item-accordion-body' style='height:"
+		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='height:"
 				+ bodyHeight + "px;'>");
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {

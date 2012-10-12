@@ -84,7 +84,7 @@ public class Tab extends Component {
 					String ref = tab.getString(PROPERTITY_REF, "");
 					String bodyClass = tab.getString(PROPERTITY_BODY_CLASS, "");
 					String bodyStyle = tab.getString(PROPERTITY_BODY_STYLE, "");
-					sb.append("<div class='tab "+bodyClass+"' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'>");
+					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'>");
 					if("".equals(ref)){
 						List tabchilds = tab.getChilds();
 						if(tabchilds!=null){
