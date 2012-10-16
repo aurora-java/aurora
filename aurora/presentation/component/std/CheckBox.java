@@ -8,6 +8,7 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.CheckBoxConfig;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class CheckBox extends Component {
 	
@@ -18,14 +19,15 @@ public class CheckBox extends Component {
 			
 //		addConfig(PROPERTITY_CHECKEDVALUE, view.getString(PROPERTITY_CHECKEDVALUE,"Y"));
 //		addConfig(PROPERTITY_UNCHECKEDVALUE, view.getString(PROPERTITY_UNCHECKEDVALUE,"N"));
-		String label = view.getString(CheckBoxConfig.PROPERTITY_LABEL, "");
-		label = session.getLocalizedPrompt(label);
+		CheckBoxConfig cbc = CheckBoxConfig.getInstance(view);
+		String label = session.getLocalizedPrompt(cbc.getLabel());
 		/*
 		if(!"".equals(label)){
 			label = label;
 		}
 		*/
 		map.put(CheckBoxConfig.PROPERTITY_LABEL, label);
+		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, cbc.getTabIndex());
 		map.put(CONFIG, getConfigString());
 	}
 	

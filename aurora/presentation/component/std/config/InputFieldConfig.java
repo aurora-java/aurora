@@ -5,7 +5,6 @@ public class InputFieldConfig extends ComponentConfig {
 	public static final String PROPERTITY_EMPTYTEXT = "emptytext";
 	public static final String PROPERTITY_INPUTWIDTH = "inputwidth";
 	public static final String PROPERTITY_EDITABLE = "editable";
-	public static final String PROPERTITY_TABINDEX = "tabindex";
 
 	public String getEmptyText() {
 		return getString(PROPERTITY_EMPTYTEXT);
@@ -29,13 +28,5 @@ public class InputFieldConfig extends ComponentConfig {
 
 	public void setEditable(boolean editable) {
 		put(PROPERTITY_EDITABLE, editable);
-	}
-
-	public int getTabIndex() {
-		return getInt(PROPERTITY_TABINDEX, -1);
-	}
-
-	public void setTabIndex(int index) {
-		putInt(PROPERTITY_TABINDEX, index);
 	}
 }

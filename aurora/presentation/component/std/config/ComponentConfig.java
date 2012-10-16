@@ -19,6 +19,7 @@ public class ComponentConfig extends DynamicObject {
 	public static final String PROPERTITY_CLASSNAME = "classname";
 	public static final String PROPERTITY_BINDTARGET = "bindtarget";
 	public static final String PROPERTITY_HIDDEN = "hidden";
+	public static final String PROPERTITY_TAB_INDEX = "tabindex";
 	public static final String PROPERTITY_EVENTS = "events";
 //	public static final String PROPERTITY_EVENT = "event";
 //	public static final String PROPERTITY_EVENT_NAME = "name";
@@ -112,7 +113,12 @@ public class ComponentConfig extends DynamicObject {
     public void setHidden(boolean hidden){
         putBoolean(PROPERTITY_HIDDEN, hidden);
     }
-    
+    public int getTabIndex(){
+        return getInt(PROPERTITY_TAB_INDEX,0);
+    }
+    public void setTabIndex(int width){
+        putInt(PROPERTITY_TAB_INDEX, width);
+    }
     private CompositeMap getEvents(){
     	CompositeMap context = getObjectContext();
     	CompositeMap events = context.getChild(PROPERTITY_EVENTS);

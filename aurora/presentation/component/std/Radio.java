@@ -18,6 +18,7 @@ import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.RadioConfig;
 
 /**
@@ -31,7 +32,11 @@ public class Radio extends Component {
 	
 	private IObjectRegistry mRegistry;
 	private ApplicationConfig mApplicationConfig;
+	private static final String DEFAULT_CLASS = "item-radio";
 	
+	protected String getDefaultClass(BuildSession session, ViewContext context){
+		return DEFAULT_CLASS;
+	}
 	public Radio(IObjectRegistry registry) {
 		this.mRegistry = registry;
         mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
@@ -70,6 +75,7 @@ public class Radio extends Component {
 		}
 		addConfig("valueField", valueField);
 //		addConfig("selectIndex", new Integer(rc.getSelectIndex()));
+		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, rc.getTabIndex());
 		map.put(CONFIG, getConfigString());
 	}
 	
@@ -112,7 +118,8 @@ public class Radio extends Component {
 				if("horizontal".equalsIgnoreCase(layout)) {
 					sb.append("float:left'");
 				}else{
-					sb.append("'");				
+					sb.append("'");	
+					map.put(ComponentConfig.PROPERTITY_HEIGHT, null);
 				}
 				sb.append(" itemvalue='"+value+"'>"); 
 				sb.append("<div class='item-radio-img'></div>");

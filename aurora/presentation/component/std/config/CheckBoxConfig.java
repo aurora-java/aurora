@@ -23,7 +23,7 @@ public class CheckBoxConfig extends ComponentConfig {
     }
 	
 	public String getLabel(){
-        return getString(PROPERTITY_LABEL);
+        return getString(PROPERTITY_LABEL,"");
     }
     public void setLabel(String label){
         putString(PROPERTITY_LABEL, label);
