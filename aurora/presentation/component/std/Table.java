@@ -123,6 +123,7 @@ public class Table extends Component {
 			Iterator it = editors.getChildIterator();
 			while (it.hasNext()) {
 				CompositeMap editor = (CompositeMap) it.next();
+				editor.put(ComponentConfig.PROPERTITY_TAB_INDEX, -1);
 				editor.put(ComponentConfig.PROPERTITY_STYLE,
 						"position:absolute;left:-1000px;top:-1000px;");
 				try {
