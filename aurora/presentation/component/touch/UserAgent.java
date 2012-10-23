@@ -16,7 +16,7 @@ public class UserAgent {
 			"HTC", "LG", "MOT", "Nokia", "Symbian", "Fennec", "Maemo", "Tear",
 			"Midori", "armv", "Windows CE", "WindowsCE", "Smartphone",
 			"240x320", "176x220", "320x320", "160x160", "webOS", "Palm",
-			"Sagem", "Samsung", "SGH", "SIE", "SonyEricsson", "MMP", "UCWEB" };
+			"Sagem", "Samsung", "SGH",  "SonyEricsson", "MMP", "UCWEB" };
 
 	public static CompositeMap detectUserAgent(IObjectRegistry registry) {
 		CompositeMap result = new CompositeMap();
