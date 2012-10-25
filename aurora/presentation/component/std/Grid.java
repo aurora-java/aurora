@@ -438,7 +438,7 @@ public class Grid extends Component {
 					if(!"".equals(type)){
 						String fileName = item.getString("filename","");
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').showEditorByRecord($('"+dataset+"').create())}");
 						}else if("delete".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
