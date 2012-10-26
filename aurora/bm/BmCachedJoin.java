@@ -4,6 +4,7 @@
  */
 package aurora.bm;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,6 +64,7 @@ public class BmCachedJoin implements ILifeCycle {
 		Relation relation = null;
 		ICache cache = null;
 		CompositeMap cachedRecord = null;
+		HashMap<String,CompositeMap> selectedCache = new HashMap<String,CompositeMap>();
 		for (@SuppressWarnings("unchecked")
 		Iterator<CompositeMap> it = data.getChildIterator(); it.hasNext();) {
 			CompositeMap record = it.next();
@@ -72,7 +74,7 @@ public class BmCachedJoin implements ILifeCycle {
 				cache = nameCacheFactory.getNamedCache(relation.getReferenceModel());
 				if(cache == null)
 						throw CacheBuiltinExceptionFactory.createNamedCacheNotFound(null, relation.getReferenceModel());
-				cachedRecord = (CompositeMap)cache.getValue(lookup_key);
+				cachedRecord = getCacheValue(cache,selectedCache,lookup_key);
 				if (cachedRecord == null) {
 					if (Join.TYPE_INNER_JOIN.equalsIgnoreCase(relation.getJoinType()+" JOIN"))
 						it.remove();
@@ -83,7 +85,28 @@ public class BmCachedJoin implements ILifeCycle {
 				}
 			}
 		}
+		selectedCache.clear();
 	}
+    private CompositeMap getCacheValue(ICache cache,HashMap<String,CompositeMap> selectedCache,String lookup_key){
+    	int max_selectedCache_size = 10000;
+    	CompositeMap cachedRecord = null;
+    	cachedRecord = selectedCache.get(lookup_key);
+    	if(cachedRecord != null){
+    		if(cachedRecord.size() == 0)
+    			return null;
+    		else
+    			return cachedRecord;
+    	}
+    	cachedRecord = (CompositeMap)cache.getValue(lookup_key);
+    	if(selectedCache.size() < max_selectedCache_size){
+	    	if (cachedRecord != null) {
+	    		selectedCache.put(lookup_key, cachedRecord);
+	    	}else{
+	    		selectedCache.put(lookup_key, new CompositeMap());
+	    	}
+    	}
+    	return cachedRecord;
+    }
 
 	private String generateLookupCacheKey(Relation relation, CompositeMap record){
 		String recordKey = cacheDataProvider.generateKey(getRelationCacheLocalFields(relation));
