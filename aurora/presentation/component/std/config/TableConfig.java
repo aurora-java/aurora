@@ -14,6 +14,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
 	public static final String PROPERTITY_SHOW_HEAD = "showhead";
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
+	public static final String PROPERTITY_AUTO_APPEND = "autoappend";
 	
 	
 	public static TableConfig getInstance(){
@@ -95,5 +96,11 @@ public class TableConfig extends ComponentConfig {
 	}
 	public void setCanWheel(boolean canPaste){
 		putBoolean(PROPERTITY_CAN_WHEEL, canPaste);
+	}
+	public boolean isAutoAppend(){
+		return getBoolean(PROPERTITY_AUTO_APPEND, true);		
+	}
+	public void setAutoAppend(boolean append){
+		putBoolean(PROPERTITY_AUTO_APPEND, append);
 	}
 }

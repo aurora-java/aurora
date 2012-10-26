@@ -79,7 +79,7 @@ public class GridConfig extends ComponentConfig {
 		return getBoolean(PROPERTITY_AUTO_APPEND, true);		
 	}
 	public void setAutoAppend(boolean append){
-		putBoolean(PROPERTITY_AUTO_FOCUS, append);
+		putBoolean(PROPERTITY_AUTO_APPEND, append);
 	}
 	public boolean isCanPaste(){
 		return getBoolean(PROPERTITY_CAN_PASTE, false);		

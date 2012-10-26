@@ -17,6 +17,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
+import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
@@ -71,6 +72,7 @@ public class Table extends Component {
 			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
 			map.put(TITLE,title);
 		}
+		if(!tc.isAutoAppend()) addConfig(TableConfig.PROPERTITY_AUTO_APPEND, new Boolean(tc.isAutoAppend()));
 		addConfig(TableConfig.PROPERTITY_CAN_WHEEL, new Boolean(tc.isCanWheel()));
 		map.put(CONFIG, getConfigString());
 	}
