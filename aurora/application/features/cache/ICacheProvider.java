@@ -2,7 +2,6 @@ package aurora.application.features.cache;
 
 import java.util.Date;
 
-import uncertain.cache.ICache;
 import uncertain.cache.ICacheManager;
 
 
@@ -12,6 +11,10 @@ public interface ICacheProvider extends ICacheManager {
 
 	public String getKey();
 
+	public String getType();
+
+	public String getValue();
+	
 	public void reload();
 	
 	public String getReloadTopic();
@@ -20,22 +23,14 @@ public interface ICacheProvider extends ICacheManager {
 	
 	public Date getLastReloadDate();
 	
-	public void writeLock();
+/*	public void writeLock();
 
 	public void writeUnLock();
 
 	public void readLock();
 
-	public void readUnLock();
+	public void readUnLock();*/
 
-	public String getType();
 
-	public String getValue();
-/*
-	public ICache getCache();
-	
-	public String getCacheName();
-	
-	public String getCacheDesc();
-*/
+
 }

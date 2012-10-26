@@ -2,6 +2,8 @@ package aurora.application.features.cache;
 
 import java.util.logging.Level;
 
+import uncertain.cache.ICache;
+import uncertain.cache.ITransactionCache;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
@@ -73,7 +75,7 @@ public class EntityReloadHandler extends RecordReloadHandler{
 	}
 	@Override
 	public void onMessage(IMessage message){
-		provider.writeLock();
+		beginCacheTransaction();
 		try{
 			if(message == null)
 				throw new IllegalArgumentException(" message can't be null!");
@@ -90,11 +92,13 @@ public class EntityReloadHandler extends RecordReloadHandler{
 				insert(message);
 			}else if(IEventHandler.OPERATIONS.reload.name().equals(operation)){
 				reload(message);
+			}else{
+				throw new IllegalArgumentException("operation:"+operation+" not support!");
 			}
+			commitCache();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "handle message exception", e);
-		}finally{
-			provider.writeUnLock();
+			rollbackCache();
 		}
 	}
 
@@ -105,5 +109,5 @@ public class EntityReloadHandler extends RecordReloadHandler{
 	public void setEntity(String entity) {
 		this.entity = entity;
 	}
-	
+
 }

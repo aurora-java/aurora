@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import uncertain.cache.ICache;
+import uncertain.cache.ITransactionCache;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.composite.transform.GroupConfig;
@@ -93,7 +94,7 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 
 	@Override
 	public void onMessage(IMessage message){
-		provider.writeLock();
+		beginCacheTransaction();
 		try{
 			if(IEventHandler.OPERATIONS.delete.name().equals(operation)){
 				delete(message);
@@ -103,11 +104,13 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 				insert(message);
 			}else if(IEventHandler.OPERATIONS.reload.name().equals(operation)){
 				reload(message);
+			}else{
+				throw new IllegalArgumentException("operation:"+operation+" not support!");
 			}
+			commitCache();
 		}catch(Exception e){
 			logger.log(Level.SEVERE, "handle message exception", e);
-		}finally{
-			provider.writeUnLock();
+			rollbackCache();
 		}
 	}
 	public void delete(IMessage message) throws Exception {
@@ -217,7 +220,7 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 	}
 	
 	protected void executeProc(String procedure, CompositeMap context) {
-		provider.writeLock();
+		beginCacheTransaction();
 		try {
 			logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure });
 			Procedure proc = null;
@@ -232,11 +235,11 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 			else{
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 			}
+			commitCache();
 		} catch (Exception ex) {
 			logger.log(Level.SEVERE, "Error when invoking procedure " + procedure, ex);
-		} finally {
-			provider.writeUnLock();
-		}
+			rollbackCache();
+		} 
 	}
 
 	public void insert(IMessage message) throws Exception {
@@ -333,5 +336,27 @@ public class RecordReloadHandler extends AbstractLocatableObject implements IEve
 
 	public void setGroupByFields(String groupByFields) {
 		this.groupByFields = groupByFields;
+	}
+	public void beginCacheTransaction() {
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).beginTransaction();
+	}
+	
+	public void commitCache(){
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).commit();
+	}
+	
+	public void rollbackCache(){
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).rollback();
+	}
+	private boolean isITransactionCache(ICache cache){
+		if(cache != null && cache instanceof ITransactionCache)
+			return true;
+		return false;
 	}
 }

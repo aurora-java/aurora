@@ -36,7 +36,7 @@ public class PeriodModeCacheProvider extends CacheProvider {
 						} catch (InterruptedException e) {
 						}
 						if (!shutdown)
-							reload();
+							reloadWithTrx();
 					}
 				}
 			}
