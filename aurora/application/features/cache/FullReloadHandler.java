@@ -6,6 +6,8 @@ import aurora.application.features.msg.IConsumer;
 import aurora.application.features.msg.IMessage;
 import aurora.application.features.msg.IMessageStub;
 import aurora.application.features.msg.INoticerConsumer;
+import uncertain.cache.ICache;
+import uncertain.cache.ITransactionCache;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
@@ -22,10 +24,13 @@ public class FullReloadHandler extends AbstractLocatableObject implements IEvent
 
 	@Override
 	public void onMessage(IMessage message) {
+		beginCacheTransaction();
 		try {
 			provider.reload();
+			commitCache();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "reload failed!", e);
+			logger.log(Level.SEVERE, "handle message exception", e);
+			rollbackCache();
 		}
 
 	}
@@ -60,5 +65,26 @@ public class FullReloadHandler extends AbstractLocatableObject implements IEvent
 	public String getTopic() {
 		return topic;
 	}
-
+	public void beginCacheTransaction() {
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).beginTransaction();
+	}
+	
+	public void commitCache(){
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).commit();
+	}
+	
+	public void rollbackCache(){
+		ICache cache = provider.getCache();
+		if(isITransactionCache(cache))
+			((ITransactionCache)cache).rollback();
+	}
+	private boolean isITransactionCache(ICache cache){
+		if(cache != null && cache instanceof ITransactionCache)
+			return true;
+		return false;
+	}
 }
