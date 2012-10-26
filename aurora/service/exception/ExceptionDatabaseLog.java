@@ -53,6 +53,7 @@ public class ExceptionDatabaseLog implements IExceptionListener, IGlobalInstance
 	}
 
 	public void setInsertSql(CompositeMap sqlNode) {
+		this.sqlNode = sqlNode;
 		sql = sqlNode.getText();
 		if (sql == null || "".equals(sql)) {
 			throw BuiltinExceptionFactory.createCDATAMissing(sqlNode.asLocatable(), INSERT_SQL);
