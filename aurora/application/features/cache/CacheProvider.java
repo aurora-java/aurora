@@ -8,10 +8,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 
-import uncertain.cache.ConcurrentCache;
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
-import uncertain.cache.IReadWriteLockable;
+import uncertain.cache.ITransactionCache;
+import uncertain.cache.TransactionCache;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.composite.transform.GroupConfig;
@@ -34,6 +34,8 @@ import aurora.bm.BusinessModel;
 import aurora.bm.ICachedDataProvider;
 import aurora.bm.IModelFactory;
 import aurora.database.FetchDescriptor;
+import aurora.database.IResultSetConsumer;
+import aurora.database.rsconsumer.CacheWriter;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
@@ -74,11 +76,13 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	protected Timer reloadTimer;
 	protected Object reloadLock = new Object();
-	
+
 	private ICachedDataProvider mCacheDataProvider;
 	private IModelFactory mModelFactory;
+	private Boolean enableResultSetConsumer = null;
 
-	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory,ICachedDataProvider cacheDataProvider,IModelFactory modelFactory) {
+	public CacheProvider(IObjectRegistry registry, INamedCacheFactory cacheFactory, ICachedDataProvider cacheDataProvider,
+			IModelFactory modelFactory) {
 		this.mRegistry = registry;
 		this.mCacheFactory = cacheFactory;
 		this.mCacheDataProvider = cacheDataProvider;
@@ -104,20 +108,21 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 			reloadMessage = cacheName + "_reload";
 		}
 		IMessageStub stub = (IMessageStub) mRegistry.getInstanceOfType(IMessageStub.class);
-		
-		if (eventHandlers!=null && stub == null)
+
+		if (eventHandlers != null && stub == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IMessageStub.class, this.getClass().getName());
-		if (stub!=null){
-		    if(!stub.isStarted())
-		        logger.warning("JMS MessageStub is not started, please check the configuration.");
-    		IConsumer consumer = stub.getConsumer(reloadTopic);
-    		if (consumer == null) {
-    			throw new IllegalStateException("MessageStub does not define the reloadTopic '" + reloadTopic
-    					+ "', please check the configuration.");
-    		}
-    		if (!(consumer instanceof INoticerConsumer))
-    			throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class, IConsumer.class);
-    		((INoticerConsumer) consumer).addListener(reloadMessage, this);
+		if (stub != null) {
+			if (!stub.isStarted())
+				logger.warning("JMS MessageStub is not started, please check the configuration.");
+			IConsumer consumer = stub.getConsumer(reloadTopic);
+			if (consumer == null) {
+				throw new IllegalStateException("MessageStub does not define the reloadTopic '" + reloadTopic
+						+ "', please check the configuration.");
+			}
+			if (!(consumer instanceof INoticerConsumer))
+				throw BuiltinExceptionFactory.createInstanceTypeWrongException(this.getOriginSource(), INoticerConsumer.class,
+						IConsumer.class);
+			((INoticerConsumer) consumer).addListener(reloadMessage, this);
 		}
 		if (eventHandlers != null) {
 			for (int i = 0; i < eventHandlers.length; i++) {
@@ -126,7 +131,7 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 		initResourcePath();
 		if (loadOnStartup)
-			initCacheData();
+			initCacheDataWithTrx();
 		initReloadTimer();
 		inited = true;
 		CacheProviderRegistry.put(cacheName, this);
@@ -144,13 +149,14 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 						} catch (InterruptedException e) {
 						}
 						if (!shutdown)
-							reload();
+							reloadWithTrx();
 					}
 				}
 			}
 		};
 		reloadTimer.schedule(timerTask, 0);
 	}
+	 
 
 	private void initResourcePath() {
 		if (refreshBM != null) {
@@ -173,13 +179,14 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 				refreshProc = loadProc;
 			}
 		}
-		if(baseBM != null){
-			if(loadBM ==null)
+		if (baseBM != null) {
+			if (loadBM == null)
 				loadBM = baseBM;
-			if(refreshBM == null)
+			if (refreshBM == null)
 				refreshBM = baseBM;
 		}
-		//it maybe no need to refresh,so it no need to check  'refreshBM == null && refreshProc == null';
+		// it maybe no need to be refresh,so no need to check 'refreshBM == null
+		// && refreshProc == null';
 		if (refreshBM != null && refreshProc != null) {
 			throw BuiltinExceptionFactory.createConflictAttributesExcepiton(this, "refreshBM,refreshProc");
 		}
@@ -191,121 +198,134 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 	}
 
-	protected void initCacheData() {
-		writeLock();
+	protected void initCacheData() throws Exception {
+		if (isLoadByBM()) {
+			executeBM(new CompositeMap());
+		} else {
+			executeProc(loadProc, null);
+		}
+	}
+	private void initCacheDataWithTrx() {
+		beginCacheTransaction();
 		try {
-			if (isLoadByBM()) {
-				executeBM(new CompositeMap());
-			} else {
-				executeProc(loadProc, null);
-			}
+			initCacheData();
+			commitCache();
 		} catch (Exception ex) {
+			rollbackCache();
 			throw new RuntimeException(ex);
-		} finally {
-			writeUnLock();
 		}
 	}
 
 	protected void executeBM(CompositeMap context) throws Exception {
-		if (loadBM != null) {
-			CompositeMap data = queryBM(loadBM, context);
-			if (data == null)
-				return;
-			if (groupByFields != null) {
-				CompositeMap config = new CompositeMap();
-				CompositeMap level1 = new CompositeMap();
-				level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, groupByFields);
-				level1.put(GroupConfig.KEY_RECORD_NAME, "level1");
-				config.addChild(level1);
-				data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
-			}
-			String type = getType();
-			@SuppressWarnings("unchecked")
-			List<CompositeMap> childs = data.getChilds();
-			if (ICacheProvider.VALUE_TYPE.value.name().equals(type)) {
-				if (childs == null) {
-					String key = TextParser.parse(getKey(), data);
-					String value = TextParser.parse(getValue(), data);
+		if (loadBM == null)
+			return;
+		IResultSetConsumer resutlSetConsumer = getResultSetConsumer();
+		if (resutlSetConsumer != null) {
+			queryBMWithConsumer(loadBM, resutlSetConsumer, context);
+			return;
+		}
+		CompositeMap data = queryBM(loadBM, context);
+		if (data == null)
+			return;
+		if (groupByFields != null) {
+			CompositeMap config = new CompositeMap();
+			CompositeMap level1 = new CompositeMap();
+			level1.put(GroupConfig.KEY_GROUP_KEY_FIELDS, groupByFields);
+			level1.put(GroupConfig.KEY_RECORD_NAME, "level1");
+			config.addChild(level1);
+			data = GroupTransformer.transformByConfig((CompositeMap) data.clone(), config);
+		}
+		String type = getType();
+		@SuppressWarnings("unchecked")
+		List<CompositeMap> childs = data.getChilds();
+		if (ICacheProvider.VALUE_TYPE.value.name().equals(type)) {
+			if (childs == null) {
+				String key = TextParser.parse(getKey(), data);
+				String value = TextParser.parse(getValue(), data);
+				cache.setValue(key, value);
+			} else {
+				for (Object child : data.getChilds()) {
+					CompositeMap record = (CompositeMap) child;
+					String key = TextParser.parse(getKey(), record);
+					String value = TextParser.parse(getValue(), record);
 					cache.setValue(key, value);
-				} else {
-					for (Object child : data.getChilds()) {
-						CompositeMap record = (CompositeMap) child;
-						String key = TextParser.parse(getKey(), record);
-						String value = TextParser.parse(getValue(), record);
-						cache.setValue(key, value);
+				}
+			}
+		} else if (ICacheProvider.VALUE_TYPE.record.name().equals(type)) {
+			if (childs == null) {
+				String key = TextParser.parse(getKey(), data);
+				cache.setValue(key, data);
+			} else {
+				for (Object child : data.getChilds()) {
+					CompositeMap record = (CompositeMap) child;
+					String key = TextParser.parse(getKey(), record);
+					cache.setValue(key, record);
+				}
+			}
+		} else if (ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)) {
+			if (childs == null) {
+				return;
+			} else {
+				for (Object child : data.getChilds()) {
+					CompositeMap record = (CompositeMap) child;
+					String key = TextParser.parse(getKey(), record);
+					@SuppressWarnings("unchecked")
+					List<Object> new_values = record.getChilds();
+					if (new_values == null)
+						throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
+					List<String> value_list = new LinkedList<String>();
+					cache.setValue(key, value_list);
+					for (Object value : new_values) {
+						CompositeMap newValue_record = (CompositeMap) value;
+						String new_value = TextParser.parse(getValue(), newValue_record);
+						value_list.add(new_value);
 					}
 				}
-			} else if (ICacheProvider.VALUE_TYPE.record.name().equals(type)) {
-				if (childs == null) {
-					String key = TextParser.parse(getKey(), data);
-					cache.setValue(key, data);
-				} else {
-					for (Object child : data.getChilds()) {
-						CompositeMap record = (CompositeMap) child;
-						String key = TextParser.parse(getKey(), record);
-						cache.setValue(key, record);
-					}
-				}
-			} else if (ICacheProvider.VALUE_TYPE.valueSet.name().equals(type)) {
-				if (childs == null) {
-					return;
-				} else {
-					for (Object child : data.getChilds()) {
-						CompositeMap record = (CompositeMap) child;
-						String key = TextParser.parse(getKey(), record);
-						@SuppressWarnings("unchecked")
-						List<Object> new_values = record.getChilds();
-						if (new_values == null)
-							throw new IllegalArgumentException("Value type is 'valueSet', please group by the data first!");
-						List<String> value_list = new LinkedList<String>();
-						cache.setValue(key, value_list);
-						for (Object value : new_values) {
-							CompositeMap newValue_record = (CompositeMap) value;
-							String new_value = TextParser.parse(getValue(), newValue_record);
-							value_list.add(new_value);
-						}
-					}
-				}
-			} else if (ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)) {
-				if (childs == null) {
-					return;
-				} else {
-					for (Object child : data.getChilds()) {
-						CompositeMap record = (CompositeMap) child;
-						String key = TextParser.parse(getKey(), record);
-						@SuppressWarnings("unchecked")
-						List<CompositeMap> new_values = record.getChilds();
-						if (new_values == null)
-							throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
-						List<CompositeMap> value_list = new LinkedList<CompositeMap>();
-						cache.setValue(key, value_list);
-						value_list.addAll(new_values);
-					}
+			}
+		} else if (ICacheProvider.VALUE_TYPE.recordSet.name().equals(type)) {
+			if (childs == null) {
+				return;
+			} else {
+				for (Object child : data.getChilds()) {
+					CompositeMap record = (CompositeMap) child;
+					String key = TextParser.parse(getKey(), record);
+					@SuppressWarnings("unchecked")
+					List<CompositeMap> new_values = record.getChilds();
+					if (new_values == null)
+						throw new IllegalArgumentException("Value type is 'recordSet', please group by the data first!");
+					List<CompositeMap> value_list = new LinkedList<CompositeMap>();
+					cache.setValue(key, value_list);
+					value_list.addAll(new_values);
 				}
 			}
 		}
+
 	}
 
-	protected void executeProc(String procedure, CompositeMap context) {
-		writeLock();
+	private IResultSetConsumer getResultSetConsumer() {
+		if (!enableResultSetConsumer)
+			return null;
+		if (groupByFields != null)
+			throw BuiltinExceptionFactory.createConflictAttributesExcepiton(this, "enableResultSetConsumer,groupByFields");
+		CacheWriter cw = new CacheWriter(mCacheFactory);
+		cw.setCacheName(cacheName);
+		cw.setRecordKey(key);
+		return cw;
+	}
+
+	protected void executeProc(String procedure, CompositeMap context) throws Exception {
+		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure });
+		Procedure proc = null;
 		try {
-			logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure });
-			Procedure proc = null;
-			try {
-				proc = procedureManager.loadProcedure(procedure);
-			} catch (Exception ex) {
-				throw BuiltinExceptionFactory.createResourceLoadException(this, procedure, ex);
-			}
-			String name = "Cache." + procedure;
-			if (context != null)
-				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
-			else {
-				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
-			}
+			proc = procedureManager.loadProcedure(procedure);
 		} catch (Exception ex) {
-			logger.log(Level.SEVERE, "Error when invoking procedure " + procedure, ex);
-		} finally {
-			writeUnLock();
+			throw BuiltinExceptionFactory.createResourceLoadException(this, procedure, ex);
+		}
+		String name = "Cache." + procedure;
+		if (context != null)
+			ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
+		else {
+			ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
 		}
 	}
 
@@ -324,6 +344,20 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 	}
 
+	public void queryBMWithConsumer(String bm_name, IResultSetConsumer consumer, CompositeMap queryMap) throws Exception {
+		SqlServiceContext sqlContext = dsFactory.createContextWithConnection();
+		try {
+			CompositeMap context = sqlContext.getObjectContext();
+			if (context == null)
+				context = new CompositeMap();
+			BusinessModelService service = dsFactory.getModelService(bm_name, context);
+			service.query(queryMap, consumer, FetchDescriptor.fetchAll());
+		} finally {
+			if (sqlContext != null)
+				sqlContext.freeConnection();
+		}
+	}
+
 	public CompositeMap queryBM(CompositeMap queryMap) throws Exception {
 		return queryBM(getRefreshBM(), queryMap);
 	}
@@ -333,33 +367,36 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	}
 
-	public void reload() {
-		writeLock();
+	public void reloadWithTrx() {
+		beginCacheTransaction();
 		try {
-			inited = false;
+			reload();
+			commitCache();
+		} catch (Exception e) {
+			rollbackCache();
+			logger.log(Level.SEVERE, "", e);
+		}
+	}
+	
+	public void reload() {
+		try {
 			cache.clear();
-			loadOnStartup = true;
 			initCacheData();
 			setLastReloadDate(new Date());
-		} finally {
-			writeUnLock();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "", e);
 		}
 	}
 
 	public Object getValue(CompositeMap parameter) {
 		if (!inited)
 			try {
-				initCacheData();
+				initCacheDataWithTrx();
 			} catch (Exception e) {
 				throw new RuntimeException("init cache:" + getCacheName() + " failed!");
 			}
-		readLock();
-		try {
-			String keyValue = TextParser.parse(key, parameter);
-			return cache.getValue(keyValue);
-		} finally {
-			readUnLock();
-		}
+		String keyValue = TextParser.parse(key, parameter);
+		return cache.getValue(keyValue);
 	}
 
 	public String getRefreshBM() {
@@ -450,28 +487,8 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		this.isConcurrent = isConcurrent;
 	}
 
-	public void writeLock() {
-		if (!isConcurrent)
-			return;
-		((IReadWriteLockable) cache).writeLock().lock();
-	}
-
-	public void writeUnLock() {
-		if (!isConcurrent)
-			return;
-		((IReadWriteLockable) cache).writeLock().unlock();
-	}
-
-	public void readLock() {
-		if (!isConcurrent)
-			return;
-		((IReadWriteLockable) cache).readLock().lock();
-	}
-
-	public void readUnLock() {
-		if (!isConcurrent)
-			return;
-		((IReadWriteLockable) cache).readLock().unlock();
+	public boolean getConcurrent() {
+		return isConcurrent;
 	}
 
 	public String getType() {
@@ -553,6 +570,35 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		this.lastReloadDate = date;
 	}
 
+	public boolean getEnableResultSetConsumer() {
+		return enableResultSetConsumer;
+	}
+
+	public void setEnableResultSetConsumer(boolean enableResultSetConsumer) {
+		this.enableResultSetConsumer = enableResultSetConsumer;
+	}
+
+	public void beginCacheTransaction() {
+		if (isITransactionCache(cache))
+			((ITransactionCache) cache).beginTransaction();
+	}
+
+	public void commitCache() {
+		if (isITransactionCache(cache))
+			((ITransactionCache) cache).commit();
+	}
+
+	public void rollbackCache() {
+		if (isITransactionCache(cache))
+			((ITransactionCache) cache).rollback();
+	}
+
+	private boolean isITransactionCache(ICache cache) {
+		if (cache != null && cache instanceof ITransactionCache)
+			return true;
+		return false;
+	}
+
 	@Override
 	public void onMessage(IMessage message) {
 		try {
@@ -569,42 +615,50 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 
 	@Override
 	public boolean startup() {
-		if(baseBM != null){
+		if (baseBM != null) {
 			setDefaultConfigForBaseBM();
 		}
-		if(key == null)
+		if (enableResultSetConsumer == null)
+			enableResultSetConsumer = false;
+		if (key == null)
 			key = "${@key}";
 		cache = mCacheFactory.getNamedCache(cacheName);
 		if (cache == null)
 			throw new GeneralException("uncertain.cache.named_cache_not_found", new Object[] { cache }, this);
 		if (isConcurrent) {
-			cache = new ConcurrentCache(cache);
+			cache = new TransactionCache(cache);
 			mCacheFactory.setNamedCache(cacheName, cache);
 		}
 		return true;
 	}
-	private void setDefaultConfigForBaseBM(){
+
+	private void setDefaultConfigForBaseBM() {
 		BusinessModel model;
 		try {
 			model = mModelFactory.getModel(baseBM);
 		} catch (IOException e) {
 			throw BuiltinExceptionFactory.createResourceLoadException(this, baseBM, e);
 		}
-		if(key == null){
+		if (key == null) {
 			key = mCacheDataProvider.getCacheKey(model);
+		}else{
+			if(!key.contains(baseBM))
+				key = baseBM+"."+key;
 		}
-		if(cacheName == null){
+		if (cacheName == null) {
 			cacheName = mCacheDataProvider.getCacheName(model);
 		}
-		if(cacheDesc == null)
+		if (cacheDesc == null)
 			cacheDesc = cacheName;
 		setType(ICacheProvider.VALUE_TYPE.record.name());
-		if(eventHandlers == null){
-			EntityReloadHandler entityReloadHandler= new EntityReloadHandler();
+		if (enableResultSetConsumer == null)
+			enableResultSetConsumer = true;
+		if (eventHandlers == null) {
+			EntityReloadHandler entityReloadHandler = new EntityReloadHandler();
 			entityReloadHandler.setEntity(model.getBaseTable());
 			entityReloadHandler.setReloadBM(baseBM);
 			entityReloadHandler.setTopic(getReloadTopic());
-			setEventHandlers(new IEventHandler[]{entityReloadHandler});
+			setEventHandlers(new IEventHandler[] { entityReloadHandler });
 		}
 	}
 
