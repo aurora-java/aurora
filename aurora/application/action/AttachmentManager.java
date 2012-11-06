@@ -414,12 +414,15 @@ public class AttachmentManager extends AbstractEntry{
 		if (userAgent != null) {
 			userAgent = userAgent.toLowerCase();
 			// IE浏览器，只能采用URLEncoder编码
-			if (userAgent.indexOf("msie 6") != -1) {
+			if (userAgent.indexOf("msie") != -1) {
 				rtn = "filename=\"" + new String(filename.getBytes("gb2312"),"iso-8859-1") + "\"";
 			}
-			else if (userAgent.indexOf("msie") != -1) {
-				rtn = "filename=\"" + new_filename + "\"";
-			}
+//			if (userAgent.indexOf("msie 6") != -1 || userAgent.indexOf("msie 7") != -1) {
+//				rtn = "filename=\"" + new String(filename.getBytes("gb2312"),"iso-8859-1") + "\"";
+//			}
+//			else if (userAgent.indexOf("msie") != -1) {
+//				rtn = "filename=\"" + new_filename + "\"";
+//			}
 			// Opera浏览器只能采用filename*
 			else if (userAgent.indexOf("opera") != -1) {
 				rtn = "filename*=UTF-8''" + new_filename;
