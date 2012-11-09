@@ -12,7 +12,21 @@
                 <ss:attribute name="typeCase" document="大小写类型" type="a:caseType"/>
                 <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>
+                <ss:attribute name="restrict" document="输入限制(正则表达式)"/>
+                <ss:attribute name="restrictInfo" document="输入限制提示信息"/>
             </ss:attributes>
+        </ss:element>
+        <ss:element name="a:currencyField" document="金额输入框">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:currencyLabel" document="金额显示组件">
+            <ss:extensions>
+                <ss:extension base="a:Component"/>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:passWord" document="密码输入框">
             <ss:extensions>
