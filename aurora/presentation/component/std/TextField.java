@@ -27,10 +27,18 @@ public class TextField extends InputField {
 		
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
-		
-		String typeCase = view.getString(TextFieldConfig.PROPERTITY_TYPE_CASE, "");
-		if(!"".equals(typeCase)) {
+		TextFieldConfig tfc = TextFieldConfig.getInstance(view);
+		String typeCase = tfc.getTypeCase();
+		if(null != typeCase) {
 			addConfig(TextFieldConfig.PROPERTITY_TYPE_CASE, typeCase.toLowerCase());
+		}
+		String restrict = tfc.getRestrict();
+		if(null != restrict) {
+			addConfig(TextFieldConfig.PROPERTITY_RESTRICT, restrict);
+		}
+		String restrictInfo = tfc.getRestrictInfo();
+		if(null != restrictInfo) {
+			addConfig(TextFieldConfig.PROPERTITY_RESTRICT_INFO, session.getLocalizedPrompt(restrictInfo));
 		}
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		map.put(CONFIG, getConfigString());

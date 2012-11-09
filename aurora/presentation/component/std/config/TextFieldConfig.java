@@ -1,6 +1,5 @@
 package aurora.presentation.component.std.config;
 
-import aurora.application.AuroraApplication;
 import uncertain.composite.CompositeMap;
 
 
@@ -9,6 +8,8 @@ public class TextFieldConfig extends InputFieldConfig {
 	public static final String TAG_NAME = "textField";
 	public static final String INPUT_TYPE = "inputtype";
 	public static final String PROPERTITY_TYPE_CASE = "typecase";
+	public static final String PROPERTITY_RESTRICT = "restrict";
+	public static final String PROPERTITY_RESTRICT_INFO = "restrictinfo";
 
 	
 	public static TextFieldConfig getInstance(){
@@ -33,4 +34,24 @@ public class TextFieldConfig extends InputFieldConfig {
     public void setInputType(String type){
         putString(INPUT_TYPE, type);
     }
+    
+    public String getTypeCase(){
+    	return getString(PROPERTITY_TYPE_CASE);
+    }
+    public void setTypeCase(String typeCase){
+        putString(PROPERTITY_TYPE_CASE, typeCase);
+    }
+    public String getRestrict(){
+    	return getString(PROPERTITY_RESTRICT);
+    }
+    public void setRestrict(String restrict){
+    	putString(PROPERTITY_RESTRICT, restrict);
+    }
+    public String getRestrictInfo(){
+    	return getString(PROPERTITY_RESTRICT_INFO);
+    }
+    public void setRestrictInfo(String restrictInfo){
+    	putString(PROPERTITY_RESTRICT_INFO, restrictInfo);
+    }
+    
 }
