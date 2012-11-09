@@ -58,6 +58,10 @@
                 <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>
             </ss:arrays>
         </ss:complexType>
-        <ss:complexType name="a:Field"/>
+        <ss:complexType name="a:Field">
+            <ss:attributes>
+                <ss:attribute name="editable" document="是否可编辑" type="a:boolean"/>
+            </ss:attributes>
+        </ss:complexType>           
     </ss:types>
 </ss:schema>
