@@ -39,36 +39,39 @@ public class AsyncTask extends AbstractEntry {
 
 	@Override
 	public void run(ProcedureRunner runner) throws Exception {
-		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(runner.getContext(), SqlServiceContext.class); 
+		execute(runner.getContext());
+	}
+	public void execute(CompositeMap context) throws Exception{
+		SqlServiceContext sqlServiceContext = (SqlServiceContext)DynamicObject.cast(context, SqlServiceContext.class); 
 		sqlServiceContext.initConnection(objectRegistry, null);
 		
-		CompositeMap context = (CompositeMap)runner.getContext().clone();
-		String strContext = context.toXML();
+		CompositeMap contextClone = (CompositeMap)context.clone();
+		String strContext = contextClone.toXML();
 		if (bm == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "bm");
-		bm = TextParser.parse(bm, context);
+		bm = TextParser.parse(bm, contextClone);
 		if (taskType == null)
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "taskType");
-		taskType = TextParser.parse(taskType, context);
+		taskType = TextParser.parse(taskType, contextClone);
 		if (TaskTableFields.JAVA_TYPE.equals(taskType)) {
 			if (procFilePath == null && procContent == null)
 				throw BuiltinExceptionFactory.createOneAttributeMissing(this, "procFilePath,procContent");
 			if (procFilePath != null && procContent != null)
 				throw BuiltinExceptionFactory.createConflictAttributesExcepiton(this, "procFilePath,procContent");
-			procFilePath = TextParser.parse(procFilePath, context);
+			procFilePath = TextParser.parse(procFilePath, contextClone);
 		}
 		if (TaskTableFields.PROCEDURE_TYPE.equals(taskType) || TaskTableFields.FUNCTION_TYPE.equals(taskType)) {
 			if (sql == null)
 				throw BuiltinExceptionFactory.createAttributeMissing(this, "taskType");
-			sql = TextParser.parse(sql, context);
+			sql = TextParser.parse(sql, contextClone);
 		}
 //		SqlServiceContext sqlServiceContext = null;
 		try {
 //			sqlServiceContext = mDatabaseServiceFactory.createContextWithConnection();
-			CompositeMap parameters = context.getChild("parameter");
+			CompositeMap parameters = contextClone.getChild("parameter");
 			if(parameters == null){
 				parameters = new CompositeMap("parameter");
-				context.addChild(parameters);
+				contextClone.addChild(parameters);
 			}
 			parameters.put(TaskTableFields.TASK_NAME, taskName);
 			parameters.put(TaskTableFields.TASK_DESCRIPTION, taskDescription);
@@ -80,7 +83,7 @@ public class AsyncTask extends AbstractEntry {
 			parameters.put(TaskTableFields.TASK_TYPE, taskType);
 			parameters.put(TaskTableFields.RETRY_TIME, retryTime);
 			parameters.put(TaskTableFields.TIME_OUT, timeOut);
-			BusinessModelService businessModelService = mDatabaseServiceFactory.getModelService(bm, context);
+			BusinessModelService businessModelService = mDatabaseServiceFactory.getModelService(bm, contextClone);
 			businessModelService.execute(parameters);
 			
 		} finally {
