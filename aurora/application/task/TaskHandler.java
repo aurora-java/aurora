@@ -50,6 +50,8 @@ import aurora.service.ServiceThreadLocal;
 public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, IMessageListener {
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	public static final String DEFAULT_TOPIC = "task";
+	public static final String DEFAULT_MESSAGE= "task_message";
 
 	private IObjectRegistry mRegistry;
 
@@ -70,8 +72,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	private Queue<CompositeMap> taskQueue = new ConcurrentLinkedQueue<CompositeMap>();
 	private ExecutorService mainThreadPool;
 	private HandleTask handleTask;
-	protected String topic = "task";
-	protected String message = "task_message";
+	protected String topic = DEFAULT_TOPIC;
+	protected String message = DEFAULT_MESSAGE;
 	private Queue<Connection> connectionQueue = new ConcurrentLinkedQueue<Connection>();
 	private Object fetchNewTaskLock = new Object();
 
@@ -298,10 +300,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		Procedure proc = null;
 		try {
 			proc = procedureManager.loadProcedure(procedure_name);
+			executeProc(taskId, proc,context,connection);
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(this, procedure_name, ex);
 		}
-		executeProc(taskId, proc,context,connection);
 	}
 
 	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context,Connection connection) {
@@ -309,10 +311,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		Procedure proc = null;
 		try {
 			proc = procedureManager.createProcedure(procedure_config);
+			executeProc(taskId, proc, context,connection);
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(this, String.valueOf(taskId), ex);
 		}
-		executeProc(taskId, proc, context,connection);
 	}
 
 	protected void executeProc(int taskId, Procedure proc, CompositeMap context,Connection connection) {
