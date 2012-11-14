@@ -317,6 +317,10 @@ public class Grid extends Component {
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
+					
+					String align = column.getString(GridColumnConfig.PROPERTITY_ALIGN);
+					if(align!=null) column.put(GridColumnConfig.PROPERTITY_ALIGN, uncertain.composite.TextParser.parse(align, model));
+					
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
 					if(!"rowcheck".equals(type) && !"rowradio".equals(type)&& !"rownumber".equals(type))cwidth = cwidth*bl;
