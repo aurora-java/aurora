@@ -4,7 +4,7 @@
         <ss:element name="a:link">
             <ss:attributes>
                 <ss:attribute name="id" document="唯一标志" type=""/>
-                <ss:attribute name="model" document="bm文件的pkg路径" type="a:URLReference"/>
+                <ss:attribute name="model" document="bm文件的pkg路径" type="bm:ModelReference"/>
                 <ss:attribute name="modelaction" document="对应bm的action" type=""/>
                 <ss:attribute name="url" document="screen文件的路径" type="a:URLReference"/>
             </ss:attributes>
