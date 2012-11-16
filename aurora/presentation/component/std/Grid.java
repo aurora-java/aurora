@@ -739,11 +739,13 @@ public class Grid extends Component {
 		if(hasLockColumn){
 			sb.append("<DIV class='grid-la' atype='grid.lc' style='width:"+(lockWidth-1)+"px;'>");
 			sb.append("<DIV class='grid-lh' atype='grid.lh' unselectable='on' onselectstart='return false;' style='height:"+rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue()+"px;'>");
-			
+			String theme = session.getTheme();
+			int trh = Integer.parseInt(pro.get(ROW_HEIGHT).toString());
+			if(THEME_MAC.equals(theme)) trh++;
 			StringBuffer hsb = new StringBuffer();
 			for(int i=1;i<=rows.intValue();i++){
 				List list = (List)pro.get("l"+i);
-				hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
+				hsb.append("<TR height="+trh+">");
 				if(list!=null) {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
@@ -815,10 +817,13 @@ public class Grid extends Component {
 		sb.append("<TH WIDTH='20'> </TH>");
 		sb.append("</TR>");
 		
+		String theme = session.getTheme();
+		int trh = Integer.parseInt(pro.get(ROW_HEIGHT).toString());
+		if(THEME_MAC.equals(theme)) trh++;
 		StringBuffer hsb = new StringBuffer();
 		for(int i=1;i<=rows.intValue();i++){
-			List list = (List)pro.get("l"+i);
-			hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
+			List list = (List)pro.get("l"+i);			
+			hsb.append("<TR height="+trh+">");
 			if(list!=null) {
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){

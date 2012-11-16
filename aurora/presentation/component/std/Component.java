@@ -35,6 +35,9 @@ public class Component {
 
 	protected static final String PROPERTITY_MARGIN_WIDTH = "marginwidth";
 	protected static final String PROPERTITY_MARGIN_HEIGHT = "marginheight";
+	
+	public static final String THEME_DEFAULT = "default";
+	public static final String THEME_MAC = "mac";
 
 	protected String id;
 	// protected StringBuffer esb = new StringBuffer();
