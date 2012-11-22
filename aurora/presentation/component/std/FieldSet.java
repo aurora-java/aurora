@@ -23,10 +23,10 @@ public class FieldSet extends Box {
 		
 	}
 	
-	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
+	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
 		Writer out = session.getWriter();
 		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
-		super.afterBuildTop(session, model, view);
+		super.afterBuildTop(session, model, view,columns);
 	}
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,Map map,int rows, int columns,String id) throws Exception{
@@ -64,14 +64,14 @@ public class FieldSet extends Box {
 		buildHead(session,model,view, rows, columns);
 		out.write("<table width='100%' border=0");
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
-		afterBuildTop(session,model,view);
+		afterBuildTop(session,model,view,columns);
 	}
 	
-	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
-		buildFoot(session,model,view);
+	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
+		buildFoot(session,model,view,columns);
 		Writer out = session.getWriter();
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
-		if("true".equals(showmargin))out.write("<tr height='5'></tr>");
+		if("true".equals(showmargin))out.write("<tr height='5'><td colspan="+columns*2+"></td></tr>");
 		out.write("</tbody>");
 		out.write("</table>");
 		out.write("</FIELDSET>");	

@@ -61,15 +61,22 @@ public class NavBar extends ToolBar {
 		view.addChild(pageInfo);
 	}
 	private void createComplexNavBar(BuildSession session, ViewContext context) throws IOException, SAXException{
+		String theme = session.getTheme();
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		String dataset = view.getString(PROPERTITY_DATASET);
-		view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));
+		if(!THEME_MAC.equals(theme)){
+			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));			
+		}
 		view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}",session.getLocalizedPrompt("HAP_PREVIOUS_PAGE")));
-		view.addChild(createSeparator());
-		
 		CompositeLoader loader = new CompositeLoader();
-		String pagetext = "<div class='item-label' atype='currentPage' style='margin-left:2px;margin-right:2px;'>&#160;</div>";
+		if(!THEME_MAC.equals(theme)) {
+			view.addChild(createSeparator());
+		}else{
+			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
+			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
+		}
+		String pagetext = "<div class='item-label' atype='currentPage' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:2px;margin-right:2px;'>&#160;</div>";
 		CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
 		view.addChild(pageinfo);
 		
@@ -84,18 +91,22 @@ public class NavBar extends ToolBar {
 		button.put(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
 		view.addChild(button);
 		
-		String text = "<div class='item-label' atype='pageInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
+		String text = "<div class='item-label' atype='pageInfo' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
 		CompositeMap totalpage = loader.loadFromString(text,"UTF-8");
 		view.addChild(totalpage);
 		
-		view.addChild(createSeparator());
-		view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
-		view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
-		view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
-		view.addChild(createSeparator());
+		if(!THEME_MAC.equals(theme)) {
+			view.addChild(createSeparator());
+			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
+		}
+		if(!THEME_MAC.equals(theme)) {
+			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
+			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
+			view.addChild(createSeparator());
+		}
 		
 		if(view.getBoolean(PROPERTITY_PAGE_SIZE_EDITABLE, true)){
-			String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='margin-left:5px;margin-right:5px;'>    </div>";
+			String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
 			view.addChild(pagesize);
 			String comboBoxId = IDGenerator.getInstance().generate();
@@ -107,10 +118,14 @@ public class NavBar extends ToolBar {
 			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
 			comboBox.put(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(false));
 			view.addChild(comboBox);
-			String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='margin-left:5px;margin-right:5px;'>    </div>";
+			String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");
 			view.addChild(pagesize2);
-			view.addChild(createSeparator());
+			if(!THEME_MAC.equals(theme)) {
+				view.addChild(createSeparator());
+			}
+			
+			
 		}
 		String pageInfoText = "<div atype='displayInfo' class='item-label' style='float:right;'></div>";
 		CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");

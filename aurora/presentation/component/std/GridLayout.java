@@ -14,6 +14,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.FormConfig;
 
 /**
  * GridLayout.
@@ -102,12 +103,28 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 	}
 	
-	protected void buildFoot(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
+	protected void buildFoot(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
 	}
 	
-	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
+	protected void beforeBuildTop(BuildSession session, CompositeMap model,CompositeMap view,String id) throws Exception{	
 	}
 	
+	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view ,int columns) throws Exception{
+	}
+	
+	protected void afterBuildBottom(BuildSession session, CompositeMap model,CompositeMap view ,int columns) throws Exception{
+	}
+	
+	protected String getClassName(BuildSession session, CompositeMap model,CompositeMap view ) throws Exception{
+		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
+		String className = DEFAULT_TABLE_CLASS;
+		className += " " + cls; 
+		return className;
+	}
+	
+	protected String getStyle(BuildSession session, CompositeMap model,CompositeMap view ) throws Exception{
+		return view.getString(ComponentConfig.PROPERTITY_STYLE, "");
+	}
 	
 	private void buildRows(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
 		Writer out = session.getWriter();
@@ -133,13 +150,12 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, Map map, int rows, int columns,String id) throws Exception{
+		
+		beforeBuildTop(session,model,view,id);
 		Writer out = session.getWriter();
-		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
-		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
-		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
-		
+		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);		
 		
 //		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
 //		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
@@ -151,15 +167,15 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 		
-		String className = DEFAULT_TABLE_CLASS;
-		className += " " + cls;
+		String className = getClassName(session,model,view);
+		String style = getStyle(session,model,view);
 		
 		if(showBorder) {
 			cellspacing = 1;
 			className += " layout-border";
 		}
-		
 		out.write("<table border=0 class='"+className+"' id='"+id+"'");
+		
 		if(width != 0) out.write(" width=" + width);
 		if(height != 0) out.write(" height=" + height);
 		if(!"".equals(style)) {
@@ -168,14 +184,15 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);
-		afterBuildTop(session,model,view);
+		afterBuildTop(session,model,view,columns);
 	}
 	
-	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view) throws Exception{
-		buildFoot(session,model,view);
+	protected void buildBottom(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
+		buildFoot(session,model,view,columns);
 		Writer out = session.getWriter();
 		out.write("</tbody>");
-		out.write("</table>");	
+		out.write("</table>");
+		afterBuildBottom(session,model,view,columns);
 	}
 	
 	
@@ -239,7 +256,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 					}
 				}
 			}
-			buildBottom(session, model, view);
+			buildBottom(session, model, view,columns);
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
