@@ -41,6 +41,8 @@ public class CustomSourceCode {
 	public static final String KEY_SOURCE_FILE = "source_file";
 	public static final String KEY_FIELDS_ORDER = "fields_order";
 	public static final String KEY_DIMENSION_TYPE = "dimension_type";
+	
+	public static final String KEY_PLACE_HOLDER = "placeHolder";
 
 	private static final String ILLEGAL_OPERATION_FOR_ROOT = "aurora.application.features.cstm.illegal_operation_for_root";
 	private static final String ILLEGAL_POSITION_FOR_OPERATION = "aurora.application.features.cstm.illegal_position_for_operation";
@@ -467,7 +469,10 @@ public class CustomSourceCode {
 			if (isChangeName) {
 				for (Iterator it = result.getChildIterator(); it.hasNext();) {
 					CompositeMap record = (CompositeMap) it.next();
-					record.setName("record");
+					if(KEY_PLACE_HOLDER.toLowerCase().equals(record.getName().toLowerCase()))
+						it.remove();
+					else
+						record.setName("record");
 				}
 			}
 			if (re_order != null) {
