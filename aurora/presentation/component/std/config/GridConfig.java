@@ -70,7 +70,7 @@ public class GridConfig extends ComponentConfig {
 	}
 	
 	public boolean isAutoFocus(){
-		return getBoolean(PROPERTITY_AUTO_FOCUS, true);		
+		return getBoolean(PROPERTITY_AUTO_FOCUS, false);//默认改成false，防止滚动		
 	}
 	public void setAutoFocus(boolean focus){
 		putBoolean(PROPERTITY_AUTO_FOCUS, focus);
