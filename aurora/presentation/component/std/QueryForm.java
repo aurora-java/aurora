@@ -20,6 +20,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
@@ -101,12 +102,12 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			session.buildView(model, formToolBar);
 			out.write("</th></tr></thead>");
 			if(hasBody){
-				out.write("<tbody><tr><td><div class='"
-						+ DEFAULT_WRAP_CLASS + "'");
+				out.write("<tbody ");
 				if (!open) {
-					out.write(" style='height:0'");
+					out.write(" style='display:none'");
 				}
-				out.write(">");
+				out.write("><tr><td><div class='"
+						+ DEFAULT_WRAP_CLASS + "'>");
 				session.buildView(model, formBody);
 				out.write("</div></td></tr></tbody>");
 			}else open = false;
@@ -189,6 +190,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			formBody.setName("box");
 			if (height != 0)
 				formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
+			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
 			CompositeMap btn = new CompositeMap("button");
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_MORE"));

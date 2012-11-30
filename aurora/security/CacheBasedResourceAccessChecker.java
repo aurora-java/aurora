@@ -129,5 +129,9 @@ public class CacheBasedResourceAccessChecker extends AbstractLocatableObject imp
         this.accessCheckFlag = accessCheckFlag;
     }
     
+    public ICache getResourceCache(){
+    	return mResourceCache;
+    }
+    
 
 }

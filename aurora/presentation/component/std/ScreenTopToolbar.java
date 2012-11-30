@@ -21,28 +21,30 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 		return 44;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
 		Map map = view_context.getMap();
 		try {
+			
 			Writer out = session.getWriter();
 			StringBuffer sb = new StringBuffer();
 			Integer height = getComponentHeight(model, view, map);
 			sb.append("<div class='screenTopToolbar' ");
-			sb.append("style='height:").append(height).append("px");
+			sb.append("style='padding-left:4px;height:").append(height).append("px");
 			String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 			sb.append(style);
 			sb.append("'>");
-			sb.append("<div style='padding-left:4px;padding-rigth:4px'>");
+			
 			if(view != null && view.getChilds() != null) {
 				
 				Iterator it = view.getChildIterator();
 				while(it.hasNext()){
 					CompositeMap cmp = (CompositeMap)it.next();
 					String cs = cmp.getString(ComponentConfig.PROPERTITY_STYLE,"");
-					if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI()) && cmp.getName().equalsIgnoreCase("button")){
-						cs = "float:left;margin-right:1px;margin-top:2px;" + cs;
+					if(isButton(cmp.getNamespaceURI(), cmp.getName())){
+						cs = "float:left;margin-right:1px;margin-top:15px;" + cs;
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI()) &&cmp.getName().equalsIgnoreCase("separator")){
 						cs = "height:"+(height-4)+"px;margin-top:2px;float:left;margin-right:1px;" + cs;	
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI())){
@@ -54,12 +56,20 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 					sb.append(session.buildViewAsString(model, cmp));
 				}
 			}
-			sb.append("</div></div>");
+			sb.append("</div>");
 			out.write(sb.toString());
 			out.flush();
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
 		}
+	}
+	
+	public boolean isButton(String nameSpace,String name){
+		boolean isBtn = false;
+		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nameSpace)){
+			isBtn = "button".equalsIgnoreCase(name)||"roundbutton".equalsIgnoreCase(name);
+		}
+		return isBtn;
 	}
 
 	@Override

@@ -114,11 +114,11 @@ public class Form extends Box {
 		}
 		if(width != 0) out.write(" width=" + width);
 		if(height != 0) out.write(" height=" + height);
-		if(!THEME_MAC.equals(theme)){
-			if(!"".equals(style)) {
-				out.write(" style='"+style+"'");
-			}
-		}
+//		if(!THEME_MAC.equals(theme)){
+//			if(!"".equals(style)) {
+//				out.write(" style='"+style+"'");
+//			}
+//		}
 		
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);

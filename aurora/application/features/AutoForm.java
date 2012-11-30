@@ -10,12 +10,15 @@ import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
 import aurora.bm.IModelFactory;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.FormConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.service.ServiceContext;
 
 public class AutoForm implements IFeature{
 	private static final String PROPERTITY_MODEL = "model";
+	
+	private static final String PROPERTITY_ENTERDOWN_HANDLER = "enterdownhandler";
 	
 	IModelFactory mFactory;
 	CompositeMap view;
@@ -32,6 +35,7 @@ public class AutoForm implements IFeature{
 		formConfig.setCellspacing(0);
 		
 		String target = view.getString(ComponentConfig.PROPERTITY_BINDTARGET,"");
+		String handler = view.getString(PROPERTITY_ENTERDOWN_HANDLER);
 		String labelWidth = uncertain.composite.TextParser.parse(view.getString("labelwidth"), model);
 		formConfig.put("labelwidth","".equals(labelWidth)?null:labelWidth);
 		String href = view.getString(PROPERTITY_MODEL, "");
@@ -52,6 +56,12 @@ public class AutoForm implements IFeature{
 					TextFieldConfig textField = TextFieldConfig.getInstance(field.getObjectContext());
 					textField.setWidth(field.getQueryWidth());
 					if(!"".equals(target))textField.setBindTarget(target);
+					if(handler!=null){
+					EventConfig ec = EventConfig.getInstance();
+						ec.setEventName("enterdown");
+						ec.setHandler(handler);
+						textField.addEvent(ec);
+					}
 					formConfig.addChild(textField.getObjectContext());
 				}
 			}

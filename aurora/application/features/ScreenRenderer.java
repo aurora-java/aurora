@@ -187,7 +187,8 @@ public class ScreenRenderer implements IFeature {
 
             // set theme
             Cookie[] cookies = request.getCookies();
-            String appTheme = "default";
+            ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+            String appTheme = view_config.getDefaultTheme();
             if (cookies != null) {
                 for (int i = 0; i < cookies.length; i++) {
                     Cookie cookie = cookies[i];

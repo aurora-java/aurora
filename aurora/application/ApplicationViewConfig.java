@@ -18,6 +18,9 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_RADIO_SEPARATOR = "defaultradioseparator";
 	public static final String KEY_DEFAULT_PAGE_SIZE = "defaultpagesize";
 	public static final String KEY_DEFAULT_MARGIN_WIDTH = "defaultmarginwidth";
+	public static final String KEY_DEFAULT_THEME = "defaulttheme";
+	
+	private static final String DEFAULT_THEME = "default";
 
 	public String getDefaultPackage() {
 		return getString(KEY_DEFAULT_PACKAGE);
@@ -41,6 +44,14 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultTitle(String title) {
 		putString(KEY_DEFAULT_TITLE, title);
+	}
+	
+	public String getDefaultTheme() {
+		return getString(KEY_DEFAULT_THEME, DEFAULT_THEME);
+	}
+
+	public void setDefaultTheme(String theme) {
+		putString(KEY_DEFAULT_THEME, theme);
 	}
 
 	public String getDefaultLabelSeparator() {

@@ -9,7 +9,7 @@ public class ComboBoxConfig extends InputFieldConfig {
 	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
 	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
 	public static final String PROPERTITY_OPTIONS = "options";
-	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_RENDERER = "displayrenderer";
 	public static final String PROPERTITY_FETCH_RECORD = "fetchrecord";
 	
 	public static final String TAG_NAME = "comboBox";
