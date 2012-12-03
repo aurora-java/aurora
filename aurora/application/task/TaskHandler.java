@@ -244,11 +244,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		if (it == null)
 			return;
 		while (it.hasNext()) {
-			Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) it.next();
-			Object key = entry.getKey();
-			if (key.toString().startsWith("_")) {
-				it.remove();
-			}
+			it.next();
+			it.remove();
 		}
 	}
 
