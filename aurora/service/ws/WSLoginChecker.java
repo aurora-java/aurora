@@ -3,7 +3,6 @@ package aurora.service.ws;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.resource.spi.IllegalStateException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
