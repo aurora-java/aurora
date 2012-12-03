@@ -136,7 +136,9 @@ public class Form extends Box {
 	
 	protected void afterBuildBottom(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
 		String theme = session.getTheme();
-		if(THEME_MAC.equals(theme)){
+		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
+		title = session.getLocalizedPrompt(title);
+		if(THEME_MAC.equals(theme) && !"".equals(title)){
 			Writer out = session.getWriter();
 			out.write("</td></tr></table>");
 		}
