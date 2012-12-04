@@ -67,7 +67,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 	public boolean isButton(String nameSpace,String name){
 		boolean isBtn = false;
 		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nameSpace)){
-			isBtn = "button".equalsIgnoreCase(name)||"roundbutton".equalsIgnoreCase(name);
+			isBtn = Button.TAG_NAME.equalsIgnoreCase(name)||ToolBarButton.TAG_NAME.equalsIgnoreCase(name)||GridButton.TAG_NAME.equalsIgnoreCase(name);
 		}
 		return isBtn;
 	}

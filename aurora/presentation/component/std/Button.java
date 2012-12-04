@@ -11,6 +11,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Button extends Field {
 	
+	public static final String TAG_NAME = "button";
+	
 	public static final String CLASSNAME_WRAP = "item-btn";
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_TEXT_HEIGHT = "text_height";
