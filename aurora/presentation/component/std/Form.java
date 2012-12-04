@@ -89,12 +89,8 @@ public class Form extends Box {
 		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);		
 		
-//		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
-//		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-//		int width = Integer.valueOf(wstr).intValue();
-//		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
-//		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-//		int height = Integer.valueOf(hstr).intValue();
+		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
+		title = session.getLocalizedPrompt(title);
 		
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
@@ -114,11 +110,12 @@ public class Form extends Box {
 		}
 		if(width != 0) out.write(" width=" + width);
 		if(height != 0) out.write(" height=" + height);
-//		if(!THEME_MAC.equals(theme)){
-//			if(!"".equals(style)) {
-//				out.write(" style='"+style+"'");
-//			}
-//		}
+		if(THEME_MAC.equals(theme) && !"".equals(title)){
+		}else {
+			if(!"".equals(style)) {
+				out.write(" style='"+style+"'");
+			}
+		}
 		
 		out.write(" cellpadding="+cellpadding+" cellspacing="+cellspacing+">");
 		buildHead(session,model,view, rows, columns);
