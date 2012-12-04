@@ -19,6 +19,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_PAGE_SIZE = "defaultpagesize";
 	public static final String KEY_DEFAULT_MARGIN_WIDTH = "defaultmarginwidth";
 	public static final String KEY_DEFAULT_THEME = "defaulttheme";
+	public static final String KEY_DEFAULT_RESOURCE_CACHE_NAME = "resourcecachename";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -52,6 +53,14 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultTheme(String theme) {
 		putString(KEY_DEFAULT_THEME, theme);
+	}
+	
+	public String getResourceCacheName() {
+		return getString(KEY_DEFAULT_RESOURCE_CACHE_NAME, "");
+	}
+
+	public void setResourceCacheName(String theme) {
+		putString(KEY_DEFAULT_RESOURCE_CACHE_NAME, theme);
 	}
 
 	public String getDefaultLabelSeparator() {
