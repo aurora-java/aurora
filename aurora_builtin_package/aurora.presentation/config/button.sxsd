@@ -20,6 +20,33 @@
                 <!--end-->
             </ss:attributes>
         </ss:element>
+        <ss:element name="a:toolbarButton" document="导航按钮">
+            <ss:extensions>
+                <ss:extension base="a:button"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:gridButton" document="Grid按钮">
+            <ss:extensions>
+                <ss:extension base="a:toolbarButton"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="bind" document="绑定grid的id" type="ss:string" />
+                <ss:attribute name="type" document="按钮类型" type="ss:string"/>
+            </ss:attributes>
+        </ss:element>
+        <ss:element name="a:roundButton" document="圆角按钮,固定30px高度">
+            <ss:extensions>
+                <ss:extension base="a:button"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:arrowButton" document="箭头按钮,固定30px高度">
+            <ss:extensions>
+                <ss:extension base="a:button"/>
+            </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="type" document="按钮类型,left|right" type="ss:string"/>
+            </ss:attributes>
+        </ss:element>
     </ss:elements>
     <ss:categories/>
     <ss:types/>
