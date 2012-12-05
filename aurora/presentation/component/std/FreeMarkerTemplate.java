@@ -76,10 +76,11 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 				
 				sb.append(">").append(str).append("</").append(view.getPrefix()).append(":screen>");
 				CompositeLoader cl = new CompositeLoader();
-				List list = new ArrayList();
+				cl.ignoreAttributeCase();
+//				List list = new ArrayList();
 				CompositeMap c = cl.loadFromString(sb.toString(), provider.getDefaultEncoding());
-				list.add(c);
-				session.buildViews(model, list);
+//				list.add(c);
+				session.buildViews(model, c.getChilds());
 			}else{
 				Writer writer = session.getWriter();
 				writer.write(str);
