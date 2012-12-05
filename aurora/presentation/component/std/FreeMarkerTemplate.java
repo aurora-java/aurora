@@ -6,10 +6,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,9 +75,7 @@ public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 				sb.append(">").append(str).append("</").append(view.getPrefix()).append(":screen>");
 				CompositeLoader cl = new CompositeLoader();
 				cl.ignoreAttributeCase();
-//				List list = new ArrayList();
 				CompositeMap c = cl.loadFromString(sb.toString(), provider.getDefaultEncoding());
-//				list.add(c);
 				session.buildViews(model, c.getChilds());
 			}else{
 				Writer writer = session.getWriter();
