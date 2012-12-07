@@ -12,7 +12,6 @@ import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
 import uncertain.schema.Attribute;
 import uncertain.schema.Element;
-import uncertain.schema.Extension;
 import uncertain.schema.ISchemaManager;
 import aurora.application.AuroraApplication;
 import aurora.application.features.cstm.CustomSourceCode;
@@ -39,6 +38,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String PROPERTITY_DEFAULT_QUERY_HINT = "defaultqueryhint";
 	private static final String PROPERTITY_DEFAULT_QUERY_PROMPT = "defaultqueryprompt";
 	private static final String PROPERTITY_QUERY_HOOK = "queryhook";
+	private static final String PROPERTITY_CREATE_SEARCH_BOX = "createsearchbox";
 	IObjectRegistry	mObjectRegistry;
 	private ISchemaManager schemaManager ;
 	private String ds;
@@ -137,26 +137,32 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		String queryId = id + "_query";
 		String style = "";
 		String searchFunction = "function(){$('" + id + "').doSearch()}";
+		boolean createSearchBox = view.getBoolean(PROPERTITY_CREATE_SEARCH_BOX, true);
 		if (null == formToolBar || null == formToolBar.getChildIterator()) {
-			formToolBar = new CompositeMap("hBox");
-			formToolBar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			searchField = new CompositeMap("textField");
-			searchField
-					.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			searchField.putString(ComponentConfig.PROPERTITY_STYLE,
-					"width:100%");
-			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
-			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
-			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(Button.PROPERTITY_CLICK, searchFunction);
-			formToolBar.addChild(searchField);
-			formToolBar.addChild(btn);
+			if(null == formToolBar){
+				formToolBar = new CompositeMap("hBox");
+				formToolBar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			}
+			if(createSearchBox){
+				searchField = new CompositeMap("textField");
+				searchField
+						.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				searchField.putString(ComponentConfig.PROPERTITY_STYLE,
+						"width:100%");
+				CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
+				btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
+				btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
+				btn.putString(Button.PROPERTITY_CLICK, searchFunction);
+				formToolBar.addChild(searchField);
+				formToolBar.addChild(btn);
+			}
 		} else {
-			searchField = findTextField(formToolBar);
-			formToolBar.setName("hBox");
-			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE);
+			if(createSearchBox)
+				searchField = findTextField(formToolBar);
 		}
+		formToolBar.setName("hBox");
+		style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
 		if (null != searchField) {
 			searchField.putString(ComponentConfig.PROPERTITY_ID, queryId);
 			CompositeMap events = searchField.getChild(EventConfig.PROPERTITY_EVENTS);
@@ -193,6 +199,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
 			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			btn.putString(ComponentConfig.PROPERTITY_STYLE, "float:right");
 			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_MORE"));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
 			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
