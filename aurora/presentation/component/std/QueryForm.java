@@ -76,7 +76,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 
-		String className = DEFAULT_TABLE_CLASS + " layout-form layout-title "
+		String className = DEFAULT_TABLE_CLASS + " query-form layout-title"
 				+ view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String title = session.getLocalizedPrompt(view.getString(
 				PROPERTITY_TITLE, ""));
@@ -98,7 +98,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				out.write("<tr><th class='" + DEFAULT_HEAD_CLASS + "'>" + title
 						+ "</th></tr>");
 			}
-			out.write("<tr><th>");
+			out.write("<tr><th class='query_form_head'>");
 			session.buildView(model, formToolBar);
 			out.write("</th></tr></thead>");
 			if(hasBody){
@@ -145,7 +145,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 					.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			searchField.putString(ComponentConfig.PROPERTITY_STYLE,
 					"width:100%");
-			CompositeMap btn = new CompositeMap("button");
+			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
@@ -191,7 +191,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			if (height != 0)
 				formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
 			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
-			CompositeMap btn = new CompositeMap("button");
+			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_MORE"));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
