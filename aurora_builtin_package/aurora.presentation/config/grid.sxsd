@@ -7,10 +7,9 @@
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
                 <ss:attribute name="navBarType" default="complex" document="导航条类型" type="a:navBarType"/>
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
-                <!--add by shengbo.huang @2011/11/3-->
-                <ss:attribute name="autoFocus" document="自动对焦" type="ss:boolean"/>
+                <ss:attribute name="autoFocus" default="false" document="自动对焦" type="ss:boolean"/>
+                <ss:attribute name="autoAppend" default="true" document="自动新增行" type="ss:boolean"/>
                 <ss:attribute name="showRowNumber" document="是否显示行号" type="ss:boolean"/>
-                <!--end-->
                 <ss:attribute name="canWheel" default="true" document="能否通过鼠标滚动来换行" type="ss:boolean"/>
                 <ss:attribute name="canPaste" default="false" document="是否允許使用粘贴功能来增加整行，该功能只有在IE下才有效。" type="ss:boolean"/>
                 <ss:attribute name="rowRenderer" document="通过回调函数返回的样式表渲染指定行\n回调函数function(record,rowIndex){return css}\n返回值css值可以是class或者style字符串,也可以是class和style字符串数组"/>
@@ -31,6 +30,7 @@
                 <ss:attribute name="id" document="列ID,主要用于个性化中"/>
                 <ss:attribute name="name" document="列的field的name"/>
                 <ss:attribute name="prompt" document="列名" type="bm:Prompts"/>
+                <ss:attribute name="hidden" default="false" document="隐藏列" type="ss:boolean"/>
                 <ss:attribute name="width" document="列的宽度" type="ss:int"/>
                 <ss:attribute name="sortable" default="false" document="是否可按照次字段排序" type="ss:boolean"/>
                 <ss:attribute name="lock" default="false" document="是否锁定" type="ss:boolean"/>
@@ -43,6 +43,7 @@
                 <ss:attribute name="percentWidth" document="table节点专用。列的百分比宽度,单位是(%)" type="ss:int"/>
                 <ss:attribute name="forExport" default="true" document="是否对该列进行导出" type="ss:boolean"/>
                 <ss:attribute name="autoAdjust" default="true" document="是否自动调整列宽" type="ss:boolean"/>
+                <ss:attribute name="maxAdjustWidth" default="300" document="列宽自动调整的最大值，最大值不会超过grid的宽度" type="ss:int"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:column"/>
@@ -76,7 +77,6 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
         </ss:element>
-        <!--add by shengbo.huang @2011/11/3-->
         <ss:element name="a:treeGrid">
             <ss:attributes>
                 <ss:attribute name="expandField" document="展开字段" type="ss:String"/>
@@ -96,6 +96,7 @@
         </ss:element>
         <ss:element name="a:autoGrid">
             <ss:attributes>
+                <ss:attribute name="autoFocus" default="false" document="自动对焦" type="ss:boolean"/>
                 <ss:attribute name="model" document="指定model" type="ss:String"/>
                 <ss:attribute name="navBar" document="是否具有导航条" type="ss:boolean"/>
                 <ss:attribute name="enablePageSize" document="启用页面大小" type="ss:int"/>
@@ -111,7 +112,6 @@
                 <ss:extension base="a:Component"/>
             </ss:extensions>
         </ss:element>
-        <!--end-->
     </ss:elements>
     <ss:categories/>
     <ss:types>
