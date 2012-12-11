@@ -141,12 +141,7 @@
 		<u:configurable-instance configFile="task.config" >
 			<u:description>任务处理器</u:description>
 		</u:configurable-instance>
-		<u:configurable-instance configFile="excel-task.config" >
-			<u:description>异步生成Excel</u:description>
-			<u:implement-types>
-				<u:type typeName="aurora.application.task.excel.IExcelTask" />
-			</u:implement-types>
-		</u:configurable-instance>
+
 		<u:configurable-instance configFile="bm-cached-join.config" >
 			<u:description>关联数据缓存</u:description>
 			<u:required-instances>
