@@ -71,7 +71,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	private Queue<CompositeMap> taskQueue = new ConcurrentLinkedQueue<CompositeMap>();
 	private ExecutorService mainThreadPool;
-	private HandleTask handleTask;
+	private TaskExecutorManager taskExecutorManager;
 	protected String topic = DEFAULT_TOPIC;
 	protected String message = DEFAULT_MESSAGE;
 	private Queue<Connection> connectionQueue = new ConcurrentLinkedQueue<Connection>();
@@ -126,12 +126,11 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		});
 
 		mainThreadPool = Executors.newFixedThreadPool(2);
-		GetTask getTask = new GetTask();
-		handleTask = new HandleTask(threadCount);
-		mainThreadPool.submit(getTask);
-		mainThreadPool.submit(handleTask);
+		TaskFetcher taskFetcher = new TaskFetcher();
+		taskExecutorManager = new TaskExecutorManager(threadCount);
+		mainThreadPool.submit(taskFetcher);
+		mainThreadPool.submit(taskExecutorManager);
 		resetUnfinishedTaskStatus(stub);
-
 	}
 
 	private void resetUnfinishedTaskStatus(IMessageStub messageStub) {
@@ -299,7 +298,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			proc = procedureManager.loadProcedure(procedure_name);
 			executeProc(taskId, proc,context,connection);
 		} catch (Exception ex) {
-			throw BuiltinExceptionFactory.createResourceLoadException(this, procedure_name, ex);
+			throw BuiltinExceptionFactory.createResourceLoadException(null, procedure_name, ex);
 		}
 	}
 
@@ -310,7 +309,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			proc = procedureManager.createProcedure(procedure_config);
 			executeProc(taskId, proc, context,connection);
 		} catch (Exception ex) {
-			throw BuiltinExceptionFactory.createResourceLoadException(this, String.valueOf(taskId), ex);
+			throw BuiltinExceptionFactory.createResourceLoadException(null, String.valueOf(taskId), ex);
 		}
 	}
 
@@ -513,7 +512,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			fetchNewTaskLock.notify();
 		}
 		try {
-			handleTask.shutdown();
+			taskExecutorManager.shutdown();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "", e);
 		}
@@ -552,7 +551,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		return taskRecord.getInt(TaskTableFields.TASK_ID, -1);
 	}
 
-	class GetTask implements Callable<String> {
+	class TaskFetcher implements Callable<String> {
 
 		Connection connection;
 
@@ -579,11 +578,13 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							}
 							logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(task));
 							addToTaskQueue(task);
-							int record_count = task.getInt("record_count", -1);
-							if (record_count > 1) {
-								hasNext = true;
-							} else {
-								hasNext = false;
+							hasNext = false;
+							//如果有线程处于空闲，并且还有任务记录需要处理，则继续从数据空获取。
+							if(connectionQueue.size()<=0){
+								int record_count = task.getInt("record_count", -1);
+								if (record_count > 1) {
+									hasNext = true;
+								}
 							}
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, "", e);
@@ -613,12 +614,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		}
 	}
 
-	class HandleTask implements Callable<String>, ILifeCycle {
+	class TaskExecutorManager implements Callable<String>, ILifeCycle {
 		int mThreadCount;
 		ExecutorService timeOutService;
 		ExecutorService handleTaskService;
 
-		public HandleTask(int threadCount) {
+		public TaskExecutorManager(int threadCount) {
 			mThreadCount = threadCount;
 		}
 
@@ -644,8 +645,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							Thread.sleep(1000);
 							continue;
 						}
-						TaskExecutor task = new TaskExecutor(timeOutService, taskRecord);
-						handleTaskService.submit(task);
+						TaskExecutor taskExecutor = new TaskExecutor(timeOutService, taskRecord);
+						handleTaskService.submit(taskExecutor);
 					} catch (InterruptedException e) {
 						// ignore
 					} catch (Throwable e) {
@@ -748,6 +749,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			} finally {
 				connectionQueue.add(connection);
 			}
+			//如果任务队列空了，就去系统查看是否有新任务需要处理
+			if(taskQueue.size() == 0){
+				synchronized (fetchNewTaskLock) {
+					fetchNewTaskLock.notify();
+				}
+			}
 			ServiceThreadLocal.remove();
 			return "finished";
 		}
@@ -804,6 +811,9 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	@Override
 	public void onMessage(IMessage message) {
 		try {
+			//还有任务未处理，暂时不接收新任务。并在线程都执行完成后，会查看是否有新任务。
+			if(taskQueue.size()>0)
+				return;
 			logger.log(Level.CONFIG, "receive a messsage:" + message.getText());
 			synchronized (fetchNewTaskLock) {
 				fetchNewTaskLock.notify();
