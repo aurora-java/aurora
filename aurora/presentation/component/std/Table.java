@@ -17,7 +17,6 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
-import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
@@ -75,6 +74,7 @@ public class Table extends Component {
 		if(!tc.isAutoAppend()) addConfig(TableConfig.PROPERTITY_AUTO_APPEND, new Boolean(tc.isAutoAppend()));
 		addConfig(TableConfig.PROPERTITY_CAN_WHEEL, new Boolean(tc.isCanWheel()));
 		map.put(CONFIG, getConfigString());
+		map.put(TableConfig.PROPERTITY_TAB_INDEX, new Integer(tc.getTabIndex()));
 	}
 	private void processSelectable(Map map,CompositeMap view,CompositeMap cols){
 		Boolean selectable = new Boolean(false);
