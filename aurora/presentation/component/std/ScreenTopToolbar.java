@@ -32,7 +32,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 			StringBuffer sb = new StringBuffer();
 			Integer height = getComponentHeight(model, view, map);
 			sb.append("<div class='screenTopToolbar' ");
-			sb.append("style='padding-left:4px;height:").append(height).append("px");
+			sb.append("style='padding-left:4px;height:").append(height).append("px;");
 			String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 			sb.append(style);
 			sb.append("'>");
