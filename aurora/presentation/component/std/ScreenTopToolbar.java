@@ -42,9 +42,13 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 				Iterator it = view.getChildIterator();
 				while(it.hasNext()){
 					CompositeMap cmp = (CompositeMap)it.next();
-					String cs = cmp.getString(ComponentConfig.PROPERTITY_STYLE,"");
+					String cs = cmp.getString(ComponentConfig.PROPERTITY_STYLE,"margin-left:5px;");
 					if(isButton(cmp.getNamespaceURI(), cmp.getName())){
-						cs = "float:left;margin-right:1px;margin-top:15px;" + cs;
+						String marginTop = "3px;";
+						if(ToolBarButton.TAG_NAME.equalsIgnoreCase(cmp.getName())||GridButton.TAG_NAME.equalsIgnoreCase(cmp.getName())) {
+							marginTop = "15px;";						
+						}
+						cs = "float:left;margin-right:1px;margin-top:" + marginTop + cs;
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI()) &&cmp.getName().equalsIgnoreCase("separator")){
 						cs = "height:"+(height-4)+"px;margin-top:2px;float:left;margin-right:1px;" + cs;	
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI())){

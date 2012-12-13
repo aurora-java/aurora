@@ -35,6 +35,7 @@ public class Upload extends Component {
 	public static final String PROPERTITY_DOWNLOAD_URL = "downloadurl";
 	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
+	public static final String PROPERTITY_SHOW_LIST = "showlist";
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -81,6 +82,9 @@ public class Upload extends Component {
 		
 		tb_columns.addChild(tb_column);
 		try {
+			boolean showList = view.getBoolean(PROPERTITY_SHOW_LIST, true);
+			map.put("linestyle", showList ? "block" : "none");
+			if(showList)
 			map.put("up_table", session.buildViewAsString(model, tb));
 		} catch (Exception e) {
 			throw new IOException(e.getMessage());

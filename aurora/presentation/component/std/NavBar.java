@@ -15,6 +15,7 @@ import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 
+@SuppressWarnings("unchecked")
 public class NavBar extends ToolBar {
 	
 	public static final String PROPERTITY_DATASET = "dataset";
@@ -25,7 +26,7 @@ public class NavBar extends ToolBar {
 	protected int getDefaultWidth() {
 		return -1;
 	}
-	//TODO:多语言!
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		try {
 			CompositeMap view = context.getView();
@@ -60,6 +61,7 @@ public class NavBar extends ToolBar {
 		CompositeMap pageInfo = loader.loadFromString(pageInfoText,"UTF-8");
 		view.addChild(pageInfo);
 	}
+	
 	private void createComplexNavBar(BuildSession session, ViewContext context) throws IOException, SAXException{
 		String theme = session.getTheme();
 		Map map = context.getMap();
@@ -98,8 +100,6 @@ public class NavBar extends ToolBar {
 		if(!THEME_MAC.equals(theme)) {
 			view.addChild(createSeparator());
 			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
-		}
-		if(!THEME_MAC.equals(theme)) {
 			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
 			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
 			view.addChild(createSeparator());

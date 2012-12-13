@@ -158,6 +158,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				formToolBar.addChild(btn);
 			}
 		} else {
+			bindDataset(formToolBar);				
 			if(createSearchBox)
 				searchField = findTextField(formToolBar);
 		}
