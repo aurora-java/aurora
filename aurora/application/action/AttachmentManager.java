@@ -85,6 +85,12 @@ public class AttachmentManager extends AbstractEntry{
 		String actionType = getActionType();
 		if("upload".equalsIgnoreCase(actionType)){
 			doUpload(context);
+			runner.stop();
+			ProcedureRunner preRunner=runner;
+			while(preRunner.getCaller()!=null){
+				preRunner=preRunner.getCaller();
+				preRunner.stop();
+			}
 		}else if("delete".equalsIgnoreCase(actionType)){
 			doDelete(context);
 		}else if("download".equalsIgnoreCase(actionType)){
