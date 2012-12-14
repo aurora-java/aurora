@@ -19,11 +19,11 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
+@SuppressWarnings("unchecked")
 public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String DEFAULT_TABLE_CLASS = "layout-table";
 	private static final String DEFAULT_WRAP_CLASS = "form_body_wrap";
@@ -39,6 +39,13 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String PROPERTITY_DEFAULT_QUERY_PROMPT = "defaultqueryprompt";
 	private static final String PROPERTITY_QUERY_HOOK = "queryhook";
 	private static final String PROPERTITY_CREATE_SEARCH_BOX = "createsearchbox";
+	private static final String PROPERTITY_CREATE_SEARCH_BUTTON = "createsearchbutton";
+	
+	
+	private static final String DEFAULT_QUERY_PROMPT = "HAP_QUERY";
+	private static final String DEFAULT_MORE_PROMPT = "HAP_MORE";
+	private static final String DEFAUTL_BUTTON_THEME = "item-rbtn-gray";
+	
 	IObjectRegistry	mObjectRegistry;
 	private ISchemaManager schemaManager ;
 	private String ds;
@@ -54,6 +61,8 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	public QueryForm( IObjectRegistry reg ) {
 		mObjectRegistry = reg;
 	}
+	
+	
 	public void buildView(BuildSession session, ViewContext view_context)
 			throws IOException, ViewCreationException {
 		schemaManager = (ISchemaManager) mObjectRegistry.getInstanceOfType(ISchemaManager.class);
@@ -76,8 +85,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 
-		String className = DEFAULT_TABLE_CLASS + " query-form layout-title"
-				+ view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
+		String className = DEFAULT_TABLE_CLASS + " query-form layout-title" + view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String title = session.getLocalizedPrompt(view.getString(
 				PROPERTITY_TITLE, ""));
 		String queryhook = view.getString(PROPERTITY_QUERY_HOOK);
@@ -86,17 +94,14 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		try {
 			processFormToolBar(view, session, model);
 			boolean hasBody = processFormBody(view, session, model, height);
-			out.write("<table cellspacing='0' cellpadding='0' class='"
-					+ className + "' id='" + id + "'");
-			if (width != 0)
-				style = "width:" + width + "px;" + style;
+			out.write("<table cellspacing='0' cellpadding='0' class='" + className + "' id='" + id + "'");
+			if (width != 0) style = "width:" + width + "px;" + style;
 			if (!"".equals(style)) {
 				out.write(" style='" + style + "'");
 			}
 			out.write("><thead>");
 			if (!"".equals(title)) {
-				out.write("<tr><th class='" + DEFAULT_HEAD_CLASS + "'>" + title
-						+ "</th></tr>");
+				out.write("<tr><th class='" + DEFAULT_HEAD_CLASS + "'>" + title + "</th></tr>");
 			}
 			out.write("<tr><th class='query_form_head'>");
 			session.buildView(model, formToolBar);
@@ -106,8 +111,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				if (!open) {
 					out.write(" style='display:none'");
 				}
-				out.write("><tr><td><div class='"
-						+ DEFAULT_WRAP_CLASS + "'>");
+				out.write("><tr><td><div class='" + DEFAULT_WRAP_CLASS + "'>");
 				session.buildView(model, formBody);
 				out.write("</div></td></tr></tbody>");
 			}else open = false;
@@ -128,8 +132,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		return null;
 	}
 
-	private void processFormToolBar(CompositeMap view, BuildSession session,
-			CompositeMap model) throws Exception {
+	private void processFormToolBar(CompositeMap view, BuildSession session, CompositeMap model) throws Exception {
 		formToolBar = view.getChild(FORM_TOOL_BAR);
 		CompositeMap searchField = null;
 		String hint = view.getString(PROPERTITY_DEFAULT_QUERY_HINT);
@@ -138,32 +141,46 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		String style = "";
 		String searchFunction = "function(){$('" + id + "').doSearch()}";
 		boolean createSearchBox = view.getBoolean(PROPERTITY_CREATE_SEARCH_BOX, true);
+		boolean createSearchButton = view.getBoolean(PROPERTITY_CREATE_SEARCH_BUTTON, true);
 		if (null == formToolBar || null == formToolBar.getChildIterator()) {
 			if(null == formToolBar){
 				formToolBar = new CompositeMap("hBox");
 				formToolBar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			} else {
+				formToolBar.setName("hBox");
+				style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
 			}
 			if(createSearchBox){
-				searchField = new CompositeMap("textField");
-				searchField
-						.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-				searchField.putString(ComponentConfig.PROPERTITY_STYLE,
-						"width:100%");
+				searchField = new CompositeMap(TextFieldConfig.TAG_NAME);
+				searchField.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				searchField.putString(ComponentConfig.PROPERTITY_STYLE,"width:100%");
 				CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 				btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-				btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_QUERY"));
+				btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
+				btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
 				btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
 				btn.putString(Button.PROPERTITY_CLICK, searchFunction);
+				formToolBar.putString("style", "width:100%;"+style);
 				formToolBar.addChild(searchField);
 				formToolBar.addChild(btn);
 			}
 		} else {
+			formToolBar.setName("hBox");
 			bindDataset(formToolBar);				
-			if(createSearchBox)
-				searchField = findTextField(formToolBar);
+			if(createSearchBox) searchField = findTextField(formToolBar);
+			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
+			if(createSearchButton){
+				CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
+				btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
+				btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
+				btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
+				btn.putString(Button.PROPERTITY_CLICK, searchFunction);
+				formToolBar.putString("style", "width:100%;"+style);
+				formToolBar.addChild(btn);
+			}
 		}
-		formToolBar.setName("hBox");
-		style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
+		
 		if (null != searchField) {
 			searchField.putString(ComponentConfig.PROPERTITY_ID, queryId);
 			CompositeMap events = searchField.getChild(EventConfig.PROPERTITY_EVENTS);
@@ -172,7 +189,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				events.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 				searchField.addChild(events);
 			}
-			CompositeMap event = new CompositeMap("event");
+			CompositeMap event = new CompositeMap(EventConfig.TAG_NAME);
 			event.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			event.putString(EventConfig.PROPERTITY_EVENT_NAME, "enterdown");
 			event.putString(EventConfig.PROPERTITY_EVENT_HANDLER, searchFunction);
@@ -181,30 +198,27 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				searchField.putString(TextFieldConfig.PROPERTITY_EMPTYTEXT,session.getLocalizedPrompt(hint));
 			}
 			if (null != queryPrompt) {
-				searchField.putString(ComponentConfig.PROPERTITY_PROMPT,
-						session.getLocalizedPrompt(queryPrompt));
+				searchField.putString(ComponentConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(queryPrompt));
 			}
 		}
 		formToolBar.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
 		formToolBar.putString("style", "width:100%;"+style);
 	}
 
-	private boolean processFormBody(CompositeMap view, BuildSession session,
-			CompositeMap model, int height) throws Exception {
+	private boolean processFormBody(CompositeMap view, BuildSession session, CompositeMap model, int height) throws Exception {
 		formBody = view.getChild(FORM_BODY);
 		if (null != formBody && null != formBody.getChildIterator()) {
 			bindDataset(formBody);
 			formBody.setName("box");
-			if (height != 0)
-				formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
-			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
+			if (height != 0) formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
+//			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
 			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+			btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
 			btn.putString(ComponentConfig.PROPERTITY_STYLE, "float:right");
-			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt("HAP_MORE"));
+			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_MORE_PROMPT));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id
-					+ "').trigger()}");
+			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id + "').trigger()}");
 			formToolBar.addChild(btn);
 			return true;
 		}
@@ -232,9 +246,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		}
 	}
 	private CompositeMap findTextField(CompositeMap parent) {
-		boolean findTextField = false;
-		QualifiedName qName = new QualifiedName(
-				AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "textField");
+		QualifiedName qName = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, TextFieldConfig.TAG_NAME);
 		if (null != parent) {
 			Iterator it = parent.getChildIterator();
 			if (null != it) {
