@@ -101,6 +101,8 @@ public class WSDLServlet extends HttpServlet {
 			url.append("?");
 			url.append(request.getQueryString());
 		}
-		return url.toString();
+		String request_url = url.toString();
+		String autocrud = request_url.replace("wsdl", "autocrud");
+		return autocrud;
 	}
 }
