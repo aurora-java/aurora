@@ -75,10 +75,10 @@ public class GridConfig extends ComponentConfig {
 	public void setAutoFocus(boolean focus){
 		putBoolean(PROPERTITY_AUTO_FOCUS, focus);
 	}
-	public boolean isAutoAppend(){
-		return getBoolean(PROPERTITY_AUTO_APPEND, true);		
+	public Boolean isAutoAppend(){
+		return getBoolean(PROPERTITY_AUTO_APPEND);		
 	}
-	public void setAutoAppend(boolean append){
+	public void setAutoAppend(Boolean append){
 		putBoolean(PROPERTITY_AUTO_APPEND, append);
 	}
 	public boolean isCanPaste(){

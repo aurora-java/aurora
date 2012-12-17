@@ -21,6 +21,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_THEME = "defaulttheme";
 	public static final String KEY_DEFAULT_RESOURCE_CACHE_NAME = "resourcecachename";
 	public static final String KEY_DEFAULT_AUTO_COUNT = "defaultautocount";
+	public static final String KEY_DEFAULT_AUTO_APPEND = "defaultautoappend";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -94,6 +95,14 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultAutoCount(boolean autoCount) {
 		putBoolean(KEY_DEFAULT_AUTO_COUNT, autoCount);
+	}
+	
+	public boolean getDefaultAutoAppend() {
+		return getBoolean(KEY_DEFAULT_AUTO_APPEND,false);
+	}
+
+	public void setDefaultAutoAppend(boolean autoAppend) {
+		putBoolean(KEY_DEFAULT_AUTO_APPEND, autoAppend);
 	}
 
 	public int getDefaultPageSize() {

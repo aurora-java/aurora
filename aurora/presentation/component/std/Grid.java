@@ -91,10 +91,12 @@ public class Grid extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		CompositeMap view = context.getView();
 		int mDefaultMarginSize = -1;
+		boolean autoAppend = false;
 		if (mApplicationConfig != null) {
 	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 	   	     if (view_config != null) {
-	   	    	mDefaultMarginSize = view_config.getDefaultMarginWidth();           
+	   	    	mDefaultMarginSize = view_config.getDefaultMarginWidth();          
+	   	    	autoAppend = view_config.getDefaultAutoAppend();
 	   	     }
 	   	     if(mDefaultMarginSize != -1){
 	   	    	 view.putInt(PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
@@ -126,7 +128,9 @@ public class Grid extends Component {
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
-		if(!gc.isAutoAppend()) addConfig(GridConfig.PROPERTITY_AUTO_APPEND, new Boolean(gc.isAutoAppend()));
+		
+		Boolean isAutoAppend = (gc.isAutoAppend() != null) ? gc.isAutoAppend() : autoAppend;
+		addConfig(GridConfig.PROPERTITY_AUTO_APPEND,isAutoAppend);
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
 		
