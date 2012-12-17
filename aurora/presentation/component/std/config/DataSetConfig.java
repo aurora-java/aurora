@@ -162,11 +162,11 @@ public class DataSetConfig extends ComponentConfig {
 		putInt(PROPERTITY_PAGESIZE, size);
 	}
 	
-	public void setAutoCount(boolean autocount){
+	public void setAutoCount(Boolean autocount){
 		putBoolean(PROPERTITY_AUTO_COUNT, autocount);
 	}
-	public boolean isAutoCount(){
-		return getBoolean(PROPERTITY_AUTO_COUNT, true);
+	public Boolean isAutoCount(){
+		return getBoolean(PROPERTITY_AUTO_COUNT);
 	}
 	
 	public void setSelectable(boolean selectable){

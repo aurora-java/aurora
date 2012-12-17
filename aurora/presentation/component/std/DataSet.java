@@ -83,10 +83,12 @@ public class DataSet extends Component {
 		JSONArray fieldList = new JSONArray(); 
 		
 		int mDefaultPageSize = -1;
+		boolean autoCount = true;
 		if (mApplicationConfig != null) {
 	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 	   	     if (view_config != null) {
-	   	    	mDefaultPageSize = view_config.getDefaultPageSize();           
+	   	    	mDefaultPageSize = view_config.getDefaultPageSize();      
+	   	    	autoCount = view_config.getDefaultAutoCount();
 	   	     }
 	   	}
 		
@@ -303,7 +305,9 @@ public class DataSet extends Component {
 		}
 		int page_size = mDefaultPageSize < 0 ? dsc.getPageSize() : mDefaultPageSize;
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(page_size));
-		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, new Boolean(dsc.isAutoCount()));
+		
+		Boolean isAutoCount = (dsc.isAutoCount() != null) ? dsc.isAutoCount() : autoCount;
+		addConfig(DataSetConfig.PROPERTITY_AUTO_COUNT, isAutoCount);
 		if(dsc.getSortType() !=null) addConfig(DataSetConfig.PROPERTITY_SORT_TYPE, dsc.getSortType());		
 		if(dsc.getNotification() !=null) addConfig(DataSetConfig.PROPERTITY_NOTIFICATION, dsc.getNotification());
 		

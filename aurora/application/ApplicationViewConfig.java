@@ -20,6 +20,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_MARGIN_WIDTH = "defaultmarginwidth";
 	public static final String KEY_DEFAULT_THEME = "defaulttheme";
 	public static final String KEY_DEFAULT_RESOURCE_CACHE_NAME = "resourcecachename";
+	public static final String KEY_DEFAULT_AUTO_COUNT = "defaultautocount";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -85,6 +86,14 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultRadioSeparator(String radioseparator) {
 		putString(KEY_DEFAULT_RADIO_SEPARATOR, radioseparator);
+	}
+	
+	public boolean getDefaultAutoCount() {
+		return getBoolean(KEY_DEFAULT_AUTO_COUNT,true);
+	}
+
+	public void setDefaultAutoCount(boolean autoCount) {
+		putBoolean(KEY_DEFAULT_AUTO_COUNT, autoCount);
 	}
 
 	public int getDefaultPageSize() {
