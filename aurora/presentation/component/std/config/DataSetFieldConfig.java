@@ -17,6 +17,8 @@ public class DataSetFieldConfig extends DynamicObject  {
     public static final String PROPERTITY_VALIDATOR = "validator";
     public static final String PROPERTITY_DEFAULTVALUE = "defaultvalue";   
     public static final String PROPERTITY_TOOLTIP = "tooltip";
+    public static final String PROPERTITY_AUTO_COMPLETE = "autocomplete";
+    public static final String PROPERTITY_AUTO_COMPLETE_FIELD = "autocompletefield";
     
     public static CompositeMap createContext(CompositeMap map,String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -63,7 +65,19 @@ public class DataSetFieldConfig extends DynamicObject  {
     public void setEditable(boolean editable){
     	putBoolean(PROPERTITY_EDITABLE, editable);
     }
+    public boolean getAutoComplete(){
+    	return getBoolean(PROPERTITY_AUTO_COMPLETE, false);
+    }
+    public void setAutoComplete(boolean autocomplete){
+    	putBoolean(PROPERTITY_AUTO_COMPLETE, autocomplete);
+    }
+    public void setAutoCompleteField(String autocompletefield){
+    	putString(PROPERTITY_AUTO_COMPLETE_FIELD, autocompletefield);
+    }
     
+    public String getAutoCompleteField(){
+    	return getString(PROPERTITY_AUTO_COMPLETE_FIELD);
+    }
     
     public String getPrompt(){
     	return getString(PROPERTITY_PROMPT);

@@ -13,8 +13,6 @@ import aurora.presentation.component.std.config.LovConfig;
 
 public class Lov extends TextField {
 	
-	private static final String CONFIG_CONTEXT = "context";
-	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
@@ -23,7 +21,6 @@ public class Lov extends TextField {
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-23));
 		
-		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
 		LovConfig lc = LovConfig.getInstance(view);
 		addConfig(LovConfig.PROPERTITY_LOV_URL, lc.getLovUrl());
 		addConfig(LovConfig.PROPERTITY_TITLE, lc.getTitle());

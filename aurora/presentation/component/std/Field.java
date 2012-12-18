@@ -31,7 +31,9 @@ public class Field extends Component {
 
 	protected static final String CLASSNAME_NOTBLANK = "item-notBlank";
 	protected static final String CLASSNAME_READONLY = "item-readOnly";
-
+	
+	private static final String CONFIG_CONTEXT = "context";
+	
 
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
@@ -51,7 +53,7 @@ public class Field extends Component {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
-		
+		if(session.getContextPath()!=null) addConfig(CONFIG_CONTEXT,session.getContextPath()+"/");
 		/** 是否为空 **/
 		boolean notBlank = view.getBoolean(PROPERTITY_REQUIRED, false);
 		map.put(PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));

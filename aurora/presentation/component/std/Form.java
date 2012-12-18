@@ -111,6 +111,7 @@ public class Form extends Box {
 		if(width != 0) out.write(" width=" + width);
 		if(height != 0) out.write(" height=" + height);
 		if(THEME_MAC.equals(theme) && !"".equals(title)){
+			out.write(" style='width:100%'");
 		}else {
 			if(!"".equals(style)) {
 				out.write(" style='"+style+"'");
