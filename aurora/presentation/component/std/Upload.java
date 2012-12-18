@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
 
@@ -21,6 +24,7 @@ import aurora.presentation.component.std.config.TableConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
+import aurora.service.http.HttpServiceInstance;
 
 public class Upload extends Component {
 	
@@ -112,6 +116,8 @@ public class Upload extends Component {
 		String downloadUrl = view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc");
 		map.put(PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(downloadUrl, model));
 		
+		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
+		map.put("sessionId", serviceInstance.getRequest().getSession().getId());
 		map.put(CONFIG, getConfigString());
 	}
 }
