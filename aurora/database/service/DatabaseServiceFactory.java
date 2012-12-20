@@ -228,7 +228,7 @@ public class DatabaseServiceFactory extends AbstractLocatableObject implements I
 		try {
 			service = new BusinessModelService(this, config, model, context_map);
 			config.addParticipant(service);
-			config.fireEvent(E_PrepareBusinessModel.EVENT_NAME, new Object[] { model });
+			config.fireEvent(E_PrepareBusinessModel.EVENT_NAME, new Object[] { model, context_map });
 		} catch (Exception ex) {
 			throw new RuntimeException("Error when creating business model service " + model.getName(), ex);
 		}
