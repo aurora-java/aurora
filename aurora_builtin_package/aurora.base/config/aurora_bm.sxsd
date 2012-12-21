@@ -153,6 +153,7 @@
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:description" document="描述本BM功能"/>
+        <ss:element name="bm:count-sql" document="用于计算记录总数的sql语句" type="ss:string"/>
         <ss:element name="bm:model">
             <ss:attributes>
                 <ss:attribute name="baseTable" document="对应的数据库基表"/>
@@ -170,6 +171,7 @@
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="bm:description"/>
+                <ss:element ref="bm:count-sql"/>
                 <ss:element document="对BM操作中发生的异常，定义其描述信息" ref="e:exception-descriptor-config"/>
             </ss:elements>
             <ss:arrays>
