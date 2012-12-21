@@ -20,7 +20,7 @@ public class DefaultExceptionDescriptor implements IExceptionDescriptor {
     public CompositeMap process( ServiceContext context, Throwable exception ){
         ErrorMessage msg = new ErrorMessage(exception.getClass().getName(), exception.getMessage(), null);
         CompositeMap map = msg.getObjectContext();
-        map.put("stackTrace", StackTraceUtil.toString(exception) );
+        //map.put("stackTrace", StackTraceUtil.toString(exception) );
         return map;
     }
 
