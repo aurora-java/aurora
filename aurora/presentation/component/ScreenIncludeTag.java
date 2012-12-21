@@ -9,6 +9,7 @@ import uncertain.exception.GeneralException;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.util.template.ITagContent;
 import aurora.presentation.BuildSession;
+import aurora.presentation.ViewContext;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 
@@ -33,11 +34,22 @@ public class ScreenIncludeTag implements ITagContent {
     }
 
     public String getContent(CompositeMap context) {
-        CompositeMap root = context.getRoot();
+        BuildSession session = null;
+        CompositeMap root = null;
+        
+        ViewContext view_context = ViewContext.getViewContext(context);
+        if(view_context!=null){
+            root = view_context.getModel().getRoot();
+        }else{
+            root = context.getRoot();
+        }
+    
+        if(root==null)
+            throw new IllegalStateException("Can't get correct context  map containing BuildSession");
         ServiceInstance svc = ServiceInstance.getInstance(root);
         ServiceContext sctx = svc.getServiceContext();
-        BuildSession session = (BuildSession)sctx.getInstanceOfType(BuildSession.class);
-        
+        session = (BuildSession)sctx.getInstanceOfType(BuildSession.class);
+    
         ScreenInclude sc = createScreenInclude();
         CompositeMap view = ScreenInclude.createScreenIncludeConfig(mScreenName);
         try{
