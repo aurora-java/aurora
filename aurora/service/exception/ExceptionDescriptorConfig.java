@@ -105,9 +105,8 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
                 if(msg!=null){
                     mServiceContext.setError(msg);
                     mServiceContext.putBoolean("success", false);
-                    runner.setResumeAfterException(true);
+                    runner.setResumeAfterException(false);
                     mServiceContext.setSuccess(true);
-                    return true;
                 }
                 return false;
             }
