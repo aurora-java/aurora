@@ -15,10 +15,7 @@ import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.OCManager;
-import uncertain.proc.IExceptionHandle;
 import uncertain.proc.ProcedureRunner;
-import uncertain.util.ConcurrentAccessChecker;
-import uncertain.util.ThreadLocalUtil;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
 import aurora.database.DBUtil;
@@ -113,6 +110,8 @@ public class BusinessModelService {
         mServiceContext.put("BusinessModel", mBusinessModel);
         
         if(mExceptionProcessor!=null){
+            mRunner.addExceptionHandle(mExceptionProcessor.asExceptionHandle());
+            /*
             mRunner.addExceptionHandle( new IExceptionHandle() {
                 
                 public boolean handleException(ProcedureRunner runner, Throwable exception) {
@@ -126,7 +125,8 @@ public class BusinessModelService {
                     }
                     return false;
                 }
-            });            
+            });
+            */            
         }
         
         mRunner.setSaveStackTrace(false);
