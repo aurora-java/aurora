@@ -41,6 +41,12 @@ public class DataBaseExceptionDescriptor extends SQLExceptionDescriptor {
 
 	
 	private CompositeMap parseErrorMessage(ServiceContext context, Throwable exception) {
+	    // Added by Zhoufan 2012-12-21
+	    // If error part is already set in service context, then previous component may  have already 
+	    // translated SQL exception message
+	    if(context.getError()!=null)
+	        return null;
+	    // end modify
 		CompositeMap error = new CompositeMap(ErrorMessage.ERROR_MESSAGE);
 		String message = null,code = null;
 		try {
