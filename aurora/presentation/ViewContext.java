@@ -3,11 +3,11 @@
  */
 package aurora.presentation;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
+import uncertain.event.RuntimeContext;
 import uncertain.util.template.TextTemplate;
 
 /**
@@ -25,15 +25,25 @@ public class ViewContext {
     CompositeMap        context_map;
     //IViewBuilder        view_builder;
     TextTemplate        view_template;
-    
-    /**
-     * @param mModel
-     * @param view
-     */
-    
 
+/*    
+    public static BuildSession getBuildSession( CompositeMap view_context_map ){
+        return (BuildSession)view_context_map.get(RuntimeContext.getTypeKey(BuildSession.class));
+    }
+    
+    
+    public void setBuildSession(BuildSession session){
+        context_map.put(RuntimeContext.getTypeKey(BuildSession.class), session);
+    }    
+*/
+    public static ViewContext getViewContext( CompositeMap view_context_map ){
+        return (ViewContext)view_context_map.get(RuntimeContext.getTypeKey(ViewContext.class));
+    }
+
+    
     public ViewContext(){
         context_map = new CompositeMap();
+        context_map.put(RuntimeContext.getTypeKey(ViewContext.class),this);
     }
     
     public ViewContext(CompositeMap model, CompositeMap view) {
@@ -72,6 +82,7 @@ public class ViewContext {
     public CompositeMap getView(){
         return view;
     }
+
     
     /**
      * Get a value from view config identified by view_attrib_name, and put it into 
