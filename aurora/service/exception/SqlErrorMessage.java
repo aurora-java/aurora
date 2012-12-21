@@ -7,13 +7,14 @@ package aurora.service.exception;
 import java.sql.SQLException;
 
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.AbstractEntry;
 import uncertain.proc.IExceptionHandle;
 import uncertain.proc.ProcedureRunner;
 import aurora.application.util.LanguageUtil;
 import aurora.service.ServiceContext;
 import aurora.service.validation.ErrorMessage;
 
-public class SqlErrorMessage implements IExceptionHandle {
+public class SqlErrorMessage extends AbstractEntry implements IExceptionHandle {
 
     int code;
     String message;
@@ -75,6 +76,10 @@ public class SqlErrorMessage implements IExceptionHandle {
         scx.setError(msg.getObjectContext());
         scx.putBoolean("success", false);
         return true;
+    }
+    
+    public void run( ProcedureRunner runner ) throws Exception {
+        handleException(runner, runner.getException());
     }
 
 }
