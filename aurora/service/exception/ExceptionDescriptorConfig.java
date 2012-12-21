@@ -11,6 +11,8 @@ import uncertain.composite.DynamicObject;
 import uncertain.core.ConfigurationError;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.IExceptionHandle;
+import uncertain.proc.ProcedureRunner;
 import aurora.application.util.LanguageUtil;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.service.ServiceContext;
@@ -92,6 +94,24 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
         Object o = os.getInstanceOfType(IExceptionDescriptor.class);
         if(o==null)
             os.registerInstance(IExceptionDescriptor.class, this);
-    }    
+    }
+    
+    public IExceptionHandle asExceptionHandle(){
+        return new IExceptionHandle() {
+            
+            public boolean handleException(ProcedureRunner runner, Throwable exception) {
+                ServiceContext mServiceContext = ServiceContext.createServiceContext(runner.getContext());
+                CompositeMap msg = process(mServiceContext, exception);
+                if(msg!=null){
+                    mServiceContext.setError(msg);
+                    mServiceContext.putBoolean("success", false);
+                    runner.setResumeAfterException(true);
+                    mServiceContext.setSuccess(true);
+                    return true;
+                }
+                return false;
+            }
+        };  
+    }
 
 }
