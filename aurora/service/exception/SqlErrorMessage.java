@@ -74,6 +74,7 @@ public class SqlErrorMessage extends AbstractEntry implements IExceptionHandle {
                 .getContext());
         ErrorMessage msg = new ErrorMessage(errorCode, errorMsg, null);
         scx.setError(msg.getObjectContext());
+        scx.setSuccess(true);
         scx.putBoolean("success", false);
         return true;
     }
