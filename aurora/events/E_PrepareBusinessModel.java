@@ -4,6 +4,7 @@
  */
 package aurora.events;
 
+import uncertain.composite.CompositeMap;
 import aurora.bm.BusinessModel;
 
 /**
@@ -13,6 +14,6 @@ public interface E_PrepareBusinessModel {
     
     public static final String EVENT_NAME = "PrepareBusinessModel";
     
-    public void onPrepareBusinessModel( BusinessModel model ) throws Exception;
+    public void onPrepareBusinessModel( BusinessModel model, CompositeMap context ) throws Exception;
 
 }
