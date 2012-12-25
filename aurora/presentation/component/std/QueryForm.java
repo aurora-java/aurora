@@ -3,6 +3,7 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
@@ -10,9 +11,11 @@ import uncertain.composite.QualifiedName;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
+import uncertain.schema.Array;
 import uncertain.schema.Attribute;
 import uncertain.schema.Element;
 import uncertain.schema.ISchemaManager;
+import uncertain.schema.ISchemaObject;
 import aurora.application.AuroraApplication;
 import aurora.application.features.cstm.CustomSourceCode;
 import aurora.presentation.BuildSession;
@@ -69,12 +72,10 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	}
 	
 	
-	public void buildView(BuildSession session, ViewContext view_context)
-			throws IOException, ViewCreationException {
+	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		schemaManager = (ISchemaManager) mObjectRegistry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
 		Map map = view_context.getMap();
@@ -99,7 +100,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		Writer out = session.getWriter();
 		try {
 			processFormToolBar(view, session, model);
-			boolean hasBody = processFormBody(view, session, model, height);
+			boolean hasBody = processFormBody(id,view, session, model, height);
 			out.write("<table cellspacing='0' cellpadding='0' class='" + className + "' id='" + id + "'");
 			if (width != 0) style = "width:" + width + "px;" + style;
 			if (!"".equals(style)) {
@@ -189,7 +190,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			formToolBar.addChild(btn);
 		} else {
 			formToolBar.setName("hBox");
-			bindDataset(formToolBar);				
+			bindDataset(id,formToolBar);				
 //			if(createSearchBox) searchField = findTextField(formToolBar);
 			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
 			if(createSearchButton){
@@ -207,10 +208,10 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		formToolBar.putString("style", "width:100%;"+style);
 	}
 
-	private boolean processFormBody(CompositeMap view, BuildSession session, CompositeMap model, int height) throws Exception {
+	private boolean processFormBody(String id, CompositeMap view, BuildSession session, CompositeMap model, int height) throws Exception {
 		formBody = view.getChild(FORM_BODY);
 		if (null != formBody && null != formBody.getChildIterator()) {
-			bindDataset(formBody);
+			bindDataset(id,formBody);
 			formBody.setName("box");
 			if (height != 0) formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
 //			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
@@ -226,7 +227,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		}
 		return false;
 	}
-	private void bindDataset(CompositeMap parent){
+	private void bindDataset(String id, CompositeMap parent){
 		if(null!= ds && null != parent){
 			Iterator it = parent.getChildIterator();
 			if (null != it) {
@@ -234,16 +235,61 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				while (it.hasNext()) {
 					CompositeMap child = (CompositeMap) it.next();
 					Element ele = schemaManager.getElement(child);
-					Iterator attrs= ele.getAllAttributes().iterator();
-					while(attrs.hasNext()){
-						Attribute attr = (Attribute) attrs.next();
-						if(bindTarget.equals(attr.getQName())){
-							child.putString(ComponentConfig.PROPERTITY_BINDTARGET, ds);
-							break;
+					if(ele!=null) {
+						Iterator attrs= ele.getAllAttributes().iterator();
+						while(attrs.hasNext()){
+							Attribute attr = (Attribute) attrs.next();
+							if(bindTarget.equals(attr.getQName())){
+								child.putString(ComponentConfig.PROPERTITY_BINDTARGET, ds);
+								break;
+							}
 						}
 					}
-					bindDataset(child);
+					bindDataset(id,child);
+					addEnterDownHanlder(id,child);
 				}
+			}
+		}
+	}
+	
+	//判断是否有events
+	private void addEnterDownHanlder(String id, CompositeMap item){
+		Element ele = schemaManager.getElement(item);
+		Iterator arrays = ele.getAllArrays().iterator();
+		boolean hasEvents = false;
+		while(arrays.hasNext()){
+			Array arr =  (Array)arrays.next();
+			if("a:events".equals(arr.getName())){
+				hasEvents = true;
+				break;
+			}
+		}
+		if(hasEvents) {
+			CompositeMap events = item.getChild(ComponentConfig.PROPERTITY_EVENTS);
+			if(events == null){
+				events = new CompositeMap(ComponentConfig.PROPERTITY_EVENTS);
+				events.setNameSpace(null, AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+				item.addChild(events);			
+			}
+			List list = events.getChilds();
+			boolean hasEnterDown = false;
+			if (list != null) {
+				Iterator it = list.iterator();
+				while (it.hasNext()) {
+					CompositeMap event = (CompositeMap) it.next();
+					EventConfig eventConfig = EventConfig.getInstance(event);
+					String eventName = eventConfig.getEventName();
+					if(EventConfig.EVENT_ENTERDOWN.equals(eventName)) {
+						hasEnterDown = true;
+						break;
+					}	
+				}
+			}
+			if(!hasEnterDown){
+				EventConfig evt = EventConfig.getInstance();
+				evt.setEventName(EventConfig.EVENT_ENTERDOWN);
+				evt.setHandler("function(){$('" + id + "').doSearch()}");
+				events.addChild(evt.getObjectContext());			
 			}
 		}
 	}

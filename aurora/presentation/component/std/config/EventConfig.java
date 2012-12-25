@@ -9,6 +9,8 @@ public class EventConfig extends ComponentConfig {
 	public static final String PROPERTITY_EVENT_NAME = "name";
 	public static final String PROPERTITY_EVENT_HANDLER = "handler";
 	
+	public static final String EVENT_ENTERDOWN = "enterdown";
+	
 	
 	public static EventConfig getInstance(){
 		EventConfig model = new EventConfig();

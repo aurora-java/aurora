@@ -27,6 +27,7 @@ import aurora.service.ServiceInstance;
  * @version $Id: Component.java v 1.0 2010-5-11 下午04:43:07 znjqolf Exp $
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
+@SuppressWarnings("unchecked")
 public class Component {
 
 	protected static final String CONFIG = "config";
