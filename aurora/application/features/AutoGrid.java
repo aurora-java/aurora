@@ -51,20 +51,22 @@ public class AutoGrid implements IFeature{
     	CompositeMap columns = grid.getColumns();
     	if(columns!=null){
     		List list = columns.getChilds();
-    		Iterator it = list.iterator();
-			while(it.hasNext()){
-				CompositeMap column = (CompositeMap)it.next();
-				GridColumnConfig cf = GridColumnConfig.getInstance(column);
-				String eid = cf.getEditor();
-				if(eid==null || "".equals(eid)){
-					ComponentConfig editor = getEditor(column);
-					if(editor!=null){
-						grid.addEditor(editor);
-						cf.setEditor(editor.getId());
-						column.getParent().replaceChild(column, cf.getObjectContext());
+    		if(list != null) {
+	    		Iterator it = list.iterator();
+				while(it.hasNext()){
+					CompositeMap column = (CompositeMap)it.next();
+					GridColumnConfig cf = GridColumnConfig.getInstance(column);
+					String eid = cf.getEditor();
+					if(eid==null || "".equals(eid)){
+						ComponentConfig editor = getEditor(column);
+						if(editor!=null){
+							grid.addEditor(editor);
+							cf.setEditor(editor.getId());
+							column.getParent().replaceChild(column, cf.getObjectContext());
+						}
 					}
 				}
-			}
+    		}
     	}
     	CompositeMap gridView = grid.getObjectContext();
     	return gridView;
@@ -110,12 +112,7 @@ public class AutoGrid implements IFeature{
 		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
-			BusinessModel bm = null;
-			try {
-				bm = mFactory.getModelForRead(href);
-			}catch(Exception e){
-				bm = mFactory.getModelForRead(href,"xml");
-			}
+			BusinessModel bm = mFactory.getModel(href);
 			aurora.bm.Field[] fields = bm.getFields();
 			int fl = fields.length;
 			for(int n=0;n<fl;n++){

@@ -41,13 +41,7 @@ public class AutoForm implements IFeature{
 		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
-			BusinessModel bm = null;
-			//TODO:.....
-			try {
-				bm = mFactory.getModelForRead(href);
-			}catch(Exception e){
-				bm = mFactory.getModelForRead(href,"xml");
-			}
+			BusinessModel bm = mFactory.getModel(href);
 			aurora.bm.Field[] fields = bm.getFields();
 			int fl = fields.length;
 			for(int n=0;n<fl;n++){
