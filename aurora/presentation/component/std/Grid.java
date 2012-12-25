@@ -312,7 +312,7 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
 						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 //						if(hidden)continue;
-						if(hidden) column.putInt(GridColumnConfig.PROPERTITY_WIDTH, 0);
+//						if(hidden) column.putInt(GridColumnConfig.PROPERTITY_WIDTH, 0);
 						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, hidden);
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
@@ -734,7 +734,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-					if(hidden)continue;
+//					if(hidden)continue;
 					float cwidth = hidden? 0 : column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					lockWidth +=cwidth;				
@@ -770,7 +770,7 @@ public class Grid extends Component {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio' rowspan='"+column.getInt(ROW_SPAN)+"'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-							if(hidden)continue;
+							//if(hidden)continue;
 							String prompt = getFieldPrompt(session, column, dataSet);
 							String headTitle = session.getLocalizedPrompt(prompt);
 							if(headTitle!=null && headTitle.equals(prompt)){
@@ -811,7 +811,7 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-					if(hidden)continue;
+//					if(hidden)continue;
 					float cwidth = hidden?0:column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					unlockWidth +=cwidth;				
@@ -837,7 +837,7 @@ public class Grid extends Component {
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-					if(hidden)continue;
+//					if(hidden)continue;
 					String prompt = getFieldPrompt(session, column, dataSet);
 					String headTitle = session.getLocalizedPrompt(prompt);
 					if(headTitle!=null && headTitle.equals(prompt)){
