@@ -120,6 +120,8 @@ public class DataSet extends Component {
 				}
 				
 				LovConfig lc = LovConfig.getInstance(field);
+				if(null!=field.getString(LovConfig.PROPERTITY_FETCH_REMOTE))
+					field.putBoolean(LovConfig.PROPERTITY_FETCH_REMOTE, lc.getFetchRemote());
 				if(null!=field.getString(LovConfig.PROPERTITY_FETCH_SINGLE))
 					field.putBoolean(LovConfig.PROPERTITY_FETCH_SINGLE, lc.getFetchSingle());
 				
