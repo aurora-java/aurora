@@ -603,7 +603,8 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
-		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+//		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		String nav = view.getString(GridConfig.PROPERTITY_NAVBAR,"");
 		if("true".equalsIgnoreCase(nav)){
