@@ -33,7 +33,7 @@ import aurora.presentation.component.std.config.GridConfig;
  */
 public class Grid extends Component {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	
 	public static final String HTML_LOCKAREA = "lockarea";
 	public static final String HTML_UNLOCKAREA = "unlockarea";
