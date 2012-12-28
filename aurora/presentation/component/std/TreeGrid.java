@@ -11,6 +11,8 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.TreeConfig;
 
 public class TreeGrid extends Grid {
+	
+	public static final String VERSION = "$Revision$";
 
 	public TreeGrid(IObjectRegistry registry, IModelFactory factory) {
 		super(registry, factory);

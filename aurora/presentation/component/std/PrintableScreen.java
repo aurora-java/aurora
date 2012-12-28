@@ -11,6 +11,8 @@ import aurora.presentation.ViewCreationException;
 
 
 public class PrintableScreen implements IViewBuilder, ISingleton {
+	
+	public static final String VERSION = "$Revision$";
 
 	@Override
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {

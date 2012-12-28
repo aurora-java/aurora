@@ -10,6 +10,8 @@ import aurora.presentation.component.std.config.FormConfig;
 
 public class FieldSet extends Box {
 	
+	public static final String VERSION = "$Revision$";
+	
 	protected static final String PROPERTITY_TITLE="title";
 	private static final String DEFAULT_BODY_CLASS = "form_body";
 	

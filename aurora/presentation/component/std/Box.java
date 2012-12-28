@@ -11,11 +11,12 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 /**
  * Box
- * @version $Id: Box.java v 1.0 2009-7-31 上午10:37:19 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class Box extends GridLayout {
 	
+	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_TH_CLASS = "layout-th";
 	private static final String PROPERTITY_LABEL_WIDTH = "labelwidth";
 	UncertainEngine ue;

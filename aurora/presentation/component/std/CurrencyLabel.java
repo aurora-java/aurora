@@ -8,6 +8,8 @@ import aurora.presentation.ViewContext;
 
 public class CurrencyLabel extends Label {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_RENDERER = "Aurora.formatMoney";
 	private static final String DEFAULT_TEMPLATE = "label.tplt";
 	

@@ -27,6 +27,8 @@ import freemarker.template.Template;
 @SuppressWarnings("unchecked")
 public class FormView extends Component implements IViewBuilder, ISingleton{
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String VIEW_TYPE = "viewtype";
 	private static final String DEFAULT_VIEW_TYPE = "advance";
 	private static final String WIDTH_UNIT = "widthunit";

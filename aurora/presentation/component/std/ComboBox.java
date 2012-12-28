@@ -13,10 +13,12 @@ import aurora.presentation.component.std.config.InputFieldConfig;
 /**
  * ComboBox组件.
  * 
- * @version $Id: ComboBox.java v 1.0 2009-8-27 下午01:03:10 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class ComboBox extends TextField {
+	
+	public static final String VERSION = "$Revision$";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);

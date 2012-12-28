@@ -11,7 +11,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 /**
  * 组件基类.
  * 
- * @version $Id: Field.java v 1.0 2009-7-20 上午11:29:55 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  * 
  * notBlank:是否为空  true|false
@@ -21,6 +21,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
  * style:样式描述			String
  */
 public class Field extends Component {
+	
+	public static final String VERSION = "$Revision$";
 	
 	protected static final String CLASSNAME_WRAP = "item-wrap";
 	

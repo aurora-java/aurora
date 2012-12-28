@@ -11,6 +11,8 @@ import aurora.presentation.component.std.config.DataSetConfig;
 
 public class Link extends Component {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PROPERTITY_URL = "url";
 	private static final String PROPERTITY_MODEL = "model";
 	private static final String PROPERTITY_MODEL_ACTION = "modelaction";

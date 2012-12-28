@@ -9,6 +9,8 @@ import aurora.presentation.ViewContext;
 
 public class Label extends Component {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_CLASS = "item-label";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	

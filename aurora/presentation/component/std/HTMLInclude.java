@@ -22,7 +22,9 @@ import aurora.presentation.ViewCreationException;
 import aurora.service.ServiceThreadLocal;
 
 public class HTMLInclude implements IViewBuilder {
-
+	
+	public static final String VERSION = "$Revision$";
+	
 	private IDatabaseServiceFactory factory;
 	private static final String PROPERTITY_PATH_FIELD = "pathfield";
 	private static final String PROPERTITY_MODEL = "model";

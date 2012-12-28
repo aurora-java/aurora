@@ -8,6 +8,8 @@ import aurora.presentation.ViewContext;
 
 public class PassWord extends TextField {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static String DEFAULT_INPUT_TYPE = "password";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {

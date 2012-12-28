@@ -12,12 +12,13 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 /**
  * 文本输入框
  * 
- * @version $Id: TextField.java v 1.0 2009-7-20 上午11:27:00 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  * 
  */
 public class TextField extends InputField {	
 	
+	public static final String VERSION = "$Revision$";
 	public static String INPUT_TYPE = "inputtype";
 	public static String DEFAULT_INPUT_TYPE = "input";
 	

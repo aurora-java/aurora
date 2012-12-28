@@ -28,12 +28,12 @@ import aurora.presentation.component.std.config.GridConfig;
 
 /**
  * 
- * @version $Id: Grid.java v 1.0 2010-1-25 下午01:30:09 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class Grid extends Component {
 	
-	private static final String VERSION = "$Revision$";
+	public static final String VERSION = "$Revision$";
 	
 	public static final String HTML_LOCKAREA = "lockarea";
 	public static final String HTML_UNLOCKAREA = "unlockarea";

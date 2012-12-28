@@ -11,6 +11,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.TreeConfig;
 
 public class Tree extends Component {
+	public static final String VERSION = "$Revision$";
 	
 //	public static final String PROPERTITY_DATASET = "dataset";
 //	public static final String PROPERTITY_RENDERER = "renderer";

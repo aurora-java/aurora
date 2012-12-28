@@ -7,7 +7,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ToolBarButton extends Button {
 	
-	
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "toolbarButton";
 	private static final String DEFAULT_CLASS = " item-rbtn ";
 	private static final String DEFAULT_THEME = "item-rbtn-blue";

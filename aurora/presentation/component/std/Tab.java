@@ -16,6 +16,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Tab extends Component {
 	
+	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_CLASS = "item-tab";
 	private static final String VALID_SCRIPT = "validscript";
 	private static final String TABS = "tabs";

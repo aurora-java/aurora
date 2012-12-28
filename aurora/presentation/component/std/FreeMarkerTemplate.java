@@ -24,6 +24,8 @@ import freemarker.template.Template;
 
 public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PARSE = "parse";
 	
 	IObjectRegistry mObjectRegistry;

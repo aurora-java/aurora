@@ -16,6 +16,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ScreenTopToolbar extends Component implements IViewBuilder, ISingleton {
 	
+	public static final String VERSION = "$Revision$";
 	
 	protected int getDefaultHeight() {
 		return 44;

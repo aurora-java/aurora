@@ -9,6 +9,9 @@ import aurora.presentation.ViewCreationException;
 
 public class DefaultScreen  extends VBox{
 	
+	public static final String VERSION = "$Revision$";
+	
+	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		view.putString("style", "width:100%");

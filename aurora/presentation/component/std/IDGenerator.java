@@ -10,6 +10,8 @@ import java.util.UUID;
  * @author <a href="mailto:njq.niu@hand-china.com">znjq</a>
  */
 public class IDGenerator {
+	
+	public static final String VERSION = "$Revision$";
 
 	// Singleton
 	private static final IDGenerator instance = new IDGenerator();

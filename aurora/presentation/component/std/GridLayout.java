@@ -19,10 +19,12 @@ import aurora.presentation.component.std.config.FormConfig;
 /**
  * GridLayout.
  * 
- * @version $Id: GridLayout.java v 1.0 2009-7-29 上午10:26:52 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class GridLayout extends Component implements IViewBuilder, ISingleton {
+	
+	public static final String VERSION = "$Revision$";
 	
 	public static final String ROWS = "row";
 	public static final String COLUMNS = "column";

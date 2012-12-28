@@ -24,11 +24,13 @@ import aurora.service.ServiceInstance;
 
 /**
  * 
- * @version $Id: Component.java v 1.0 2010-5-11 下午04:43:07 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 @SuppressWarnings("unchecked")
 public class Component {
+	
+	public static final String VERSION = "$Revision$";
 
 	protected static final String CONFIG = "config";
 	protected static final String WRAP_CSS = "wrapClass";

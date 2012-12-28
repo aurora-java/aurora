@@ -16,6 +16,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ViewItem implements IViewBuilder, ISingleton {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String PROPERTITY_VALUE = ComponentConfig.PROPERTITY_VALUE;
 	private static final String PROPERTITY_FORMAT = "format";
 	private static final String PROPERTITY_STYLE = ComponentConfig.PROPERTITY_STYLE;

@@ -17,6 +17,7 @@ import aurora.presentation.ViewCreationException;
 
 public class ScreenTitle implements IViewBuilder, ISingleton {
 	
+	public static final String VERSION = "$Revision$";
 	private static final String SERVICE_NAME = "service_name";
 	private static final String SCREEN_TITLE = "title";
 	private static final String DEFAULT_CLASS = "screenTitle";

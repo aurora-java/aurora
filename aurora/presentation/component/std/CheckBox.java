@@ -12,6 +12,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class CheckBox extends Component {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
 		super.onCreateViewContent(session, view_context);
 		Map map = view_context.getMap();

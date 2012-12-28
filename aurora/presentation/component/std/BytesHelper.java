@@ -7,7 +7,9 @@ package aurora.presentation.component.std;
  * @author <a href="mailto:njq.niu@hand-china.com">znjq</a>
  */
 public final class BytesHelper {
-
+	
+	public static final String VERSION = "$Revision$";
+	
 	private BytesHelper() {
 	}
 

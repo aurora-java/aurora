@@ -12,6 +12,7 @@ import aurora.presentation.component.std.config.InputFieldConfig;
 import aurora.presentation.component.std.config.LovConfig;
 
 public class Lov extends TextField {
+	public static final String VERSION = "$Revision$";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);

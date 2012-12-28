@@ -30,11 +30,15 @@ import aurora.presentation.component.std.config.TextFieldConfig;
  * QueryForm 只有2种方式
  * (1)没有formToolBar 则默认创建一个通用的searchField和searchButton
  * (2)有formToolBar和formBody 则默认创建searchButton和moreButton
- * @version $Id: QueryForm.java v 1.0 2012-12-19 下午05:12:21 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
 @SuppressWarnings("unchecked")
 public class QueryForm extends Component implements IViewBuilder, ISingleton {
+	
+	public static final String VERSION = "$Revision$";
+	
+	
 	private static final String DEFAULT_TABLE_CLASS = "layout-table";
 	private static final String DEFAULT_WRAP_CLASS = "form_body_wrap";
 	private static final String DEFAULT_HEAD_CLASS = "form_head";

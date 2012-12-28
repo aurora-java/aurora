@@ -13,6 +13,8 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class WindowToolbar implements IViewBuilder, ISingleton{
 	
+	public static final String VERSION = "$Revision$";
+	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();

@@ -11,6 +11,7 @@ import aurora.presentation.component.std.config.SpinnerConfig;
 
 public class Spinner extends TextField {
 	
+	public static final String VERSION = "$Revision$";
 	public void onCreateViewContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onCreateViewContent(session, context);

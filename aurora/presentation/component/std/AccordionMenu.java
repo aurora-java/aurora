@@ -9,7 +9,9 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
 public class AccordionMenu extends Component {
-
+	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String PROPERTY_DISPLAY_FIELD = "displayfield";
 	private static final String PROPERTY_MIN_HEIGHT = "minheight";
 	private static final String PROPERTY_PARENT_FIELD = "parentfield";

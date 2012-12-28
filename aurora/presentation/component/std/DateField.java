@@ -11,10 +11,12 @@ import aurora.presentation.component.std.config.ComponentConfig;
 /**
  * 日历组件.
  * 
- * @version $Id: DateField.java v 1.0 2011-1-17 下午01:06:13 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:hugh.hz.wu@gmail.com">Hugh</a>
  */
 public class DateField extends Component {
+	
+	public static final String VERSION = "$Revision$";
 
 	private static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
 	private static final String PROPERTITY_ENABLE_MONTH_BTN = "enablemonthbtn";

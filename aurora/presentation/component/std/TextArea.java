@@ -12,6 +12,7 @@ import aurora.presentation.component.std.config.InputFieldConfig;
 
 public class TextArea extends Component {
 	
+	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_CLASS = "item-textarea";
 	protected static final String PROPERTITY_READONLY = "readonly";
 	protected static final String CLASSNAME_READONLY = "item-readOnly";

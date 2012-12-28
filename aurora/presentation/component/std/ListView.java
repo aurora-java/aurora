@@ -26,6 +26,8 @@ import aurora.presentation.component.std.config.ListViewConfig;
 
 @SuppressWarnings("unchecked")
 public class ListView extends Component implements IViewBuilder, ISingleton {
+	
+	public static final String VERSION = "$Revision$";
 
 	IObjectRegistry mObjectRegistry;
 

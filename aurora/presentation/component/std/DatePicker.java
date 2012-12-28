@@ -13,12 +13,14 @@ import aurora.presentation.component.std.config.InputFieldConfig;
 /**
  * 日历组件.
  * 
- * @version $Id: DatePicker.java v 1.0 2009-7-21 下午04:06:13 znjqolf Exp $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 public class DatePicker extends TextField {
+	
+	private static final String VERSION = "$Revision$";
 
-	private static final String BODY = "body";
+	public static final String BODY = "body";
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
 			throws IOException {

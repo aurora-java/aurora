@@ -23,12 +23,14 @@ import aurora.presentation.component.std.config.RadioConfig;
 
 /**
  * Radio
- * @version $Id: Radio.java v 1.0 2010-8-27 下午01:05:16 IBM Exp $
+ * @version $Id$
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  * 
  */
 @SuppressWarnings("unchecked")
 public class Radio extends Component {
+	
+	public static final String VERSION = "$Revision$";
 	
 	private IObjectRegistry mRegistry;
 	private ApplicationConfig mApplicationConfig;

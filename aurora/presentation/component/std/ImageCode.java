@@ -9,6 +9,9 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
 public class ImageCode extends Component {
+	
+	public static final String VERSION = "$Revision$";	
+	
 	public static final String PROPERTITY_ENABLE = "enable";
 	public static final String PROPERTITY_SRC = "src";
 	

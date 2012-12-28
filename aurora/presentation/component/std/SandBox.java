@@ -17,7 +17,8 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 public class SandBox extends Component {
-
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_CLASS = "sandbox";
 	private static final String PROPERTITY_CONTEXT = "context";
 	private static final String PROPERTITY_FILE_NAME = "filename";

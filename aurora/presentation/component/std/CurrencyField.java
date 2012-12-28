@@ -9,6 +9,8 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 
 public class CurrencyField extends NumberField {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_TEMPLATE = "numberField.tplt";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {

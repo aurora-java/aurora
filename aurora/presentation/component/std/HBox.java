@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class HBox extends Box {
 	
+	public static final String VERSION = "$Revision$";
+	
 	protected int getRows(CompositeMap view){
 		return 1;
 	}

@@ -22,6 +22,7 @@ import aurora.presentation.component.std.config.TableConfig;
 
 public class Table extends Component {
 
+	public static final String VERSION = "$Revision$";
 	private static final String ROW_SPAN = "rowspan";
 	private static final String COL_SPAN = "colspan";
 	private static final String DEFAULT_CLASS = "item-table";

@@ -19,10 +19,12 @@ import aurora.presentation.component.std.config.DashboardConfig;
 /**
  * Panel
  * 
- * @version $Id: Panel.java v 1.0 2011-4-21 上午10:37:19 hugh Exp $
+ * @version $Id$
  * @author <a href="mailto:hugh.hz.wu@gmail.com">Hugh</a>
  */
 public class Dashboard extends Component {
+	
+	public static final String VERSION = "$Revision$";
 
 	protected int getDefaultWidth() {
 		return DashboardConfig.DEFAULT_WIDTH;

@@ -10,6 +10,8 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 
 public class NumberField extends TextField {	
 	
+	public static final String VERSION = "$Revision$";
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap model = context.getModel();

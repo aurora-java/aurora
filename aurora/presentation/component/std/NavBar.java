@@ -18,6 +18,8 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 @SuppressWarnings("unchecked")
 public class NavBar extends ToolBar {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PROPERTITY_DATASET = "dataset";
 	public static final String PROPERTITY_NAVBAR_TYPE = "navbartype";
 	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "enablepagesize";
@@ -30,6 +32,7 @@ public class NavBar extends ToolBar {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		try {
 			CompositeMap view = context.getView();
+			CompositeMap model = context.getModel();
 			Map map = context.getMap();		
 			
 			String dataset = view.getString(PROPERTITY_DATASET);
@@ -39,6 +42,7 @@ public class NavBar extends ToolBar {
 			if("".equals(id)) {
 				id = IDGenerator.getInstance().generate();
 			}
+			id = uncertain.composite.TextParser.parse(id, model);
 			view.putString(ComponentConfig.PROPERTITY_ID, id);
 			String type = view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex");
 			map.put(PROPERTITY_NAVBAR_TYPE, type);

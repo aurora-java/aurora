@@ -19,6 +19,8 @@ import aurora.presentation.component.std.config.EventConfig;
 
 public class Chart extends Component {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static String INPUT_TYPE = "inputtype";
 	public static String DEFAULT_INPUT_TYPE = "input";
 	private static final String PROPERTITY_SERIES_NAME = "seriesName";

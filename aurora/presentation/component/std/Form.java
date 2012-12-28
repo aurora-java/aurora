@@ -10,6 +10,10 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FormConfig;
 
 public class Form extends Box {
+	
+	public static final String VERSION = "$Revision$";
+	
+	
 	private static final String DEFAULT_HEAD_CLASS = "form_head";
 	private static final String DEFAULT_BODY_CLASS = "form_body";
 	

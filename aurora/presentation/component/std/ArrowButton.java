@@ -11,6 +11,8 @@ import aurora.presentation.ViewContext;
 @SuppressWarnings("unchecked")
 public class ArrowButton extends Button {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "arrowButton";
 	private static final String DEFAULT_CLASS = " item-abtn ";
 	private static final String ARROW_CLASS = "arrow";

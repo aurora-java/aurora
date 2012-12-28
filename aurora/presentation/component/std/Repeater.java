@@ -12,6 +12,8 @@ import aurora.presentation.ViewCreationException;
 
 public class Repeater implements IViewBuilder {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String KEY_DATAMODEL = "datamodel";
 	
 	public void buildView(BuildSession session, ViewContext view_context)throws IOException, ViewCreationException {

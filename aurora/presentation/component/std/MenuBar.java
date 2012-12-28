@@ -11,6 +11,9 @@ import aurora.presentation.component.std.config.MenuBarConfig;
 
 public class MenuBar extends Component {
 
+	public static final String VERSION = "$Revision$";
+	
+	
 	public static final String CONFIG_CONTEXT = "context";
 	private static final String DEFAULT_CLASS = "item-menu-bar";
 	

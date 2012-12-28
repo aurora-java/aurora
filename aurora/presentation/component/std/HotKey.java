@@ -14,6 +14,8 @@ import aurora.presentation.ViewCreationException;
 
 public class HotKey extends Component  implements IViewBuilder, ISingleton {
 	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String KEYS = "keys";
 	private static final String PROPERTITY_BIND = "bind";
 	private static final String PROPERTITY_HANDLER = "handler";

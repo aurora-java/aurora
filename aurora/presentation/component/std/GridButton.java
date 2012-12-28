@@ -12,6 +12,8 @@ import aurora.presentation.component.std.config.GridConfig;
 
 public class GridButton extends ToolBarButton {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "gridButton";
 	
 	private static final String PROPERTITY_TYPE = "type";

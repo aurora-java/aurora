@@ -28,6 +28,8 @@ import aurora.service.http.HttpServiceInstance;
 
 public class Upload extends Component {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_SOURCE_TYPE = "sourcetype";
 	public static final String PROPERTITY_PK_VALUE = "pkvalue";

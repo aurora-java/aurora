@@ -12,6 +12,9 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 
 public class InputField extends Field {
+	
+	public static final String VERSION = "$Revision$";
+	
 	protected static final String CLASSNAME_EMPTYTEXT = "item-emptyText";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){

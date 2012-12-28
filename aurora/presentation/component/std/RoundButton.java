@@ -5,6 +5,7 @@ import aurora.presentation.ViewContext;
 
 public class RoundButton extends Button {
 	
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "roundButton";
 	private static final String DEFAULT_CLASS = " item-rtbtn ";

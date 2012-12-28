@@ -13,6 +13,8 @@ import aurora.presentation.ViewContext;
 
 public class Switch implements IViewBuilder, ISingleton {
 
+	public static final String VERSION = "$Revision$";
+	
 	private static final String TEST_FIELD = "test";
 	private static final String KEY_VALUE = "value";
 

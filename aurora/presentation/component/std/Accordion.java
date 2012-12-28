@@ -15,7 +15,9 @@ import aurora.presentation.component.std.config.AccordionConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Accordion extends Component {
-
+	
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_CLASS = "layout-accordion";
 	private static final String SELECTED = "selected";
 	private static final String REF = "ref";

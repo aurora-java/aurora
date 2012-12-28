@@ -31,11 +31,13 @@ import aurora.presentation.component.std.config.LovConfig;
 
 /**
  * 
- * @version $Id: DataSet.java v 1.0 2010-8-24 下午01:28:18 IBM Exp $
+ * @version $Id$
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
 @SuppressWarnings("unchecked")
 public class DataSet extends Component {
+	
+	public static final String VERSION = "$Revision$";
 	
 	private static final String VALID_SCRIPT = "validscript";
 	private IModelFactory mFactory;
