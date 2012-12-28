@@ -20,6 +20,8 @@ import aurora.service.ServiceThreadLocal;
 
 public class Comment extends Component {
 
+	private static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_CLASS = "comments";
 	private IDatabaseServiceFactory factory;
 	private String model = "doc.doc_comment";
