@@ -33,6 +33,8 @@ import aurora.presentation.component.std.config.GridConfig;
  */
 public class Grid extends Component {
 	
+	public static final String VERSION = "$Revision";
+	
 	public static final String HTML_LOCKAREA = "lockarea";
 	public static final String HTML_UNLOCKAREA = "unlockarea";
 	
@@ -78,10 +80,6 @@ public class Grid extends Component {
 		addJavaScript(session, context, "grid/Grid-min.js");
 	}
 	
-	protected int getDefaultWidth() {
-		return 800;
-	}
-	
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		return DEFAULT_CLASS;
@@ -91,12 +89,10 @@ public class Grid extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		CompositeMap view = context.getView();
 		int mDefaultMarginSize = -1;
-		boolean autoAppend = false;
 		if (mApplicationConfig != null) {
 	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 	   	     if (view_config != null) {
-	   	    	mDefaultMarginSize = view_config.getDefaultMarginWidth();          
-	   	    	autoAppend = view_config.getDefaultAutoAppend();
+	   	    	mDefaultMarginSize = view_config.getDefaultMarginWidth();           
 	   	     }
 	   	     if(mDefaultMarginSize != -1){
 	   	    	 view.putInt(PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
@@ -128,9 +124,7 @@ public class Grid extends Component {
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
-		
-		Boolean isAutoAppend = (gc.isAutoAppend() != null) ? gc.isAutoAppend() : autoAppend;
-		addConfig(GridConfig.PROPERTITY_AUTO_APPEND,isAutoAppend);
+		if(!gc.isAutoAppend()) addConfig(GridConfig.PROPERTITY_AUTO_APPEND, new Boolean(gc.isAutoAppend()));
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
 		
@@ -143,7 +137,7 @@ public class Grid extends Component {
 		map.put("gridstyle", style);		
 		createGridEditors(session,context);
 		
-		map.put(GridConfig.PROPERTITY_TAB_INDEX, new Integer(gc.getTabIndex()));
+		
 	}
 	
 	
@@ -311,8 +305,6 @@ public class Grid extends Component {
 						column.putBoolean(GridColumnConfig.PROPERTITY_LOCK, column.getBoolean(GridColumnConfig.PROPERTITY_LOCK, false));
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
 						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-//						if(hidden)continue;
-//						if(hidden) column.putInt(GridColumnConfig.PROPERTITY_WIDTH, 0);
 						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, hidden);
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
@@ -325,10 +317,6 @@ public class Grid extends Component {
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
-					
-					String align = column.getString(GridColumnConfig.PROPERTITY_ALIGN);
-					if(align!=null) column.put(GridColumnConfig.PROPERTITY_ALIGN, uncertain.composite.TextParser.parse(align, model));
-					
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
 					if(!"rowcheck".equals(type) && !"rowradio".equals(type)&& !"rownumber".equals(type))cwidth = cwidth*bl;
@@ -388,7 +376,6 @@ public class Grid extends Component {
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
 				editor.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
-				editor.put(ComponentConfig.PROPERTITY_TAB_INDEX, -1);
 				editor.put(ComponentConfig.PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
 				try {
 					sb.append(session.buildViewAsString(model, editor));
@@ -448,9 +435,8 @@ public class Grid extends Component {
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					if(!"".equals(type)){
-						String fileName = item.getString("filename","");
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').showEditorByRecord($('"+dataset+"').create())}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
@@ -458,12 +444,7 @@ public class Grid extends Component {
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
-						}else if("excel2007".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -126px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
-						}else if("txt".equalsIgnoreCase(type)){
-							String separator = item.getString("separator","");
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -107px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"','"+separator+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
 						}else if("customize".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize()}");
 						}
@@ -603,7 +584,6 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
-//		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		String nav = view.getString(GridConfig.PROPERTITY_NAVBAR,"");
@@ -735,7 +715,6 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-//					if(hidden)continue;
 					float cwidth = hidden? 0 : column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					lockWidth +=cwidth;				
@@ -748,13 +727,11 @@ public class Grid extends Component {
 		if(hasLockColumn){
 			sb.append("<DIV class='grid-la' atype='grid.lc' style='width:"+(lockWidth-1)+"px;'>");
 			sb.append("<DIV class='grid-lh' atype='grid.lh' unselectable='on' onselectstart='return false;' style='height:"+rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue()+"px;'>");
-			String theme = session.getTheme();
-			int trh = Integer.parseInt(pro.get(ROW_HEIGHT).toString());
-			if(THEME_MAC.equals(theme)) trh++;
+			
 			StringBuffer hsb = new StringBuffer();
 			for(int i=1;i<=rows.intValue();i++){
 				List list = (List)pro.get("l"+i);
-				hsb.append("<TR height="+trh+">");
+				hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
 				if(list!=null) {
 					Iterator lit = list.iterator();
 					while(lit.hasNext()){
@@ -771,7 +748,6 @@ public class Grid extends Component {
 							hsb.append("<TD class='grid-hc' atype='grid.rowradio' rowspan='"+column.getInt(ROW_SPAN)+"'><div>&nbsp;</div></TD>");
 						}else{
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-							//if(hidden)continue;
 							String prompt = getFieldPrompt(session, column, dataSet);
 							String headTitle = session.getLocalizedPrompt(prompt);
 							if(headTitle!=null && headTitle.equals(prompt)){
@@ -812,7 +788,6 @@ public class Grid extends Component {
 				List children = column.getChilds();
 				if(children == null){
 					boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-//					if(hidden)continue;
 					float cwidth = hidden?0:column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					th.append("<th style='width:"+cwidth+"px;' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'></th>");
 					unlockWidth +=cwidth;				
@@ -826,19 +801,15 @@ public class Grid extends Component {
 		sb.append("<TH WIDTH='20'> </TH>");
 		sb.append("</TR>");
 		
-		String theme = session.getTheme();
-		int trh = Integer.parseInt(pro.get(ROW_HEIGHT).toString());
-		if(THEME_MAC.equals(theme)) trh++;
 		StringBuffer hsb = new StringBuffer();
 		for(int i=1;i<=rows.intValue();i++){
-			List list = (List)pro.get("l"+i);			
-			hsb.append("<TR height="+trh+">");
+			List list = (List)pro.get("l"+i);
+			hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
 			if(list!=null) {
 				Iterator lit = list.iterator();
 				while(lit.hasNext()){
 					CompositeMap column = (CompositeMap)lit.next();
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
-//					if(hidden)continue;
 					String prompt = getFieldPrompt(session, column, dataSet);
 					String headTitle = session.getLocalizedPrompt(prompt);
 					if(headTitle!=null && headTitle.equals(prompt)){
