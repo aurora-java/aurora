@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class MenuBarConfig extends ComponentConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "menuBar";
 
 	public static final String PROPERTITY_RENDERER = "renderer";

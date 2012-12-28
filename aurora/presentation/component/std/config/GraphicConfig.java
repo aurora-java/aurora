@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 
 public class GraphicConfig extends ComponentConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "graphic";
 	

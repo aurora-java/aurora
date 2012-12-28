@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 
 public class ComboBoxConfig extends InputFieldConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String PROPERTITY_POPWIDTH = "popwidth";
 	public static final String PROPERTITY_VALUE_FIELD = "valuefield";

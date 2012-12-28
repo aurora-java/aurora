@@ -2,6 +2,8 @@ package aurora.presentation.component.std.config;
 
 public class InputFieldConfig extends ComponentConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PROPERTITY_EMPTYTEXT = "emptytext";
 	public static final String PROPERTITY_INPUTWIDTH = "inputwidth";
 	public static final String PROPERTITY_EDITABLE = "editable";

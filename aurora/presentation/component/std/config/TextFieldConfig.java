@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 
 public class TextFieldConfig extends InputFieldConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "textField";
 	public static final String INPUT_TYPE = "inputtype";

@@ -10,6 +10,8 @@ import uncertain.composite.CompositeMap;
  */
 public class SpinnerConfig extends InputFieldConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "spinner";
 	public static final String PROPERTITY_MIN = "min";
 	public static final String PROPERTITY_MAX = "max";

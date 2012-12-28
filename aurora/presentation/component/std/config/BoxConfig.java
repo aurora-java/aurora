@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class BoxConfig extends ComponentConfig {
 	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String ROWS = "row";
 	public static final String COLUMNS = "column";
 	

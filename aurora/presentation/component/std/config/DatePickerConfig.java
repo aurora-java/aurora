@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class DatePickerConfig extends InputFieldConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "datePicker";
 
 	public static final String PROPERTITY_VIEW_SIZE = "viewsize";

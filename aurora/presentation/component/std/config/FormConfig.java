@@ -5,6 +5,8 @@ import uncertain.composite.CompositeMap;
 
 
 public class FormConfig extends BoxConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "form";
 	

@@ -5,6 +5,8 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 
 public class ComponentConfig extends DynamicObject {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "component";
 	

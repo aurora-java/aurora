@@ -10,6 +10,8 @@ import uncertain.composite.CompositeMap;
 
 public class DashboardConfig extends ComponentConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "dashboard";
 
 	public static final String PROPERTITY_CHART = "chart";

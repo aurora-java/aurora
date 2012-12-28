@@ -5,6 +5,8 @@ import java.util.List;
 import uncertain.composite.CompositeMap;
 
 public class FormViewFieldConfig extends ComponentConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	private static final String TAG_NAME = "field";
 	

@@ -8,6 +8,8 @@ import uncertain.composite.CompositeMap;
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
 public class NumberFieldConfig extends InputFieldConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "numberField";
 	public static final String PROPERTITY_ALLOWDECIMALS = "allowdecimals";

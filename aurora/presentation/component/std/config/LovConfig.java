@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class LovConfig extends InputFieldConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "lov";
 
 	public static final String PROPERTITY_TITLE = "title";

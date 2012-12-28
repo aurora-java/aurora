@@ -3,6 +3,8 @@ package aurora.presentation.component.std.config;
 import uncertain.composite.CompositeMap;
 
 public class TableConfig extends ComponentConfig {
+
+	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "table";
 	

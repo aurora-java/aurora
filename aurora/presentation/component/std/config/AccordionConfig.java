@@ -3,7 +3,9 @@ package aurora.presentation.component.std.config;
 import uncertain.composite.CompositeMap;
 
 public class AccordionConfig extends ComponentConfig {
-
+	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "accordionPanel";
 
 	public static final String PROPERTITY_ACCORDIONS = "accordions";

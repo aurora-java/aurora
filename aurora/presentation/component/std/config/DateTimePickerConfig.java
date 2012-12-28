@@ -4,6 +4,8 @@ import uncertain.composite.CompositeMap;
 
 public class DateTimePickerConfig extends DatePickerConfig {
 
+	public static final String VERSION = "$Revision$";
+	
 	public static final String TAG_NAME = "dateTimePicker";
 
 	public static final String PROPERTITY_HOUR = "hour";
