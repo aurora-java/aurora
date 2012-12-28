@@ -36,7 +36,7 @@ public class WSDLGenerator {
 	private static final Namespace tns = new Namespace("tns", "http://www.aurora-framework.org/schema");
 
 	enum WSDL_TYPES {
-		type, message, portType, binding, service, port
+		type, message, portType, binding, service, part,port
 	}
 
 	static {
@@ -137,7 +137,7 @@ public class WSDLGenerator {
 		CompositeMap message = getWSDLNode("message");
 		message.put("name", createName(operation, isRequest, WSDL_TYPES.message));
 		CompositeMap part = getWSDLNode("part");
-		part.put("name", createName(operation, isRequest, WSDL_TYPES.port));
+		part.put("name", createName(operation, isRequest, WSDL_TYPES.part));
 		if ("query".equals(operation)&&!isRequest) {
 			if (queryMutiRecords)
 				part.put("element", TARGET_PREFIX + ":" + "records");
