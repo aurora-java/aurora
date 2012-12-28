@@ -95,6 +95,11 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public static final String KEY_HAS_CACHE_JOIN_FIELDS = "hascachejoinfields";
 
 	public static final String KEY_NEED_DATABASE_JOIN = "_needdatabasejoin";
+	
+	public static final String KEY_CUSTOMIZATION_ENABLED = "customizationenabled";
+	
+	public static final String KEY_CUSTOMIZATION_TAG = "tag";
+	
 
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -331,6 +336,13 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			return (QueryField[]) DynamicObject.castToArray(flds, QueryField.class);
 		else
 			return null;
+	}
+	public void addQueryField(CompositeMap queryField){
+		CompositeMap childs_map = object_context.getChild(SECTION_QUERY_FIELDS);
+		if (childs_map == null){
+			childs_map = object_context.createChild("bm", AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE, SECTION_QUERY_FIELDS);
+		}
+		childs_map.addChild(queryField);
 	}
 
 	protected List getChildSection(String name) {
@@ -625,6 +637,25 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 		if (lst == null)
 			return null;
 		return (DataFilter[]) DynamicObject.castToArray(lst, DataFilter.class);
+	}
+	public void setDataFilters(CompositeMap dataFilter) {
+		CompositeMap childs_map = object_context.getChild(DataFilter.KEY_DATA_FILTERS);
+		if (childs_map != null){
+			if(dataFilter == null || dataFilter.getChilds() == null)
+				return;
+			else{
+				childs_map = object_context.createChild(DataFilter.KEY_DATA_FILTERS);
+				childs_map.addChilds(dataFilter.getChilds());
+			}
+		}else{
+			object_context.removeChild(childs_map);
+			if(dataFilter != null || dataFilter.getChilds() != null){
+				childs_map = object_context.createChild(DataFilter.KEY_DATA_FILTERS);
+				childs_map.addChilds(dataFilter.getChilds());
+			}
+		}
+	
+			
 	}
 
 	public IParameterIterator getParameterForQuery() {
@@ -969,6 +1000,22 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 
 	public void setCacheJoinList(List<RelationFields> cacheJoinList) {
 		this.cacheJoinList = cacheJoinList;
+	}
+	
+	public boolean getCustomizationenabled() {
+		return getBoolean(KEY_CUSTOMIZATION_ENABLED, false);
+	}
+
+	public void setCustomizationenabled(boolean b) {
+		putBoolean(KEY_CUSTOMIZATION_ENABLED, b);
+	}
+	
+	public String getTag() {
+		return getString(KEY_CUSTOMIZATION_TAG);
+	}
+
+	public void setTag(String b) {
+		putString(KEY_CUSTOMIZATION_TAG, b);
 	}
 	
 }

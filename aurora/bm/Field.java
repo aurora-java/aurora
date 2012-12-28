@@ -296,6 +296,9 @@ public class Field extends DynamicObject implements IParameter {
         else
             return b.booleanValue();
     }
+    public void setForDisplay(boolean b){
+    	putBoolean(KEY_FOR_DISPLAY, b);
+    }
     
     /** default true */
     public boolean isForSelect(){
