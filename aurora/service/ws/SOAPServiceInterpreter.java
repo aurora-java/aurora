@@ -135,7 +135,7 @@ public class SOAPServiceInterpreter {
 		}
 		prepareResponse(svc.getResponse());
 		PrintWriter out = svc.getResponse().getWriter();
-		out.append("<?xml version='1.0' encoding='UTF-8'?>");
+		out.append("<?xml version='1.0' encoding='UTF-8'?>").append(LINE_SEPARATOR);
 		String content = XMLOutputter.defaultInstance().toXML(body.getRoot());
 		LoggingContext.getLogger(service_context.getObjectContext(), this.getClass().getCanonicalName()).config(
 				"response content:" + LINE_SEPARATOR + content);
