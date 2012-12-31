@@ -610,6 +610,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			} finally {
 				closeConnection(connection);
 			}
+			logger.log(Level.CONFIG, "taskFetcher finished。");
 			return "finished";
 		}
 	}
