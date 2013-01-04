@@ -22,6 +22,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_FOR_EXPORT = "forexport";
 	public static final String PROPERTITY_EXPORT_FIELD = "exportfield";
 	public static final String PROPERTITY_EXPORT_DATA_TYPE = "exportdatatype";
+	public static final String PROPERTITY_EXPORT_DATA_FORMAT = "exportdataformat";
 	public static final String PROPERTITY_EDITOR_FUNCTION = "editorfunction";
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	public static final String PROPERTITY_MAX_ADJUST_WIDTH = "maxadjustwidth";
@@ -111,6 +112,13 @@ public class GridColumnConfig extends ComponentConfig {
 	
 	public void setExportDataType(String exportDataType){
 		putString(PROPERTITY_EXPORT_DATA_TYPE, exportDataType);
+	}	
+	public String getExportDataFormat(){
+		return getString(PROPERTITY_EXPORT_DATA_FORMAT);		
+	}
+	
+	public void setExportDataFormat(String exportDataFormat){
+		putString(PROPERTITY_EXPORT_DATA_FORMAT, exportDataFormat);
 	}	
 	public boolean isForExport(){
 		return getBoolean(PROPERTITY_FOR_EXPORT,true);		
