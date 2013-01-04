@@ -60,13 +60,13 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 			if (fullContext == null)
 				return;
 			logger.log(Level.CONFIG, fullContext.getRoot().toXML());
-			String function_id = TextParser.parse(FUNCTION_ID_PATH, fullContext);
-//			String function_code = TextParser.parse(FUNCTION_CODE_PATH, fullContext);
+//			String function_id = TextParser.parse(FUNCTION_ID_PATH, fullContext);
+			String function_code = TextParser.parse(FUNCTION_CODE_PATH, fullContext);
 			// if not called by a Screen.
-			if (function_id == null|| "".equals(function_id)) {
+			if (function_code == null|| "".equals(function_code)) {
 				return;
 			}
-			CompositeMap custDetailRecords  = getCustomizationData(model ,Integer.valueOf(function_id),fullContext);
+			CompositeMap custDetailRecords  = getCustomizationData(model ,function_code,fullContext);
 			 if(custDetailRecords!=null){
 				 LovBMCustomSourceCode.custom(model,custDetailRecords,objectRegistry);
 			 }
@@ -74,7 +74,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 	}
 
 	@Override
-	public CompositeMap getCustomizationData(BusinessModel model,int function_id,CompositeMap context) {
+	public CompositeMap getCustomizationData(BusinessModel model,String function_code,CompositeMap context) {
 		if (custDimensionsRecords == null || custDimensionsRecords.getChilds() == null)
 			return null;
 		String bm_name = model.getName();
@@ -85,7 +85,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 		try {
 			ssc = databaseServiceFactory.createContextWithConnection();
 			String exits_sql = "select 1   from dual  where exists  (select 1 from sys_bm_config_customization t " +
-								" where t.bm_code='"+bm_name+"' and t.function_id = '"+function_id+"' and t.enable_flag='Y')";
+								" where t.bm_code='"+bm_name+"' and t.function_code = '"+function_code+"' and t.enable_flag='Y')";
 			ParsedSql exits_stmt = createStatement(exits_sql);
 			SqlRunner exits_runner = new SqlRunner(ssc, exits_stmt);
 			rs_exists = exits_runner.query(null);
@@ -101,7 +101,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 											" bm_select_value,bm_data_source,bm_where_clause,bm_order_by,bm_query_condition"	+ 
 					                       " from sys_bm_config_customization t,sys_bm_config_dimension d " +
 					                       " where t.dimension_type=d.dimension_code and t.enable_flag = 'Y'" +
-					                       " and t.bm_code='"+bm_name+"' and t.function_id = '"+function_id + "' and t.dimension_type=";
+					                       " and t.bm_code='"+bm_name+"' and t.function_code = '"+function_code + "' and t.dimension_type=";
 			StringBuffer sb = new StringBuffer("");
 			boolean firstRecord = true;
 			for (Iterator it = custDimensionsRecords.getChildIterator(); it.hasNext();) {

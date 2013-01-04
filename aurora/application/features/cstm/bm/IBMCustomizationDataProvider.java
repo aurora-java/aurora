@@ -5,5 +5,5 @@ import uncertain.composite.CompositeMap;
 
 public interface IBMCustomizationDataProvider {
 
-	 public CompositeMap getCustomizationData(BusinessModel model,int function_id,CompositeMap context );
+	 public CompositeMap getCustomizationData(BusinessModel model,String function_code,CompositeMap context );
 }
