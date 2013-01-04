@@ -8,7 +8,8 @@ import uncertain.event.EventModel;
 import uncertain.proc.IFeature;
 import uncertain.proc.ProcedureRunner;
 import aurora.bm.BusinessModel;
-import aurora.bm.IModelFactory;
+import aurora.database.service.BusinessModelService;
+import aurora.database.service.IDatabaseServiceFactory;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.FormConfig;
@@ -20,10 +21,10 @@ public class AutoForm implements IFeature{
 	
 	private static final String PROPERTITY_ENTERDOWN_HANDLER = "enterdownhandler";
 	
-	IModelFactory mFactory;
+	IDatabaseServiceFactory mFactory;
 	CompositeMap view;
 
-    public AutoForm(IModelFactory factory) {
+    public AutoForm(IDatabaseServiceFactory factory) {
         this.mFactory = factory;
     }
     
@@ -41,7 +42,8 @@ public class AutoForm implements IFeature{
 		String href = view.getString(PROPERTITY_MODEL, "");
 		if(!"".equals(href)){
 			href = uncertain.composite.TextParser.parse(href, model);
-			BusinessModel bm = mFactory.getModel(href);
+			BusinessModelService modelService = mFactory.getModelService(href);
+			BusinessModel bm = modelService.getBusinessModel();
 			aurora.bm.Field[] fields = bm.getFields();
 			int fl = fields.length;
 			for(int n=0;n<fl;n++){
