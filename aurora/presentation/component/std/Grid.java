@@ -183,6 +183,7 @@ public class Grid extends Component {
 		JSONArray jsons = new JSONArray(); 
 		List cols = new ArrayList();
 		Map lkpro = new HashMap();
+		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 		lkpro.put(LOCK_WIDTH, new Integer(0));
 		
 		lkpro.put(ROW_SPAN, new Integer(1));
@@ -203,6 +204,9 @@ public class Grid extends Component {
 		Integer viewWidth = (Integer)map.get(ComponentConfig.OLD_WIDTH);
 		float bl = 1;
 		//TODO:判断,如果column的宽度之和小于总宽度就同比放大
+		GridConfig gc = GridConfig.getInstance(view);
+		Boolean isAutoAdjust = gc.isAutoAdjust() == null ? view_config.getDefaultAutoAdjustGrid() : gc.isAutoAdjust();
+		if(isAutoAdjust)
 		if(viewWidth!=null && viewWidth.intValue() !=0) bl = (width.floatValue()/viewWidth.floatValue());
 		
 		
