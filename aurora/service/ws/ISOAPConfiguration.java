@@ -5,5 +5,7 @@ import uncertain.composite.CompositeMap;
 public interface ISOAPConfiguration {
 	
 	public CompositeMap getErrorResponseTemplate();
+	
+	public boolean isEnableDefaultResponse();
 
 }

@@ -34,7 +34,10 @@ public class WSDLGenerator {
 	private static final Namespace soap = new Namespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
 	private static final Namespace wsdl = new Namespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
 	private static final Namespace tns = new Namespace("tns", "http://www.aurora-framework.org/schema");
-
+	
+    private boolean hasUseDefaultResponse = false;
+    private boolean enableDefaultResponse = true;
+    private static final String DEFAULT_RESPONSE_ELEMENT_NAME = "soapResponse";
 	enum WSDL_TYPES {
 		type, message, portType, binding, service, part,port
 	}
@@ -144,8 +147,13 @@ public class WSDLGenerator {
 			else {
 				part.put("element", TARGET_PREFIX + ":" + "record");
 			}
-		} else
-			part.put("element", TARGET_PREFIX + ":" + createName(operation, isRequest, WSDL_TYPES.type));
+		} else{
+			if(isRequest||!hasUseDefaultResponse)
+				part.put("element", TARGET_PREFIX + ":" + createName(operation, isRequest, WSDL_TYPES.type));
+			else{
+				part.put("element", TARGET_PREFIX + ":" + DEFAULT_RESPONSE_ELEMENT_NAME);
+			}
+		}
 		message.addChild(part);
 		int index = wsdlRoot.getChilds().indexOf(wsdlRoot.getChild("types"));
 		wsdlRoot.addChild(index + 1, message);
@@ -249,6 +257,11 @@ public class WSDLGenerator {
 				addXSDAttribute(response, para.getName(), para.getDataType());
 			}
 		}
+		if(!orient.hasResponseType){
+			response = createDefaultResponse();
+			orient.hasResponseType = true;
+			hasUseDefaultResponse = true;
+		}
 		CompositeMap schema = (CompositeMap) wsdlRoot.getObject("/types/schema");
 		if (orient.hasRequestType) {
 			schema.addChild(request);
@@ -256,6 +269,24 @@ public class WSDLGenerator {
 		if (orient.hasResponseType) {
 			schema.addChild(response.getRoot());
 		}
+	}
+	private CompositeMap createDefaultResponse(){
+		CompositeMap defaultResponse = getXSDNode("element");
+		defaultResponse.put("name", DEFAULT_RESPONSE_ELEMENT_NAME);
+		CompositeMap complexType = getXSDNode("complexType");
+		defaultResponse.addChild(complexType);
+		CompositeMap sequence = getXSDNode("all");
+		complexType.addChild(sequence);
+		CompositeMap success = getXSDNode("element");
+		sequence.addChild(success);
+		success.put("name", "success");
+		success.put("type", xsdMap.get(String.class.getCanonicalName()));
+		
+		CompositeMap message = getXSDNode("element");
+		sequence.addChild(message);
+		message.put("name", "message");
+		message.put("type", xsdMap.get(String.class.getCanonicalName()));
+		return defaultResponse;
 	}
 
 	private String createName(String operation, boolean isRequest, WSDL_TYPES types) {
@@ -311,5 +342,12 @@ public class WSDLGenerator {
 	class Orient {
 		public boolean hasRequestType;
 		public boolean hasResponseType;
+	}
+	
+	public boolean isEnableDefaultResponse() {
+		return enableDefaultResponse;
+	}
+	public void setEnableDefaultResponse(boolean enableDefaultResponse) {
+		this.enableDefaultResponse = enableDefaultResponse;
 	}
 }

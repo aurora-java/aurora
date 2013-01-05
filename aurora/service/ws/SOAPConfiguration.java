@@ -9,6 +9,7 @@ public class SOAPConfiguration extends AbstractLocatableObject implements ISOAPC
 
 	
 	private CompositeMap errorResponseTemplate;
+	private boolean enableDefaultResponse = true;
 	@Override
 	public CompositeMap getErrorResponseTemplate() {
 		return errorResponseTemplate;
@@ -20,5 +21,10 @@ public class SOAPConfiguration extends AbstractLocatableObject implements ISOAPC
 			throw BuiltinExceptionFactory.createCDATAMissing(this, "errorResponseTemplate");
 		}
 	}
-
+	public boolean isEnableDefaultResponse() {
+		return enableDefaultResponse;
+	}
+	public void setEnableDefaultResponse(boolean enableDefaultResponse) {
+		this.enableDefaultResponse = enableDefaultResponse;
+	}
 }
