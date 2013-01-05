@@ -16,6 +16,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.bm.BusinessModel;
 import aurora.bm.Operation;
 import aurora.database.service.DatabaseServiceFactory;
+import aurora.service.ws.ISOAPConfiguration;
 import aurora.service.ws.WSDLGenerator;
 
 public class WSDLServlet extends HttpServlet {
@@ -26,7 +27,7 @@ public class WSDLServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final String SERVLET_NAME = "wsdl";
 	DatabaseServiceFactory mDatabaseServiceFactory;
-
+	private boolean enableDefaultResponse = true;
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		ServletContext context = config.getServletContext();
@@ -39,6 +40,9 @@ public class WSDLServlet extends HttpServlet {
 		if (reg == null)
 			throw new ServletException("IObjectRegistry not initialized");
 		mDatabaseServiceFactory = (DatabaseServiceFactory) reg.getInstanceOfType(DatabaseServiceFactory.class);
+		ISOAPConfiguration soapConfiguration = (ISOAPConfiguration)reg.getInstanceOfType(ISOAPConfiguration.class);
+		if(soapConfiguration != null)
+			enableDefaultResponse = soapConfiguration.isEnableDefaultResponse();
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -67,24 +71,25 @@ public class WSDLServlet extends HttpServlet {
 		BusinessModel bm = mDatabaseServiceFactory.getModelFactory().getModelForRead(object_name);
 		if (bm == null)
 			throw new ServletException("Can't load model:" + object_name);
-		WSDLGenerator wsdl;
+		WSDLGenerator wsdlGenerator;
 		String fullUrl = getFullUrl(request);
 		if (operation_name == null) {
-			wsdl = new WSDLGenerator(bm, fullUrl);
+			wsdlGenerator = new WSDLGenerator(bm, fullUrl);
 		} else if (Operation.QUERY.equalsIgnoreCase(operation_name)) {
 			String multi = request.getParameter("multi_flag");
 			if ("Y".equalsIgnoreCase(multi)) {
-				wsdl = new WSDLGenerator(bm, fullUrl, true);
+				wsdlGenerator = new WSDLGenerator(bm, fullUrl, true);
 			} else {
-				wsdl = new WSDLGenerator(bm, fullUrl, false);
+				wsdlGenerator = new WSDLGenerator(bm, fullUrl, false);
 			}
 		} else {
-			wsdl = new WSDLGenerator(bm, fullUrl, operation_name);
+			wsdlGenerator = new WSDLGenerator(bm, fullUrl, operation_name);
 		}
+		wsdlGenerator.setEnableDefaultResponse(enableDefaultResponse);
 		response.setContentType("text/plain;charset=UTF-8");// 设置响应的MIME类型。
 		PrintWriter out = response.getWriter();
 		try {
-			String content = XMLOutputter.defaultInstance().toXML(wsdl.run(), true);
+			String content = XMLOutputter.defaultInstance().toXML(wsdlGenerator.run(), true);
 			out.print(content);
 			out.flush();
 		} finally {
