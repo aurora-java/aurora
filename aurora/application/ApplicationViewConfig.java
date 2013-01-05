@@ -22,6 +22,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_RESOURCE_CACHE_NAME = "resourcecachename";
 	public static final String KEY_DEFAULT_AUTO_COUNT = "defaultautocount";
 	public static final String KEY_DEFAULT_AUTO_APPEND = "defaultautoappend";
+	public static final String KEY_DEFAULT_AUTO_ADJUST_GRID = "defaultautoadjustgrid";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -91,6 +92,14 @@ public class ApplicationViewConfig extends DynamicObject {
 	
 	public boolean getDefaultAutoCount() {
 		return getBoolean(KEY_DEFAULT_AUTO_COUNT,true);
+	}
+	
+	public void setDefaultAutoAdjustGrid(String autoAdjust) {
+		putString(KEY_DEFAULT_AUTO_ADJUST_GRID, autoAdjust);
+	}
+	
+	public boolean getDefaultAutoAdjustGrid() {
+		return getBoolean(KEY_DEFAULT_AUTO_ADJUST_GRID,true);
 	}
 
 	public void setDefaultAutoCount(boolean autoCount) {
