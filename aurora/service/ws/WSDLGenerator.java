@@ -33,11 +33,14 @@ public class WSDLGenerator {
 	private static final Namespace xsd = new Namespace("xsd", "http://www.w3.org/2001/XMLSchema");
 	private static final Namespace soap = new Namespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
 	private static final Namespace wsdl = new Namespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
-	private static final Namespace tns = new Namespace("tns", "http://www.aurora-framework.org/schema");
+	private static final Namespace tns = new Namespace("tns", TARGET_NAMESPACE);
 	
-    private boolean hasUseDefaultResponse = false;
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");;
+	private boolean hasUseDefaultResponse = false;
     private boolean enableDefaultResponse = true;
     private static final String DEFAULT_RESPONSE_ELEMENT_NAME = "soapResponse";
+    public static final CompositeMap DEFAULT_SUCCESS_RESPONSE_CONTENT = new CompositeMap("",TARGET_NAMESPACE,"soapResponse");
+    
 	enum WSDL_TYPES {
 		type, message, portType, binding, service, part,port
 	}
@@ -57,6 +60,13 @@ public class WSDLGenerator {
 		xsdMap.put(Calendar.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
 		xsdMap.put(Date.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
 		xsdMap.put(Clob.class.getCanonicalName(), xsd.getPrefix() + ":string");
+		
+		CompositeMap success = new CompositeMap("success");
+		success.setText("Y");
+		CompositeMap message = new CompositeMap("message");
+		message.setText("OK");
+		DEFAULT_SUCCESS_RESPONSE_CONTENT.addChild(success);
+		DEFAULT_SUCCESS_RESPONSE_CONTENT.addChild(message);
 	}
 
 	public WSDLGenerator(BusinessModel model, String location) {
@@ -269,6 +279,7 @@ public class WSDLGenerator {
 		if (orient.hasResponseType) {
 			schema.addChild(response.getRoot());
 		}
+		schema.put("elementFormDefault", "qualified");
 	}
 	private CompositeMap createDefaultResponse(){
 		CompositeMap defaultResponse = getXSDNode("element");

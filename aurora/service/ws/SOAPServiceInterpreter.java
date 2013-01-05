@@ -8,6 +8,7 @@ import com.sun.xml.internal.messaging.saaj.util.Base64;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +41,7 @@ public class SOAPServiceInterpreter {
 	public static final QualifiedName ENVELOPE = new QualifiedName("soapenv", "http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
 	public static final QualifiedName BODY = new QualifiedName("soapenv", "http://schemas.xmlsoap.org/soap/envelope/", "Body");
 
-	public static final String LINE_SEPARATOR = System.getProperty("line.separator");;
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	private IObjectRegistry mRegistry;
 
@@ -114,6 +115,7 @@ public class SOAPServiceInterpreter {
 		if (cfg != null)
 			output = cfg.getOutput();
 		CompositeMap body = createSOAPBody();
+
 		boolean write_result = service_context.getBoolean("write_result", true);
 		if (write_result) {
 			// CompositeMap result = context_map.getChild("result");
@@ -129,6 +131,17 @@ public class SOAPServiceInterpreter {
 			} else
 				result = service_context.getModel();
 			if (result != null) {
+				if ("/autocrud".equalsIgnoreCase(svc.getRequest().getServletPath())) {
+					ISOAPConfiguration soapConfiguration = (ISOAPConfiguration) mRegistry.getInstanceOfType(ISOAPConfiguration.class);
+					if (soapConfiguration != null && soapConfiguration.isEnableDefaultResponse()) {
+						CompositeMap soapErrorResponse = getSoapErrorResponse(service_context, soapConfiguration);
+						if (result.getName() != soapErrorResponse.getName()) {
+							if (WSDLGenerator.DEFAULT_SUCCESS_RESPONSE_CONTENT.getName().equals(soapErrorResponse.getName())) {
+								result = WSDLGenerator.DEFAULT_SUCCESS_RESPONSE_CONTENT;
+							}
+						}
+					}
+				}
 				result.put("success", service_context.isSuccess());
 				body.addChild(result);
 			}
@@ -141,7 +154,25 @@ public class SOAPServiceInterpreter {
 				"response content:" + LINE_SEPARATOR + content);
 		out.print(content);
 		out.flush();
+	}
 
+	private CompositeMap getSoapErrorResponse(ServiceContext service_context, ISOAPConfiguration config) {
+		CompositeMap errorResponseTemplate = config.getErrorResponseTemplate();
+		if (errorResponseTemplate == null)
+			return null;
+		String ert_text = errorResponseTemplate.getText();
+		if (ert_text == null || "".equals(ert_text))
+			return null;
+		CompositeLoader cl = new CompositeLoader();
+		try {
+			CompositeMap soap_error = cl.loadFromString(ert_text, "UTF-8");
+			return soap_error;
+		} catch (Exception e) {
+			ILogger logger = LoggingContext.getLogger(service_context.getObjectContext(), this.getClass().getCanonicalName());
+			if (logger != null)
+				logger.log(Level.CONFIG, "", e);
+		}
+		return null;
 	}
 
 	public void onCreateSuccessResponse(ServiceContext service_context) throws IOException {
@@ -169,11 +200,11 @@ public class SOAPServiceInterpreter {
 		CompositeMap soap_error = context.getObjectContext().getChild("result");
 		if (soap_error != null) {
 			body.addChild(soap_error);
-		}else{
-			ISOAPConfiguration config = (ISOAPConfiguration)mRegistry.getInstanceOfType(ISOAPConfiguration.class);
-			if(config != null){
+		} else {
+			ISOAPConfiguration config = (ISOAPConfiguration) mRegistry.getInstanceOfType(ISOAPConfiguration.class);
+			if (config != null) {
 				CompositeMap errorResponseTemplate = config.getErrorResponseTemplate();
-				if(errorResponseTemplate == null)
+				if (errorResponseTemplate == null)
 					throw BuiltinExceptionFactory.createNodeMissing(null, "errorResponseTemplate");
 				String ert_text = errorResponseTemplate.getText();
 				if (ert_text == null || "".equals(ert_text)) {
@@ -187,7 +218,7 @@ public class SOAPServiceInterpreter {
 				} catch (SAXException e) {
 					LoggingUtil.logException(thr, logger);
 				}
-			}else{
+			} else {
 				CompositeMap result = new CompositeMap("result");
 				result.put("success", "false");
 				body.addChild(result);
@@ -211,8 +242,8 @@ public class SOAPServiceInterpreter {
 		if (soapParam != null)
 			return true;
 		soapParam = svc.getParameter(HEAD_SOAP_PARAMETER);
-        if (soapParam != null)
-            return true;		
+		if (soapParam != null)
+			return true;
 		return false;
 	}
 
