@@ -126,6 +126,8 @@ public class AttachmentManager extends AbstractEntry{
 				int fileSize = rs.getInt(2);
 				String mimeType = rs.getString(3);
 				HttpServletResponse response = serviceInstance.getResponse();
+				response.setHeader("cache-control", "must-revalidate");
+				response.setHeader("pragma", "public");	
 				response.setHeader("Content-Type", mimeType);//application/octet-stream
 				response.setHeader("Content-disposition", "attachment;" + processFileName(serviceInstance.getRequest(),fileName));
 //				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
@@ -172,6 +174,7 @@ public class AttachmentManager extends AbstractEntry{
 		            }
 				}
 				response.setHeader("Connection", "close");
+				System.out.println(1/0);
 			} finally{
 				
 				if (rs != null)
