@@ -20,6 +20,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_CAN_PASTE = "canpaste";
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
+	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -77,6 +78,14 @@ public class GridConfig extends ComponentConfig {
 	public void setAutoFocus(boolean focus){
 		putBoolean(PROPERTITY_AUTO_FOCUS, focus);
 	}
+	
+	public Boolean isAutoAdjust(){
+		return getBoolean(PROPERTITY_AUTO_ADJUST);		
+	}
+	public void setAutoAdjust(Boolean autoAdjust){
+		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
+	}
+	
 	public Boolean isAutoAppend(){
 		return getBoolean(PROPERTITY_AUTO_APPEND);		
 	}
