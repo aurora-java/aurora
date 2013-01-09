@@ -60,6 +60,9 @@ public class WSDLGenerator {
 		xsdMap.put(Calendar.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
 		xsdMap.put(Date.class.getCanonicalName(), xsd.getPrefix() + ":dateTime");
 		xsdMap.put(Clob.class.getCanonicalName(), xsd.getPrefix() + ":string");
+		xsdMap.put(java.sql.Date.class.getCanonicalName(), xsd.getPrefix() + ":date");
+		xsdMap.put(java.sql.Time.class.getCanonicalName(), xsd.getPrefix() + ":time");
+		xsdMap.put(java.sql.Timestamp.class.getCanonicalName(), xsd.getPrefix() + ":datetime");
 		
 		CompositeMap success = new CompositeMap("success");
 		success.setText("Y");
