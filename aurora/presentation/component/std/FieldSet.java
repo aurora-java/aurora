@@ -6,18 +6,19 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.FieldSetConfig;
 import aurora.presentation.component.std.config.FormConfig;
 
 public class FieldSet extends Box {
 	
 	public static final String VERSION = "$Revision$";
 	
-	protected static final String PROPERTITY_TITLE="title";
 	private static final String DEFAULT_BODY_CLASS = "form_body";
 	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		Writer out = session.getWriter();
-		String title = view.getString(PROPERTITY_TITLE, "");
+		FieldSetConfig fsc = FieldSetConfig.getInstance(view);
+		String title = fsc.getTitle();
 		title = session.getLocalizedPrompt(title);
 		out.write("<LEGEND class='field_head' unselectable='on'><SPAN>");
 		out.write(title);
@@ -32,23 +33,23 @@ public class FieldSet extends Box {
 	}
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view,Map map,int rows, int columns,String id) throws Exception{
-		
+		FieldSetConfig fsc = FieldSetConfig.getInstance(view);
 		Writer out = session.getWriter();
-		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
-		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
+		String cls = fsc.getClassName("");
+		String style = fsc.getStyle("");
 		
-		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
+		String widthStr = String.valueOf(fsc.getWidth(0));//view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		int width = Integer.valueOf(wstr).intValue();
-		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
+		String heightStr = String.valueOf(fsc.getHeight(0));//view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		int height = Integer.valueOf(hstr).intValue();
 		
-		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
-		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
+		int cellspacing = fsc.getCellSpacing();//view.getInt(PROPERTITY_CELLSPACING, 0);
+		int cellpadding = fsc.getCellPadding();//view.getInt(PROPERTITY_CELLPADDING, 0);
 		
 		String className = DEFAULT_TABLE_CLASS;
-		String title = view.getString(PROPERTITY_TITLE, "");
+		String title = fsc.getTitle();
 		if(!"".equals(title)) className += " " + TITLE_CLASS;
 		className += " " + cls;
 		

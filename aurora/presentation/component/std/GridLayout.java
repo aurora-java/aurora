@@ -14,6 +14,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.GridLayouConfig;
 
 /**
  * GridLayout.
@@ -30,11 +31,11 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	public static final String COLUMNS = "column";
 	
 	protected static final int UNLIMITED = -1;
-	protected static final String PROPERTITY_CELLPADDING = "cellpadding";
-	protected static final String PROPERTITY_CELLSPACING = "cellspacing";
-	protected static final String PROPERTITY_VALIDALIGN = "validalign";
-	protected static final String PROPERTITY_PADDING = "padding";
-	protected static final String PROPERTITY_WRAPPER_ADJUST = "wrapperadjust";
+//	protected static final String PROPERTITY_CELLPADDING = "cellpadding";
+//	protected static final String PROPERTITY_CELLSPACING = "cellspacing";
+//	protected static final String PROPERTITY_VALIDALIGN = "validalign";
+//	protected static final String PROPERTITY_PADDING = "padding";
+//	protected static final String PROPERTITY_WRAPPER_ADJUST = "wrapperadjust";
 	
 	protected static final String TITLE_CLASS = "layout-title";
 	protected static final String DEFAULT_TABLE_CLASS = "layout-table";
@@ -62,8 +63,10 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		if(isHidden(field, model)) return;
+		GridLayouConfig glc = new GridLayouConfig();
+		glc.initialize(view);
 		Writer out = session.getWriter();
-		int padding = view.getInt(PROPERTITY_PADDING, 3);
+		int padding = glc.getPadding(3);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
@@ -72,7 +75,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		} else{
 			out.write(DEFAULT_TD_CELL);
 		}
-		if(view.getBoolean(PROPERTITY_WRAPPER_ADJUST,true)){
+		if(glc.isWrapperAdjust()){
 			String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
 //			if(null == width){
 //				try{
@@ -152,11 +155,12 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, Map map, int rows, int columns,String id) throws Exception{
-		
 		beforeBuildTop(session,model,view,id);
+		GridLayouConfig glc = new GridLayouConfig();
+		glc.initialize(view);
 		Writer out = session.getWriter();
-		int cellspacing = view.getInt(PROPERTITY_CELLSPACING, 0);
-		int cellpadding = view.getInt(PROPERTITY_CELLPADDING, 0);
+		int cellspacing = glc.getCellSpacing();
+		int cellpadding = glc.getCellPadding();
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);		
 		
 //		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");

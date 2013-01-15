@@ -24,6 +24,7 @@ import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
+import aurora.presentation.component.std.config.GridLayouConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
 /**
@@ -208,7 +209,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				formToolBar.addChild(btn);
 			}
 		}
-		formToolBar.putBoolean(GridLayout.PROPERTITY_WRAPPER_ADJUST, true);
+		formToolBar.putBoolean(GridLayouConfig.PROPERTITY_WRAPPER_ADJUST, true);
 		formToolBar.putString("style", "width:100%;"+style);
 	}
 

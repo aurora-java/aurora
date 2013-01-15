@@ -67,6 +67,10 @@ public class ComponentConfig extends DynamicObject {
 		putString(PROPERTITY_PROMPT_STYLE, style);
 	}
 
+	public String getStyle(String defaultValue) {
+		return getString(PROPERTITY_STYLE,defaultValue);
+	}
+	
 	public String getStyle() {
 		return getString(PROPERTITY_STYLE);
 	}
@@ -83,6 +87,10 @@ public class ComponentConfig extends DynamicObject {
 		putString(PROPERTITY_VALUE, value);
 	}
 
+	
+	public int getWidth(int defaultValue) {
+		return getInt(PROPERTITY_WIDTH, defaultValue);
+	}
 	public int getWidth() {
 		return getInt(PROPERTITY_WIDTH, 150);
 	}
