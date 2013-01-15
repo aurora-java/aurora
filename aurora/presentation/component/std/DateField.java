@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DateFieldConfig;
 
 /**
  * 日历组件.
@@ -18,10 +19,6 @@ public class DateField extends Component {
 	
 	public static final String VERSION = "$Revision$";
 
-	private static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
-	private static final String PROPERTITY_ENABLE_MONTH_BTN = "enablemonthbtn";
-	private static final String PROPERTITY_ENABLE_YEAR_BTN = "enableyearbtn";
-	private static final String PROPERTITY_ENABLE_BESIDE_DAYS = "enablebesidedays";
 	private static final String DEFAULT_CLASS = "item-dateField";
 
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
@@ -34,18 +31,17 @@ public class DateField extends Component {
 	protected int getDefaultHeight(){
 		return 150;
 	}
-	public void onCreateViewContent(BuildSession session, ViewContext context)
-			throws IOException {
+	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
-		if(null!=view.getString(PROPERTITY_DAY_RENDERER))addConfig(PROPERTITY_DAY_RENDERER, view.getString(PROPERTITY_DAY_RENDERER));
-		addConfig(PROPERTITY_ENABLE_MONTH_BTN, view.getString(
-				PROPERTITY_ENABLE_MONTH_BTN, "both"));
-		addConfig(PROPERTITY_ENABLE_YEAR_BTN, view.getString(
-				PROPERTITY_ENABLE_YEAR_BTN, "both"));
-		addConfig(PROPERTITY_ENABLE_BESIDE_DAYS, view.getString(
-				PROPERTITY_ENABLE_BESIDE_DAYS, "both"));
+		DateFieldConfig dfc = DateFieldConfig.getInstance(view);
+		
+		String dayRenderer = dfc.getDayRenderer();
+		if(null!=dayRenderer) addConfig(DateFieldConfig.PROPERTITY_DAY_RENDERER, dayRenderer);
+		addConfig(DateFieldConfig.PROPERTITY_ENABLE_MONTH_BTN, dfc.getEnableMonthBtn());
+		addConfig(DateFieldConfig.PROPERTITY_ENABLE_YEAR_BTN, dfc.getEnableYearBtn());
+		addConfig(DateFieldConfig.PROPERTITY_ENABLE_BESIDE_DAYS, dfc.getEnablebeSideDays());
 		map.remove(ComponentConfig.PROPERTITY_HEIGHT);
 		map.put(CONFIG, getConfigString());
 	}
