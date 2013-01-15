@@ -117,7 +117,7 @@ public class Component {
 				vh = Integer.valueOf(vhs);
 			}
 		}
-		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "" + getDefaultHeight());
+		String heightStr = String.valueOf(cc.getHeight(getDefaultHeight()));
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
 		Integer marginHeight = cc.getMarginHeight();
@@ -133,11 +133,13 @@ public class Component {
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
 		Map map = context.getMap();
+		ComponentConfig cc = new ComponentConfig();
+		cc.initialize(view);
 		
-		Boolean isCust = view.getBoolean(ComponentConfig.PROPERTITY_IS_CUST);
+		Boolean isCust = cc.isCust();
 		/** ID属性 * */
-		id = view.getString(ComponentConfig.PROPERTITY_ID, "");
-		if ("".equals(id)) {
+		id = cc.getId();
+		if (id == null) {
 			id = IDGenerator.getInstance().generate();
 		}else if(isCust==null){
 			isCust =  new Boolean(true);
@@ -148,8 +150,8 @@ public class Component {
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 
 		String clazz = getDefaultClass(session, context);
-		String className = view.getString(ComponentConfig.PROPERTITY_CLASSNAME,"");
-		if (!"".equals(className)) {
+		String className = cc.getClassName();
+		if (className != null) {
 			clazz += " " + className;
 		}
 		map.put(WRAP_CSS, clazz);
@@ -167,18 +169,18 @@ public class Component {
 		}
 
 		/** NAME属性 * */
-		String name = view.getString(ComponentConfig.PROPERTITY_NAME, "");
-		if ("".equals(name)) {
+		String name = cc.getName();
+		if (name == null) {
 			name = IDGenerator.getInstance().generate();
 		}
 		map.put(ComponentConfig.PROPERTITY_NAME, name);
 
-		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-		map.put(ComponentConfig.PROPERTITY_STYLE, style);
+		String style = cc.getStyle();
+		map.put(ComponentConfig.PROPERTITY_STYLE, style == null ? "" : style);
 
 		/** 值 * */
-		String value = view.getString(ComponentConfig.PROPERTITY_VALUE, "");
-		map.put(ComponentConfig.PROPERTITY_VALUE, value);
+		String value = cc.getValue();
+		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
 
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
@@ -202,7 +204,7 @@ public class Component {
 		addConfig("listeners", listeners);
 
 		/** 绑定DataSet * */
-		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
+		String bindTarget = cc.getBindTarget();
 		if (!bindTarget.equals("")) {
 			bindTarget = uncertain.composite.TextParser.parse(bindTarget, model);
 			map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
