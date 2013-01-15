@@ -5,17 +5,17 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
-import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.TreeConfig;
 
+@SuppressWarnings("unchecked")
 public class TreeGrid extends Grid {
 	
 	public static final String VERSION = "$Revision$";
 
-	public TreeGrid(IObjectRegistry registry, IModelFactory factory) {
-		super(registry, factory);
+	public TreeGrid(IObjectRegistry registry) {
+		super(registry);
 	}
 
 
@@ -29,12 +29,12 @@ public class TreeGrid extends Grid {
 	}
 	
 	
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		TreeConfig tc = TreeConfig.getInstance(view);
-		
 		
 		if(session.getContextPath()!=null) addConfig(Tree.CONFIG_CONTEXT,session.getContextPath()+"/");
 		addConfig(TreeConfig.PROPERTITY_FIELD_DISPLAY, tc.getDisplayField());
@@ -45,6 +45,7 @@ public class TreeGrid extends Grid {
 		addConfig(TreeConfig.PROPERTITY_FIELD_CHECKED, tc.getCheckField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField());
+		addConfig(TreeConfig.PROPERTITY_FIELD_ICON, tc.getIconField());
 		map.put(CONFIG, getConfigString());
 	}
 }
