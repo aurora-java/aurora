@@ -15,7 +15,17 @@ public class BoxConfig extends ComponentConfig {
 	public static final String PROPERTITY_PADDING = "padding";
 	public static final String PROPERTITY_SHOWBORDER = "showborder";
 	public static final String PROPERTITY_LABEL_SEPARATOR = "labelseparator";
+	public static final String PROPERTITY_LABEL_WIDTH = "labelwidth";
 	
+	private int DEFAULT_LABEL_WIDTH = 75;
+	
+	public int getLabelWidth(){
+		return getInt(PROPERTITY_LABEL_WIDTH, DEFAULT_LABEL_WIDTH);
+	}
+	
+	public void setLabelWidth(int w){
+		putInt(PROPERTITY_LABEL_WIDTH, w);
+	}
 	
 	public int getRows() {
 		return getInt(ROWS, -1);		

@@ -16,6 +16,7 @@ import aurora.presentation.component.std.config.InputFieldConfig;
  * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
+@SuppressWarnings("unchecked")
 public class ComboBox extends TextField {
 	
 	public static final String VERSION = "$Revision$";

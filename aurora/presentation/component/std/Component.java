@@ -35,9 +35,6 @@ public class Component {
 	protected static final String CONFIG = "config";
 	protected static final String WRAP_CSS = "wrapClass";
 	protected static final String BINDING = "binding";
-
-	protected static final String PROPERTITY_MARGIN_WIDTH = "marginwidth";
-	protected static final String PROPERTITY_MARGIN_HEIGHT = "marginheight";
 	
 	public static final String THEME_DEFAULT = "default";
 	public static final String THEME_MAC = "mac";
@@ -72,6 +69,9 @@ public class Component {
 	protected Integer getComponentWidth(CompositeMap model, CompositeMap view, Map map) {
 		CompositeMap root = model.getRoot();
 		CompositeMap vwc = null;
+		ComponentConfig cc = new ComponentConfig();
+		cc.initialize(view);
+		
 		String vws = null;
 		Integer vw = null;
 		if (root != null) {
@@ -88,13 +88,13 @@ public class Component {
 		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+ getDefaultWidth());
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
-		map.put(ComponentConfig.OLD_WIDTH, width);
-		Integer marginWidth = view.getInt(PROPERTITY_MARGIN_WIDTH);
+		map.put(ComponentConfig.PROPERTITY_OLD_WIDTH, width);
+		Integer marginWidth = cc.getMarginWidth();
 		if (marginWidth != null && vw != null) {
 			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
-			//非标准做法,中集特殊要求！
+			//中集特殊做法！
 			//width = new Integer((vw.intValue() - marginWidth.intValue()) < width.intValue() ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
-			addConfig(PROPERTITY_MARGIN_WIDTH, marginWidth);
+			addConfig(ComponentConfig.PROPERTITY_MARGIN_WIDTH, marginWidth);
 		}
 		return width;
 	}
@@ -102,6 +102,9 @@ public class Component {
 	protected Integer getComponentHeight(CompositeMap model, CompositeMap view, Map map) {
 		CompositeMap root = model.getRoot();
 		CompositeMap vhc = null;
+		ComponentConfig cc = new ComponentConfig();
+		cc.initialize(view);
+		
 		String vhs = null;
 		Integer vh = null;
 		if (root != null) {
@@ -117,11 +120,11 @@ public class Component {
 		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "" + getDefaultHeight());
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
-		Integer marginHeight = view.getInt(PROPERTITY_MARGIN_HEIGHT);
+		Integer marginHeight = cc.getMarginHeight();
 		if (marginHeight != null && vh != null) {
 //			height = new Integer((vh.intValue() - marginHeight.intValue()) > height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
 			height = new Integer((vh.intValue() - marginHeight.intValue()) > 0 ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
-			addConfig(PROPERTITY_MARGIN_HEIGHT, marginHeight);
+			addConfig(ComponentConfig.PROPERTITY_MARGIN_HEIGHT, marginHeight);
 		}
 		return height;
 	}

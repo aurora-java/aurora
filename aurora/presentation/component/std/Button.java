@@ -7,28 +7,21 @@ import uncertain.composite.CompositeMap;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.ButtonConfig;
 
+@SuppressWarnings("unchecked")
 public class Button extends Field {
 	
 	public static final String VERSION = "$Revision$";
 	
-	public static final String TAG_NAME = "button";	
-	public static final String CLASSNAME_WRAP = "item-btn";
-	public static final String PROPERTITY_TEXT = "text";
-	public static final String PROPERTITY_TEXT_HEIGHT = "text_height";
-	public static final String PROPERTITY_ICON = "icon";
-	public static final String BUTTON_STYLE = "btnstyle";
-	public static final String BUTTON_CLASS = "btnclass";
-	public static final String PROPERTITY_CLICK = "click";
-	public static final String PROPERTITY_TITLE = "title";
-	public static final String PROPERTITY_DISABLED = "disabled";
-	private static final String PROPERTITY_ICON_ALIGN = "iconalign";
-	private static final int DEFAULT_HEIGHT = 16;
-	private static final int DEFAULT_WIDTH = 60;
-	private static final int DEFAULT_ALIGN_TOP_HEIGHT = 36;
-	private static final int DEFAULT_ALIGN_TOP_WIDTH = 50;
+	private String CLASSNAME_WRAP = "item-btn";
+	private String PROPERTITY_TEXT_HEIGHT = "text_height";
+	private int DEFAULT_HEIGHT = 16;
+	private int DEFAULT_WIDTH = 60;
+	private int DEFAULT_ALIGN_TOP_HEIGHT = 36;
+	private int DEFAULT_ALIGN_TOP_WIDTH = 50;
 	private boolean isAlignTop = false;
+	
 	protected int getDefaultWidth(){
 		return isAlignTop?DEFAULT_ALIGN_TOP_WIDTH:DEFAULT_WIDTH;
 	}
@@ -39,9 +32,11 @@ public class Button extends Field {
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
-		String text = view.getString(PROPERTITY_TEXT, "");
-		String icon = view.getString(PROPERTITY_ICON, "");
-		String align = view.getString(PROPERTITY_ICON_ALIGN, "left");
+		ButtonConfig bc = ButtonConfig.getInstance(view);
+		
+		String text = bc.getText();
+		String icon = bc.getIcon();
+		String align = bc.getIconAlign();
 		String wrapClass = CLASSNAME_WRAP;
 		if(!"".equals(icon)){
 			if(!"".equals(text)){
@@ -58,38 +53,41 @@ public class Button extends Field {
 		return wrapClass;
 	}
 	
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap model = context.getModel();
 		CompositeMap view = context.getView();
+		ButtonConfig bc = ButtonConfig.getInstance(view);
+		
 		Map map = context.getMap();
-		String clickEvent = view.getString(PROPERTITY_CLICK, "");
+		String clickEvent = bc.getClick();
 		if(!"".equals(clickEvent)){
 			if(clickEvent.indexOf("${") != -1)  //和$()有冲突
 			clickEvent = uncertain.composite.TextParser.parse(clickEvent, model);
 			addEvent(id, "click", clickEvent);
 		}
-		String text = view.getString(PROPERTITY_TEXT, "&#160;");
+		String text = "".equals(bc.getText()) ?  "&#160;" : bc.getText();
 		text = session.getLocalizedPrompt(text);
-		boolean disabled = view.getBoolean(PROPERTITY_DISABLED, false);
+		boolean disabled = bc.getDisabled();
 		if(disabled != false) {
-			addConfig(PROPERTITY_DISABLED, Boolean.valueOf(disabled));
+			addConfig(ButtonConfig.PROPERTITY_DISABLED, Boolean.valueOf(disabled));
 		}
 		
-		String icon = view.getString(PROPERTITY_ICON, "");
-		String btnstyle = view.getString(BUTTON_STYLE, "");
+		String icon = bc.getIcon();
+		String btnstyle = bc.getButtonStyle();
 		if(!"".equals(icon)){
 			if(!"null".equalsIgnoreCase(icon))btnstyle+="background-image:url("+uncertain.composite.TextParser.parse(icon, model)+");";
 		}
-		Integer text_height = (Integer) map.get(ComponentConfig.PROPERTITY_HEIGHT);
+		Integer text_height = (Integer) map.get(ButtonConfig.PROPERTITY_HEIGHT);
 		if(isAlignTop)text_height=null;
 		map.put(PROPERTITY_TEXT_HEIGHT, text_height);
 //		map.put(ComponentConfig.PROPERTITY_EVENTS, esb.toString());
-		map.put(PROPERTITY_TEXT, text);
-		map.put(BUTTON_CLASS, view.getString(BUTTON_CLASS, ""));
-		map.put(PROPERTITY_TITLE, view.getString(PROPERTITY_TITLE, ""));
-		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, new Integer(view.getInt(ComponentConfig.PROPERTITY_TAB_INDEX, 0)));
-		map.put(BUTTON_STYLE, btnstyle);
+		map.put(ButtonConfig.PROPERTITY_TEXT, text);
+		map.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, bc.getButtonClass());
+		map.put(ButtonConfig.PROPERTITY_TITLE, bc.getTitle());
+		map.put(ButtonConfig.PROPERTITY_TAB_INDEX, bc.getTabIndex());
+		map.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, btnstyle);
 		map.put(CONFIG, getConfigString());
 	}
 }

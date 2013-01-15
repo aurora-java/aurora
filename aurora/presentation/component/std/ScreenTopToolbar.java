@@ -12,6 +12,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ScreenTopToolbar extends Component implements IViewBuilder, ISingleton {
@@ -72,7 +73,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 	public boolean isButton(String nameSpace,String name){
 		boolean isBtn = false;
 		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nameSpace)){
-			isBtn = Button.TAG_NAME.equalsIgnoreCase(name)||ToolBarButton.TAG_NAME.equalsIgnoreCase(name)||GridButton.TAG_NAME.equalsIgnoreCase(name);
+			isBtn = ButtonConfig.TAG_NAME.equalsIgnoreCase(name)||ToolBarButton.TAG_NAME.equalsIgnoreCase(name)||GridButton.TAG_NAME.equalsIgnoreCase(name);
 		}
 		return isBtn;
 	}

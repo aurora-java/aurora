@@ -15,13 +15,13 @@ import uncertain.schema.Array;
 import uncertain.schema.Attribute;
 import uncertain.schema.Element;
 import uncertain.schema.ISchemaManager;
-import uncertain.schema.ISchemaObject;
 import aurora.application.AuroraApplication;
 import aurora.application.features.cstm.CustomSourceCode;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
@@ -186,9 +186,9 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
-			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
+			btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(Button.PROPERTITY_CLICK, searchFunction);
+			btn.putString(ButtonConfig.PROPERTITY_CLICK, searchFunction);
 			formToolBar.putString("style", "width:100%;"+style);
 			formToolBar.addChild(searchField);
 			formToolBar.addChild(btn);
@@ -201,9 +201,9 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 				CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
 				btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 				btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
-				btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
+				btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
 				btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-				btn.putString(Button.PROPERTITY_CLICK, searchFunction);
+				btn.putString(ButtonConfig.PROPERTITY_CLICK, searchFunction);
 				formToolBar.putString("style", "width:100%;"+style);
 				formToolBar.addChild(btn);
 			}
@@ -223,9 +223,9 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
 			btn.putString(ComponentConfig.PROPERTITY_STYLE, "float:right");
-			btn.putString(Button.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_MORE_PROMPT));
+			btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_MORE_PROMPT));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(Button.PROPERTITY_CLICK, "function(){$('" + id + "').trigger()}");
+			btn.putString(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id + "').trigger()}");
 			formToolBar.addChild(btn);
 			return true;
 		}

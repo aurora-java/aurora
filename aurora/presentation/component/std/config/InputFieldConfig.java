@@ -8,8 +8,10 @@ public class InputFieldConfig extends ComponentConfig {
 	public static final String PROPERTITY_INPUTWIDTH = "inputwidth";
 	public static final String PROPERTITY_EDITABLE = "editable";
 
+	private int DEFAULT_INPUT_WIDTH = 100;
+	
 	public String getEmptyText() {
-		return getString(PROPERTITY_EMPTYTEXT);
+		return getString(PROPERTITY_EMPTYTEXT,"");
 	}
 
 	public void setEmptyText(String text) {
@@ -17,7 +19,7 @@ public class InputFieldConfig extends ComponentConfig {
 	}
 
 	public int getInputWidth() {
-		return getInt(PROPERTITY_INPUTWIDTH, 100);
+		return getInt(PROPERTITY_INPUTWIDTH, DEFAULT_INPUT_WIDTH);
 	}
 
 	public void setInputWidth(int width) {

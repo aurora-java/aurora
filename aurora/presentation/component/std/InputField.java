@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
-
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 
+@SuppressWarnings("unchecked")
 public class InputField extends Field {
 	
 	public static final String VERSION = "$Revision$";
@@ -19,9 +18,12 @@ public class InputField extends Field {
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		CompositeMap view = context.getView();
+		InputFieldConfig ifc = new InputFieldConfig();
+		ifc.initialize(view);
+		
 		Map map = context.getMap();
 		String wrapClass = super.getDefaultClass(session, context);
-		String emptyText = view.getString(InputFieldConfig.PROPERTITY_EMPTYTEXT,"");
+		String emptyText = ifc.getEmptyText();
 		String value = (String)map.get(ComponentConfig.PROPERTITY_VALUE);
 		if(!"".equals(emptyText) && "".equals(value)) {
 			wrapClass += " " + CLASSNAME_EMPTYTEXT;
@@ -32,6 +34,8 @@ public class InputField extends Field {
 	public void onCreateViewContent(BuildSession session, ViewContext context)throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		InputFieldConfig ifc = new InputFieldConfig();
+		ifc.initialize(view);
 		Map map = context.getMap();
 		
 		/** 输入框宽度**/
@@ -42,13 +46,13 @@ public class InputField extends Field {
 		String value = (String)map.get(ComponentConfig.PROPERTITY_VALUE);
 		
 		/** 文本提示 **/
-		String emptyText = view.getString(InputFieldConfig.PROPERTITY_EMPTYTEXT,"");
+		String emptyText = ifc.getEmptyText();
 		if(!"".equals(emptyText) && "".equals(value)) {
 			map.put(ComponentConfig.PROPERTITY_VALUE, emptyText);
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
 		}
-		addConfig(InputFieldConfig.PROPERTITY_EDITABLE,new Boolean(view.getBoolean(InputFieldConfig.PROPERTITY_EDITABLE,true)));
-		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, new Integer(view.getInt(ComponentConfig.PROPERTITY_TAB_INDEX, 0)));
+		addConfig(InputFieldConfig.PROPERTITY_EDITABLE, ifc.isEditable());
+		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, ifc.getTabIndex());
 	}
 
 }

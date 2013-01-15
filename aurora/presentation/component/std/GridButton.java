@@ -7,6 +7,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.GridConfig;
 
@@ -61,13 +62,13 @@ public class GridButton extends ToolBarButton {
 	
 	
 	private CompositeMap createButton(CompositeMap button, String text, String clz,String style,String function){
-		if("".equals(button.getString(Button.PROPERTITY_ICON,""))){
-			button.put(Button.PROPERTITY_ICON, "null");
-			button.put(Button.BUTTON_CLASS, clz);
-			button.put(Button.BUTTON_STYLE, style);
+		if("".equals(button.getString(ButtonConfig.PROPERTITY_ICON,""))){
+			button.put(ButtonConfig.PROPERTITY_ICON, "null");
+			button.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, clz);
+			button.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, style);
 		}
-		button.put(Button.PROPERTITY_TEXT,button.getString(Button.PROPERTITY_TEXT, text));
-		if(!"".equals(function))button.put(Button.PROPERTITY_CLICK, function);
+		button.put(ButtonConfig.PROPERTITY_TEXT,button.getString(ButtonConfig.PROPERTITY_TEXT, text));
+		if(!"".equals(function))button.put(ButtonConfig.PROPERTITY_CLICK, function);
 		return button;
 	}
 }

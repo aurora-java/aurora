@@ -11,6 +11,7 @@ import uncertain.composite.CompositeMap;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.NumberFieldConfig;
@@ -146,12 +147,12 @@ public class NavBar extends ToolBar {
 		CompositeMap button = new CompositeMap("button");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(16));
-		button.put(Button.PROPERTITY_ICON, "null");
+		button.put(ButtonConfig.PROPERTITY_ICON, "null");
 		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
-		button.put(Button.BUTTON_CLASS, clz);
-		button.put(Button.PROPERTITY_TITLE, title);
-		button.put(Button.BUTTON_STYLE, style);
-		if(!"".equals(function))button.put(Button.PROPERTITY_CLICK, function);
+		button.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, clz);
+		button.put(ButtonConfig.PROPERTITY_TITLE, title);
+		button.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, style);
+		if(!"".equals(function))button.put(ButtonConfig.PROPERTITY_CLICK, function);
 		return button;
 	}
 	

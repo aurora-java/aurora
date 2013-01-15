@@ -15,6 +15,7 @@ import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.service.ServiceThreadLocal;
 
@@ -136,10 +137,10 @@ public class Comment extends Component {
 		CompositeMap button = new CompositeMap("button");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_ID, id + "_btn");
-		button.put(Button.PROPERTITY_ICON, null);
-		button.put(Button.PROPERTITY_TEXT, "发 表 评 论");
+		button.put(ButtonConfig.PROPERTITY_ICON, null);
+		button.put(ButtonConfig.PROPERTITY_TEXT, "发 表 评 论");
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
-		button.put(Button.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
+		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
 		if(null == userId){
 			button.put("disabled", new Boolean(true));
 		}

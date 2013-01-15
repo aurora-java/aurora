@@ -17,10 +17,9 @@ import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
 import aurora.application.AuroraApplication;
 import aurora.application.IApplicationConfig;
-import aurora.application.features.ILookupCodeProvider;
-import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
@@ -31,6 +30,7 @@ import aurora.presentation.component.std.config.GridConfig;
  * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
+@SuppressWarnings("unchecked")
 public class Grid extends Component {
 	
 	public static final String VERSION = "$Revision$";
@@ -62,14 +62,12 @@ public class Grid extends Component {
 	private static final String TYPE_ROW_RADIO = "rowradio";
 	private static final String TYPE_ROW_NUMBER = "rownumber";
 	
-	private IModelFactory mFactory;
     private IObjectRegistry mRegistry;
     private ApplicationConfig mApplicationConfig;
 	
 	
-	public Grid(IObjectRegistry registry,IModelFactory factory) {
+	public Grid(IObjectRegistry registry) {
 		this.mRegistry = registry;
-        this.mFactory = factory;
         mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
@@ -84,7 +82,7 @@ public class Grid extends Component {
 		return DEFAULT_CLASS;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		CompositeMap view = context.getView();
 		int mDefaultMarginSize = -1;
@@ -93,7 +91,7 @@ public class Grid extends Component {
 			mDefaultMarginSize = view_config.getDefaultMarginWidth();           
 		}
 		if(mDefaultMarginSize != -1){
-			view.putInt(PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
+			view.putInt(ComponentConfig.PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
 		}
 		
 		
@@ -201,7 +199,7 @@ public class Grid extends Component {
 		
 		Integer height = (Integer)map.get(TABLE_HEIGHT);
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
-		Integer viewWidth = (Integer)map.get(ComponentConfig.OLD_WIDTH);
+		Integer viewWidth = (Integer)map.get(ComponentConfig.PROPERTITY_OLD_WIDTH);
 		float bl = 1;
 		//TODO:判断,如果column的宽度之和小于总宽度就同比放大
 		GridConfig gc = GridConfig.getInstance(view);
@@ -467,13 +465,13 @@ public class Grid extends Component {
 	
 	
 	private CompositeMap createButton(CompositeMap button, String text, String clz,String style,String function){
-		if("".equals(button.getString(Button.PROPERTITY_ICON,""))){
-			button.put(Button.PROPERTITY_ICON, "null");
-			button.put(Button.BUTTON_CLASS, clz);
-			button.put(Button.BUTTON_STYLE, style);
+		if("".equals(button.getString(ButtonConfig.PROPERTITY_ICON,""))){
+			button.put(ButtonConfig.PROPERTITY_ICON, "null");
+			button.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, clz);
+			button.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, style);
 		}
-		button.put(Button.PROPERTITY_TEXT,button.getString(Button.PROPERTITY_TEXT, text));
-		if(!"".equals(function))button.put(Button.PROPERTITY_CLICK, function);
+		button.put(ButtonConfig.PROPERTITY_TEXT,button.getString(ButtonConfig.PROPERTITY_TEXT, text));
+		if(!"".equals(function))button.put(ButtonConfig.PROPERTITY_CLICK, function);
 		return button;
 	}
 	

@@ -14,7 +14,6 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.FormConfig;
 
 /**
  * GridLayout.
@@ -22,6 +21,7 @@ import aurora.presentation.component.std.config.FormConfig;
  * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
+@SuppressWarnings("unchecked")
 public class GridLayout extends Component implements IViewBuilder, ISingleton {
 	
 	public static final String VERSION = "$Revision$";
@@ -196,6 +196,7 @@ public class GridLayout extends Component implements IViewBuilder, ISingleton {
 		out.write("</table>");
 		afterBuildBottom(session,model,view,columns);
 	}
+	
 	
 	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {

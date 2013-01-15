@@ -7,6 +7,7 @@ public class ComboBoxConfig extends InputFieldConfig {
 
 	public static final String VERSION = "$Revision$";
 	
+	public static final String TAG_NAME = "comboBox";
 	public static final String PROPERTITY_POPWIDTH = "popwidth";
 	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
 	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
@@ -14,10 +15,8 @@ public class ComboBoxConfig extends InputFieldConfig {
 	public static final String PROPERTITY_RENDERER = "displayrenderer";
 	public static final String PROPERTITY_FETCH_RECORD = "fetchrecord";
 	
-	public static final String TAG_NAME = "comboBox";
-	
-	private static final String DEFAULT_VALUE_FIELD = "code";
-	private static final String DEFAULT_DISPLAY_FIELD = "name";
+	private String DEFAULT_VALUE_FIELD = "code";
+	private String DEFAULT_DISPLAY_FIELD = "name";
 	
 	public static ComboBoxConfig getInstance(){
 		ComboBoxConfig model = new ComboBoxConfig();

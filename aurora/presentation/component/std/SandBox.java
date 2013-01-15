@@ -14,6 +14,7 @@ import uncertain.util.XMLWritter;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
 public class SandBox extends Component {
@@ -114,10 +115,10 @@ public class SandBox extends Component {
 		CompositeMap button = new CompositeMap("button");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_ID, id + "_btn");
-		button.put(Button.PROPERTITY_ICON, null);
-		button.put(Button.PROPERTITY_TEXT, "Try");
+		button.put(ButtonConfig.PROPERTITY_ICON, null);
+		button.put(ButtonConfig.PROPERTITY_TEXT, "Try");
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
-		button.put(Button.PROPERTITY_CLICK, "function(){$('" + id
+		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id
 				+ "').send()}");
 		try {
 			return session.buildViewAsString(model, button);

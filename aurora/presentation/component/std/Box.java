@@ -18,19 +18,22 @@ public class Box extends GridLayout {
 	
 	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_TH_CLASS = "layout-th";
-	private static final String PROPERTITY_LABEL_WIDTH = "labelwidth";
 	UncertainEngine ue;
 	protected int getLabelWidth(CompositeMap view){
-		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
+		BoxConfig bc = new BoxConfig();
+		bc.initialize(view);
+		int labelWidth = bc.getLabelWidth();
 		return labelWidth;
 	}
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		BoxConfig bc = new BoxConfig();
+		bc.initialize(view);
 		Writer out = session.getWriter();
 		String vlabel = field.getString(ComponentConfig.PROPERTITY_PROMPT);
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		label = session.getLocalizedPrompt(label);
-		int labelWidth = view.getInt(PROPERTITY_LABEL_WIDTH, 75);
+		int labelWidth = bc.getLabelWidth();
 		
 		String defaultLabelSeparator = session.getSessionContext().getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
 		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,(defaultLabelSeparator == null ? ":" : defaultLabelSeparator));
