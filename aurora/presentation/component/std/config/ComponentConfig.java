@@ -102,6 +102,10 @@ public class ComponentConfig extends DynamicObject {
 	public void setHeight(int height) {
 		putInt(PROPERTITY_HEIGHT, height);
 	}
+	
+	public String getClassName(String defaultValue) {
+		return getString(PROPERTITY_CLASSNAME, defaultValue);
+	}
 
 	public String getClassName() {
 		return getString(PROPERTITY_CLASSNAME);
