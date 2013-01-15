@@ -90,6 +90,10 @@ public class ComponentConfig extends DynamicObject {
 	public void setWidth(int width) {
 		putInt(PROPERTITY_WIDTH, width);
 	}
+	
+	public int getHeight(int defaultHeight) {
+		return getInt(PROPERTITY_HEIGHT, defaultHeight);
+	}
 
 	public int getHeight() {
 		return getInt(PROPERTITY_HEIGHT, 20);
@@ -121,6 +125,14 @@ public class ComponentConfig extends DynamicObject {
 
 	public void setHidden(boolean hidden) {
 		putBoolean(PROPERTITY_HIDDEN, hidden);
+	}
+	
+	public Boolean isCust() {
+		return getBoolean(PROPERTITY_IS_CUST);
+	}
+
+	public void setCust(boolean isCust) {
+		putBoolean(PROPERTITY_IS_CUST, isCust);
 	}
 
 	public int getTabIndex() {
