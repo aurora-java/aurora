@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class NavBarConfig extends ComponentConfig {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "navBar";
 	
 	public static final String PROPERTITY_DATASET = "dataset";

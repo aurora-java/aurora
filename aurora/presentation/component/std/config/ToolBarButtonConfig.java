@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class ToolBarButtonConfig extends ButtonConfig {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "toolbarButton";
 	
 	

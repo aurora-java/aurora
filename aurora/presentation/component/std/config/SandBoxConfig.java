@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class SandBoxConfig extends ComponentConfig {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "sandBox";
 	
 	public static final String PROPERTITY_FILE_NAME = "filename";

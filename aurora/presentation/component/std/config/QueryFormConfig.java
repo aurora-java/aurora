@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class QueryFormConfig extends ComponentConfig {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "queryForm";
 	
 	public static final String PROPERTITY_EXPAND = "expand";

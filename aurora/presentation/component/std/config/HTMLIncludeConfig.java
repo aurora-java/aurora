@@ -4,7 +4,7 @@ import uncertain.composite.CompositeMap;
 
 public class HTMLIncludeConfig extends ComponentConfig {
 	
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "imageCode";
 	
 	public static final String PROPERTITY_PATH_FIELD = "pathfield";
