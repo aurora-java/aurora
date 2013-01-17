@@ -30,7 +30,7 @@ public class FormConfig extends BoxConfig {
     }
 	
 	public String getTitle() {
-		return getString(PROPERTITY_TITLE);
+		return getString(PROPERTITY_TITLE,"");
 	}
 	public void setTitlte(String title){
 		putString(PROPERTITY_TITLE, title);	

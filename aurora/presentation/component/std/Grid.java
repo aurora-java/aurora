@@ -138,7 +138,8 @@ public class Grid extends Component {
 	
 	@SuppressWarnings("unchecked")
 	private void processRowNumber(Map map,CompositeMap view){
-		Boolean showRowNumber = view.getBoolean(GridConfig.PROPERTITY_SHOW_ROWNUMBER,false);
+		GridConfig gc = GridConfig.getInstance(view);
+		Boolean showRowNumber = gc.isShowRowNumber();
 		map.put(GridConfig.PROPERTITY_SHOW_ROWNUMBER, showRowNumber);
 		addConfig(GridConfig.PROPERTITY_SHOW_ROWNUMBER, showRowNumber);
 		
@@ -146,13 +147,14 @@ public class Grid extends Component {
 	
 	@SuppressWarnings("unchecked")
 	private void processSelectable(Map map,CompositeMap view){
+		GridConfig gc = GridConfig.getInstance(view);
 		Boolean selectable = new Boolean(false);
 		Boolean showCheckAll = new Boolean(true);
 		String selectionmodel = "multiple";
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
 		if(list!=null){
-			String dds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+			String dds = gc.getBindTarget();
 			Iterator it = list.iterator();
 			while(it.hasNext()){
 				CompositeMap ds = (CompositeMap)it.next();
@@ -332,7 +334,7 @@ public class Grid extends Component {
 			}		
 		}
 		
-		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		String bindTarget = gc.getBindTarget();//view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 //		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(LOCK_COLUMNS, locks);
@@ -580,13 +582,15 @@ public class Grid extends Component {
 	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
 		boolean hasNavBar = false;
 		CompositeMap view = context.getView();
+		GridConfig gc = GridConfig.getInstance(view);
+		
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
 		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
-		String nav = view.getString(GridConfig.PROPERTITY_NAVBAR,"");
-		if("true".equalsIgnoreCase(nav)){
+		boolean hasNav = gc.hasNavBar();
+		if(hasNav){
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
 			navbar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);

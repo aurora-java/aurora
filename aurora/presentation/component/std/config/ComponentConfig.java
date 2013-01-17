@@ -130,6 +130,10 @@ public class ComponentConfig extends DynamicObject {
 	public void setBindTarget(String target) {
 		putString(PROPERTITY_BINDTARGET, target);
 	}
+	
+	public Boolean getHidden(boolean defaultValue) {
+		return getBoolean(PROPERTITY_HIDDEN,defaultValue);
+	}
 
 	public Boolean getHidden() {
 		return getBoolean(PROPERTITY_HIDDEN);

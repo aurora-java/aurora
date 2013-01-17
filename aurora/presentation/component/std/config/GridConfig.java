@@ -105,6 +105,14 @@ public class GridConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_CAN_WHEEL, canPaste);
 	}
 	
+	public boolean isShowRowNumber(){
+		return getBoolean(PROPERTITY_SHOW_ROWNUMBER, false);		
+	}
+	public void setShowRowNumber(boolean srn){
+		putBoolean(PROPERTITY_SHOW_ROWNUMBER, srn);
+	}
+	
+	
 	public boolean hasNavBar(){
 		return getBoolean(PROPERTITY_NAVBAR, false);
 	}

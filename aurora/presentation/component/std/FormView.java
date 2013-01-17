@@ -14,7 +14,6 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.ocm.ISingleton;
-import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IFreeMarkerTemplateProvider;
 import aurora.presentation.IViewBuilder;
@@ -28,11 +27,6 @@ import freemarker.template.Template;
 public class FormView extends Component implements IViewBuilder, ISingleton{
 	
 	public static final String VERSION = "$Revision$";
-	
-	private static final String VIEW_TYPE = "viewtype";
-	private static final String DEFAULT_VIEW_TYPE = "advance";
-	private static final String WIDTH_UNIT = "widthunit";
-	private static final String DEFAULT_WIDTH_UNIT = "percent";
 	
 	IObjectRegistry mObjectRegistry;
 
@@ -63,10 +57,10 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 		}
 		Writer out = session.getWriter();
 		try {
-			String vt = view.getString(VIEW_TYPE,DEFAULT_VIEW_TYPE);
-			String wu = view.getString(WIDTH_UNIT,DEFAULT_WIDTH_UNIT);
+			String vt = lc.getViewType();//view.getString(VIEW_TYPE,DEFAULT_VIEW_TYPE);
+			String wu = lc.getWidthUnit();//view.getString(WIDTH_UNIT,DEFAULT_WIDTH_UNIT);
 			
-			if(DEFAULT_VIEW_TYPE.equalsIgnoreCase(vt)) {
+			if(FormViewConfig.DEFAULT_VIEW_TYPE.equalsIgnoreCase(vt)) {
 				generateADTitleHead(out,lc,data);
 				generateADTable(out,lc);
 				generateADFields(session,out,lc,data,wu);
@@ -168,7 +162,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				out.write(lc.getPromptAlign());
 				out.write("' class='label' width='");
 				out.write(""+labelWidth);
-				out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+				out.write(FormViewConfig.DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
 				out.write(">");
 				out.write(field.getPrompt());
 				out.write("</TD>");
@@ -179,7 +173,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				if(w!=0){
 					out.write(" width='");
 					out.write(""+w);
-					out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+					out.write(FormViewConfig.DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
 				}
 				out.write(">");
 				processContent(session,out,data,c);
@@ -259,7 +253,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				out.write(lc.getPromptAlign());
 				out.write("' class='label' width='");
 				out.write(""+labelWidth);
-				out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+				out.write(FormViewConfig.DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
 				out.write(">");
 				out.write(field.getPrompt());
 				out.write("</TD>");
@@ -270,7 +264,7 @@ public class FormView extends Component implements IViewBuilder, ISingleton{
 				if(w!=0){
 					out.write(" width='");
 					out.write(""+w);
-					out.write(DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
+					out.write(FormViewConfig.DEFAULT_WIDTH_UNIT.equals(wu) ? "%'" : "'");
 				}
 				out.write(">");
 				processContent(session,out,data,c);

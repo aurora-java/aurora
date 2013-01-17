@@ -62,7 +62,7 @@ public class Field extends Component {
 		addConfig(FieldConfig.PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		
 		/** 是否隐藏 **/
-		boolean hidden = view.getBoolean(FieldConfig.PROPERTITY_HIDDEN, false);
+		boolean hidden = fc.getHidden(false);
 		if(hidden != false)
 		addConfig(FieldConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		

@@ -21,14 +21,10 @@ public class DateTimePicker extends DatePicker {
 			throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
-		DateTimePickerConfig dtpc = DateTimePickerConfig.getInstance(context
-				.getView());
-		addConfig(DateTimePickerConfig.PROPERTITY_HOUR, new Integer(dtpc
-				.getHour()));
-		addConfig(DateTimePickerConfig.PROPERTITY_MINUTE, new Integer(dtpc
-				.getMinute()));
-		addConfig(DateTimePickerConfig.PROPERTITY_SECOND, new Integer(dtpc
-				.getSecond()));
+		DateTimePickerConfig dtpc = DateTimePickerConfig.getInstance(context.getView());
+		addConfig(DateTimePickerConfig.PROPERTITY_HOUR, new Integer(dtpc.getHour()));
+		addConfig(DateTimePickerConfig.PROPERTITY_MINUTE, new Integer(dtpc.getMinute()));
+		addConfig(DateTimePickerConfig.PROPERTITY_SECOND, new Integer(dtpc.getSecond()));
 		map.put(CONFIG, getConfigString());
 	}
 }
