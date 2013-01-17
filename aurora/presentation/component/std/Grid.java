@@ -24,6 +24,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.GridConfig;
+import aurora.presentation.component.std.config.NavBarConfig;
 
 /**
  * 
@@ -605,10 +606,10 @@ public class Grid extends Component {
 			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
-			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
-			navbar.put(NavBar.PROPERTITY_NAVBAR_TYPE, view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex"));
-			navbar.put(NavBar.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBar.PROPERTITY_MAX_PAGE_COUNT,10)));
-			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
+			navbar.put(NavBarConfig.PROPERTITY_DATASET, dataset);
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE,"complex"));
+			navbar.put(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,10)));
+			navbar.put(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
 			sb.append("<tr><td>");
 			try {
 				sb.append(session.buildViewAsString(model, navbar));

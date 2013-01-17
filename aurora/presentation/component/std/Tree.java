@@ -13,14 +13,6 @@ import aurora.presentation.component.std.config.TreeConfig;
 public class Tree extends Component {
 	public static final String VERSION = "$Revision$";
 	
-//	public static final String PROPERTITY_DATASET = "dataset";
-//	public static final String PROPERTITY_RENDERER = "renderer";
-//	public static final String PROPERTITY_FIELD_ID = "idfield";
-//	public static final String PROPERTITY_SHOWCHECKBOX = "showcheckbox";
-//	public static final String PROPERTITY_FIELD_PARENT = "parentfield";
-//	public static final String PROPERTITY_FIELD_DISPLAY = "displayfield";
-//	public static final String PROPERTITY_FIELD_EXPAND = "expandfield";
-//	public static final String PROPERTITY_FIELD_CHECKED = "checkfield";
 	private static final String DEFAULT_CLASS = "item-tree";
 	
 	public static final String CONFIG_CONTEXT = "context";
@@ -44,13 +36,13 @@ public class Tree extends Component {
 		
 		String size = "";
 		/** Width属性**/
-		String width = view.getString(ComponentConfig.PROPERTITY_WIDTH, "");
+		String width = tc.getWidthStr();
 		if(!"".endsWith(width)) {
 			size += "width:"+width+"px;";
 			addConfig(ComponentConfig.PROPERTITY_WIDTH, width);
 		}
 		/** Height属性**/
-		String height = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "");
+		String height = tc.getHeightStr();
 		if(!"".endsWith(height)) {
 			size += "height:"+height+"px;";
 			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);

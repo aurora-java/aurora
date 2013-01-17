@@ -105,5 +105,10 @@ public class TreeConfig extends ComponentConfig {
     	putBoolean(PROPERTITY_SHOWCHECKBOX, showcheck);
     }
     
-    
+    public String getWidthStr(){
+    	return getString(PROPERTITY_WIDTH, "");
+    }
+    public String getHeightStr(){
+    	return getString(PROPERTITY_HEIGHT, "");
+    }
 }

@@ -19,6 +19,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.HTMLIncludeConfig;
 import aurora.service.ServiceThreadLocal;
 
 public class HTMLInclude implements IViewBuilder {
@@ -26,11 +27,6 @@ public class HTMLInclude implements IViewBuilder {
 	public static final String VERSION = "$Revision$";
 	
 	private IDatabaseServiceFactory factory;
-	private static final String PROPERTITY_PATH_FIELD = "pathfield";
-	private static final String PROPERTITY_MODEL = "model";
-	private static final String PROPERTITY_PARAMS = "params";
-	private static final String PROPERTITY_PATH = "path";
-	private static final String PROPERTITY_VERSION = "version";
 	private String articlePath;
 	private String sourcePath;
 	private String version;
@@ -74,9 +70,10 @@ public class HTMLInclude implements IViewBuilder {
 					"No service context set in ThreadLocal yet");
 		CompositeMap view = view_context.getView();
 		CompositeMap base_model = view_context.getModel();
-		String path = TextParser.parse(view.getString(PROPERTITY_PATH),
+		HTMLIncludeConfig hic = HTMLIncludeConfig.getInstance(view);
+		String path = TextParser.parse(hic.getPath(),
 				base_model);
-		version = TextParser.parse(view.getString(PROPERTITY_VERSION),
+		version = TextParser.parse(hic.getVersion(),
 				base_model);
 		if (null != path && !path.isEmpty()) {
 			int begin = path.indexOf("/release");
@@ -89,9 +86,9 @@ public class HTMLInclude implements IViewBuilder {
 							"$1");
 			return;
 		}
-		String pathField = view.getString(PROPERTITY_PATH_FIELD);
-		String model = view.getString(PROPERTITY_MODEL);
-		CompositeMap params = view.getChild(PROPERTITY_PARAMS);
+		String pathField = hic.getPathField();
+		String model = hic.getModel();
+		CompositeMap params = hic.getParams();
 		Map map = new HashMap();
 		if (null != params) {
 			Iterator pit = params.getChildIterator();

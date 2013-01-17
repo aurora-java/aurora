@@ -8,7 +8,7 @@ public class RadioConfig extends ComponentConfig {
 	
 	public static final String TAG_NAME = "radio";
 	
-	private static final String RROPERTITY_ITEMS = "items";
+	private static final String PROPERTITY_ITEMS = "items";
 	private static final String PROPERTITY_LABEL_FIELD = "labelfield";
 	private static final String PROPERTITY_VALUE_FIELD = "valuefield";
 	private static final String PROPERTITY_LAYOUT = "layout";
@@ -72,7 +72,7 @@ public class RadioConfig extends ComponentConfig {
 	
 	public CompositeMap getItems(){
 		CompositeMap context = getObjectContext();
-    	CompositeMap columns = context.getChild(RROPERTITY_ITEMS);
+    	CompositeMap columns = context.getChild(PROPERTITY_ITEMS);
     	return columns;  
 	}
 	

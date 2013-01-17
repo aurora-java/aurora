@@ -38,6 +38,9 @@ public class ComponentConfig extends DynamicObject {
 	public String getId() {
 		return getString(PROPERTITY_ID);
 	}
+	public String getId(String defaultValue) {
+		return getString(PROPERTITY_ID,defaultValue);
+	}
 
 	public void setId(String id) {
 		putString(PROPERTITY_ID, id);
@@ -52,7 +55,7 @@ public class ComponentConfig extends DynamicObject {
 	}
 
 	public String getPrompt() {
-		return getString(PROPERTITY_PROMPT);
+		return getString(PROPERTITY_PROMPT,"");
 	}
 
 	public void setPrompt(String prompt) {
@@ -82,6 +85,10 @@ public class ComponentConfig extends DynamicObject {
 	public String getValue() {
 		return getString(PROPERTITY_VALUE);
 	}
+	
+	public String getValue(String defaultValue) {
+		return getString(PROPERTITY_VALUE,defaultValue);
+	}
 
 	public void setValue(String value) {
 		putString(PROPERTITY_VALUE, value);
@@ -91,6 +98,7 @@ public class ComponentConfig extends DynamicObject {
 	public int getWidth(int defaultValue) {
 		return getInt(PROPERTITY_WIDTH, defaultValue);
 	}
+	
 	public int getWidth() {
 		return getInt(PROPERTITY_WIDTH, 150);
 	}

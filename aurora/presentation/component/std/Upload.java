@@ -1,28 +1,16 @@
 package aurora.presentation.component.std;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-
 import uncertain.composite.CompositeMap;
-import uncertain.event.EventModel;
-
 import aurora.application.AuroraApplication;
-import aurora.application.config.ScreenConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.DataSetConfig;
-import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
-import aurora.service.IService;
-import aurora.service.ServiceContext;
+import aurora.presentation.component.std.config.UploadConfig;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
@@ -30,19 +18,6 @@ public class Upload extends Component {
 	
 	public static final String VERSION = "$Revision$";
 	
-	public static final String PROPERTITY_TEXT = "text";
-	public static final String PROPERTITY_SOURCE_TYPE = "sourcetype";
-	public static final String PROPERTITY_PK_VALUE = "pkvalue";
-	public static final String PROPERTITY_FILE_SIZE = "filesize";
-	public static final String PROPERTITY_FILE_TYPE = "filetype";
-	public static final String PROPERTITY_BUTTON_WIDTH = "buttonwidth";
-	public static final String PROPERTITY_UPLOAD_URL = "uploadurl";
-	public static final String PROPERTITY_DELETE_URL = "deleteurl";
-	public static final String PROPERTITY_DOWNLOAD_URL = "downloadurl";
-	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
-	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
-	public static final String PROPERTITY_SHOW_LIST = "showlist";
-
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "table/Table-min.css");
@@ -58,7 +33,8 @@ public class Upload extends Component {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
-		String id = view.getString(ComponentConfig.PROPERTITY_ID);
+		UploadConfig uc = UploadConfig.getInstance(view);
+		String id = uc.getId();
 		
 		CompositeMap tb = new CompositeMap(TableConfig.TAG_NAME);
 		tb.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
@@ -75,12 +51,10 @@ public class Upload extends Component {
 		tb_column.put(TableColumnConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb_column.put(TableColumnConfig.PROPERTITY_NAME, "file_name");
 		
-		boolean showUpload = view.getBoolean(PROPERTITY_SHOW_UPLOAD, true);
-		if(!showUpload) {
-			map.put(PROPERTITY_SHOW_UPLOAD, "none");
+		if(!uc.isShowUpload()) {
+			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
 		}
-		boolean showDelete = view.getBoolean(PROPERTITY_SHOW_DELETE, true);
-		if(!showDelete) {
+		if(!uc.isShowDelete()) {
 			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmNotDeleteRenderer");
 		}else {
 			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");
@@ -88,7 +62,7 @@ public class Upload extends Component {
 		
 		tb_columns.addChild(tb_column);
 		try {
-			boolean showList = view.getBoolean(PROPERTITY_SHOW_LIST, true);
+			boolean showList = uc.isShowList();
 			map.put("linestyle", showList ? "block" : "none");
 			if(showList)
 			map.put("up_table", session.buildViewAsString(model, tb));
@@ -96,27 +70,18 @@ public class Upload extends Component {
 			throw new IOException(e.getMessage());
 		}
 		
-		String text = view.getString(PROPERTITY_TEXT,"upload");
-		text = session.getLocalizedPrompt(text);
-		map.put(PROPERTITY_TEXT, text);
-		String st = view.getString(PROPERTITY_SOURCE_TYPE, "sourcetype");
-		st = uncertain.composite.TextParser.parse(st, model);
-		map.put(PROPERTITY_SOURCE_TYPE, st);
-		String pk = view.getString(PROPERTITY_PK_VALUE, "pkvalue");
-		pk = uncertain.composite.TextParser.parse(pk, model);
-		map.put(PROPERTITY_PK_VALUE, pk);
+		map.put(UploadConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(uc.getText()));
+		map.put(UploadConfig.PROPERTITY_SOURCE_TYPE, uncertain.composite.TextParser.parse(uc.getSourceType(), model));
+		map.put(UploadConfig.PROPERTITY_PK_VALUE, uncertain.composite.TextParser.parse(uc.getPKValue(), model));
 		String context_path = model.getObject("/request/@context_path").toString();
 		map.put("context_path", context_path);
 		
-		map.put(PROPERTITY_BUTTON_WIDTH, new Integer(view.getInt(PROPERTITY_BUTTON_WIDTH, 50)));
-		map.put(PROPERTITY_FILE_SIZE, new Integer(view.getInt(PROPERTITY_FILE_SIZE, 0)));
-		map.put(PROPERTITY_FILE_TYPE, view.getString(PROPERTITY_FILE_TYPE, "*.*"));
-		String uplloadUrl = view.getString(PROPERTITY_UPLOAD_URL, context_path + "/atm_upload.svc");
-		map.put(PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uplloadUrl, model));
-		String deleteUrl = view.getString(PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc");
-		map.put(PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(deleteUrl, model));
-		String downloadUrl = view.getString(PROPERTITY_DOWNLOAD_URL, context_path + "/atm_download.svc");
-		map.put(PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(downloadUrl, model));
+		map.put(UploadConfig.PROPERTITY_BUTTON_WIDTH, new Integer(uc.getButtonWidth()));
+		map.put(UploadConfig.PROPERTITY_FILE_SIZE, new Integer(uc.getFileSize()));
+		map.put(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
+		map.put(UploadConfig.PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uc.getUploadURL(context_path + "/atm_upload.svc"), model));
+		map.put(UploadConfig.PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(uc.getDeleteURL(context_path + "/atm_delete.svc"), model));
+		map.put(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
 		
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
 		map.put("sessionId", serviceInstance.getRequest().getSession().getId());

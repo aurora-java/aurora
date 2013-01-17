@@ -14,17 +14,13 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.NavBarConfig;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 
 @SuppressWarnings("unchecked")
 public class NavBar extends ToolBar {
 	
 	public static final String VERSION = "$Revision$";
-	
-	public static final String PROPERTITY_DATASET = "dataset";
-	public static final String PROPERTITY_NAVBAR_TYPE = "navbartype";
-	public static final String PROPERTITY_PAGE_SIZE_EDITABLE = "enablepagesize";
-	public static final String PROPERTITY_MAX_PAGE_COUNT = "maxpagecount";
 	
 	protected int getDefaultWidth() {
 		return -1;
@@ -35,21 +31,20 @@ public class NavBar extends ToolBar {
 			CompositeMap view = context.getView();
 			CompositeMap model = context.getModel();
 			Map map = context.getMap();		
+			NavBarConfig nbc = NavBarConfig.getInstance(view);
+			map.put(NavBarConfig.PROPERTITY_DATASET, nbc.getDataset());
 			
-			String dataset = view.getString(PROPERTITY_DATASET);
-			map.put(PROPERTITY_DATASET, dataset);
-			
-			String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
+			String id = nbc.getId("");
 			if("".equals(id)) {
 				id = IDGenerator.getInstance().generate();
 			}
 			id = uncertain.composite.TextParser.parse(id, model);
 			view.putString(ComponentConfig.PROPERTITY_ID, id);
-			String type = view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex");
-			map.put(PROPERTITY_NAVBAR_TYPE, type);
-			map.put(PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(PROPERTITY_MAX_PAGE_COUNT,10)));
+			String type = nbc.getNavBarType();
+			map.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, type);
+			map.put(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT, new Integer(nbc.getMaxPageCount()));
 			if("simple".equalsIgnoreCase(type)||"tiny".equalsIgnoreCase(type)){
-				view.put(ComponentConfig.PROPERTITY_CLASSNAME, view.getString(ComponentConfig.PROPERTITY_CLASSNAME)+" simple-navbar");
+				view.put(ComponentConfig.PROPERTITY_CLASSNAME, nbc.getClassName()+" simple-navbar");
 				createSimpleNavBar(session, context);
 			}else{
 				createComplexNavBar(session, context);
@@ -71,7 +66,9 @@ public class NavBar extends ToolBar {
 		String theme = session.getTheme();
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
-		String dataset = view.getString(PROPERTITY_DATASET);
+		NavBarConfig nbc = NavBarConfig.getInstance(view);
+
+		String dataset = nbc.getDataset();
 		if(!THEME_MAC.equals(theme)){
 			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));			
 		}
@@ -110,7 +107,7 @@ public class NavBar extends ToolBar {
 			view.addChild(createSeparator());
 		}
 		
-		if(view.getBoolean(PROPERTITY_PAGE_SIZE_EDITABLE, true)){
+		if(nbc.isPageSizeEditable()){
 			String pageSizeInfo="<div class='item-label' atype='pageSizeInfo' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize = loader.loadFromString(pageSizeInfo,"UTF-8");
 			view.addChild(pagesize);

@@ -25,7 +25,9 @@ import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
 import aurora.presentation.component.std.config.GridLayouConfig;
+import aurora.presentation.component.std.config.QueryFormConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
+import aurora.presentation.component.std.config.ToolBarButtonConfig;
 
 /**
  * QueryForm 只有2种方式
@@ -46,15 +48,6 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private static final String FORM_TOOL_BAR = "formToolBar";
 	private static final String FORM_BODY = "formBody";
 
-	private static final String PROPERTITY_EXPAND = "expand";
-	private static final String PROPERTITY_TITLE = "title";
-	private static final String PROPERTITY_RESULT_TARGET = "resulttarget";
-	private static final String PROPERTITY_DEFAULT_QUERY_FIELD = "defaultqueryfield";
-	private static final String PROPERTITY_DEFAULT_QUERY_HINT = "defaultqueryhint";
-	private static final String PROPERTITY_DEFAULT_QUERY_PROMPT = "defaultqueryprompt";
-	private static final String PROPERTITY_QUERY_HOOK = "queryhook";
-	private static final String PROPERTITY_CREATE_SEARCH_BUTTON = "createsearchbutton";
-	
 	
 	private static final String DEFAULT_QUERY_PROMPT = "HAP_QUERY";
 	private static final String DEFAULT_MORE_PROMPT = "HAP_MORE";
@@ -84,24 +77,23 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
 		Map map = view_context.getMap();
-
+		QueryFormConfig qfc = QueryFormConfig.getInstance(view);
 		/** ID属性 **/
 		id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if ("".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}
 		ds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-		String result_ds = view.getString(PROPERTITY_RESULT_TARGET);
-		String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-		boolean open = view.getBoolean(PROPERTITY_EXPAND, false);
+		String result_ds = qfc.getResultTarget();
+		String style = qfc.getStyle("");
+		boolean open = qfc.isCust();
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 
 		String className = DEFAULT_TABLE_CLASS + " query-form layout-title" + view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
-		String title = session.getLocalizedPrompt(view.getString(
-				PROPERTITY_TITLE, ""));
-		String queryhook = view.getString(PROPERTITY_QUERY_HOOK);
-		String queryfield = view.getString(PROPERTITY_DEFAULT_QUERY_FIELD);
+		String title = session.getLocalizedPrompt(qfc.getTitle());
+		String queryhook = qfc.getQueryHook();
+		String queryfield = qfc.getDefaultQueryField();
 		Writer out = session.getWriter();
 		try {
 			processFormToolBar(view, session, model);
@@ -147,12 +139,13 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 	private void processFormToolBar(CompositeMap view, BuildSession session, CompositeMap model) throws Exception {
 		formToolBar = view.getChild(FORM_TOOL_BAR);
 		CompositeMap searchField = null;
-		String hint = view.getString(PROPERTITY_DEFAULT_QUERY_HINT);
-		String queryPrompt = view.getString(PROPERTITY_DEFAULT_QUERY_PROMPT);
+		QueryFormConfig qfc = QueryFormConfig.getInstance(view);
+		String hint = qfc.getDefaultQueryHint();
+		String queryPrompt = qfc.getDefaultQueryPromt();
 		String queryId = id + "_query";
 		String style = "";
 		String searchFunction = "function(){$('" + id + "').doSearch()}";
-		boolean createSearchButton = view.getBoolean(PROPERTITY_CREATE_SEARCH_BUTTON, true);
+		boolean createSearchButton = qfc.isCreateSearchButton();
 		if (null == formToolBar || null == formToolBar.getChildIterator()) {
 			if(null == formToolBar){
 				formToolBar = new CompositeMap("hBox");
@@ -184,7 +177,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			}
 			
 			
-			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
+			CompositeMap btn = new CompositeMap(ToolBarButtonConfig.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
 			btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
@@ -199,7 +192,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 //			if(createSearchBox) searchField = findTextField(formToolBar);
 			style = formToolBar.getString(ComponentConfig.PROPERTITY_STYLE,"");
 			if(createSearchButton){
-				CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
+				CompositeMap btn = new CompositeMap(ToolBarButtonConfig.TAG_NAME);
 				btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 				btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
 				btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_QUERY_PROMPT));
@@ -220,7 +213,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 			formBody.setName("box");
 			if (height != 0) formBody.put(ComponentConfig.PROPERTITY_HEIGHT, height - 26);
 //			formBody.put(BoxConfig.PROPERTITY_PADDING, 0);
-			CompositeMap btn = new CompositeMap(ToolBarButton.TAG_NAME);
+			CompositeMap btn = new CompositeMap(ToolBarButtonConfig.TAG_NAME);
 			btn.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			btn.putString(ComponentConfig.PROPERTITY_CLASSNAME, DEFAUTL_BUTTON_THEME);
 			btn.putString(ComponentConfig.PROPERTITY_STYLE, "float:right");

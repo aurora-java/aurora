@@ -13,6 +13,7 @@ import uncertain.composite.CompositeMap;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.TabConfig;
 
 public class Tab extends Component {
 	
@@ -20,16 +21,6 @@ public class Tab extends Component {
 	private static final String DEFAULT_CLASS = "item-tab";
 	private static final String VALID_SCRIPT = "validscript";
 	private static final String TABS = "tabs";
-	
-	protected static final String PROPERTITY_TAB = "tab";
-	protected static final String PROPERTITY_TAB_CLASS = "tabclassname";
-	protected static final String PROPERTITY_TAB_STYLE = "tabstyle";
-	protected static final String PROPERTITY_BODY_CLASS = "bodyclassname";
-	protected static final String PROPERTITY_BODY_STYLE = "bodystyle";
-	protected static final String PROPERTITY_REF = "ref";
-	protected static final String PROPERTITY_SELECTED = "selected";
-	protected static final String PROPERTITY_CLOSEABLE = "closeable";
-	protected static final String PROPERTITY_DISABLED = "disabled";
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
@@ -78,13 +69,13 @@ public class Tab extends Component {
 				while(it.hasNext()){
 					CompositeMap tab = (CompositeMap)it.next();
 					if(isHidden(tab, model)) continue;
-					
+					TabConfig tc = TabConfig.getInstance(tab);
 					
 					Integer bodywidth = (Integer)map.get("bodywidth");
 					Integer bodyheight = (Integer)map.get("bodyheight");
-					String ref = tab.getString(PROPERTITY_REF, "");
-					String bodyClass = tab.getString(PROPERTITY_BODY_CLASS, "");
-					String bodyStyle = tab.getString(PROPERTITY_BODY_STYLE, "");
+					String ref = tc.getRef();
+					String bodyClass = tc.getBodyClass();
+					String bodyStyle = tc.getBodyStyle();
 					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'>");
 					if("".equals(ref)){
 						List tabchilds = tab.getChilds();
@@ -125,12 +116,12 @@ public class Tab extends Component {
 				while(it.hasNext()){
 					CompositeMap tab = (CompositeMap)it.next();
 					if(isHidden(tab, model)) continue;
-					String prompt = tab.getString(ComponentConfig.PROPERTITY_PROMPT, "");
-					prompt = session.getLocalizedPrompt(prompt);
-					int width = tab.getInt(ComponentConfig.PROPERTITY_WIDTH, 60);
+					TabConfig tc = TabConfig.getInstance(tab);
+					String prompt = session.getLocalizedPrompt(tc.getPrompt());
+					int width = tc.getWidth(60);
 					stripswidth+=width+6;
-					String id = tab.getString(ComponentConfig.PROPERTITY_ID, "");
-					String target = tab.getString(ComponentConfig.PROPERTITY_BINDTARGET, "");
+					String id = tc.getId("");
+					String target = tc.getBindTarget();
 					if(!"".equals(target)){
 						if("".equals(id))id = IDGenerator.getInstance().generate();
 						String[] ts = target.split(",");
@@ -140,15 +131,15 @@ public class Tab extends Component {
 						}
 						
 					}
-					String selected = tab.getString(PROPERTITY_SELECTED, "");
-					if("true".equals(selected)){
+					String tabClass = tc.getTabClass();
+					String tabStyle = tc.getTabStyle();
+					boolean closeable = tc.isDisabled();
+					boolean disabled = tc.isDisabled();
+					boolean selected = tc.isSelected();
+					if(selected){
 						map.put("selected", new Integer(i));
-						addConfig(PROPERTITY_SELECTED, new Integer(i));
+						addConfig(TabConfig.PROPERTITY_SELECTED, new Integer(i));
 					}
-					String tabClass = tab.getString(PROPERTITY_TAB_CLASS, "");
-					String tabStyle = tab.getString(PROPERTITY_TAB_STYLE, "");
-					boolean closeable = tab.getBoolean(PROPERTITY_CLOSEABLE, false);
-					boolean disabled = tab.getBoolean(PROPERTITY_DISABLED, false);
 					if(!"".equals(tabStyle)){
 						tabStyle = "style='"+tabStyle+"'";
 					}
@@ -166,10 +157,9 @@ public class Tab extends Component {
 					sb.append("<div class='strip-right "+tabClass+"'></div>");
 					sb.append("</div></div>");
 					
-					tab.putBoolean(PROPERTITY_SELECTED, tab.getBoolean(PROPERTITY_SELECTED, false));
-					String ref = tab.getString(PROPERTITY_REF, "");
-					ref = uncertain.composite.TextParser.parse(ref, model);
-					tab.putString(PROPERTITY_REF, ref);
+					tab.putBoolean(TabConfig.PROPERTITY_SELECTED, Boolean.valueOf(selected));
+					String ref = uncertain.composite.TextParser.parse(tc.getRef(), model);
+					tab.putString(TabConfig.PROPERTITY_REF, ref);
 					JSONObject json = new JSONObject(tab);
 					jsons.put(json);
 					i++;

@@ -14,6 +14,8 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.ScreenTopToolbarConfig;
+import aurora.presentation.component.std.config.ToolBarButtonConfig;
 
 public class ScreenTopToolbar extends Component implements IViewBuilder, ISingleton {
 	
@@ -33,10 +35,10 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 			Writer out = session.getWriter();
 			StringBuffer sb = new StringBuffer();
 			Integer height = getComponentHeight(model, view, map);
+			ScreenTopToolbarConfig sttc = ScreenTopToolbarConfig.getInstance(view);
 			sb.append("<div class='screenTopToolbar' ");
 			sb.append("style='padding-left:4px;height:").append(height).append("px;");
-			String style = view.getString(ComponentConfig.PROPERTITY_STYLE, "");
-			sb.append(style);
+			sb.append(sttc.getStyle(""));
 			sb.append("'>");
 			
 			if(view != null && view.getChilds() != null) {
@@ -47,7 +49,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 					String cs = cmp.getString(ComponentConfig.PROPERTITY_STYLE,"margin-left:5px;");
 					if(isButton(cmp.getNamespaceURI(), cmp.getName())){
 						String marginTop = "3px;";
-						if(ToolBarButton.TAG_NAME.equalsIgnoreCase(cmp.getName())||GridButton.TAG_NAME.equalsIgnoreCase(cmp.getName())) {
+						if(ToolBarButtonConfig.TAG_NAME.equalsIgnoreCase(cmp.getName())||GridButton.TAG_NAME.equalsIgnoreCase(cmp.getName())) {
 							marginTop = "15px;";						
 						}
 						cs = "float:left;margin-right:1px;margin-top:" + marginTop + cs;
@@ -73,7 +75,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder, ISingle
 	public boolean isButton(String nameSpace,String name){
 		boolean isBtn = false;
 		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nameSpace)){
-			isBtn = ButtonConfig.TAG_NAME.equalsIgnoreCase(name)||ToolBarButton.TAG_NAME.equalsIgnoreCase(name)||GridButton.TAG_NAME.equalsIgnoreCase(name);
+			isBtn = ButtonConfig.TAG_NAME.equalsIgnoreCase(name)||ToolBarButtonConfig.TAG_NAME.equalsIgnoreCase(name)||GridButton.TAG_NAME.equalsIgnoreCase(name);
 		}
 		return isBtn;
 	}

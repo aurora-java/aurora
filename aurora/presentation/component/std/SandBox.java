@@ -16,15 +16,15 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.SandBoxConfig;
 
 public class SandBox extends Component {
 	public static final String VERSION = "$Revision$";
 	
 	private static final String DEFAULT_CLASS = "sandbox";
-	private static final String PROPERTITY_CONTEXT = "context";
-	private static final String PROPERTITY_FILE_NAME = "filename";
-	private static final String PROPERTITY_TAG = "tag";
-
+	
+	public static final String CONFIG_CONTEXT = "context";
+	
 	private static final String CDATA_END = "]]&gt;";
 	private static final String CDATA_BEGIN = "&lt;![CDATA[";
 	private static final String DEFAULT_INDENT = "    ";
@@ -52,7 +52,7 @@ public class SandBox extends Component {
 			throws IOException {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();
-		addConfig(PROPERTITY_CONTEXT, session.getContextPath());
+		addConfig(CONFIG_CONTEXT, session.getContextPath());
 		map.put("view", createView(session, context));
 		map.put("btn", createButton(session, context));
 		map.put("config", getConfigString());
@@ -83,15 +83,14 @@ public class SandBox extends Component {
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
 		String prefix = view.getPrefix();
-		String file_name = uncertain.composite.TextParser.parse(
-				view.getString(PROPERTITY_FILE_NAME), model);
+		SandBoxConfig sbc = SandBoxConfig.getInstance(view);
+		String file_name = uncertain.composite.TextParser.parse(sbc.getFileName(), model);
 		File file = new File(file_name);
 		if (!file.exists()) {
 			sb.append("</div>");
 			return sb.toString();
 		}
-		String tag_name = uncertain.composite.TextParser.parse(
-				view.getString(PROPERTITY_TAG), model);
+		String tag_name = uncertain.composite.TextParser.parse(sbc.getTag(), model);
 		CompositeLoader loader = new CompositeLoader();
 		CompositeMap screenMap = null;
 		try {

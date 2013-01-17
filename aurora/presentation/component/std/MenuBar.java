@@ -40,8 +40,7 @@ public class MenuBar extends Component {
 		Map map = context.getMap();
 		CompositeMap view = context.getView();
 		MenuBarConfig mbc = MenuBarConfig.getInstance(view);
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, view
-				.getString(ComponentConfig.PROPERTITY_BINDTARGET));
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, mbc.getBindTarget());
 		addConfig(MenuBarConfig.PROPERTITY_FIELD_DISPLAY, mbc.getDisplayField());
 		if (null != mbc.getRenderer())
 			addConfig(MenuBarConfig.PROPERTITY_RENDERER, mbc.getRenderer());

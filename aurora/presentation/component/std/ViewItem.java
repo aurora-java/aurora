@@ -12,28 +12,23 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.ViewItemConfig;
 
 public class ViewItem implements IViewBuilder, ISingleton {
 	
 	public static final String VERSION = "$Revision$";
-	
-	private static final String PROPERTITY_VALUE = ComponentConfig.PROPERTITY_VALUE;
-	private static final String PROPERTITY_FORMAT = "format";
-	private static final String PROPERTITY_STYLE = ComponentConfig.PROPERTITY_STYLE;
-	private static final String PROPERTITY_CLASSNAME = ComponentConfig.PROPERTITY_CLASSNAME;
-	private static final String PROPERTITY_WIDTH = ComponentConfig.PROPERTITY_WIDTH;
 
 	@Override
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
 		CompositeMap model = view_context.getModel();
 		Writer out = session.getWriter();
-		String val = view.getString(PROPERTITY_VALUE,"");
-		String format = view.getString(PROPERTITY_FORMAT,"");
-		String clz = view.getString(PROPERTITY_CLASSNAME,"");
-		int width = view.getInt(PROPERTITY_WIDTH, 150);
-		String sty = view.getString(PROPERTITY_STYLE,"");
+		ViewItemConfig vic = ViewItemConfig.getInstance(view);
+		String val = vic.getValue("");
+		String format = vic.getFormat();
+		String clz = vic.getClassName("");
+		int width = vic.getWidth();
+		String sty = vic.getStyle("");
 		Object obj = model.getObject(val);
 		String value = "";
 		if(obj instanceof Date){

@@ -17,6 +17,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
+import aurora.presentation.component.std.config.NavBarConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
@@ -28,8 +29,7 @@ public class Table extends Component {
 	private static final String DEFAULT_CLASS = "item-table";
 	private static final String HEADS = "heads";
 	private static final String FOOTS = "foots";
-	private static final String TITLE = "title";
-	
+
 	private static final String COLUMN_TYPE = "type";
 	private static final String TYPE_ROW_CHECKBOX = "rowcheck";
 	private static final String TYPE_ROW_RADIO = "rowradio";
@@ -37,9 +37,11 @@ public class Table extends Component {
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
 	}
-	protected int getDefaultWidth(){
+
+	protected int getDefaultWidth() {
 		return -1;
 	}
+
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
@@ -53,68 +55,75 @@ public class Table extends Component {
 		Map map = context.getContextMap();
 		CompositeMap view = context.getView();
 		TableConfig tc = TableConfig.getInstance(view);
-		
+
 		String rowRenderer = tc.getRowRenderer();
 		String percentWidth = tc.getPercentWidth();
+		String width = tc.getWidthStr();
 		if (rowRenderer != null)
 			addConfig(TableConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
-		if(null!=view.getString(ComponentConfig.PROPERTITY_WIDTH))
-			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, view.getString(ComponentConfig.PROPERTITY_WIDTH)+"px");
-		else if(null!=percentWidth)
-			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth+"%");
+		if (null != width)
+			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, width + "px");
+		else if (null != percentWidth)
+			map.put(TableConfig.PROPERTITY_PERCENT_WIDTH, percentWidth + "%");
 		List cols = new ArrayList();
 		createHeads(map, view, session, cols);
-		generateColumns(map,cols,hasFooterBar(tc.getColumns()));
+		generateColumns(map, cols, hasFooterBar(tc.getColumns()));
 		createGridEditors(session, context);
-		createNavgationToolBar(session,context);
-		String title = session.getLocalizedPrompt(view.getString(TITLE,""));
-		if(null!=title&&!"".equals(title)){
-			title="<TR><TD class='table_title' colspan='"+cols.size()+"'>"+title+"</TD></TR>";
-			map.put(TITLE,title);
+		createNavgationToolBar(session, context);
+		String title = session.getLocalizedPrompt(tc.getTitle());
+		if (null != title && !"".equals(title)) {
+			title = "<TR><TD class='table_title' colspan='" + cols.size()
+					+ "'>" + title + "</TD></TR>";
+			map.put(TableConfig.PROPERTITY_TITLE, title);
 		}
-		if(!tc.isAutoAppend()) addConfig(TableConfig.PROPERTITY_AUTO_APPEND, new Boolean(tc.isAutoAppend()));
-		addConfig(TableConfig.PROPERTITY_CAN_WHEEL, new Boolean(tc.isCanWheel()));
+		if (!tc.isAutoAppend())
+			addConfig(TableConfig.PROPERTITY_AUTO_APPEND,
+					new Boolean(tc.isAutoAppend()));
+		addConfig(TableConfig.PROPERTITY_CAN_WHEEL,
+				new Boolean(tc.isCanWheel()));
 		map.put(CONFIG, getConfigString());
 		map.put(TableConfig.PROPERTITY_TAB_INDEX, new Integer(tc.getTabIndex()));
 	}
-	private void processSelectable(Map map,CompositeMap view,CompositeMap cols){
+
+	private void processSelectable(Map map, CompositeMap view, CompositeMap cols,String bindTarget) {
 		Boolean selectable = new Boolean(false);
 		String selectionmodel = "multiple";
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
-		if(list!=null){
-			String dds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		if (list != null) {
 			Iterator it = list.iterator();
-			while(it.hasNext()){
-				CompositeMap ds = (CompositeMap)it.next();
-				String id = ds.getString(ComponentConfig.PROPERTITY_ID, "");
-				if("".equals(id)) {
-					id= IDGenerator.getInstance().generate();
+			while (it.hasNext()) {
+				CompositeMap ds = (CompositeMap) it.next();
+				DataSetConfig dsc = DataSetConfig.getInstance(ds);
+				String id = dsc.getId("");
+				if ("".equals(id)) {
+					id = IDGenerator.getInstance().generate();
 				}
-				if(id.equals(dds)){
-					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
-					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL, "multiple");
+				if (id.equals(bindTarget)) {
+					selectable = new Boolean(dsc.isSelectable());
+					selectionmodel = dsc.getSelectionModel();
 					break;
 				}
 			}
-			
+
 		}
 		map.put(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
 		map.put(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
 		addConfig(DataSetConfig.PROPERTITY_SELECTABLE, selectable);
 		addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, selectionmodel);
-		if(selectable.booleanValue()) {
+		if (selectable.booleanValue()) {
 			CompositeMap column = new CompositeMap("column");
 			column.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			column.putInt(ComponentConfig.PROPERTITY_WIDTH, 25);
-			if("multiple".equals(selectionmodel)) {
-				column.putString(COLUMN_TYPE,TYPE_ROW_CHECKBOX);
-			}else{
-				column.putString(COLUMN_TYPE,TYPE_ROW_RADIO);
+			if ("multiple".equals(selectionmodel)) {
+				column.putString(COLUMN_TYPE, TYPE_ROW_CHECKBOX);
+			} else {
+				column.putString(COLUMN_TYPE, TYPE_ROW_RADIO);
 			}
 			cols.addChild(0, column);
 		}
 	}
+
 	private void createGridEditors(BuildSession session, ViewContext context)
 			throws IOException {
 		CompositeMap view = context.getView();
@@ -126,7 +135,7 @@ public class Table extends Component {
 			Iterator it = editors.getChildIterator();
 			while (it.hasNext()) {
 				CompositeMap editor = (CompositeMap) it.next();
-				editor.put(ComponentConfig.PROPERTITY_TAB_INDEX, -1);
+				editor.put(ComponentConfig.PROPERTITY_TAB_INDEX, new Integer(-1));
 				editor.put(ComponentConfig.PROPERTITY_STYLE,
 						"position:absolute;left:-1000px;top:-1000px;");
 				try {
@@ -139,14 +148,15 @@ public class Table extends Component {
 		map.put(TableConfig.PROPERTITY_EDITORS, sb.toString());
 	}
 
-	private void createHeads(Map map, CompositeMap view, BuildSession session,List cols) {
+	private void createHeads(Map map, CompositeMap view, BuildSession session,
+			List cols) {
 		CompositeMap columns = view.getChild(TableConfig.PROPERTITY_COLUMNS);
-		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		TableConfig tc = TableConfig.getInstance(view);
+		String bindTarget = tc.getBindTarget();
+		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		if (null == columns)
 			return;
-		processSelectable(map,view,columns);
+		processSelectable(map, view, columns,bindTarget);
 		List children = columns.getChilds();
 		if (null == children || children.isEmpty())
 			return;
@@ -164,8 +174,8 @@ public class Table extends Component {
 				addRowSpan(column);
 			}
 		}
-		
-		if(tc.isShowHead()){
+
+		if (tc.isShowHead()) {
 			for (int i = 1; i <= rows.intValue(); i++) {
 				List list = (List) pro.get("l" + i);
 				if (null != list) {
@@ -184,7 +194,7 @@ public class Table extends Component {
 		map.put(HEADS, sb.toString());
 	}
 
-	private void generateColumns(Map map,List cols,boolean hasFoot) {
+	private void generateColumns(Map map, List cols, boolean hasFoot) {
 		StringBuffer sb = new StringBuffer();
 		JSONArray jsons = new JSONArray();
 		Iterator it = cols.iterator();
@@ -192,21 +202,23 @@ public class Table extends Component {
 		while (it.hasNext()) {
 			CompositeMap column = (CompositeMap) it.next();
 			if (null == column.getChilds()) {
+				TableColumnConfig tcc = TableColumnConfig.getInstance(column);
 				JSONObject json = new JSONObject(column);
 				jsons.put(json);
 				sb.append("<TD dataindex='");
-				sb.append(column.getString("name"));
+				sb.append(tcc.getName());
 				sb.append("' align='");
-				sb.append(column.getString("align"));
+				sb.append(tcc.getAlign());
 				sb.append("'");
-				if(column.getBoolean(TableColumnConfig.PROPERTITY_HIDDEN, false)){
+				if (tcc.isHidden()) {
 					sb.append(" style='display:none'");
 				}
 				sb.append(">&#160;</TD>");
 			}
 		}
 		sb.append("</TR></TFOOT>");
-		if(hasFoot)map.put(FOOTS, sb.toString());
+		if (hasFoot)
+			map.put(FOOTS, sb.toString());
 		addConfig(TableConfig.PROPERTITY_COLUMNS, jsons);
 	}
 
@@ -273,8 +285,8 @@ public class Table extends Component {
 		CompositeMap parent = (CompositeMap) column.get("_parent");
 		if (parent != null) {
 			Integer colspan = parent.getInt(COL_SPAN);
-			parent.put(COL_SPAN, new Integer(colspan == null ? 1 : (colspan
-					.intValue() + 1)));
+			parent.put(COL_SPAN,
+					new Integer(colspan == null ? 1 : (colspan.intValue() + 1)));
 		}
 		addColSpan(parent);
 	}
@@ -282,19 +294,23 @@ public class Table extends Component {
 	private String createColumn(CompositeMap column, BuildSession session,
 			String dataset) {
 		StringBuffer sb = new StringBuffer();
-		TableColumnConfig tcc=TableColumnConfig.getInstance(column);
-		String ct =  column.getString(COLUMN_TYPE);
-		String pw="";
-		if(null!=tcc.getPercentWidth())
-			pw = tcc.getPercentWidth()+"%";
-		if(null!=column.getString(ComponentConfig.PROPERTITY_WIDTH))
-			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH)+"px";
-		
-		if(TYPE_ROW_CHECKBOX.equals(ct)){
-			sb.append("<TD class='table-hc' atype='table.rowcheck' style='width:25px;' rowspan='"+column.getInt(ROW_SPAN)+"'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
-		}else if(TYPE_ROW_RADIO.equals(ct)) {
-			sb.append("<TD class='table-hc' atype='table.rowradio' style='width:25px;' rowspan='"+column.getInt(ROW_SPAN)+"'><div style='width:13px'>&nbsp;</div></TD>");
-		}else{
+		TableColumnConfig tcc = TableColumnConfig.getInstance(column);
+		String ct = column.getString(COLUMN_TYPE);
+		String pw = "";
+		if (null != tcc.getPercentWidth())
+			pw = tcc.getPercentWidth() + "%";
+		if (null != column.getString(ComponentConfig.PROPERTITY_WIDTH))
+			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH) + "px";
+
+		if (TYPE_ROW_CHECKBOX.equals(ct)) {
+			sb.append("<TD class='table-hc' atype='table.rowcheck' style='width:25px;' rowspan='"
+					+ column.getInt(ROW_SPAN)
+					+ "'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
+		} else if (TYPE_ROW_RADIO.equals(ct)) {
+			sb.append("<TD class='table-hc' atype='table.rowradio' style='width:25px;' rowspan='"
+					+ column.getInt(ROW_SPAN)
+					+ "'><div style='width:13px'>&nbsp;</div></TD>");
+		} else {
 			sb.append("<TD class='table-hc' dataindex='");
 			sb.append(tcc.getName());
 			sb.append("' colspan='");
@@ -303,7 +319,7 @@ public class Table extends Component {
 			sb.append(column.getInt(ROW_SPAN));
 			sb.append("'");
 			sb.append((pw == null ? "" : (" width='" + pw + "'")));
-			if(tcc.isHidden()){
+			if (tcc.isHidden()) {
 				sb.append(" style='display:none'");
 			}
 			sb.append(">");
@@ -333,32 +349,36 @@ public class Table extends Component {
 		}
 		return false;
 	}
-	private boolean createNavgationToolBar(BuildSession session, ViewContext context) throws IOException{
+
+	private boolean createNavgationToolBar(BuildSession session,
+			ViewContext context) throws IOException {
 		boolean hasNavBar = false;
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
+		TableConfig tc = TableConfig.getInstance(view);
 		StringBuffer sb = new StringBuffer();
-		String dataset = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-		
-		String nav = view.getString(TableConfig.PROPERTITY_NAVBAR,"");
-		if("true".equalsIgnoreCase(nav)){
+
+		if (tc.hasNavBar()) {
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
 			navbar.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
-//			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
-//			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);//Integer.valueOf("".equals(wstr) ?  "150" : wstr);
-			
-			
-//			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
-			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
+			Integer width = (Integer) map.get(ComponentConfig.PROPERTITY_WIDTH);
+
+			navbar.put(ComponentConfig.PROPERTITY_ID,
+					map.get(ComponentConfig.PROPERTITY_ID) + "_navbar");
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-navbar");
-//			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
-			navbar.put(NavBar.PROPERTITY_DATASET, dataset);
-			navbar.put(NavBar.PROPERTITY_NAVBAR_TYPE, view.getString(NavBar.PROPERTITY_NAVBAR_TYPE,"complex"));
-			navbar.put(NavBar.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBar.PROPERTITY_MAX_PAGE_COUNT,10)));
-			navbar.put(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBar.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
+			navbar.put(NavBarConfig.PROPERTITY_DATASET, tc.getBindTarget());
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE,
+					view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE, "complex"));
+			navbar.put(
+					NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,
+					new Integer(view.getInt(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,
+							10)));
+			navbar.put(
+					NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,
+					new Boolean(view.getBoolean(
+							NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE, true)));
 			sb.append("<caption align='bottom'>");
 			try {
 				sb.append(session.buildViewAsString(model, navbar));
