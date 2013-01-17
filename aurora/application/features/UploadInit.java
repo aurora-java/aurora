@@ -33,6 +33,7 @@ import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.DataSetsConfig;
 import aurora.presentation.component.std.config.TableConfig;
+import aurora.presentation.component.std.config.UploadConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
@@ -73,11 +74,11 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
     			mqc.setRootPath("/model/"+id);
     			mqc.setAutoCount(false);
     			mqc.setFetchAll(true);
-    			String st = view.getString(Upload.PROPERTITY_SOURCE_TYPE, "");
+    			String st = view.getString(UploadConfig.PROPERTITY_SOURCE_TYPE, "");
     			if(st.indexOf("${") == -1) {
     				st = "'" + st + "'";
     			}
-    			String pk = view.getString(Upload.PROPERTITY_PK_VALUE, "-1");
+    			String pk = view.getString(UploadConfig.PROPERTITY_PK_VALUE, "-1");
     			if(pk.indexOf("${") == -1) {
     				pk = "'" + pk + "'";
     			}
@@ -95,7 +96,7 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
     			}
     			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+id);
     			String context_path = model.getObject("/request/@context_path").toString();
-    			ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, view.getString(Upload.PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc"));
+    			ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, view.getString(UploadConfig.PROPERTITY_DELETE_URL, context_path + "/atm_delete.svc"));
         		screen.addDataSet(ds);
         	}
         }
