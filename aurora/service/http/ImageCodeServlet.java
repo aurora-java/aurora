@@ -33,8 +33,10 @@ public class ImageCodeServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		response.setContentType("image/jpeg");
 		ServletOutputStream sos = response.getOutputStream();
-		response.setHeader("Pragma", "No-cache");
-		response.setHeader("Cache-Control", "no-cache");
+//		response.setHeader("Pragma", "No-cache");
+//		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("cache-control", "must-revalidate");
+		response.setHeader("pragma", "public");	
 		response.setHeader("Expires", "0");
 
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_RGB);
