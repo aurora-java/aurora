@@ -127,7 +127,7 @@ public class HttpForward extends HttpServlet {
 		try {
 			URL postUrl = new URL(url);
 			connection = (HttpURLConnection) postUrl.openConnection();
-			connection.setReadTimeout(3000);
+			connection.setReadTimeout(300000);
 			connection.connect();
 			response.setContentType(connection.getContentType());
 			response.setContentLength(connection.getContentLength());
