@@ -117,7 +117,7 @@ public class Component {
 				vh = Integer.valueOf(vhs);
 			}
 		}
-		String heightStr = String.valueOf(cc.getHeight(getDefaultHeight()));
+		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "" + getDefaultHeight());
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
 		Integer marginHeight = cc.getMarginHeight();
