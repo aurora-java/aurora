@@ -86,7 +86,7 @@ public class QueryForm extends Component implements IViewBuilder, ISingleton {
 		ds = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		String result_ds = qfc.getResultTarget();
 		String style = qfc.getStyle("");
-		boolean open = qfc.isCust();
+		boolean open = qfc.isExpand();
 		int width = getComponentWidth(model, view, map).intValue();
 		int height = getComponentHeight(model, view, map).intValue();
 
