@@ -15,6 +15,7 @@ import aurora.application.features.cstm.CustomSourceCode;
 import aurora.application.features.cstm.CustomizationDataProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
@@ -155,6 +156,8 @@ public class Component {
 			clazz += " " + className;
 		}
 		map.put(WRAP_CSS, clazz);
+		
+		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, cc.getTabIndex());
 
 		/** Width属性 * */
 		Integer width = getComponentWidth(model, view, map);
