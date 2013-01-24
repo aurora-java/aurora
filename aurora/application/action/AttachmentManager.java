@@ -44,6 +44,7 @@ import aurora.database.DBUtil;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
+import aurora.datasource.DataSourceConfig;
 import aurora.plugin.c3p0.C3P0NativeJdbcExtractor;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
@@ -75,8 +76,10 @@ public class AttachmentManager extends AbstractEntry{
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
 	private DatabaseServiceFactory databasefactory;
+	IObjectRegistry registry;
 
 	public AttachmentManager(IObjectRegistry registry) {
+		this.registry=registry;
 		databasefactory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
 	}
 	
@@ -338,18 +341,11 @@ public class AttachmentManager extends AbstractEntry{
 	}
 
 	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
-		Connection nativeConn=conn;
-		if(conn instanceof C3P0ProxyConnection){
-        	C3P0NativeJdbcExtractor nativeJdbcExtractor=new C3P0NativeJdbcExtractor();
-        	try {
-        		nativeConn = nativeJdbcExtractor.getNativeConnection(conn);
-			} catch (Exception e) {
-				throw new Exception(e);			
-			}			
-        }
 		if(conn.getAutoCommit()){
 			conn.setAutoCommit(false);
 		}
+		DataSourceConfig dataSourceConfig=(DataSourceConfig)this.registry.getInstanceOfType(DataSourceConfig.class);
+		Connection nativeConn=dataSourceConfig.getNativeJdbcExtractor(conn);
 		long size = 0;
 		Statement st = null;
 		ResultSet rs = null;
