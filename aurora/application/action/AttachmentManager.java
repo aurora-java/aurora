@@ -33,7 +33,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
-import com.mchange.v2.c3p0.C3P0ProxyConnection;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 import uncertain.composite.CompositeMap;
@@ -45,7 +44,6 @@ import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
 import aurora.datasource.DataSourceConfig;
-import aurora.plugin.c3p0.C3P0NativeJdbcExtractor;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
