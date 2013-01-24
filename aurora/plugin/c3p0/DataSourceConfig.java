@@ -4,7 +4,6 @@
  */
 package aurora.plugin.c3p0;
 
-import java.sql.Driver;
 import java.util.logging.Level;
 
 import javax.sql.DataSource;
