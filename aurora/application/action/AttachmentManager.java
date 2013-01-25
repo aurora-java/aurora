@@ -50,6 +50,9 @@ import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
 public class AttachmentManager extends AbstractEntry{
+	
+	public static final String VERSION = "$Revision$";
+	
 	public static final String PROPERTITY_ACTION_TYPE = "actiontype";
 	public static final String PROPERTITY_SAVE_TYPE = "savetype";
 	public static final String PROPERTITY_SAVE_PATH = "savepath";
@@ -175,7 +178,6 @@ public class AttachmentManager extends AbstractEntry{
 		            }
 				}
 				response.setHeader("Connection", "close");
-				System.out.println(1/0);
 			} finally{
 				
 				if (rs != null)
