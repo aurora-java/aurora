@@ -14,6 +14,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_ALIGN = "align";
 	public static final String PROPERTITY_LOCK = "lock";
 	public static final String PROPERTITY_HIDDEN = "hidden";
+	public static final String PROPERTITY_VISIABLE = "visiable";
 	public static final String PROPERTITY_RESIZABLE = "resizable";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_FOOTER_RENDERER = "footerrenderer";

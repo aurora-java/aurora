@@ -7,7 +7,8 @@ public class UploadConfig extends ComponentConfig {
 	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "upload";
-
+	
+	public static final String PROPERTITY_TYPE = "type";
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_SOURCE_TYPE = "sourcetype";
 	public static final String PROPERTITY_PK_VALUE = "pkvalue";
@@ -21,6 +22,8 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
 
+	public static final String DEFAULT_TYPE = "default";
+	
 	public static UploadConfig getInstance() {
 		UploadConfig model = new UploadConfig();
 		model.initialize(GridConfig.createContext(null, TAG_NAME));
@@ -31,6 +34,14 @@ public class UploadConfig extends ComponentConfig {
 		UploadConfig model = new UploadConfig();
 		model.initialize(GridConfig.createContext(context, TAG_NAME));
 		return model;
+	}
+	
+	public String getType() {
+		return getString(PROPERTITY_TYPE);
+	}
+	
+	public void setType(String type){
+		putString(PROPERTITY_TYPE, DEFAULT_TYPE);
 	}
 
 	

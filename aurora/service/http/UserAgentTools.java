@@ -285,8 +285,9 @@ public class UserAgentTools {
         res = getArray("LotusNotes","LotusNotes","LotusNotes"+getVersionNumber(userAgent,pos+12));
     } else
     if ((pos=userAgent.indexOf("Opera"))>-1) {
-        String ver = getVersionNumber(userAgent,pos+5);
-        res = getArray("Opera","Opera"+getFirstVersionNumber(userAgent,pos+5,1),"Opera"+ver);
+//        String ver = getVersionNumber(userAgent,pos+5);
+//        res = getArray("Opera","Opera"+getFirstVersionNumber(userAgent,pos+5,1),"Opera"+ver);
+        res = getArray("Opera","Opera",""+getVersionNumber(userAgent,userAgent.indexOf("Version/")+8));
         if ((pos=userAgent.indexOf("Opera Mini/"))>-1) {
             String ver2 = getVersionNumber(userAgent,pos+11);
             res = getArray("Opera","Opera Mini","Opera Mini "+ver2);
@@ -346,8 +347,8 @@ public class UserAgentTools {
             res[2]+="(Galeon"+getVersionNumber(userAgent,pos+7)+")";
         } else
         if ((pos=userAgent.indexOf("Firefox/"))>-1) {
-            res[1]+="(Firefox)";
-            res[2]+="(Firefox"+getVersionNumber(userAgent,pos+8)+")";
+            res[1]="Firefox";
+            res[2]=""+getVersionNumber(userAgent,pos+8);
         } else
         if ((pos=userAgent.indexOf("Netscape/"))>-1) {
             if ((pos=userAgent.indexOf("Netscape/6"))>-1) {
@@ -378,10 +379,12 @@ public class UserAgentTools {
             res = getArray("NS","NS?","NS?"+getVersionNumber(userAgent,pos+9));
     } else
     if ((pos=userAgent.indexOf("Chrome/"))>-1) {
-        res = getArray("KHTML","KHTML(Chrome)","KHTML(Chrome"+getVersionNumber(userAgent,pos+6)+")");
+//        res = getArray("KHTML","KHTML(Chrome)","KHTML(Chrome"+getVersionNumber(userAgent,pos+6)+")");
+        res = getArray("KHTML","Chrome",""+getVersionNumber(userAgent,pos+6));
     } else
     if ((pos=userAgent.indexOf("Safari/"))>-1) {
-        res = getArray("KHTML","KHTML(Safari)","KHTML(Safari"+getVersionNumber(userAgent,pos+6)+")");
+//        res = getArray("KHTML","KHTML(Safari)","KHTML(Safari"+getVersionNumber(userAgent,pos+6)+")");
+        res = getArray("KHTML","Safari",""+getVersionNumber(userAgent,userAgent.indexOf("Version/")+7));
     } else
     if ((pos=userAgent.indexOf("Konqueror/"))>-1) {
         res = getArray("KHTML","KHTML(Konqueror)","KHTML(Konqueror"+getVersionNumber(userAgent,pos+9)+")");
