@@ -32,6 +32,7 @@ public class Box extends GridLayout {
 		Writer out = session.getWriter();
 		String vlabel = field.getString(ComponentConfig.PROPERTITY_PROMPT);
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
+		String id = field.getString(ComponentConfig.PROPERTITY_ID,"");
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = bc.getLabelWidth();
 		
@@ -43,7 +44,11 @@ public class Box extends GridLayout {
 			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
 			String ps = field.getString(ComponentConfig.PROPERTITY_PROMPT_STYLE);
 			if(!"".equals(ps))str.append(" style='"+ps+"' ");
-			str.append("width="+labelWidth+"><div>");
+			str.append("width="+labelWidth+"><div");
+			if(!"".equals(id)){
+				str.append(" id='"+id+"_prompt'");
+			}
+			str.append(">");
 			str.append(label+labelSeparator+"</div></th>");
 			out.write(str.toString());
 		}
