@@ -45,6 +45,7 @@ public class DataSetConfig extends ComponentConfig {
     public static final String PROPERTITY_TOTALCOUNT_FIELD = "totalcountfield";
 	public static final String PROPERTITY_SORT_TYPE = "sorttype";
 	public static final String PROPERTITY_NOTIFICATION = "notification";
+	public static final String PROPERTITY_MODIFIED_CHECK = "modifiedcheck";
 	
 	
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
@@ -235,6 +236,15 @@ public class DataSetConfig extends ComponentConfig {
 	}
 	public boolean isAutoCreate(){
 		return getBoolean(PROPERTITY_AUTO_CREATE, false);
+	}
+	public void setModifiedCheck(boolean modifiedCheck){
+		putBoolean(PROPERTITY_MODIFIED_CHECK, modifiedCheck);
+	}
+	public boolean isModifiedCheck(){
+		return getBoolean(PROPERTITY_MODIFIED_CHECK, true);
+	}
+	public boolean isModifiedCheck(boolean defaultValue){
+		return getBoolean(PROPERTITY_MODIFIED_CHECK, defaultValue);
 	}
     
     public String getTotalCountField(){

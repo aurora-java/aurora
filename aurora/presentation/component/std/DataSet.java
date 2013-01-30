@@ -85,11 +85,13 @@ public class DataSet extends Component {
 		JSONArray fieldList = new JSONArray(); 
 		
 		int mDefaultPageSize = -1;
+		boolean mDefaultModifiedCheck = true;
 		boolean autoCount = true;
 		if (mApplicationConfig != null) {
 	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 	   	     if (view_config != null) {
 	   	    	mDefaultPageSize = view_config.getDefaultPageSize();      
+	   	    	mDefaultModifiedCheck = view_config.getDefaultModifiedCheck();      
 	   	    	autoCount = view_config.getDefaultAutoCount();
 	   	     }
 	   	}
@@ -296,6 +298,7 @@ public class DataSet extends Component {
 		if(dsc.isAutoPageSize())addConfig(DataSetConfig.PROPERTITY_AUTO_PAGE_SIZE, new Boolean(dsc.isAutoPageSize()));
 		addConfig(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		addConfig(DataSetConfig.PROPERTITY_TOTALCOUNT_FIELD, dsc.getTotalCountField());
+		addConfig(DataSetConfig.PROPERTITY_MODIFIED_CHECK, dsc.isModifiedCheck(mDefaultModifiedCheck));
 		
 		BusinessModel bm = null;
 		Integer mps = null;
