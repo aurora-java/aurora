@@ -78,6 +78,10 @@ public class Grid extends Component {
 		addJavaScript(session, context, "grid/Grid-min.js");
 	}
 	
+	protected int getDefaultWidth() {
+		return 800;
+	}
+	
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
 		return DEFAULT_CLASS;
