@@ -23,6 +23,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_AUTO_COUNT = "defaultautocount";
 	public static final String KEY_DEFAULT_AUTO_APPEND = "defaultautoappend";
 	public static final String KEY_DEFAULT_AUTO_ADJUST_GRID = "defaultautoadjustgrid";
+	public static final String KEY_DEFAULT_MODIFIED_CHECK = "defaultmodifiedcheck";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -94,16 +95,24 @@ public class ApplicationViewConfig extends DynamicObject {
 		return getBoolean(KEY_DEFAULT_AUTO_COUNT,true);
 	}
 	
-	public void setDefaultAutoAdjustGrid(String autoAdjust) {
-		putString(KEY_DEFAULT_AUTO_ADJUST_GRID, autoAdjust);
+
+	public void setDefaultAutoCount(boolean autoCount) {
+		putBoolean(KEY_DEFAULT_AUTO_COUNT, autoCount);
+	}
+	
+	public void setDefaultAutoAdjustGrid(boolean autoAdjust) {
+		putBoolean(KEY_DEFAULT_AUTO_ADJUST_GRID, autoAdjust);
 	}
 	
 	public boolean getDefaultAutoAdjustGrid() {
 		return getBoolean(KEY_DEFAULT_AUTO_ADJUST_GRID,true);
 	}
-
-	public void setDefaultAutoCount(boolean autoCount) {
-		putBoolean(KEY_DEFAULT_AUTO_COUNT, autoCount);
+	public void setDefaultModifiedCheck(boolean modifiedCheck) {
+		putBoolean(KEY_DEFAULT_MODIFIED_CHECK, modifiedCheck);
+	}
+	
+	public boolean getDefaultModifiedCheck() {
+		return getBoolean(KEY_DEFAULT_MODIFIED_CHECK,true);
 	}
 	
 	public boolean getDefaultAutoAppend() {
