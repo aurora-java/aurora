@@ -14,6 +14,12 @@ public class DatabaseConnection {
 	String password;
 	String initSql;
 	boolean pool = true;
+	
+	// JNDI相关参数
+	String jndiName;
+	String containerName = "WEBLOGIC";// WEBLOGIC or TOMCAT,default is WEBLOGIC.
+	int listenerPort = 7001;// only for WEBLOGIC
+	
 	CompositeMap config = null;
 
 	public String getInitSql() {
@@ -97,5 +103,29 @@ public class DatabaseConnection {
 				this.config.put(key, properties.getProperty(key).trim());
 			}
 		}
+	}
+
+	public String getJndiName() {
+		return jndiName;
+	}
+
+	public void setJndiName(String jndiName) {
+		this.jndiName = jndiName;
+	}
+
+	public String getContainerName() {
+		return containerName;
+	}
+
+	public void setContainerName(String containerName) {
+		this.containerName = containerName;
+	}
+
+	public int getListenerPort() {
+		return listenerPort;
+	}
+
+	public void setListenerPort(int listenerPort) {
+		this.listenerPort = listenerPort;
 	}
 }
