@@ -89,7 +89,7 @@ public class AttachmentManager extends AbstractEntry{
 		String actionType = getActionType();
 		if("upload".equalsIgnoreCase(actionType)){
 			doUpload(context);
-			runner.stop();
+//			runner.stop();
 			ProcedureRunner preRunner=runner;
 			while(preRunner.getCaller()!=null){
 				preRunner=preRunner.getCaller();
@@ -99,7 +99,7 @@ public class AttachmentManager extends AbstractEntry{
 			doDelete(context);
 		}else if("download".equalsIgnoreCase(actionType)){
 			doDownload(context);
-			runner.stop();
+//			runner.stop();
 			ProcedureRunner preRunner=runner;
 			while(preRunner.getCaller()!=null){
 				preRunner=preRunner.getCaller();
