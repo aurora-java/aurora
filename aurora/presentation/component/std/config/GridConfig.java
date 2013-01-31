@@ -21,6 +21,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
+	public static final String PROPERTITY_SUBMASK = "submask";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -110,6 +111,13 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setShowRowNumber(boolean srn){
 		putBoolean(PROPERTITY_SHOW_ROWNUMBER, srn);
+	}
+	
+	public Boolean getSubMask(){
+		return getBoolean(PROPERTITY_SUBMASK);		
+	}
+	public void setSubmask(Boolean sb){
+		putBoolean(PROPERTITY_SUBMASK, sb);
 	}
 	
 	

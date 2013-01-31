@@ -125,6 +125,7 @@ public class Grid extends Component {
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
 		addConfig(GridConfig.PROPERTITY_AUTO_APPEND, gc.isAutoAppend() == null ? view_config.getDefaultAutoAppend() : gc.isAutoAppend());
+		addConfig(GridConfig.PROPERTITY_SUBMASK, gc.getSubMask() == null ? view_config.getDefaultGridSubmask() : gc.getSubMask());
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
 		
