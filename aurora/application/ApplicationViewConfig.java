@@ -24,6 +24,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_AUTO_APPEND = "defaultautoappend";
 	public static final String KEY_DEFAULT_AUTO_ADJUST_GRID = "defaultautoadjustgrid";
 	public static final String KEY_DEFAULT_MODIFIED_CHECK = "defaultmodifiedcheck";
+	public static final String KEY_DEFAULT_GRID_SUBMASK = "defaultgridsubmask";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -109,6 +110,13 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	public void setDefaultModifiedCheck(boolean modifiedCheck) {
 		putBoolean(KEY_DEFAULT_MODIFIED_CHECK, modifiedCheck);
+	}
+	
+	public boolean getDefaultGridSubmask() {
+		return getBoolean(KEY_DEFAULT_GRID_SUBMASK,true);
+	}
+	public void setDefaultGridSubmask(boolean submask) {
+		putBoolean(KEY_DEFAULT_GRID_SUBMASK, submask);
 	}
 	
 	public boolean getDefaultModifiedCheck() {
