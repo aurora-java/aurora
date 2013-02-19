@@ -46,6 +46,8 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 	private int status = STOP_STATUS;
 	private Logger logger;
 	
+	private Thread initConsumersThread;
+	
 	public AuroraClientInstance(IObjectRegistry registry) {
 		this.registry = registry;
 		messageDispatcher = new MessageDispatcher(registry);
@@ -59,7 +61,7 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 		if(url == null){
 			BuiltinExceptionFactory.createOneAttributeMissing(this, "url");
 		}
-		(new Thread(){
+		initConsumersThread = new Thread(){
 			public void run(){
 				if(consumers != null){
 					for(int i= 0;i<consumers.length;i++){
@@ -74,7 +76,9 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 				status = STARTED_STATUS;
 				LoggingContext.getLogger(PLUGIN, registry).log(Level.INFO,"start jms client successful!");
 			}
-		}).start();
+		};
+		initConsumersThread.start();
+		
 		Runtime.getRuntime().addShutdownHook(new Thread(){
 			public void run(){
 				try {
@@ -88,6 +92,8 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 		return true;
 	}
 	public void onShutdown() throws Exception{
+		if(initConsumersThread != null)
+			initConsumersThread.interrupt();
 		if(consumers != null){
 			for(int i= 0;i<consumers.length;i++){
 				consumers[i].onShutdown();
