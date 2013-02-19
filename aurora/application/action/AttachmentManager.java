@@ -153,9 +153,9 @@ public class AttachmentManager extends AbstractEntry{
 		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
 		                int size=-1;
 		                while( (size = rbc.read(buf))>0){
-		                    buf.position(0);
+		                	buf.flip();
 		                    wbc.write(buf);
-		                    buf.clear();
+		                    buf.compact();
 		                    os.flush();
 		                }
 					}
@@ -170,9 +170,9 @@ public class AttachmentManager extends AbstractEntry{
 		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
 		                int size = -1;
 		                while ((size = rbc.read(buf)) > 0) {
-		                    buf.position(0);
+		                	buf.flip();
 		                    wbc.write(buf);
-		                    buf.clear();
+		                    buf.compact();
 		                    os.flush();
 		                }
 		            }
