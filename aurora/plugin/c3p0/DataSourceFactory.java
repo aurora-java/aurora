@@ -48,7 +48,7 @@ public class DataSourceFactory implements IDataSourceFactory {
 	}
 
 	public Connection getNativeJdbcExtractor(Connection conn) throws Exception {
-		Connection nativeConn=null;
+		Connection nativeConn=conn;
 		if(conn instanceof C3P0ProxyConnection){
         	C3P0NativeJdbcExtractor nativeJdbcExtractor=new C3P0NativeJdbcExtractor();
         	try {
