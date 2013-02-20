@@ -21,7 +21,8 @@ public class DatabaseConnection {
 	int listenerPort = 7001;// only for WEBLOGIC
 	
 	CompositeMap config = null;
-
+	Properties properties=new Properties();
+	
 	public String getInitSql() {
 		return initSql;
 	}
@@ -85,17 +86,19 @@ public class DatabaseConnection {
 	public void setConfig(CompositeMap config) {
 		this.config = config;
 	}
+	
+	public Properties getPoolProperties(){
+		return this.properties;
+	}
 
 	public void addProperties(CompositeMap config) throws Exception {
 		String key;
-		String text = config.getText();
-		Properties properties = new Properties();
+		String text = config.getText();	
 
 		ByteArrayInputStream stream = new ByteArrayInputStream(
 				text.getBytes("UTF-8"));
-		properties.load(stream);
-
-		Enumeration enumn = properties.propertyNames();
+		this.properties.load(stream);
+		Enumeration enumn = this.properties.propertyNames();
 		if (enumn != null) {
 			this.config = new CompositeMap();
 			while (enumn.hasMoreElements()) {
