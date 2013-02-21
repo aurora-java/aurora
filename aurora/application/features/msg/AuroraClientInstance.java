@@ -79,15 +79,15 @@ public class AuroraClientInstance extends AbstractLocatableObject implements ILi
 		};
 		initConsumersThread.start();
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){
-			public void run(){
-				try {
-					onShutdown();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		Runtime.getRuntime().addShutdownHook(new Thread(){
+//			public void run(){
+//				try {
+//					onShutdown();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 		registry.registerInstance(IMessageStub.class, this);
 		return true;
 	}
