@@ -671,6 +671,8 @@ public class CacheProvider extends AbstractLocatableObject implements ICacheProv
 		}
 		if (reloadTimer != null)
 			reloadTimer.cancel();
+		if(cache != null)
+			cache.clear();
 	}
 
 }
