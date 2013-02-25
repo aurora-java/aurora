@@ -212,6 +212,7 @@ public class Grid extends Component {
 		//TODO:判断,如果column的宽度之和小于总宽度就同比放大
 		GridConfig gc = GridConfig.getInstance(view);
 		Boolean isAutoAdjust = gc.isAutoAdjust() == null ? view_config.getDefaultAutoAdjustGrid() : gc.isAutoAdjust();
+		String bindTarget = gc.getBindTarget();//view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		if(isAutoAdjust)
 		if(viewWidth!=null && viewWidth.intValue() !=0) bl = (width.floatValue()/viewWidth.floatValue());
 		
@@ -323,6 +324,7 @@ public class Grid extends Component {
 					
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
+						column.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget))));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
@@ -341,7 +343,6 @@ public class Grid extends Component {
 			}		
 		}
 		
-		String bindTarget = gc.getBindTarget();//view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 //		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		map.put(HEAD_HEIGHT, new Integer(maxRow*DEFALUT_HEAD_HEIGHT));
 		map.put(LOCK_COLUMNS, locks);
