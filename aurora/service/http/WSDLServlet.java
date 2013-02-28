@@ -89,6 +89,7 @@ public class WSDLServlet extends HttpServlet {
 		response.setContentType("text/plain;charset=UTF-8");// 设置响应的MIME类型。
 		PrintWriter out = response.getWriter();
 		try {
+			out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			String content = XMLOutputter.defaultInstance().toXML(wsdlGenerator.run(), true);
 			out.print(content);
 			out.flush();
