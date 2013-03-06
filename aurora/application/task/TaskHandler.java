@@ -51,7 +51,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	public static final String DEFAULT_TOPIC = "task";
-	public static final String DEFAULT_MESSAGE= "task_message";
+	public static final String DEFAULT_MESSAGE = "task_message";
 
 	private IObjectRegistry mRegistry;
 
@@ -60,6 +60,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	private String updateTaskBM;
 	private String finishTaskBM;
 	private int threadCount = 2;
+	private int fetchTaskTimerInterval = 10000;//默认10秒
 
 	private IDatabaseServiceFactory databaseServiceFactory;
 	private DataSource dataSource;
@@ -167,12 +168,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 		if (TaskTableFields.JAVA_TYPE.equals(task_type)) {
 			if (proc_file_path != null && !proc_file_path.equals("")) {
-				executeProc(proc_file_path, task_id, context,connection);
+				executeProc(proc_file_path, task_id, context, connection);
 			} else {
 				if (proc_content == null)
 					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + ","
 							+ TaskTableFields.PROC_CONTENT);
-				executeProc(proc_content, task_id, context,connection);
+				executeProc(proc_content, task_id, context, connection);
 			}
 		} else if (TaskTableFields.PROCEDURE_TYPE.equals(task_type)) {
 			if (sql == null || "".equals(sql))
@@ -197,6 +198,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		}
 		return context;
 	}
+
 	private CompositeMap getProcContext(CompositeMap taskRecord) throws Exception {
 		if (taskRecord == null)
 			return null;
@@ -291,29 +293,29 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		// }
 	}
 
-	protected void executeProc(String procedure_name, int taskId, CompositeMap context,Connection connection) {
+	protected void executeProc(String procedure_name, int taskId, CompositeMap context, Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_name });
 		Procedure proc = null;
 		try {
 			proc = procedureManager.loadProcedure(procedure_name);
-			executeProc(taskId, proc,context,connection);
+			executeProc(taskId, proc, context, connection);
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(null, procedure_name, ex);
 		}
 	}
 
-	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context,Connection connection) {
+	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context, Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_config.toXML() });
 		Procedure proc = null;
 		try {
 			proc = procedureManager.createProcedure(procedure_config);
-			executeProc(taskId, proc, context,connection);
+			executeProc(taskId, proc, context, connection);
 		} catch (Exception ex) {
 			throw BuiltinExceptionFactory.createResourceLoadException(null, String.valueOf(taskId), ex);
 		}
 	}
 
-	protected void executeProc(int taskId, Procedure proc, CompositeMap context,Connection connection) {
+	protected void executeProc(int taskId, Procedure proc, CompositeMap context, Connection connection) {
 		if (proc == null)
 			throw new IllegalArgumentException("Procedure can not be null!");
 		try {
@@ -321,10 +323,12 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			if (context != null) {
 				context.putObject("/parameter/@task_id", taskId, true);
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context);
-//				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, context,connection);
+				// ServiceInvoker.invokeProcedureWithTransaction(name, proc,
+				// serviceFactory, context,connection);
 			} else {
 				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory);
-//				ServiceInvoker.invokeProcedureWithTransaction(name, proc, serviceFactory, connection);
+				// ServiceInvoker.invokeProcedureWithTransaction(name, proc,
+				// serviceFactory, connection);
 			}
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
@@ -457,6 +461,14 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 		this.threadCount = threadCount;
 	}
 
+	public int getFetchTaskTimerInterval() {
+		return fetchTaskTimerInterval;
+	}
+
+	public void setFetchTaskTimerInterval(int fetchTaskTimerInterval) {
+		this.fetchTaskTimerInterval = fetchTaskTimerInterval;
+	}
+
 	public String getTopic() {
 		return topic;
 	}
@@ -565,7 +577,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				while (running) {
 					synchronized (fetchNewTaskLock) {
 						if (!hasNext) {
-							fetchNewTaskLock.wait();
+							if (fetchTaskTimerInterval > 0)
+								fetchNewTaskLock.wait(fetchTaskTimerInterval);
+							else
+								fetchNewTaskLock.wait();
 						}
 						if (!running)
 							break;
@@ -579,8 +594,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							logger.log(Level.CONFIG, "add record to queue,task_id=" + getTaskId(task));
 							addToTaskQueue(task);
 							hasNext = false;
-							//如果有线程处于空闲，并且还有任务记录需要处理，则继续从数据空获取。
-							if(connectionQueue.size()<=0){
+							// 如果有线程处于空闲，并且还有任务记录需要处理，则继续从数据空获取。
+							if (connectionQueue.size() <= 0) {
 								int record_count = task.getInt("record_count", -1);
 								if (record_count > 1) {
 									hasNext = true;
@@ -750,8 +765,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 			} finally {
 				connectionQueue.add(connection);
 			}
-			//如果任务队列空了，就去系统查看是否有新任务需要处理
-			if(taskQueue.size() == 0){
+			// 如果任务队列空了，就去系统查看是否有新任务需要处理
+			if (taskQueue.size() == 0) {
 				synchronized (fetchNewTaskLock) {
 					fetchNewTaskLock.notify();
 				}
@@ -812,8 +827,8 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	@Override
 	public void onMessage(IMessage message) {
 		try {
-			//还有任务未处理，暂时不接收新任务。并在线程都执行完成后，会查看是否有新任务。
-			if(taskQueue.size()>0)
+			// 还有任务未处理，暂时不接收新任务。并在线程都执行完成后，会查看是否有新任务。
+			if (taskQueue.size() > 0)
 				return;
 			logger.log(Level.CONFIG, "receive a messsage:" + message.getText());
 			synchronized (fetchNewTaskLock) {
