@@ -54,22 +54,39 @@ public class HttpRequestTransfer implements ISingleton {
 			String head_value = request.getHeader(head);
 			req_map.put(head, head_value);
 		}
-		req_map.put("address", request.getRemoteAddr());
+		String ip = request.getHeader("x-forwarded-for");	
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");			
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");		
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}	
+		req_map.put(KEY_ADDRESS, ip);
 	}
 
 	public static void copyRequest(HttpServiceInstance svc) {
 		HttpServletRequest request = svc.getRequest();
-		//JSONObject dm = getParameterString(svc.getRequest());
+		// JSONObject dm = getParameterString(svc.getRequest());
 		CompositeMap r = svc.getContextMap().createChild(KEY_REQUEST);
-
-		r.put(KEY_ADDRESS, request.getRemoteAddr());
-		//r.put("url", svc.getName());
+		String ip = request.getHeader("x-forwarded-for");	
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");			
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");		
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}		
+		r.put(KEY_ADDRESS, ip);
+		// r.put("url", svc.getName());
 		r.put("url", request.getRequestURI());
 		/*
-		if (dm.length() != 0) {
-			r.put("params", dm);
-		}
-		*/
+		 * if (dm.length() != 0) { r.put("params", dm); }
+		 */
 		r.put("server_name", request.getServerName());
 		r.put("context_path", request.getContextPath());
 		r.put("server_port", new Integer(request.getServerPort()));
@@ -79,56 +96,38 @@ public class HttpRequestTransfer implements ISingleton {
 		copyParameter(svc.getRequest(), svc);
 		copyHeader(svc.getRequest(), svc);
 	}
-/*
-	public static JSONObject getParameterString(HttpServletRequest request) {
-		Map params = request.getParameterMap();
-		JSONObject ps = new JSONObject();
-		if (params.size() > 0) {
-			Iterator it = params.entrySet().iterator();
-			String[] valueHolder = new String[1];
-			while (it.hasNext()) {
-				Map.Entry entry = (Map.Entry) it.next();
-				String name = entry.getKey().toString();
-				Object value = entry.getValue();
-				String[] values;
-				if (value instanceof String[]) {
-					values = (String[]) value;
-				} else {
-					valueHolder[0] = value.toString();
-					values = valueHolder;
-				}
-				try {
-					ArrayList al = new ArrayList();
-					for (int i = 0; i < values.length; i++) {
-						if (values[i] != null) {
-							al.add(values[i]);
-						}
-					}
-					ps.put(name, al);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+
+	/*
+	 * public static JSONObject getParameterString(HttpServletRequest request) {
+	 * Map params = request.getParameterMap(); JSONObject ps = new JSONObject();
+	 * if (params.size() > 0) { Iterator it = params.entrySet().iterator();
+	 * String[] valueHolder = new String[1]; while (it.hasNext()) { Map.Entry
+	 * entry = (Map.Entry) it.next(); String name = entry.getKey().toString();
+	 * Object value = entry.getValue(); String[] values; if (value instanceof
+	 * String[]) { values = (String[]) value; } else { valueHolder[0] =
+	 * value.toString(); values = valueHolder; } try { ArrayList al = new
+	 * ArrayList(); for (int i = 0; i < values.length; i++) { if (values[i] !=
+	 * null) { al.add(values[i]); } } ps.put(name, al); } catch (Exception e) {
+	 * throw new RuntimeException(e); } } } return ps; }
+	 */
+	public static void populateCookieMap(HttpServletRequest request,
+			CompositeMap target) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null)
+			for (int i = 0; i < cookies.length; i++) {
+				CompositeMap m = createCookieMap(cookies[i]);
+				target.put(cookies[i].getName(), m);
 			}
-		}
-		return ps;
 	}
-*/	
-	public static void populateCookieMap( HttpServletRequest request, CompositeMap target ){
-	    Cookie[] cookies = request.getCookies();
-	    if(cookies!=null)
-    	    for(int i=0; i<cookies.length; i++){
-    	        CompositeMap m = createCookieMap(cookies[i]);
-    	        target.put(cookies[i].getName(), m);
-    	    }
-	}
-	public static CompositeMap createCookieMap( Cookie cookie ){
-	    CompositeMap m = new CompositeMap("cookie");
-	    m.put("name", cookie.getName());
-	    m.put("value", cookie.getValue());
-	    m.put("domain", cookie.getDomain());
-	    m.put("path", cookie.getPath());
-	    m.putInt("maxage", cookie.getMaxAge());
-	    m.putBoolean("secure", cookie.getSecure());
-	    return m;
+
+	public static CompositeMap createCookieMap(Cookie cookie) {
+		CompositeMap m = new CompositeMap("cookie");
+		m.put("name", cookie.getName());
+		m.put("value", cookie.getValue());
+		m.put("domain", cookie.getDomain());
+		m.put("path", cookie.getPath());
+		m.putInt("maxage", cookie.getMaxAge());
+		m.putBoolean("secure", cookie.getSecure());
+		return m;
 	}
 }
