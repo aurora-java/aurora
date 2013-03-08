@@ -38,22 +38,22 @@ public class GridButton extends ToolBarButton {
 				
 				String fileName = view.getString("filename","");
 				if("add".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_NEW"),"grid-add2","background-position:0px 3px;","function(){$('"+grid+"').showEditorByRecord($('"+dataset+"').create())}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_NEW"),"grid-add2","","function(){$('"+grid+"').showEditorByRecord($('"+dataset+"').create())}");
 				}else if("delete".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete2","background-position:0px -22px;","function(){$('"+grid+"').remove()}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_DELETE"),"grid-delete2","","function(){$('"+grid+"').remove()}");
 				}else if("save".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_SAVE"),"grid-save2","background-position:0px -73px;","function(){$('"+dataset+"').submit()}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_SAVE"),"grid-save2","","function(){$('"+dataset+"').submit()}");
 				}else if("clear".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear2","background-position:0px -47px;","function(){$('"+grid+"').clear()}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear2","","function(){$('"+grid+"').clear()}");
 				}else if("excel".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","background-position:0px -122px;","function(){$('"+grid+"')._export('xls','"+fileName+"')}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","","function(){$('"+grid+"')._export('xls','"+fileName+"')}");
 				}else if("excel2007".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","background-position:0px -175px;","function(){$('"+grid+"')._export('xlsx','"+fileName+"')}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","","function(){$('"+grid+"')._export('xlsx','"+fileName+"')}");
 				}else if("txt".equalsIgnoreCase(type)){
 					String separator = view.getString("separator","");
-					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","background-position:0px -149px;","function(){$('"+grid+"')._export('txt','"+fileName+"','"+separator+"')}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel2","","function(){$('"+grid+"')._export('txt','"+fileName+"','"+separator+"')}");
 				}else if("customize".equalsIgnoreCase(type)){
-					view = createButton(view,session.getLocalizedPrompt("HAP_CUST"),"grid-cust2","background-position:0px -98px;","function(){$('"+grid+"').customize()}");
+					view = createButton(view,session.getLocalizedPrompt("HAP_CUST"),"grid-cust2","","function(){$('"+grid+"').customize()}");
 				}
 			}	
 		}
