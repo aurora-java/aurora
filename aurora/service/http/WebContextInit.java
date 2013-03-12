@@ -36,13 +36,20 @@ public class WebContextInit implements ServletContextListener {
     public void initUncertain(ServletContext servletContext) throws Exception {
 
         String config_dir = servletContext.getRealPath("/WEB-INF");
+        if(config_dir==null){
+        	config_dir=servletContext.getResource("/WEB-INF").getFile();
+        }
         String config_file = "uncertain.xml";
         //String pattern = ".*\\.config";
 
         uncertainEngine = new UncertainEngine(new File(config_dir), config_file);
         uncertainEngine.setName(servletContext.getServletContextName());
         DirectoryConfig dirConfig = uncertainEngine.getDirectoryConfig();
-        dirConfig.setBaseDirectory(servletContext.getRealPath("/"));
+        String basePath=servletContext.getRealPath("/");
+        if(basePath==null){
+        	basePath=servletContext.getResource("/").getFile();
+        }
+        dirConfig.setBaseDirectory(basePath);
         // load aurora builtin package
         uncertainEngine.getPackageManager().loadPackageFromRootClassPath("aurora_builtin_package");
 
