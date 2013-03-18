@@ -82,5 +82,9 @@ public class Field extends Component {
 			map.put(FieldConfig.PROPERTITY_READONLY, "readonly");
 		}
 		addConfig(FieldConfig.PROPERTITY_READONLY, readOnly);
+		
+		/** 是否转换全角 **/
+		boolean isTranChara = fc.isTransformCharacter();
+		addConfig(FieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
 	}
 }

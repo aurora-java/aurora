@@ -8,6 +8,7 @@ public class FieldConfig extends ComponentConfig {
 	public static final String PROPERTITY_READONLY = "readonly";
 	public static final String PROPERTITY_MAX_LENGHT = "maxlength";
 	public static final String PROPERTITY_RENDERER = "renderer";
+	public static final String PROPERTITY_CHARA_TRANSFORM = "transformcharacter";
 	
     public boolean getRequired(){
         return getBoolean(PROPERTITY_REQUIRED, false);
@@ -35,5 +36,12 @@ public class FieldConfig extends ComponentConfig {
     }
     public void setRenderer(String renderer){
         putString(PROPERTITY_RENDERER, renderer);
+    }
+    
+    public boolean isTransformCharacter(){
+        return getBoolean(PROPERTITY_CHARA_TRANSFORM, true);
+    }
+    public void setTransformCharacter(boolean tc){
+        putBoolean(PROPERTITY_CHARA_TRANSFORM, tc);
     }
 }
