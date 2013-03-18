@@ -329,7 +329,7 @@ public class Grid extends Component {
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
 					String type = column.getString(COLUMN_TYPE);
-					if(!"rowcheck".equals(type) && !"rowradio".equals(type)&& !"rownumber".equals(type))cwidth = cwidth*bl;
+					if(!"rowcheck".equals(type) && !"rowradio".equals(type)&& !"rownumber".equals(type) && column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST))cwidth = cwidth*bl;
 					column.putInt(ComponentConfig.PROPERTITY_WIDTH, Math.round(cwidth));
 					String editor = column.getString(GridConfig.PROPERTITY_EDITOR, "");
 					if(isCheckBoxEditor(editor, view)){
