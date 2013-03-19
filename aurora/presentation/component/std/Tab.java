@@ -25,7 +25,7 @@ public class Tab extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "tab/Tab-min.css");
-		addJavaScript(session, context, "tab/Tab-min.js");
+		addJavaScript(session, context, "tab/Tab.js");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
@@ -133,7 +133,7 @@ public class Tab extends Component {
 					}
 					String tabClass = tc.getTabClass();
 					String tabStyle = tc.getTabStyle();
-					boolean closeable = tc.isDisabled();
+					boolean closeable = tc.isCloseable();
 					boolean disabled = tc.isDisabled();
 					boolean selected = tc.isSelected();
 					if(selected){
