@@ -95,7 +95,7 @@ public class Accordion extends Component {
 		sb.append(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)));
 		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='height:"
-				+ bodyHeight + "px;'>");
+				+ bodyHeight + "px;"+(isSelected?"":"visibility:hidden")+"'>");
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
