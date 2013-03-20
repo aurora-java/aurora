@@ -324,7 +324,7 @@ public class Grid extends Component {
 					
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
-						column.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget))));
+						column.putString(GridColumnConfig.PROPERTITY_PROMPT,uncertain.composite.TextParser.parse(session.getLocalizedPrompt(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget))),model));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
