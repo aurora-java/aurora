@@ -13,6 +13,11 @@
                 <ss:attribute name="prompt" document="组件的标签" type="bm:Prompts"/>
             </ss:attributes>
         </ss:complexType>
+        <ss:complexType name="a:HasTabIndex">
+            <ss:attributes>
+                <ss:attribute name="tabIndex" document="组件的Tab导航序号,-1为不导航，0为默认顺序导航" type="ss:int"/>
+            </ss:attributes>
+        </ss:complexType>
         <ss:complexType name="a:RectangleComponent" document="具有尺寸的特性">
             <ss:attributes>
                 <ss:attribute name="hidden" document="组件是否隐藏" type="ss:string"/>
@@ -53,6 +58,7 @@
                 <ss:extension base="a:HasName"/>
                 <ss:extension base="a:BindTarget"/>
                 <ss:extension base="a:HasPrompt"/>
+                <ss:extension base="a:HasTabIndex"/>
             </ss:extensions>
             <ss:arrays>
                 <ss:array name="a:events" document="事件" indexField="name" type="a:event"/>

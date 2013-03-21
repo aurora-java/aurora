@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:hotKey" document="快捷键组件">
+            <ss:extensions>
+                <ss:extension base="a:BaseViewComponent"/>
+            </ss:extensions>
+            <ss:arrays>
+                <ss:array name="a:keys" document="快捷键配置" indexField="name" type="a:key"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="a:key" document="快捷键">
+        	<ss:attributes>
+                <ss:attribute name="bind" document="快捷键位组合，如ctrl+s"/>
+                <ss:attribute name="handler" document="快捷键响应的函数"/>
+            </ss:attributes>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

@@ -24,9 +24,11 @@
         </ss:element>
         <ss:element name="a:currencyLabel" document="金额显示组件">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:label"/>
             </ss:extensions>
+            <ss:attributes>
+                <ss:attribute name="renderer" document="渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串。当此属性没有值时，默认为Aurora.formatMoney"/>
+            </ss:attributes>
         </ss:element>
         <ss:element name="a:passWord" document="密码输入框">
             <ss:extensions>
@@ -123,6 +125,7 @@
                 <ss:attribute name="labelExpression" document="选项的描述"/>
                 <ss:attribute name="labelField" document="选项集的dataset中用来显示选项描述的field"/>
                 <ss:attribute name="layout" document="选项的布局"/>
+                <ss:attribute name="radioSeparator" document="选项钮后缀符，默认为冒号"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:items" indexField="value" type="a:item"/>

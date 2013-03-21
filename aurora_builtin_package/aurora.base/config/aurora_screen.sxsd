@@ -33,6 +33,7 @@
                 <ss:attribute name="bindName" document="绑定父级DataSet中的field名" type=""/>
                 <ss:attribute name="selectFunction" document="用回调函数判断行是否可选择\n 回调函数function(record){return true|false}\n 当返回值为false时，该record无法被选择" type=""/>
                 <ss:attribute name="notification" document="未保存提示信息,dataset未保存离开页面给予提示"/>
+                <ss:attribute name="modifiedCheck" document="是否检查dataset未保存" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:datas"/>

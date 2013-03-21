@@ -9,10 +9,12 @@
                 <ss:attribute name="maxPageCount" default="10" document="导航条的类型simple时，最大可显示的页数，如果总页数超过该值，会以省略号显示。" type="ss:int"/>
                 <ss:attribute name="autoFocus" default="false" document="自动对焦" type="ss:boolean"/>
                 <ss:attribute name="autoAppend" default="true" document="自动新增行" type="ss:boolean"/>
+                <ss:attribute name="autoAdjust" default="true" document="根据width和marginWidth自动调整列宽" type="ss:boolean"/>
                 <ss:attribute name="showRowNumber" document="是否显示行号" type="ss:boolean"/>
                 <ss:attribute name="canWheel" default="true" document="能否通过鼠标滚动来换行" type="ss:boolean"/>
                 <ss:attribute name="canPaste" default="false" document="是否允許使用粘贴功能来增加整行，该功能只有在IE下才有效。" type="ss:boolean"/>
                 <ss:attribute name="rowRenderer" document="通过回调函数返回的样式表渲染指定行\n回调函数function(record,rowIndex){return css}\n返回值css值可以是class或者style字符串,也可以是class和style字符串数组"/>
+                <ss:attribute name="submask" document="控制grid在dataset提交时是否被遮盖" type="ss:boolean"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
@@ -44,6 +46,9 @@
                 <ss:attribute name="forExport" default="true" document="是否对该列进行导出" type="ss:boolean"/>
                 <ss:attribute name="autoAdjust" default="true" document="是否自动调整列宽" type="ss:boolean"/>
                 <ss:attribute name="maxAdjustWidth" default="300" document="列宽自动调整的最大值，最大值不会超过grid的宽度" type="ss:int"/>
+                <ss:attribute name="exportDataFormat" document="导出数据格式"/>
+                <ss:attribute name="exportDataType" document="导出数据类型"/>
+                <ss:attribute name="exportField" document="导出列对应的Dataset的field,默认为name属性的值"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:column"/>
