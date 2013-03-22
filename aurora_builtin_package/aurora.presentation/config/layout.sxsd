@@ -88,17 +88,14 @@
                 <ss:attribute name="expand" default="false" document="是否展开" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
-				<ss:element ref="a:formHead"/>
+				<ss:element ref="a:formToolBar"/>
                 <ss:element ref="a:formBody"/>
             </ss:elements>
         </ss:element>
-        <ss:element name="a:formHead" document="queryForm头部">
+        <ss:element name="a:formToolBar" document="queryForm头部">
         	<ss:extensions>
         		<ss:extension base="a:hBox"/>
     		</ss:extensions>
-    		<ss:elements>
-                <ss:element ref="a:formButton"/>
-            </ss:elements>
         </ss:element>
         <ss:element name="a:formBody" document="queryForm体部">
         	<ss:extensions>
@@ -118,6 +115,31 @@
                 <ss:attribute name="title" document="fieldSet的标题" type="bm:Prompts"/>
                 <ss:attribute name="showmargin" default="false" document="是否显示fieldSet的上下间隙" type="ss:boolean"/>
             </ss:attributes>
+        </ss:element>
+        <ss:element name="a:defaultScreen" document="普通界面布局容器">
+            <ss:extensions>
+                <ss:extension base="a:vBox"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:windowToolBar" document="window的工具条">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:screenTopToolbar" document="页面级别顶部工具条">
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent"/>
+            </ss:elements>
+        </ss:element>
+        <ss:element name="a:screenTitle" document="页面标题">
+            <ss:extensions>
+                <ss:extension base="a:BaseViewComponent"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:freeMarker" document="freeMarker代码区">
+            <ss:extensions>
+                <ss:extension base="a:BaseViewComponent"/>
+            </ss:extensions>
         </ss:element>
     </ss:elements>
     <ss:categories/>
