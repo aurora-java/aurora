@@ -6,9 +6,9 @@ package aurora.service;
 
 import java.sql.Connection;
 
-import aurora.database.service.SqlServiceContext;
 import uncertain.composite.CompositeMap;
 import uncertain.proc.Procedure;
+import aurora.database.service.SqlServiceContext;
 
 public class ServiceInvoker {
 
@@ -28,6 +28,19 @@ public class ServiceInvoker {
             service_factory.finishService(context);
         }
         
+    }
+    public static void invokeProcedureWithTransaction(String service_name, Procedure app_proc, IServiceFactory service_factory,IService service, CompositeMap context ) throws Exception{
+    	ServiceContext scx = ServiceContext.createServiceContext( context);
+        try{
+            service_factory.beginService(context);
+            service.invoke(app_proc);
+            service.release();
+        }catch(Exception ex){
+            scx.setSuccess(false);
+            throw ex;
+        }finally{
+            service_factory.finishService(context);
+        }
     }
 
     public static void invokeProcedureWithTransaction(String service_name, Procedure app_proc, IServiceFactory service_factory )
