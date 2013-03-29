@@ -25,7 +25,7 @@ public class Tab extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "tab/Tab-min.css");
-		addJavaScript(session, context, "tab/Tab.js");
+		addJavaScript(session, context, "tab/Tab-min.js");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
