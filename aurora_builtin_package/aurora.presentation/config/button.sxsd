@@ -9,15 +9,14 @@
             <ss:attributes>
                 <ss:attribute name="text" document="按钮的文本" type="bm:Prompts" />
                 <ss:attribute name="click" document="按钮的点击事件" type="ss:string"/>
-                <ss:attribute name="icon" document="按钮的图片"/>
+                <ss:attribute name="icon" document="按钮的图片" type="ss:string"/>
+                <ss:attribute name="iconAlign" document="按钮图片的对齐方式" type="ss:string"/>
                 <ss:attribute name="title" document="按钮的提示信息" type="bm:Prompts"/>
                 <ss:attribute name="disabled" default="true" document="按钮的可用状态" type="ss:boolean"/>
                 <ss:attribute name="type" document="预定义功能类型\nadd|save|delete|clear"/>
-                <!--add by shengbo.huang @2011/11/3-->
                 <ss:attribute name="hidden" document="是否隐藏" type="ss:boolean"/>
                 <ss:attribute name="btnClass" document="button样式对应的class" type="ss:String"/>
                 <ss:attribute name="btnStyle" document="button的样式" type="ss:String"/>
-                <!--end-->
             </ss:attributes>
         </ss:element>
         <ss:element name="a:toolbarButton" document="导航按钮">

@@ -125,7 +125,7 @@
                 <ss:attribute name="labelExpression" document="选项的描述"/>
                 <ss:attribute name="labelField" document="选项集的dataset中用来显示选项描述的field"/>
                 <ss:attribute name="layout" document="选项的布局"/>
-                <ss:attribute name="radioSeparator" document="选项钮后缀符，默认为冒号"/>
+                <ss:attribute name="radioSeparator" document="选项钮后缀符" default=":"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:items" indexField="value" type="a:item"/>
@@ -163,6 +163,9 @@
                 <ss:attribute name="lovAutoQuery" default="true" document="Lov窗口是否自动查询" type="ss:boolean"/>
                 <ss:attribute name="lovUrl" document="自定义URL"/>
                 <ss:attribute name="title" document="Lov弹出窗口的title" type="bm:Prompts"/>
+                <ss:attribute name="editable" document="是否可输入" default="true" type="ss:boolean"/>
+                <ss:attribute name="fetchremote" document="是否通过输入内容自动查询返回给文本框" default="true" type="ss:boolean"/>
+                <ss:attribute name="fetchsingle" document="自动查询结果中有相同结果时，是否弹出选择框" default="false" type="ss:boolean"/>
                 <ss:attribute name="autoCompleteRenderer" document="autoComplete的渲染函数"/>
             </ss:attributes>
         </ss:element>
