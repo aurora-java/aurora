@@ -93,7 +93,8 @@ public class SOAPServiceInterpreter {
 		while ((i = is.read()) != -1) {
 			baos.write(i);
 		}
-		return baos.toString();
+		String result = new String(baos.toByteArray(),"UTF-8");
+		return result;
 	}
 
 	void prepareResponse(HttpServletResponse response)
