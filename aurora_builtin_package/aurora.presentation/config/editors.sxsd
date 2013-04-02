@@ -4,77 +4,55 @@
     <ss:elements>
         <ss:element name="a:textField" document="文本输入框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="emptyText" document="描述字段"/>
                 <ss:attribute name="typeCase" document="大小写类型" type="a:caseType"/>
-                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
-                <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>
                 <ss:attribute name="restrict" document="输入限制(正则表达式)"/>
                 <ss:attribute name="restrictInfo" document="输入限制提示信息"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:currencyField" document="金额输入框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:currencyLabel" document="金额显示组件">
             <ss:extensions>
                 <ss:extension base="a:label"/>
             </ss:extensions>
-            <ss:attributes>
-                <ss:attribute name="renderer" document="渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串。当此属性没有值时，默认为Aurora.formatMoney"/>
-            </ss:attributes>
         </ss:element>
         <ss:element name="a:passWord" document="密码输入框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
-            <ss:attributes>
-                <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="readOnly" document="是否只读"  type="ss:boolean"/>
-            </ss:attributes>
         </ss:element>
         <ss:element name="a:comboBox">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="valueField" document="ComboBox的valueField"/>
                 <ss:attribute name="displayField" document="ComboBox的displayfield"/>
                 <ss:attribute name="options" document="ComboBox的数据源"/>
-                <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="readOnly" document="是否只读"  type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:numberField" document="数字输入框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="emptyText" document="描述字段"/>
                 <ss:attribute name="allowDecimals" document="是否允许有小数位" type="ss:boolean"/>
                 <ss:attribute name="decimalPrecision" document="小数位精度" type="ss:int"/>
                 <ss:attribute name="allowNegative" document="是否允许为负数" type="ss:boolean"/>
                 <ss:attribute name="allowFormat" document="是否按照千分位显示" type="ss:boolean"/>
-                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:spinner" document="微调范围输入框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="min" document="最小值" type="ss:int"/>
                 <ss:attribute name="max" document="最大值" type="ss:int"/>
                 <ss:attribute name="step" document="夸度" type="ss:int"/>
@@ -82,26 +60,18 @@
         </ss:element>
         <ss:element name="a:label" document="显示标签">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
-            <ss:attributes>
-                <ss:attribute name="renderer" document="渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串"/>
-            </ss:attributes>
         </ss:element>
         <ss:element name="a:datePicker" document="日期选择框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="dayRenderer" document="日期渲染\n回调函数function(cell,date,text){return text}\n当cell.disabled=true时，该日期无法被选择\n返回值text是html字符串"/>
-                <ss:attribute name="emptyText" document="提示信息"/>
-                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean"/>
                 <ss:attribute name="enableBesideDays" document="在本月的始末补齐前后月份的日期" type="a:showType"/>
                 <ss:attribute name="enableMonthBtn" document="月份选择按钮显示方式" type="a:showType"/>
                 <ss:attribute name="viewSize" document="日历显示个数,4为最大值" type="ss:int"/>
-                <ss:attribute name="renderer" document="渲染\n回调函数"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:dateTimePicker" document="日期时间选择控件,带有时分秒输入框">
@@ -116,7 +86,6 @@
         </ss:element>
         <ss:element name="a:radio" document="单选框">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
             <ss:attributes>
@@ -144,17 +113,14 @@
                 <ss:attribute name="label" document="checkBox的描述"/>
             </ss:attributes>
             <ss:extensions>
-                <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:lov" document="lov组件">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="emptyText" document="描述字段"/>
                 <ss:attribute name="lovService" document="Lov对应的model"/>
                 <ss:attribute name="lovWidth" document="lov弹出窗口的宽度" type="ss:int"/>
                 <ss:attribute name="lovHeight" document="lov弹出窗口的高度" type="ss:int"/>
@@ -163,16 +129,14 @@
                 <ss:attribute name="lovAutoQuery" default="true" document="Lov窗口是否自动查询" type="ss:boolean"/>
                 <ss:attribute name="lovUrl" document="自定义URL"/>
                 <ss:attribute name="title" document="Lov弹出窗口的title" type="bm:Prompts"/>
-                <ss:attribute name="editable" document="是否可输入" default="true" type="ss:boolean"/>
-                <ss:attribute name="fetchremote" document="是否通过输入内容自动查询返回给文本框" default="true" type="ss:boolean"/>
-                <ss:attribute name="fetchsingle" document="自动查询结果中有相同结果时，是否弹出选择框" default="false" type="ss:boolean"/>
+                <ss:attribute name="fetchRemote" document="是否通过输入内容自动查询返回给文本框" default="true" type="ss:boolean"/>
+                <ss:attribute name="fetchSingle" document="自动查询结果中有相同结果时，是否弹出选择框" default="false" type="ss:boolean"/>
                 <ss:attribute name="autoCompleteRenderer" document="autoComplete的渲染函数"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:textArea" document="TextArea">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
-                <ss:extension base="a:Field"/>
+                <ss:extension base="a:InputField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:upload" document="Upload">
@@ -189,7 +153,6 @@
                 <ss:attribute name="showupload" document="是否显示上传的文件" type="ss:boolean"/>
             </ss:attributes>
             <ss:extensions>
-                <ss:extension base="a:Component"/>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
         </ss:element>

@@ -42,6 +42,16 @@ public class InputField extends Field {
 		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
 		map.put(InputFieldConfig.PROPERTITY_INPUTWIDTH, new Integer(width.intValue()-3));
 		
+		/** MaxLength **/
+		Integer maxlength = ifc.getMaxLength();
+		if(maxlength != null)
+		addConfig(InputFieldConfig.PROPERTITY_MAX_LENGHT, maxlength);
+		
+		
+		/** 是否转换全角 **/
+		boolean isTranChara = ifc.isTransformCharacter();
+		addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
+		
 		/** 值 **/
 		String value = (String)map.get(ComponentConfig.PROPERTITY_VALUE);
 		
@@ -52,7 +62,6 @@ public class InputField extends Field {
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
 		}
 		addConfig(InputFieldConfig.PROPERTITY_EDITABLE, ifc.isEditable());
-		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, ifc.getTabIndex());
 	}
 
 }

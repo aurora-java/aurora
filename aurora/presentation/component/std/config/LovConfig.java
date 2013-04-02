@@ -21,7 +21,6 @@ public class LovConfig extends InputFieldConfig {
 	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	public static final String PROPERTITY_FETCH_REMOTE = "fetchremote";
 	public static final String PROPERTITY_AUTOCOMPLETE_RENDERER = "autocompleterenderer";
-	public static final String PROPERTITY_EDITABLE = "editable";
 	public static final String PROPERTITY_FETCH_SINGLE = "fetchsingle";
 
 	public static LovConfig getInstance() {
@@ -138,14 +137,6 @@ public class LovConfig extends InputFieldConfig {
 
 	public void setAutocompleteRenderer(String renderer) {
 		putString(PROPERTITY_AUTOCOMPLETE_RENDERER, renderer);
-	}
-
-	public boolean getEditable() {
-		return getBoolean(PROPERTITY_EDITABLE, true);
-	}
-
-	public void setEditable(boolean editable) {
-		putBoolean(PROPERTITY_EDITABLE, editable);
 	}
 
 	public boolean getFetchSingle() {

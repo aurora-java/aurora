@@ -65,9 +65,24 @@
             </ss:arrays>
         </ss:complexType>
         <ss:complexType name="a:Field">
+        	<ss:extensions>
+                <ss:extension base="a:Component"/>
+            </ss:extensions>
             <ss:attributes>
-                <ss:attribute name="editable" document="是否可编辑" type="a:boolean"/>
+                <ss:attribute name="readOnly" document="是否只读" type="ss:boolean" default="false"/>
+                <ss:attribute name="renderer" document="渲染\n回调函数function(value,record,name){return value}\n返回值value是html字符串"/>
             </ss:attributes>
+        </ss:complexType>           
+        <ss:complexType name="a:InputField">
+            <ss:attributes>
+                <ss:attribute name="emptyText" document="描述字段"/>
+                <ss:attribute name="editable" document="是否可编辑" type="a:boolean" default="true"/>
+                <ss:attribute name="transformCharacter" document="是否转换全角" type="a:boolean" default="true"/>
+                <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:Field"/>
+            </ss:extensions>
         </ss:complexType>           
     </ss:types>
 </ss:schema>

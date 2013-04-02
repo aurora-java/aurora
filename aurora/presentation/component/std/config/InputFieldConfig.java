@@ -1,12 +1,15 @@
 package aurora.presentation.component.std.config;
 
-public class InputFieldConfig extends ComponentConfig {
+public class InputFieldConfig extends FieldConfig {
 
 	public static final String VERSION = "$Revision$";
 	
 	public static final String PROPERTITY_EMPTYTEXT = "emptytext";
 	public static final String PROPERTITY_INPUTWIDTH = "inputwidth";
 	public static final String PROPERTITY_EDITABLE = "editable";
+	public static final String PROPERTITY_MAX_LENGHT = "maxlength";
+	public static final String PROPERTITY_CHARA_TRANSFORM = "transformcharacter";
+	
 
 	private int DEFAULT_INPUT_WIDTH = 100;
 	
@@ -33,4 +36,18 @@ public class InputFieldConfig extends ComponentConfig {
 	public void setEditable(boolean editable) {
 		put(PROPERTITY_EDITABLE, editable);
 	}
+	
+    public Integer getMaxLength(){
+        return getInteger(PROPERTITY_MAX_LENGHT);
+    }
+    public void setMaxLength(Integer ml){
+        putInt(PROPERTITY_MAX_LENGHT, ml);
+    }
+    
+    public boolean isTransformCharacter(){
+        return getBoolean(PROPERTITY_CHARA_TRANSFORM, true);
+    }
+    public void setTransformCharacter(boolean tc){
+        putBoolean(PROPERTITY_CHARA_TRANSFORM, tc);
+    }
 }

@@ -71,20 +71,11 @@ public class Field extends Component {
 		if(renderer != null)
 		addConfig(FieldConfig.PROPERTITY_RENDERER, renderer);
 		
-		/** Renderer **/
-		Integer maxlength = fc.getMaxLength();
-		if(maxlength != null)
-		addConfig(FieldConfig.PROPERTITY_MAX_LENGHT, maxlength);
-		
 		/** 是否只读 **/
 		boolean readOnly = fc.getReadonly();
 		if(readOnly) {
 			map.put(FieldConfig.PROPERTITY_READONLY, "readonly");
 		}
 		addConfig(FieldConfig.PROPERTITY_READONLY, readOnly);
-		
-		/** 是否转换全角 **/
-		boolean isTranChara = fc.isTransformCharacter();
-		addConfig(FieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
 	}
 }

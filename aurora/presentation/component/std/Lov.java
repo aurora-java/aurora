@@ -35,7 +35,6 @@ public class Lov extends TextField {
 		addConfig(LovConfig.PROPERTITY_LOV_HEIGHT, new Integer(lc.getLovHeight()));
 		addConfig(LovConfig.PROPERTITY_LOV_GRID_HEIGHT, new Integer(lc.getLovGridHeight()));
 		addConfig(LovConfig.PROPERTITY_FETCH_REMOTE, new Boolean(lc.getFetchRemote()));
-		addConfig(LovConfig.PROPERTITY_EDITABLE, new Boolean(lc.getEditable()));
 		addConfig(LovConfig.PROPERTITY_FETCH_SINGLE, new Boolean(lc.getFetchSingle()));
 		String renderer = lc.getAutocompleteRenderer();
 		if(renderer != null)addConfig(LovConfig.PROPERTITY_AUTOCOMPLETE_RENDERER, renderer);

@@ -21,7 +21,7 @@ public class CurrencyLabel extends Label {
 		CurrencyLabelConfig lc = CurrencyLabelConfig.getInstance(view);
 		
 		String renderer = lc.getRenderer();
-		if(renderer==null)view.putString(LabelConfig.PROPERTITY_RENDERER, DEFAULT_RENDERER);		
+		if("".equals(renderer))view.putString(LabelConfig.PROPERTITY_RENDERER, DEFAULT_RENDERER);		
 		super.onCreateViewContent(session, context);
 	}
 }
