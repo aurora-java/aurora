@@ -12,6 +12,7 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_SOURCE_TYPE = "sourcetype";
 	public static final String PROPERTITY_PK_VALUE = "pkvalue";
+	public static final String PROPERTITY_TOTAL_FILE_SIZE = "totalfilesize";
 	public static final String PROPERTITY_FILE_SIZE = "filesize";
 	public static final String PROPERTITY_FILE_TYPE = "filetype";
 	public static final String PROPERTITY_BUTTON_WIDTH = "buttonwidth";
@@ -21,8 +22,10 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
+	public static final String PROPERTITY_SORT_SQL = "sortsql";
 
 	public static final String DEFAULT_TYPE = "default";
+	public static final String DEFAULT_SORT_SQL = "creation_date desc";
 	
 	public static UploadConfig getInstance() {
 		UploadConfig model = new UploadConfig();
@@ -79,6 +82,15 @@ public class UploadConfig extends ComponentConfig {
 	
 	public String getUploadURL() {
 		return getString(PROPERTITY_UPLOAD_URL);
+	}
+	
+	
+	public void setSortSql(String sql){
+		putString(PROPERTITY_SORT_SQL, sql);
+	}
+	
+	public String getSortSql() {
+		return getString(PROPERTITY_SORT_SQL,DEFAULT_SORT_SQL);
 	}
 	
 	public String getUploadURL(String defaultValue) {
@@ -148,4 +160,15 @@ public class UploadConfig extends ComponentConfig {
 	public void setFileSize(int fileSize){
 		putInt(PROPERTITY_FILE_SIZE, fileSize);
 	}
+	
+	
+	public int getTotalFileSize(){
+		return getInt(PROPERTITY_TOTAL_FILE_SIZE, 0);
+	}
+	
+	public void setTotalFileSize(int tfs){
+		putInt(PROPERTITY_TOTAL_FILE_SIZE, tfs);
+	}
+	
+	
 }

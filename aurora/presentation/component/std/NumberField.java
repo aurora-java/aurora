@@ -8,9 +8,11 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 
+@SuppressWarnings("unchecked")
 public class NumberField extends TextField {	
 	
 	public static final String VERSION = "$Revision$";
+	
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
@@ -22,10 +24,11 @@ public class NumberField extends TextField {
 		if(!nfc.isAllowDecimals())addConfig(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, new Boolean(false));
 		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
 		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, new Boolean(false));
+		if(!nfc.isAllowPad()) addConfig(NumberFieldConfig.PROPERTITY_ALLOWPAD, new Boolean(false));
 		
 		addConfig(NumberFieldConfig.PROPERTITY_DECIMALPRECISION, new Integer(nfc.getDecimalPrecision(model)));
 		
-		Map map = context.getMap();		
+		Map map = context.getMap();
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
 		map.put(CONFIG, getConfigString());
 	}

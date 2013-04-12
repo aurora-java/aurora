@@ -82,7 +82,8 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
     			if(pk.indexOf("${") == -1) {
     				pk = "'" + pk + "'";
     			}
-    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by fam.creation_date desc");
+    			UploadConfig uc = UploadConfig.getInstance(view);
+    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by fa." + uc.getSortSql());
     			screen.addInitProcedureAction(mqc.getObjectContext());
         		
         		

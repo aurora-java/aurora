@@ -16,6 +16,7 @@ public class NumberFieldConfig extends InputFieldConfig {
 	public static final String PROPERTITY_DECIMALPRECISION = "decimalprecision";	
 	public static final String PROPERTITY_ALLOWNEGATIVE = "allownegative";
 	public static final String PROPERTITY_ALLOWFORMAT = "allowformat";
+	public static final String PROPERTITY_ALLOWPAD = "allowpad";
 	
 	public static NumberFieldConfig getInstance(){
 		NumberFieldConfig model = new NumberFieldConfig();
@@ -35,6 +36,14 @@ public class NumberFieldConfig extends InputFieldConfig {
     public void setAllowFormat(boolean format){
     	putBoolean(PROPERTITY_ALLOWFORMAT, format);
     }
+    
+    public boolean isAllowPad(){
+    	return getBoolean(PROPERTITY_ALLOWPAD, true);
+    }
+    public void setAllowPad(boolean pad){
+    	putBoolean(PROPERTITY_ALLOWPAD, pad);
+    }
+    
 	
 	public boolean isAllowDecimals(){
 		return getBoolean(PROPERTITY_ALLOWDECIMALS, true);
