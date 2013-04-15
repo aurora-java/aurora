@@ -14,7 +14,6 @@ import java.util.Set;
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.ocm.ISingleton;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IFreeMarkerTemplateProvider;
@@ -22,7 +21,7 @@ import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import freemarker.template.Template;
 
-public class FreeMarkerTemplate implements IViewBuilder, ISingleton {
+public class FreeMarkerTemplate implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 	

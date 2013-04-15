@@ -6,7 +6,6 @@ import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.ocm.ISingleton;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
@@ -15,7 +14,7 @@ import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 
-public class ScreenTitle implements IViewBuilder, ISingleton {
+public class ScreenTitle implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 	private static final String SERVICE_NAME = "service_name";

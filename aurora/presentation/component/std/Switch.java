@@ -6,12 +6,11 @@ import java.util.Iterator;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
-import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 
-public class Switch implements IViewBuilder, ISingleton {
+public class Switch implements IViewBuilder {
 
 	public static final String VERSION = "$Revision$";
 	

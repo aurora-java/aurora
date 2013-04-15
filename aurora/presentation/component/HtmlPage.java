@@ -25,7 +25,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.IDGenerator;
 
-public class HtmlPage implements IViewBuilder, ISingleton {
+public class HtmlPage implements IViewBuilder {
     
     public static final String EVENT_PREPARE_PAGE_CONTENT = "PreparePageContent";
     public static final String KEY_MANIFEST = "manifest";

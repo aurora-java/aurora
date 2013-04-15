@@ -15,7 +15,6 @@ import freemarker.template.Template;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IFreeMarkerTemplateProvider;
 import aurora.presentation.IViewBuilder;
@@ -25,7 +24,7 @@ import aurora.presentation.component.std.config.ListViewColumnConfig;
 import aurora.presentation.component.std.config.ListViewConfig;
 
 @SuppressWarnings("unchecked")
-public class ListView extends Component implements IViewBuilder, ISingleton {
+public class ListView extends Component implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 

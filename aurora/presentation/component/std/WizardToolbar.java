@@ -4,14 +4,13 @@ import java.io.IOException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
-import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ComponentConfig;
 
-public class WizardToolbar implements IViewBuilder, ISingleton{
+public class WizardToolbar implements IViewBuilder{
 	
 	public static final String VERSION = "$Revision$";
 	

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
-import uncertain.ocm.ISingleton;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
@@ -17,7 +16,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.ScreenTopToolbarConfig;
 import aurora.presentation.component.std.config.ToolBarButtonConfig;
 
-public class ScreenTopToolbar extends Component implements IViewBuilder, ISingleton {
+public class ScreenTopToolbar extends Component implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 	

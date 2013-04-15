@@ -49,22 +49,25 @@ public class TreeConfig extends ComponentConfig {
         putString(PROPERTITY_RENDERER, renderer);
     }
     
-    public String getIdField(){
-        return getString(PROPERTITY_FIELD_ID, DEFAULT_ID_FIELD);
+    public String getIdField(CompositeMap model){
+    	String str = getString(PROPERTITY_FIELD_ID, DEFAULT_ID_FIELD);
+    	return uncertain.composite.TextParser.parse(str, model);
     }
     public void setIdField(String idf){
         putString(PROPERTITY_FIELD_ID, idf);
     }
     
-    public String getParentField(){
-        return getString(PROPERTITY_FIELD_PARENT, DEFAULT_PARENT_FIELD);
+    public String getParentField(CompositeMap model){
+    	String str = getString(PROPERTITY_FIELD_PARENT, DEFAULT_PARENT_FIELD);    	
+    	return uncertain.composite.TextParser.parse(str, model);
     }
     public void setParentField(String pf){
         putString(PROPERTITY_FIELD_PARENT, pf);
     }
     
-    public String getDisplayField(){
-        return getString(PROPERTITY_FIELD_DISPLAY, DEFAULT_DISPLAY_FIELD);
+    public String getDisplayField(CompositeMap model){
+        String str =  getString(PROPERTITY_FIELD_DISPLAY, DEFAULT_DISPLAY_FIELD);
+        return uncertain.composite.TextParser.parse(str, model);
     }
     public void setDisplayField(String pf){
         putString(PROPERTITY_FIELD_DISPLAY, pf);
@@ -77,8 +80,9 @@ public class TreeConfig extends ComponentConfig {
         putString(PROPERTITY_FIELD_EXPAND, pf);
     }
     
-    public String getSequenceField(){
-        return getString(PROPERTITY_FIELD_SEQUENCE, DEFAULT_SEQUENCE_FIELD);
+    public String getSequenceField(CompositeMap model){
+        String str =  getString(PROPERTITY_FIELD_SEQUENCE, DEFAULT_SEQUENCE_FIELD);
+        return uncertain.composite.TextParser.parse(str, model);
     }
     public void setSequenceField(String pf){
         putString(PROPERTITY_FIELD_SEQUENCE, pf);

@@ -29,7 +29,7 @@ import aurora.presentation.ViewCreationException;
  * @author Zhou Fan
  *
  */
-public class TemplateRenderer implements IViewBuilder, ISingleton {
+public class TemplateRenderer implements IViewBuilder {
     
     public static final String KEY_PACKAGE = "package";
     public static final String KEY_TEMPLATE = "template";

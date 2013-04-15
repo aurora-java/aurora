@@ -86,7 +86,7 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
     private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
     	DataSetConfig dsc = DataSetConfig.getInstance(ds);
 //		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
-		String queryUrl = dsc.getQueryUrl();//ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
+		String queryUrl = dsc.getQueryUrl(model);//ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
 		String submitUrl = dsc.getSubmitUrl();//ds.getString(DataSetConfig.PROPERTITY_SUBMITURL,"");
 		String baseModel = dsc.getModel();//ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
 		boolean cq = dsc.isCanQuery();//ds.getBoolean(DataSetConfig.PROPERTITY_CAN_QUERY,true);

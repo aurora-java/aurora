@@ -25,7 +25,7 @@ public class Form extends Box {
 		}
 		Writer out = session.getWriter();
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
-		title = session.getLocalizedPrompt(title);
+		title = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(title),model);
 		if(!"".equals(title)) {
 			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
 			out.write(title);
@@ -72,7 +72,7 @@ public class Form extends Box {
 			String style = getStyle(session,model,view);
 			Writer out = session.getWriter();
 			String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
-			title = session.getLocalizedPrompt(title);
+			title = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(title),model);
 			if(!"".equals(title)) {
 				out.write("<table border='0' class='mac_form' cellpadding='0' cellSpacing='0' id='"+id+"'");
 				if(!"".equals(style)) {

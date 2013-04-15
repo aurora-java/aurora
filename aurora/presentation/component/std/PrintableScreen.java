@@ -3,14 +3,13 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 
 import uncertain.composite.CompositeMap;
-import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 
 
-public class PrintableScreen implements IViewBuilder, ISingleton {
+public class PrintableScreen implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 

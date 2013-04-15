@@ -43,7 +43,7 @@ import aurora.service.http.HttpServiceInstance;
  * </a:screen-include> 
  * </code>
  */
-public class ScreenInclude implements IViewBuilder, ISingleton {
+public class ScreenInclude implements IViewBuilder{
     
     public static final String KEY_SCREEN = "screen";
 

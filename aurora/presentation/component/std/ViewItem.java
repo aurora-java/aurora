@@ -7,14 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import uncertain.composite.CompositeMap;
-import uncertain.ocm.ISingleton;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ViewItemConfig;
 
-public class ViewItem implements IViewBuilder, ISingleton {
+public class ViewItem implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 

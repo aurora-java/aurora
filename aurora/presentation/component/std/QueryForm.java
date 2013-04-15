@@ -10,7 +10,6 @@ import uncertain.composite.CompositeMap;
 import uncertain.composite.QualifiedName;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
-import uncertain.ocm.ISingleton;
 import uncertain.schema.Array;
 import uncertain.schema.Attribute;
 import uncertain.schema.Element;
@@ -37,7 +36,7 @@ import aurora.presentation.component.std.config.ToolBarButtonConfig;
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
 @SuppressWarnings("unchecked")
-public class QueryForm extends Component implements IViewBuilder, ISingleton {
+public class QueryForm extends Component implements IViewBuilder {
 	
 	public static final String VERSION = "$Revision$";
 	
