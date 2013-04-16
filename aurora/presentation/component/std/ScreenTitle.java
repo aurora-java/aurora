@@ -42,7 +42,7 @@ public class ScreenTitle implements IViewBuilder {
 		String title = "";
 		if(mResourceCache!=null){
 			CompositeMap resMap = (CompositeMap)mResourceCache.getValue(context.getString(SERVICE_NAME));
-			title = resMap.getString(SCREEN_TITLE);
+			if(resMap!=null) title = resMap.getString(SCREEN_TITLE);
 		}
 		
 		StringBuffer sb = new StringBuffer();
