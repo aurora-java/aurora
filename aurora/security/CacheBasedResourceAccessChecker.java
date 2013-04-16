@@ -5,7 +5,6 @@
 package aurora.security;
 
 import aurora.application.ISessionInfoProvider;
-import aurora.bm.IModelFactory;
 import uncertain.cache.CacheBuiltinExceptionFactory;
 import uncertain.cache.ICache;
 import uncertain.cache.INamedCacheFactory;
@@ -61,6 +60,9 @@ public class CacheBasedResourceAccessChecker extends AbstractLocatableObject imp
     
 
     public String checkAccess( String resource, CompositeMap session_context ){
+    	if(mResourceCache == null){
+    		throw new RuntimeException("resourceCache initialise failed, please check the log.");
+    	}
         CompositeMap resource_map = (CompositeMap)mResourceCache.getValue(resource);
         if(resource_map==null)
             //throw new ResourceNotDefinedException(resource);
