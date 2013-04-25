@@ -10,9 +10,9 @@ import aurora.bm.BusinessModel;
 import aurora.bm.DataFilter;
 import aurora.bm.Field;
 import aurora.bm.QueryField;
+import aurora.service.ServiceThreadLocal;
 import uncertain.composite.CompositeMap;
 import uncertain.exception.BuiltinExceptionFactory;
-import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 
@@ -32,7 +32,6 @@ public class LovBMCustomSourceCode {
 		
 		if(registry == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IObjectRegistry.class, LovBMCustomSourceCode.class.getCanonicalName());
-		ILogger logger = LoggingContext.getLogger(LovBMCustomSourceCode.class.getCanonicalName(), registry);
 		if (bm == null || customRecords == null || customRecords.getChilds() == null) {
 			return;
 		}
@@ -107,7 +106,9 @@ public class LovBMCustomSourceCode {
 				}
 			}
 		}
-		logger.log(Level.CONFIG, "customBM "+bm.getName()+":"+bm.getObjectContext().toXML());
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		if (context == null)
+			LoggingContext.getLogger(context).log(Level.CONFIG, "customBM "+bm.getName()+":"+bm.getObjectContext().toXML());
 	}
 	
 }

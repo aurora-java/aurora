@@ -41,7 +41,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 	private IDatabaseServiceFactory databaseServiceFactory;
 	private IObjectRegistry objectRegistry;
 	private DataSource dataSource;
-	ILogger logger;
+	
 	CompositeMap custDimensionsRecords = null;
 	public BMCustomizationProvider(IDatabaseServiceFactory databaseServiceFactory,IObjectRegistry objectRegistry) {
 		this.databaseServiceFactory = databaseServiceFactory;
@@ -50,16 +50,15 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 
 	@Override
 	public void onPrepareBusinessModel(BusinessModel model, CompositeMap context) throws Exception {
-		/* This context may be "<model-service-context BusinessModel="aurora.bm.BusinessModel@e73b917"/>",
-		 * so need ServiceThreadLocal.getCurrentThreadContext(); 
-		 */
 		boolean customization_enabled = model.getCustomizationenabled();
 		if (customization_enabled) {
-			// if not a HTTP request
+			/* This context may be "<model-service-context BusinessModel="aurora.bm.BusinessModel@e73b917"/>",
+			 * so need ServiceThreadLocal.getCurrentThreadContext(); 
+			 */
 			CompositeMap fullContext = ServiceThreadLocal.getCurrentThreadContext();
 			if (fullContext == null)
 				return;
-			logger.log(Level.CONFIG, fullContext.getRoot().toXML());
+			LoggingContext.getLogger(fullContext).log(Level.CONFIG, fullContext.getRoot().toXML());
 //			String function_id = TextParser.parse(FUNCTION_ID_PATH, fullContext);
 			String function_code = TextParser.parse(FUNCTION_CODE_PATH, fullContext);
 			// if not called by a Screen.
@@ -129,7 +128,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 			if ("".equals(sb.toString()))
 				return null;
 			String custDetailRecordsSql = sb.toString();
-			logger.config("custDetailRecordsSql:"+custDetailRecordsSql);
+			LoggingContext.getLogger(context).config("custDetailRecordsSql:"+custDetailRecordsSql);
 			ParsedSql stmt = createStatement(custDetailRecordsSql);
 			SqlRunner runner = new SqlRunner(ssc, stmt);
 			rs_details = runner.query(context);
@@ -190,7 +189,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 		dataSource = (DataSource) objectRegistry.getInstanceOfType(DataSource.class);
 		if(dataSource == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, DataSource.class);
-		logger = LoggingContext.getLogger(this.getClass().getCanonicalName(), objectRegistry);
+		ILogger logger = LoggingContext.getLogger(this.getClass().getCanonicalName(), objectRegistry);
 		String query_dimensions_sql = " select d.dimension_code,d.data_query_sql,d.dimension_init_proc,d.dimension_tag " +
 									  " from sys_bm_config_dimension d where d.enabled_flag='Y' order by d.order_num ";
 		logger.config("query_dimensions_sql:"+query_dimensions_sql);
