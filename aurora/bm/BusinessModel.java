@@ -631,6 +631,10 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public Relation[] getRelations() {
 		return relationArray;
 	}
+	public void addRelation(Relation relation) {
+		CompositeMap relations = getChildSectionNotNull(SECTION_RELATIONS);
+		relations.addChild(relation.getObjectContext());
+	}
 
 	public DataFilter[] getDataFilters() {
 		List lst = getChildSection(DataFilter.KEY_DATA_FILTERS);
@@ -638,24 +642,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			return null;
 		return (DataFilter[]) DynamicObject.castToArray(lst, DataFilter.class);
 	}
-	public void setDataFilters(CompositeMap dataFilter) {
-		CompositeMap childs_map = object_context.getChild(DataFilter.KEY_DATA_FILTERS);
-		if (childs_map != null){
-			if(dataFilter == null || dataFilter.getChilds() == null)
-				return;
-			else{
-				childs_map = object_context.createChild(DataFilter.KEY_DATA_FILTERS);
-				childs_map.addChilds(dataFilter.getChilds());
-			}
-		}else{
-			object_context.removeChild(childs_map);
-			if(dataFilter != null || dataFilter.getChilds() != null){
-				childs_map = object_context.createChild(DataFilter.KEY_DATA_FILTERS);
-				childs_map.addChilds(dataFilter.getChilds());
-			}
-		}
-	
-			
+	public void setDataFilters(CompositeMap dataFilters) {
+		object_context.replaceChild(DataFilter.KEY_DATA_FILTERS, dataFilters);
 	}
 
 	public IParameterIterator getParameterForQuery() {
@@ -1017,5 +1005,4 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public void setTag(String b) {
 		putString(KEY_CUSTOMIZATION_TAG, b);
 	}
-	
 }
