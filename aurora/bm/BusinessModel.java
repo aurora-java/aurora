@@ -386,6 +386,9 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public void addField(Field f) {
 		getChildSectionNotNull(SECTION_FIELDS).addChild(f.getObjectContext());
 	}
+	public void addRefField(Field f) {
+		getChildSectionNotNull(SECTION_REF_FIELDS).addChild(f.getObjectContext());
+	}
 
 	/**
 	 * Get types of each field in an array

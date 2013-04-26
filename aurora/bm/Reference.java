@@ -3,6 +3,7 @@
  */
 package aurora.bm;
 
+import aurora.application.AuroraApplication;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
 
@@ -16,6 +17,14 @@ public class Reference extends DynamicObject {
     public static Reference getInstance( CompositeMap context ){
         Reference r = new Reference();
         r.initialize(context);
+        return r;
+    }
+    public static Reference createReference(){
+        CompositeMap m = new CompositeMap();
+        m.setName("reference");
+        m.setNameSpaceURI(AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE);
+        Reference r = new Reference();
+        r.initialize(m);
         return r;
     }
     

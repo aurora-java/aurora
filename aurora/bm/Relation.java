@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.DynamicObject;
+import aurora.application.AuroraApplication;
 import aurora.database.sql.Join;
 
 public class Relation extends DynamicObject {
@@ -19,6 +20,15 @@ public class Relation extends DynamicObject {
     public static Relation getInstance( CompositeMap context ){
         Relation relation = new Relation();
         relation.initialize(context);
+        return relation;
+    }
+    public static Relation createRelation( String name ){
+        CompositeMap m = new CompositeMap();
+        m.setName("relation");
+        m.setNameSpaceURI(AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE);
+        Relation relation = new Relation();
+        relation.initialize(m);
+        relation.setName(name);
         return relation;
     }
     
@@ -77,6 +87,13 @@ public class Relation extends DynamicObject {
             throw new IllegalArgumentException("Invalid join type:"+join_type);
         putString(KEY_JOIN_TYPE, join_type.toUpperCase());
     }
+    
+    public void setJoinType( String join_type,boolean checkValid){
+    	if(checkValid)
+    		setJoinType(join_type);
+    	else
+    		putString(KEY_JOIN_TYPE, join_type.toUpperCase());
+    }
 
     public void checkValidation() {
         String type = getJoinType();
@@ -96,6 +113,9 @@ public class Relation extends DynamicObject {
             refs[i++] = ref;
         }
         return refs;
+    }
+    public void addReference(Reference ref){
+    	getObjectContext().addChild(ref.getObjectContext());
     }
     
     public boolean isNeedDatabaseJoin(){

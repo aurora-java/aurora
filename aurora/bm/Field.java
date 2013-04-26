@@ -151,6 +151,12 @@ public class Field extends DynamicObject implements IParameter {
     public boolean isReferenceField(){
         return REF_FIELD.equals(getObjectContext().getName());
     }
+    public void setReferenceField(boolean is_ref_field){
+    	if(is_ref_field)
+    		getObjectContext().setName(REF_FIELD);
+    	else
+    		getObjectContext().setName("field");
+    }
     
     public boolean isExpression(){
         return getObjectContext().containsKey(KEY_EXPRESSION);
