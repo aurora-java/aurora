@@ -108,7 +108,7 @@ public class LovBMCustomSourceCode {
 		}
 		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
 		if (context == null)
-			LoggingContext.getLogger(context).log(Level.CONFIG, "customBM "+bm.getName()+":"+bm.getObjectContext().toXML());
+			LoggingContext.getLogger(context,LovBMCustomSourceCode.class.getCanonicalName()).log(Level.CONFIG, "customBM "+bm.getName()+":"+bm.getObjectContext().toXML());
 	}
 	
 }

@@ -58,7 +58,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 			CompositeMap fullContext = ServiceThreadLocal.getCurrentThreadContext();
 			if (fullContext == null)
 				return;
-			LoggingContext.getLogger(fullContext).log(Level.CONFIG, fullContext.getRoot().toXML());
+			LoggingContext.getLogger(fullContext,this.getClass().getCanonicalName()).log(Level.CONFIG, fullContext.getRoot().toXML());
 //			String function_id = TextParser.parse(FUNCTION_ID_PATH, fullContext);
 			String function_code = TextParser.parse(FUNCTION_CODE_PATH, fullContext);
 			// if not called by a Screen.
@@ -128,7 +128,7 @@ public class BMCustomizationProvider extends AbstractLocatableObject implements 
 			if ("".equals(sb.toString()))
 				return null;
 			String custDetailRecordsSql = sb.toString();
-			LoggingContext.getLogger(context).config("custDetailRecordsSql:"+custDetailRecordsSql);
+			LoggingContext.getLogger(context,this.getClass().getCanonicalName()).config("custDetailRecordsSql:"+custDetailRecordsSql);
 			ParsedSql stmt = createStatement(custDetailRecordsSql);
 			SqlRunner runner = new SqlRunner(ssc, stmt);
 			rs_details = runner.query(context);
