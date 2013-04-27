@@ -179,10 +179,12 @@ public class CustomSourceCode {
 		clone.getChilds().clear();
 		for (int i = 0; i < filedsOrder.length; i++) {
 			CompositeMap record = objectNode.getChildByAttrib(index_field, filedsOrder[i]);
-			if (record != null)
+			if (record != null){
 				clone.addChild(record);
+				objectNode.removeChild(record);
+			}
 		}
-		objectNode.getChilds().clear();
+//		objectNode.getChilds().clear();
 		objectNode.addChilds(clone.getChilds());
 	}
 
