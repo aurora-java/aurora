@@ -79,7 +79,7 @@ public class Component {
 			vws = (String) root.getObject("/parameter/@_vw");
 			if (vws == null) {
 				vwc = (CompositeMap) root.getObject("/cookie/@vw");
-				if (vwc != null) {
+				if (vwc != null&& !vwc.get("value").equals("NaN")) {
 					vw = vwc.getInt("value");
 				}
 			} else {
@@ -111,7 +111,8 @@ public class Component {
 		if (root != null) {
 			if (vhs == null) {
 				vhc = (CompositeMap) root.getObject("/cookie/@vh");
-				if (vhc != null) {
+				if (vhc != null && !vhc.get("value").equals("NaN")) {
+					
 					vh = vhc.getInt("value");
 				}
 			} else {

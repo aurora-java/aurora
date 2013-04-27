@@ -8,6 +8,7 @@ public class DatePickerConfig extends InputFieldConfig {
 	
 	public static final String TAG_NAME = "datePicker";
 
+	public static final String PROPERTITY_FORMAT = "format";
 	public static final String PROPERTITY_VIEW_SIZE = "viewsize";
 	public static final String PROPERTITY_DAY_RENDERER = "dayrenderer";
 	public static final String PROPERTITY_ENABLE_MONTH_BTN = "enablemonthbtn";
@@ -40,6 +41,15 @@ public class DatePickerConfig extends InputFieldConfig {
 
 	public String getDayRenderer() {
 		return getString(PROPERTITY_DAY_RENDERER);
+	}
+	
+	
+	public void setFormat(String format) {
+		putString(PROPERTITY_FORMAT, format);
+	}
+
+	public String getFormat() {
+		return getString(PROPERTITY_FORMAT);
 	}
 
 	public void setEnableMonthBtn(String enableMonthBtn) {

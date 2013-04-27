@@ -48,6 +48,8 @@ public class DatePicker extends TextField {
 				.getEnableYearBtn());
 		addConfig(DatePickerConfig.PROPERTITY_ENABLE_BESIDE_DAYS, dpc
 				.getEnableBesideDays());
+		addConfig(DatePickerConfig.PROPERTITY_FORMAT, dpc
+				.getFormat());
 		map.put(CONFIG, getConfigString());
 	}
 }
