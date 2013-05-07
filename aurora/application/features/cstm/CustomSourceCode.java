@@ -6,14 +6,18 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.composite.XMLOutputter;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.exception.ConfigurationFileException;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.schema.Array;
 import uncertain.schema.Attribute;
@@ -23,8 +27,13 @@ import uncertain.schema.ISchemaManager;
 import uncertain.schema.editor.AttributeValue;
 import uncertain.schema.editor.CompositeMapEditor;
 import uncertain.util.resource.ILocatable;
+import aurora.application.AuroraApplication;
 import aurora.application.sourcecode.SourceCodeUtil;
+import aurora.application.util.LanguageUtil;
+import aurora.i18n.ILocalizedMessageProvider;
+import aurora.i18n.IMessageProvider;
 import aurora.security.ResourceNotDefinedException;
+import aurora.service.ServiceThreadLocal;
 
 public class CustomSourceCode {
 
@@ -41,7 +50,7 @@ public class CustomSourceCode {
 	public static final String KEY_SOURCE_FILE = "source_file";
 	public static final String KEY_FIELDS_ORDER = "fields_order";
 	public static final String KEY_DIMENSION_TYPE = "dimension_type";
-	
+
 	public static final String KEY_PLACE_HOLDER = "placeHolder";
 
 	private static final String ILLEGAL_OPERATION_FOR_ROOT = "aurora.application.features.cstm.illegal_operation_for_root";
@@ -49,20 +58,12 @@ public class CustomSourceCode {
 	private static final String ILLEGAL_OPERATION = "aurora.application.features.cstm.illegal_operation";
 	public static final String RE_ORDER_CHILD_COUNT = "aurora.application.features.cstm.re_order_child_count";
 
-	public static CompositeMap custom(IObjectRegistry registry, String filePath, CompositeMap customConfig)
-			throws Exception {
-		if (registry == null)
-			throw new RuntimeException("paramter error. 'registry' can not be null.");
-		File webHome = SourceCodeUtil.getWebHome(registry);
-		File sourceFile = new File(webHome, filePath);
-		if (sourceFile == null || !sourceFile.exists())
-			throw new ResourceNotDefinedException(filePath);
-		CompositeLoader cl = new CompositeLoader();
-		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
-		return custom(registry,source, customConfig);
+	public static CompositeMap custom(IObjectRegistry registry, String filePath, CompositeMap customConfig) throws Exception {
+		CompositeMap source = getFileContent(registry, filePath);
+		return custom(registry, source, customConfig);
 	}
 
-	public static CompositeMap custom(IObjectRegistry registry,CompositeMap source, CompositeMap customConfig){
+	public static CompositeMap custom(IObjectRegistry registry, CompositeMap source, CompositeMap customConfig) {
 		if (source == null || customConfig == null || customConfig.getChilds() == null) {
 			return source;
 		}
@@ -70,8 +71,8 @@ public class CustomSourceCode {
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		Map result = new LinkedHashMap();
 		SourceCodeUtil.getKeyNodeMap(source, SourceCodeUtil.KEY_ID, result);
 		if (result.isEmpty())
@@ -85,25 +86,21 @@ public class CustomSourceCode {
 				throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), KEY_RECORD_ID);
 			String idValue = dbRecord.getString(KEY_ID_VALUE);
 			if (idValue == null)
-				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ID_VALUE, dbRecord
-						.asLocatable());
+				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ID_VALUE, dbRecord.asLocatable());
 			if (!idValue.equals(currentId)) {
 				currentNode = (CompositeMap) result.get(idValue);
 				if (currentNode == null)
-					throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, idValue, source
-							.asLocatable());
+					throw SourceCodeUtil.createNodeMissingException(SourceCodeUtil.KEY_ID, idValue, source.asLocatable());
 				currentId = idValue;
 			}
 			String mode_type = dbRecord.getString(KEY_MOD_TYPE);
 			if (mode_type == null)
-				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord
-						.asLocatable());
+				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord.asLocatable());
 			CompositeMap objectNode = getObjectNode(currentNode, dbRecord, record_id);
 			if ("set_attrib".equals(mode_type)) {
 				String attrib_key = dbRecord.getString(KEY_ATTRIB_KEY);
 				if (attrib_key == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ATTRIB_KEY,
-							dbRecord.asLocatable());
+					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_ATTRIB_KEY, dbRecord.asLocatable());
 				String attrib_value = dbRecord.getString(KEY_ATTRIB_VALUE);
 				objectNode.put(attrib_key.toLowerCase(), attrib_value);
 			} else if ("replace".equals(mode_type)) {
@@ -119,12 +116,10 @@ public class CustomSourceCode {
 					} catch (Throwable e) {
 						if (e instanceof SAXParseException) {
 							SAXParseException saxPe = (SAXParseException) e;
-							throw new ConfigurationFileException("uncertain.exception.source_file", new String[] {
-									"CONFIG_CONTENT", String.valueOf(saxPe.getLineNumber()),
-									String.valueOf(saxPe.getColumnNumber()) }, null);
+							throw new ConfigurationFileException("uncertain.exception.source_file", new String[] { "CONFIG_CONTENT",
+									String.valueOf(saxPe.getLineNumber()), String.valueOf(saxPe.getColumnNumber()) }, null);
 						}
-						throw new ConfigurationFileException("uncertain.exception.code",
-								new String[] { e.getMessage() }, null);
+						throw new ConfigurationFileException("uncertain.exception.code", new String[] { e.getMessage() }, null);
 					}
 				}
 			} else if ("insert".equals(mode_type)) {
@@ -157,8 +152,8 @@ public class CustomSourceCode {
 		}
 		return source;
 	}
-	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode,
-			boolean isAfterRealDelete) {
+
+	public static void reOrder(CompositeMap dbRecord, String record_id, CompositeMap objectNode, boolean isAfterRealDelete) {
 		String field_order = dbRecord.getString(CustomSourceCode.KEY_FIELDS_ORDER);
 		if (field_order == null)
 			throw SourceCodeUtil.createAttributeMissingException(CustomSourceCode.KEY_RECORD_ID, record_id,
@@ -179,12 +174,12 @@ public class CustomSourceCode {
 		clone.getChilds().clear();
 		for (int i = 0; i < filedsOrder.length; i++) {
 			CompositeMap record = objectNode.getChildByAttrib(index_field, filedsOrder[i]);
-			if (record != null){
+			if (record != null) {
 				clone.addChild(record);
 				objectNode.removeChild(record);
 			}
 		}
-//		objectNode.getChilds().clear();
+		// objectNode.getChilds().clear();
 		objectNode.addChilds(clone.getChilds());
 	}
 
@@ -198,15 +193,13 @@ public class CustomSourceCode {
 			String index_field = dbRecord.getString(KEY_INDEX_FIELD);
 			String mode_type = dbRecord.getString(KEY_MOD_TYPE);
 			if (mode_type == null)
-				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord
-						.asLocatable());
+				throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord.asLocatable());
 			if (index_field == null || "insert".equals(mode_type) || "re_order".equals(mode_type))
 				objectNode = array;
 			else {
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
 				if (index_value == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE,
-							dbRecord.asLocatable());
+					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE, dbRecord.asLocatable());
 				CompositeMap child = array.getChildByAttrib(index_field, index_value);
 				if (child == null)
 					throw SourceCodeUtil.createNodeMissingException(index_field, index_value, array.asLocatable());
@@ -216,25 +209,21 @@ public class CustomSourceCode {
 		return objectNode;
 	}
 
-	public static CompositeMap insertNode(ISchemaManager schemaManager, CompositeMap dbRecord, String record_id,
-			CompositeMap objectNode) {
+	public static CompositeMap insertNode(ISchemaManager schemaManager, CompositeMap dbRecord, String record_id, CompositeMap objectNode) {
 		String mode_type = "insert";
 		if (objectNode.getParent() == null)
 			throw createIllegalOperationForRootException(mode_type, objectNode.asLocatable());
 		String key_position = dbRecord.getString(KEY_POSITION);
 		if (key_position == null)
-			throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_POSITION, dbRecord
-					.asLocatable());
+			throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_POSITION, dbRecord.asLocatable());
 		Element ele = schemaManager.getElement(objectNode);
 		if (ele != null && ele.isArray()) {
 			String index_field = dbRecord.getString(KEY_INDEX_FIELD);
-			CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager, objectNode, ele.getElementType()
-					.getQName());
+			CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager, objectNode, ele.getElementType().getQName());
 			if (index_field != null) {
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
 				if (index_value == null)
-					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE,
-							dbRecord.asLocatable());
+					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE, dbRecord.asLocatable());
 				newChild.put(index_field.toLowerCase(), index_value);
 				return newChild;
 			}
@@ -247,9 +236,8 @@ public class CustomSourceCode {
 		} catch (Throwable e) {
 			if (e instanceof SAXParseException) {
 				SAXParseException saxPe = (SAXParseException) e;
-				throw new ConfigurationFileException("uncertain.exception.source_file", new String[] {
-						"CONFIG_CONTENT", String.valueOf(saxPe.getLineNumber()),
-						String.valueOf(saxPe.getColumnNumber()) }, null);
+				throw new ConfigurationFileException("uncertain.exception.source_file", new String[] { "CONFIG_CONTENT",
+						String.valueOf(saxPe.getLineNumber()), String.valueOf(saxPe.getColumnNumber()) }, null);
 			}
 			throw new ConfigurationFileException("uncertain.exception.code", new String[] { e.getMessage() }, null);
 		}
@@ -268,31 +256,27 @@ public class CustomSourceCode {
 		return newChild;
 	}
 
-	private static ConfigurationFileException createIllegalOperationForRootException(String modeType,
-			ILocatable iLocatable) {
+	private static ConfigurationFileException createIllegalOperationForRootException(String modeType, ILocatable iLocatable) {
 		return new ConfigurationFileException(ILLEGAL_OPERATION_FOR_ROOT, new String[] { modeType }, iLocatable);
 	}
 
-	private static ConfigurationFileException createIllegalPositionForOperation(String position, String operation,
-			ILocatable iLocatable) {
-		return new ConfigurationFileException(ILLEGAL_POSITION_FOR_OPERATION, new String[] { position, operation },
-				iLocatable);
+	private static ConfigurationFileException createIllegalPositionForOperation(String position, String operation, ILocatable iLocatable) {
+		return new ConfigurationFileException(ILLEGAL_POSITION_FOR_OPERATION, new String[] { position, operation }, iLocatable);
 	}
 
 	private static ConfigurationFileException createIllegalOperation(String operation, ILocatable iLocatable) {
 		return new ConfigurationFileException(ILLEGAL_OPERATION, new String[] { operation }, iLocatable);
 	}
 
-	public static CompositeMap getElementChildArray(IObjectRegistry registry, String filePath, String id)
-			throws IOException, SAXException {
+	public static CompositeMap getElementChildArray(IObjectRegistry registry, String filePath, String id) throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
 		if (id == null)
 			return empty;
-		int idx = filePath.indexOf('?'); 
-		if(idx>0)
-		    filePath = filePath.substring(0,idx);
+		int idx = filePath.indexOf('?');
+		if (idx > 0)
+			filePath = filePath.substring(0, idx);
 		File webHome = SourceCodeUtil.getWebHome(registry);
 		File sourceFile = new File(webHome, filePath);
 		if (sourceFile == null || !sourceFile.exists())
@@ -309,8 +293,8 @@ public class CustomSourceCode {
 		}
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		if (ele == null)
 			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
@@ -329,8 +313,8 @@ public class CustomSourceCode {
 		return result;
 	}
 
-	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,
-			CompositeMap dbRecords) throws IOException, SAXException {
+	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id, CompositeMap dbRecords)
+			throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
@@ -352,8 +336,8 @@ public class CustomSourceCode {
 		}
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		if (ele == null)
 			throw new RuntimeException("elment:" + node.getQName().toString() + " is not defined.");
@@ -401,8 +385,8 @@ public class CustomSourceCode {
 		return result;
 	}
 
-	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
-			CompositeMap dbRecords) throws IOException, SAXException {
+	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name, CompositeMap dbRecords)
+			throws IOException, SAXException {
 		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords, true);
 	}
 
@@ -429,8 +413,8 @@ public class CustomSourceCode {
 		}
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		Element ele = schemaManager.getElement(node);
 		CompositeMap re_order = null;
 		if (ele == null)
@@ -438,8 +422,7 @@ public class CustomSourceCode {
 		if (dbRecords != null && dbRecords.getChilds() != null) {
 			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
 				CompositeMap dbRecord = (CompositeMap) it.next();
-				if (!filePath.equals(dbRecord.getString(KEY_SOURCE_FILE))
-						|| !id.equals(dbRecord.getString(KEY_ID_VALUE))
+				if (!filePath.equals(dbRecord.getString(KEY_SOURCE_FILE)) || !id.equals(dbRecord.getString(KEY_ID_VALUE))
 						|| !array_name.equals(dbRecord.getString(KEY_ARRAY_NAME))) {
 					continue;
 				} else {
@@ -448,8 +431,8 @@ public class CustomSourceCode {
 						throw BuiltinExceptionFactory.createAttributeMissing(dbRecord.asLocatable(), KEY_RECORD_ID);
 					String mode_type = dbRecord.getString(KEY_MOD_TYPE);
 					if (mode_type == null)
-						throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE,
-								dbRecord.asLocatable());
+						throw SourceCodeUtil
+								.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_MOD_TYPE, dbRecord.asLocatable());
 					if ("re_order".equals(mode_type)) {
 						re_order = dbRecord;
 						continue;
@@ -471,7 +454,7 @@ public class CustomSourceCode {
 			if (isChangeName) {
 				for (Iterator it = result.getChildIterator(); it.hasNext();) {
 					CompositeMap record = (CompositeMap) it.next();
-					if(KEY_PLACE_HOLDER.toLowerCase().equals(record.getName().toLowerCase()))
+					if (KEY_PLACE_HOLDER.toLowerCase().equals(record.getName().toLowerCase()))
 						it.remove();
 					else
 						record.setName("record");
@@ -487,9 +470,8 @@ public class CustomSourceCode {
 		return result;
 	}
 
-	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id,
-			String array_name, String index_field, String index_value, CompositeMap dbRecords) throws IOException,
-			SAXException {
+	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id, String array_name,
+			String index_field, String index_value, CompositeMap dbRecords) throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
@@ -497,8 +479,8 @@ public class CustomSourceCode {
 			return empty;
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(),
-					ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(), false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
@@ -526,10 +508,8 @@ public class CustomSourceCode {
 			for (Iterator it = dbRecords.getChildIterator(); it.hasNext();) {
 				CompositeMap record = (CompositeMap) it.next();
 				if (!filePath.equals(record.getString(KEY_SOURCE_FILE)) || !id.equals(record.getString(KEY_ID_VALUE))
-						|| !array_name.equals(record.getString(KEY_ARRAY_NAME))
-						|| !index_field.equals(record.getString(KEY_INDEX_FIELD))
-						|| !index_value.equals(record.getString(KEY_INDEX_VALUE))
-						|| !"set_attrib".equals(record.getString(KEY_MOD_TYPE))) {
+						|| !array_name.equals(record.getString(KEY_ARRAY_NAME)) || !index_field.equals(record.getString(KEY_INDEX_FIELD))
+						|| !index_value.equals(record.getString(KEY_INDEX_VALUE)) || !"set_attrib".equals(record.getString(KEY_MOD_TYPE))) {
 					continue;
 				}
 				dbAttribs.put(record.getString(KEY_ATTRIB_KEY), record);
@@ -571,9 +551,111 @@ public class CustomSourceCode {
 		return result;
 	}
 
-	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount,
-			ILocatable iLocatable) {
-		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount },
-				iLocatable);
+	public static CompositeMap getFileContent(IObjectRegistry registry, String filePath) throws IOException, SAXException {
+		if (registry == null)
+			throw new RuntimeException("parameter error. 'registry' can not be null.");
+		File webHome = SourceCodeUtil.getWebHome(registry);
+		File sourceFile = new File(webHome, filePath);
+		if (sourceFile == null || !sourceFile.exists())
+			throw new ResourceNotDefinedException(filePath);
+		CompositeLoader cl = new CompositeLoader();
+		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
+		return source;
+	}
+
+	public static ILogger getLogger(IObjectRegistry registry) {
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		if (context != null) {
+			return LoggingContext.getLogger(context, CustomSourceCode.class.getCanonicalName());
+		} else {
+			return LoggingContext.getLogger(CustomSourceCode.class.getCanonicalName(), registry);
+		}
+	}
+
+	private static void serachContainer(IObjectRegistry registry, CompositeMap node, CompositeMap forms, CompositeMap grids) {
+		if (node == null)
+			return;
+		String nodeName = node.getName();
+		String nodeUri = node.getNamespaceURI();
+
+		ILogger logger = getLogger(registry);
+		IMessageProvider messageProvider = (IMessageProvider) registry.getInstanceOfType(IMessageProvider.class);
+		ILocalizedMessageProvider promptProvider = null;
+		if (messageProvider == null)
+			logger.log(Level.SEVERE, "", BuiltinExceptionFactory.createInstanceNotFoundException(null, IMessageProvider.class));
+		else {
+			CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+			String languageCode = null;
+			if (context != null) {
+				languageCode = LanguageUtil.getSessionLanguage(registry, context);
+			}
+			if (languageCode == null)
+				languageCode = messageProvider.getDefaultLang();
+			promptProvider = messageProvider.getLocalizedMessageProvider(languageCode);
+
+		}
+		if ("form".equalsIgnoreCase(nodeName) && AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nodeUri)) {
+			String formId = node.getString("id");
+			// form必须包含id属性，并且id属性内容不包含@
+			if (formId != null && !formId.contains("@")) {
+				String name = node.getString("title");
+				if (promptProvider != null)
+					name = promptProvider.getMessage(name);
+				if (name == null || "".equals(name)) {
+					name = formId;
+				}
+				CompositeMap form = new CompositeMap("form");
+				form.put("id", formId);
+				form.put("name", name);
+				forms.addChild(form);
+			}
+		} else if (node.getName().equalsIgnoreCase("grid") && AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nodeUri)) {
+			String gridId = node.getString("id");
+			// grid必须包含id属性，并且id属性内容不包含@
+			if (gridId != null && !gridId.contains("@")) {
+				String name = node.getString("title");
+				if (promptProvider != null)
+					name = promptProvider.getMessage(name);
+				if (name == null || "".equals(name)) {
+					name = gridId;
+				}
+				CompositeMap grid = new CompositeMap("grid");
+				grid.put("id", gridId);
+				grid.put("name", name);
+				grids.addChild(grid);
+			}
+		}
+		List<CompositeMap> childList = node.getChilds();
+		if (childList != null) {
+			for (CompositeMap child : childList) {
+				serachContainer(registry, child, forms, grids);
+			}
+		}
+	}
+
+	public static CompositeMap getContainer(IObjectRegistry registry, String filePath) throws IOException, SAXException {
+		CompositeMap fileContent = getFileContent(registry, filePath);
+		CompositeMap forms = new CompositeMap("forms");
+		forms.put("name", "forms");
+		CompositeMap grids = new CompositeMap("grids");
+		grids.put("name", "grids");
+
+		serachContainer(registry, fileContent, forms, grids);
+
+		CompositeMap tabs = new CompositeMap("tabs");
+		tabs.put("name", "tabs");
+
+		CompositeMap screen = new CompositeMap("screen");
+		screen.put("name", "screen");
+		screen.addChild(forms);
+		screen.addChild(grids);
+		screen.addChild(tabs);
+		getLogger(registry).config(filePath + " getContainer result is:"+XMLOutputter.LINE_SEPARATOR + screen.toXML());
+		return screen;
+
+	}
+
+	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
+		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount }, iLocatable);
 	}
 }
