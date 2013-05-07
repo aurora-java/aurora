@@ -18,5 +18,6 @@
 	<class-mapping className="aurora.service.ws.WebServiceInvoker" elementName="ws-invoker" nameSpace="http://www.aurora-framework.org/application"/>
 	<package-mapping packageName='aurora.application.task'/>
 	<package-mapping packageName="aurora.application.features.cstm.bm"/>
+	<package-mapping packageName="aurora.application.features.cstm.bm.flexfield"/>
 	<class-mapping className="aurora.bm.util.BMMetaDataAcquirer" elementName="bm-metadata-acquirer" nameSpace="http://www.aurora-framework.org/application"/>
 </class-registry>

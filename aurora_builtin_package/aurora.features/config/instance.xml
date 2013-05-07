@@ -64,6 +64,16 @@
 				<u:type typeName="aurora.application.features.cstm.bm.IBMCustomizationDataProvider" />
 			</u:implement-types>
 		</u:configurable-instance>
+		
+		<u:configurable-instance configFile="bm-flexfield-data-provider.config" >
+			<u:description>提供BM弹性域特性所需的配置信息</u:description>
+			<u:required-instances>
+				<u:type typeName="aurora.database.service.IDatabaseServiceFactory" />
+			</u:required-instances>
+			<u:implement-types>
+				<u:type typeName="aurora.application.features.cstm.bm.flexfield.IBMFlexFieldProvider" />
+			</u:implement-types>
+		</u:configurable-instance>
         
 		<u:configurable-instance configFile="service-prompt.config" >
 			<u:description>基于数据库的多语言实现</u:description>
