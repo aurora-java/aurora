@@ -572,7 +572,7 @@ public class CustomSourceCode {
 		}
 	}
 
-	private static void serachContainer(IObjectRegistry registry, CompositeMap node, CompositeMap forms, CompositeMap grids) {
+	private static void serachContainer(IObjectRegistry registry, CompositeMap node, CompositeMap records) {
 		if (node == null)
 			return;
 		String nodeName = node.getName();
@@ -604,10 +604,11 @@ public class CustomSourceCode {
 				if (name == null || "".equals(name)) {
 					name = formId;
 				}
-				CompositeMap form = new CompositeMap("form");
+				CompositeMap form = new CompositeMap("record");
 				form.put("id", formId);
+				form.put("parent_id", "forms");
 				form.put("name", name);
-				forms.addChild(form);
+				records.addChild(form);
 			}
 		} else if (node.getName().equalsIgnoreCase("grid") && AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(nodeUri)) {
 			String gridId = node.getString("id");
@@ -619,39 +620,41 @@ public class CustomSourceCode {
 				if (name == null || "".equals(name)) {
 					name = gridId;
 				}
-				CompositeMap grid = new CompositeMap("grid");
+				CompositeMap grid = new CompositeMap("record");
 				grid.put("id", gridId);
+				grid.put("parent_id", "grids");
 				grid.put("name", name);
-				grids.addChild(grid);
+				records.addChild(grid);
 			}
 		}
 		List<CompositeMap> childList = node.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachContainer(registry, child, forms, grids);
+				serachContainer(registry, child, records);
 			}
 		}
 	}
 
 	public static CompositeMap getContainer(IObjectRegistry registry, String filePath) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
-		CompositeMap forms = new CompositeMap("forms");
+		CompositeMap result = new CompositeMap("result");
+		CompositeMap forms = new CompositeMap("record");
+		forms.put("id", "forms");
 		forms.put("name", "forms");
-		CompositeMap grids = new CompositeMap("grids");
-		grids.put("name", "grids");
-
-		serachContainer(registry, fileContent, forms, grids);
-
-		CompositeMap tabs = new CompositeMap("tabs");
+		CompositeMap grids = new CompositeMap("record");
+		grids.put("id", "grids");
+		grids.put("name", "forms");
+		CompositeMap tabs = new CompositeMap("record");
+		tabs.put("id", "tabs");
 		tabs.put("name", "tabs");
+		result.addChild(forms);
+		result.addChild(grids);
+		result.addChild(tabs);
 
-		CompositeMap screen = new CompositeMap("screen");
-		screen.put("name", "screen");
-		screen.addChild(forms);
-		screen.addChild(grids);
-		screen.addChild(tabs);
-		getLogger(registry).config(filePath + " getContainer result is:"+XMLOutputter.LINE_SEPARATOR + screen.toXML());
-		return screen;
+		serachContainer(registry, fileContent,result);
+
+		getLogger(registry).config(filePath + " getContainer result is:"+XMLOutputter.LINE_SEPARATOR + result.toXML());
+		return result;
 
 	}
 
