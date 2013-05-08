@@ -607,6 +607,7 @@ public class CustomSourceCode {
 				CompositeMap form = new CompositeMap("record");
 				form.put("id", formId);
 				form.put("parent_id", "forms");
+				form.put("type", "form");
 				form.put("name", name);
 				records.addChild(form);
 			}
@@ -623,6 +624,7 @@ public class CustomSourceCode {
 				CompositeMap grid = new CompositeMap("record");
 				grid.put("id", gridId);
 				grid.put("parent_id", "grids");
+				grid.put("type", "grid");
 				grid.put("name", name);
 				records.addChild(grid);
 			}
