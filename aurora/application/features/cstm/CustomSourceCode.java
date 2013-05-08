@@ -645,7 +645,7 @@ public class CustomSourceCode {
 		forms.put("name", "forms");
 		CompositeMap grids = new CompositeMap("record");
 		grids.put("id", "grids");
-		grids.put("name", "forms");
+		grids.put("name", "grids");
 		CompositeMap tabs = new CompositeMap("record");
 		tabs.put("id", "tabs");
 		tabs.put("name", "tabs");
