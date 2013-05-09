@@ -4,7 +4,7 @@
     <ss:elements>
         <ss:element name="a:tree">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="showCheckBox" document="是否显示checkbox" type="ss:boolean"/>

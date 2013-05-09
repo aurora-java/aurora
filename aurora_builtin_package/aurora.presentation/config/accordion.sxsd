@@ -4,7 +4,7 @@
     <ss:elements>
         <ss:element name="a:accordionPanel" document="AccordionPanel组件">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
             <ss:attributes>
                 <ss:attribute name="singleMode" default="true" document="accordion页是否是单选模式" type="ss:boolean"/>

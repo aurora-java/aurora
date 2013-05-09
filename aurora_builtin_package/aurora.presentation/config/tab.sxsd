@@ -4,7 +4,7 @@
     <ss:elements>
         <ss:element name="a:tabPanel" document="TabPanel组件">
             <ss:extensions>
-                <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
             <ss:arrays>
                 <ss:array name="a:tabs" minOccurs="1" type="a:tab"/>

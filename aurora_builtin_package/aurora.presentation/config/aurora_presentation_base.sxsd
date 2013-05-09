@@ -83,6 +83,8 @@
             <ss:extensions>
                 <ss:extension base="a:Field"/>
             </ss:extensions>
-        </ss:complexType>           
+        </ss:complexType>
+        <ss:complexType name="a:ComplexField"/>
+        <ss:complexType name="a:ContainerField"/>
     </ss:types>
 </ss:schema>
