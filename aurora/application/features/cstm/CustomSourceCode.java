@@ -689,7 +689,7 @@ public class CustomSourceCode {
 			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindTarget");
 			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
-				CompositeMap resultChild = result.getChildByAttrib("id", fieldId);
+				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
 				if (resultChild == null) {
 					CompositeMap record = new CompositeMap("reocrd");
 					String name = currentNode.getString("name");
