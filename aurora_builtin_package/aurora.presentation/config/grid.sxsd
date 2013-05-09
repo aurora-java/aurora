@@ -25,6 +25,7 @@
             </ss:elements>
             <ss:extensions>
                 <ss:extension base="a:ComplexField"/>
+                <ss:extension base="a:ListField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:column">
@@ -81,6 +82,7 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:ComplexField"/>
+                <ss:extension base="a:ListField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:treeGrid">

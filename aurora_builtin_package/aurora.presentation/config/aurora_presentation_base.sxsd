@@ -86,5 +86,6 @@
         </ss:complexType>
         <ss:complexType name="a:ComplexField"/>
         <ss:complexType name="a:ContainerField"/>
+        <ss:complexType name="a:ListField"/>
     </ss:types>
 </ss:schema>
