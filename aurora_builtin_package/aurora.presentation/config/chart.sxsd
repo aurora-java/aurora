@@ -86,6 +86,7 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:chart_style2"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:xAxi">
