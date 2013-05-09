@@ -577,16 +577,17 @@ public class CustomSourceCode {
 		}
 	}
 
-	private static void serachContainer(CompositeMap node, CompositeMap result,ISchemaManager schemaManager,ILocalizedMessageProvider promptProvider,IType formLikeType,IType gridLikeType) {
+	private static void serachContainer(CompositeMap node, CompositeMap result, ISchemaManager schemaManager,
+			ILocalizedMessageProvider promptProvider, IType formLikeType, IType gridLikeType) {
 		if (node == null)
 			return;
 		Element element = schemaManager.getElement(node);
-		if(element == null)
+		if (element == null)
 			return;
 		String nodeName = node.getName();
 		String title = node.getString("title");
-		
-		if(element.isExtensionOf(formLikeType)){
+
+		if (element.isExtensionOf(formLikeType)) {
 			String formId = node.getString("id");
 			// form必须包含id属性，并且id属性内容不包含@
 			if (formId != null && !formId.contains("@")) {
@@ -600,7 +601,7 @@ public class CustomSourceCode {
 				form.put("id", formId);
 				form.put("parent_id", "forms");
 				form.put("type", "form");
-				form.put("name", "["+nodeName+"]"+name);
+				form.put("name", "[" + nodeName + "]" + name);
 				result.addChild(form);
 			}
 		} else if (element.isExtensionOf(gridLikeType)) {
@@ -617,22 +618,23 @@ public class CustomSourceCode {
 				grid.put("id", gridId);
 				grid.put("parent_id", "grids");
 				grid.put("type", "grid");
-				grid.put("name", "["+nodeName+"]"+name);
+				grid.put("name", "[" + nodeName + "]" + name);
 				result.addChild(grid);
 			}
 		}
 		List<CompositeMap> childList = node.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachContainer(child, result,schemaManager,promptProvider,formLikeType,gridLikeType);
+				serachContainer(child, result, schemaManager, promptProvider, formLikeType, gridLikeType);
 			}
 		}
 	}
 
 	public static CompositeMap getContainer(IObjectRegistry registry, String filePath) throws IOException, SAXException {
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		ILogger logger = getLogger(registry);
 		IMessageProvider messageProvider = (IMessageProvider) registry.getInstanceOfType(IMessageProvider.class);
 		ILocalizedMessageProvider promptProvider = null;
@@ -652,7 +654,7 @@ public class CustomSourceCode {
 		IType formLikeType = schemaManager.getType(formLikeQN);
 		QualifiedName gridLikeQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ListField");
 		IType gridLikeType = schemaManager.getType(gridLikeQN);
-		
+
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap result = new CompositeMap("result");
 		CompositeMap forms = new CompositeMap("record");
@@ -667,54 +669,56 @@ public class CustomSourceCode {
 		result.addChild(forms);
 		result.addChild(grids);
 		result.addChild(tabs);
-		
-		serachContainer(fileContent, result,schemaManager,promptProvider,formLikeType,gridLikeType);
-		
-		getLogger(registry).config(filePath + " getContainer result is:"+XMLOutputter.LINE_SEPARATOR + result.toXML());
+
+		serachContainer(fileContent, result, schemaManager, promptProvider, formLikeType, gridLikeType);
+
+		getLogger(registry).config(filePath + " getContainer result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 		return result;
 	}
-	
-	private static void serachFormEditor(CompositeMap fileContent,CompositeMap currentNode,CompositeMap result,String header_id,String form_id,ISchemaManager schemaManager,ILocalizedMessageProvider promptProvider,IType fieldType,IType containerType){
-		if(currentNode == null)
+
+	private static void serachFormEditor(CompositeMap fileContent, CompositeMap currentNode, CompositeMap result, String header_id,
+			String form_id, ISchemaManager schemaManager, ILocalizedMessageProvider promptProvider, IType fieldType, IType containerType) {
+		if (currentNode == null)
 			return;
 		Element element = schemaManager.getElement(currentNode);
-		if(element == null)
+		if (element == null)
 			return;
-		if(element.isExtensionOf(containerType))
+		if (element.isExtensionOf(containerType))
 			return;
-		if(element.isExtensionOf(fieldType)){
+		if (element.isExtensionOf(fieldType)) {
 			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindTarget");
-			if(fieldId != null && !"".equals(fieldId)&&bindTarget != null&&!"".equals(bindTarget)){
+			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
 				CompositeMap resultChild = result.getChildByAttrib("id", fieldId);
-				if(resultChild == null){
+				if (resultChild == null) {
 					CompositeMap record = new CompositeMap("reocrd");
-					record.put("name",currentNode.getString("name"));
+					String name = currentNode.getString("name");
+					String prompt = currentNode.getString("prompt");
+					record.put("name",name );
 					record.setName("record");
-					if(header_id !=null)
+					if (header_id != null)
 						record.put("header_id", header_id);
-					if(form_id != null)
+					if (form_id != null)
 						record.put("form_id", form_id);
 					record.put("cmp_id", fieldId);
-						String prompt = record.getString("prompt");
 					if (promptProvider != null)
 						prompt = promptProvider.getMessage(prompt);
 					record.put("prompt", prompt);
 					record.put("enabled_flag", "Y");
 					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
-					if(dataSet == null)
+					if (dataSet == null)
 						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
 					record.put("bm", dataSet.getString("model"));
 					record.put("editabled_flag", "Y");
 					record.put("required_flag", "N");
 					CompositeMap fields = dataSet.getChild("fields");
-					if(fields != null){
-						CompositeMap datasetField = fields.getChildByAttrib("name", record.getString("name"));
-						if(datasetField != null){
+					if (fields != null) {
+						CompositeMap datasetField = fields.getChildByAttrib("name",name);
+						if (datasetField != null) {
 							DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
-							if(fieldConfig.getReadOnly())
+							if (fieldConfig.getReadOnly())
 								record.put("editabled_flag", "N");
-							if(fieldConfig.getRequired())
+							if (fieldConfig.getRequired())
 								record.put("required_flag", "Y");
 						}
 					}
@@ -725,19 +729,21 @@ public class CustomSourceCode {
 		List<CompositeMap> childList = currentNode.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachFormEditor(fileContent,child, result,header_id,form_id,schemaManager,promptProvider,fieldType,containerType);
+				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
 			}
 		}
 	}
-	
-	public static CompositeMap getFormEditors(IObjectRegistry registry, String filePath,String formId,CompositeMap dbRecords,String header_id,String form_id) throws IOException, SAXException {
+
+	public static CompositeMap getFormEditors(IObjectRegistry registry, String filePath, String formId, CompositeMap dbRecords,
+			String header_id, String form_id) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
-		if(forms == null)
-			throw new RuntimeException(" Can't find the formLike Component with id:"+formId+" in "+filePath);
-		ISchemaManager schemaManager = (ISchemaManager)registry.getInstanceOfType(ISchemaManager.class);
-		if(schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class, CustomSourceCode.class.getCanonicalName());
+		if (forms == null)
+			throw new RuntimeException(" Can't find the formLike Component with id:" + formId + " in " + filePath);
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
 		ILogger logger = getLogger(registry);
 		IMessageProvider messageProvider = (IMessageProvider) registry.getInstanceOfType(IMessageProvider.class);
 		ILocalizedMessageProvider promptProvider = null;
@@ -754,9 +760,9 @@ public class CustomSourceCode {
 			promptProvider = messageProvider.getLocalizedMessageProvider(languageCode);
 		}
 		CompositeMap result = new CompositeMap("result");
-		if(dbRecords == null){
+		if (dbRecords == null) {
 			result = new CompositeMap("result");
-		}else{
+		} else {
 			result = dbRecords;
 			result.setName("result");
 		}
@@ -764,16 +770,16 @@ public class CustomSourceCode {
 		IType fieldType = schemaManager.getType(fieldQN);
 		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
 		IType containerType = schemaManager.getType(containerQN);
-		
+
 		List<CompositeMap> childList = forms.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachFormEditor(fileContent,child, result,header_id,form_id,schemaManager,promptProvider,fieldType,containerType);
+				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
 			}
 		}
-		
-		getLogger(registry).config(filePath + " getFormEditors result is:"+XMLOutputter.LINE_SEPARATOR + result.toXML());
-		
+
+		getLogger(registry).config(filePath + " getFormEditors result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
+
 		return result;
 	}
 
