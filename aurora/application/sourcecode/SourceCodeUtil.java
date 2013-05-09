@@ -2,6 +2,7 @@ package aurora.application.sourcecode;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,6 +28,24 @@ public class SourceCodeUtil {
 				getKeyNodeMap((CompositeMap) it.next(), key, result);
 			}
 		}
+	}
+	public static CompositeMap searchNodeById(CompositeMap source, String targetId) {
+		if (source == null || targetId == null)
+			return null;
+		CompositeMap targetNode = null;
+		String nodeId = source.getString("id");
+		if (nodeId != null && targetId.equals(nodeId)) {
+			return source;
+		}
+		List<CompositeMap> childList = source.getChilds();
+		if (childList!= null) {
+			for (CompositeMap child:childList) {
+				targetNode = searchNodeById(child, targetId);
+				if(targetNode != null)
+					break;
+			}
+		}
+		return targetNode;
 	}
 	public static File getWebHome(IObjectRegistry registry){
 		if (registry == null)
