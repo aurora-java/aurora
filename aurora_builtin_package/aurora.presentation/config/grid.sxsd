@@ -80,6 +80,7 @@
             </ss:elements>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:treeGrid">
@@ -97,6 +98,7 @@
             </ss:arrays>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:autoGrid">
@@ -115,6 +117,7 @@
             </ss:elements>
             <ss:extensions>
                 <ss:extension base="a:Component"/>
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
         </ss:element>
     </ss:elements>
