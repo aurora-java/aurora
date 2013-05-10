@@ -2,11 +2,17 @@ package aurora.application.features.cstm;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
+
+import javax.sql.DataSource;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -33,7 +39,16 @@ import uncertain.util.resource.ILocatable;
 import aurora.application.AuroraApplication;
 import aurora.application.sourcecode.SourceCodeUtil;
 import aurora.application.util.LanguageUtil;
+import aurora.bm.BusinessModel;
 import aurora.bm.Field;
+import aurora.bm.IModelFactory;
+import aurora.database.DBUtil;
+import aurora.database.FetchDescriptor;
+import aurora.database.ParsedSql;
+import aurora.database.ResultSetLoader;
+import aurora.database.SqlRunner;
+import aurora.database.rsconsumer.CompositeMapCreator;
+import aurora.database.service.SqlServiceContext;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
@@ -787,12 +802,11 @@ public class CustomSourceCode {
 			}
 		}
 
-		getLogger(registry).config(filePath + " getFormEditors result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
+		logger.config(filePath + " getFormEditors result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 
 		return result;
 	}
-	private static void  serachBusinessObjectInForm(CompositeMap fileContent, CompositeMap currentNode, CompositeMap result, String header_id,
-			String form_id, ISchemaManager schemaManager, ILocalizedMessageProvider promptProvider, IType fieldType, IType containerType) {
+	private static void serachBusinessObjectInForm(IModelFactory factory,CompositeMap fileContent, CompositeMap currentNode, Map<String,String> result,ISchemaManager schemaManager,IType fieldType, IType containerType) throws IOException {
 		if (currentNode == null)
 			return;
 		Element element = schemaManager.getElement(currentNode);
@@ -801,65 +815,113 @@ public class CustomSourceCode {
 		if (element.isExtensionOf(containerType))
 			return;
 		if (element.isExtensionOf(fieldType)) {
-			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindTarget");
-			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
-				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
-				if (resultChild == null) {
-					CompositeMap record = new CompositeMap("reocrd");
-					String name = currentNode.getString("name");
-					String prompt = currentNode.getString("prompt");
-					record.put("name",name );
-					record.setName("record");
-					if (header_id != null)
-						record.put("header_id", header_id);
-					if (form_id != null)
-						record.put("form_id", form_id);
-					record.put("cmp_id", fieldId);
-					if (promptProvider != null)
-						prompt = promptProvider.getMessage(prompt);
-					record.put("prompt", prompt);
-					record.put("enabled_flag", "Y");
-					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+			if (bindTarget != null && !"".equals(bindTarget)) {
+				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
 					if (dataSet == null)
 						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
-					record.put("bm", dataSet.getString("model"));
-					record.put("editabled_flag", "Y");
-					record.put("required_flag", "N");
-					CompositeMap fields = dataSet.getChild("fields");
-					if (fields != null) {
-						CompositeMap datasetField = fields.getChildByAttrib("name",name);
-						if (datasetField != null) {
-							DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
-							if (fieldConfig.getReadOnly())
-								record.put("editabled_flag", "N");
-							if (fieldConfig.getRequired())
-								record.put("required_flag", "Y");
+					String bm = dataSet.getString("model");
+					if(dataSet != null){
+						BusinessModel model = factory.getModel(bm);
+						String tableName = model.getBaseTable();
+						if(tableName != null){
+							result.put(bm, tableName.toUpperCase());
 						}
 					}
-					result.addChild(record);
-				}
 			}
 		}
 		List<CompositeMap> childList = currentNode.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
+				serachBusinessObjectInForm(factory,fileContent, child, result, schemaManager,fieldType, containerType);
 			}
 		}
 	}
 	
-//	public CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws IOException, SAXException{
-//		CompositeMap fileContent = getFileContent(registry, filePath);
-//		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
-//		
-//		List<CompositeMap> childList = forms.getChilds();
-//		if (childList != null) {
-//			for (CompositeMap child : childList) {
-//				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
-//			}
-//		}
-//	}
+	public static CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws Exception{
+		CompositeMap fileContent = getFileContent(registry, filePath);
+		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
+		IModelFactory factory = (IModelFactory) registry.getInstanceOfType(IModelFactory.class);
+		if (factory == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IModelFactory.class,
+					CustomSourceCode.class.getCanonicalName());
+		DataSource dataSource = (DataSource) registry.getInstanceOfType(DataSource.class);
+		if (dataSource == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, DataSource.class,
+					CustomSourceCode.class.getCanonicalName());
+		
+		ILogger logger = getLogger(registry);
+		QualifiedName fieldQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "Field");
+		IType fieldType = schemaManager.getType(fieldQN);
+		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
+		IType containerType = schemaManager.getType(containerQN);
+		
+		Map<String, String> bm_tables = new LinkedHashMap<String, String>();
+		List<CompositeMap> childList = forms.getChilds();
+		if (childList != null) {
+			for (CompositeMap child : childList) {
+				serachBusinessObjectInForm(factory,fileContent, child, bm_tables, schemaManager,fieldType, containerType);
+			}
+		}
+		CompositeMap result = new CompositeMap("result");
+		if(bm_tables.size()<1)
+			return result;
+		StringBuffer sql = new StringBuffer("select t.object_id, t.object_name, t.table_name, t.comments, b.bm_name  from sys_business_objects t,(");
+			       
+		Set<Entry<String, String>> entrySet = bm_tables.entrySet();
+		String elementSql = "";
+		boolean firstElement = true;
+		for(Entry<String,String> element:entrySet){
+			if(firstElement){
+				elementSql = " select '"+element.getKey()+"' bm_name,'"+element.getValue()+"' table_name from dual";
+				firstElement = false;
+			}else{
+				elementSql = " union all select '"+element.getKey()+"' bm_name,'"+element.getValue()+"' table_name from dual ";
+			}
+			sql.append(elementSql);
+		}
+		sql.append(") b  where t.table_name = b.table_name and t.enabled_flag = 'Y'");
+		
+		logger.config(" getBusinessObjectInForm sql:"+sql.toString());
+		
+		result = sqlQuery(dataSource,sql.toString());
+		
+		logger.config(filePath + " getBusinessObjectInForm result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
+
+		return result;
+		
+	}
+	private static CompositeMap sqlQuery(DataSource dataSource,String sql) throws Exception {
+		ResultSet resultSet = null;
+		SqlServiceContext sql_context = null;
+		CompositeMap result = new CompositeMap("result");
+		try {
+			Connection conn = dataSource.getConnection();
+			sql_context = SqlServiceContext.createSqlServiceContext(conn);
+			ParsedSql stmt = createStatement(sql);
+			SqlRunner runner = new SqlRunner(sql_context, stmt);
+			resultSet = runner.query(null);
+			ResultSetLoader mRsLoader = new ResultSetLoader();
+			mRsLoader.setFieldNameCase(Character.LOWERCASE_LETTER);
+			FetchDescriptor desc = FetchDescriptor.fetchAll();
+			CompositeMapCreator compositeCreator = new CompositeMapCreator(result);
+			mRsLoader.loadByResultSet(resultSet, desc, compositeCreator);
+		} finally {
+			DBUtil.closeResultSet(resultSet);
+			if (sql_context != null)
+				sql_context.freeConnection();
+		}
+		return result;
+	}
+	private static ParsedSql createStatement(String sql) {
+		ParsedSql stmt = new ParsedSql();
+		stmt.parse(sql);
+		return stmt;
+	}
 
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
 		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount }, iLocatable);
