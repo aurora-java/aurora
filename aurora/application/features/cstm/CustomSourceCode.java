@@ -689,8 +689,6 @@ public class CustomSourceCode {
 			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindTarget");
 			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
-				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
-				if (resultChild == null) {
 					CompositeMap record = new CompositeMap("reocrd");
 					String name = currentNode.getString("name");
 					String prompt = currentNode.getString("prompt");
@@ -722,8 +720,19 @@ public class CustomSourceCode {
 								record.put("required_flag", "Y");
 						}
 					}
-					result.addChild(record);
-				}
+					CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
+					if(resultChild == null){					
+						result.addChild(record);
+					}else{
+						for (Object attr : resultChild.entrySet()){
+							Map.Entry e = (Map.Entry)attr;
+							Object value = e.getValue();
+							if(value!=null&&!"".equals(value)&&!"null".equals(value)){
+								record.put(e.getKey(), value);
+							}
+						}
+						result.replaceChild(resultChild, record);
+					}
 			}
 		}
 		List<CompositeMap> childList = currentNode.getChilds();
@@ -782,6 +791,75 @@ public class CustomSourceCode {
 
 		return result;
 	}
+	private static void  serachBusinessObjectInForm(CompositeMap fileContent, CompositeMap currentNode, CompositeMap result, String header_id,
+			String form_id, ISchemaManager schemaManager, ILocalizedMessageProvider promptProvider, IType fieldType, IType containerType) {
+		if (currentNode == null)
+			return;
+		Element element = schemaManager.getElement(currentNode);
+		if (element == null)
+			return;
+		if (element.isExtensionOf(containerType))
+			return;
+		if (element.isExtensionOf(fieldType)) {
+			String fieldId = currentNode.getString("id");
+			String bindTarget = currentNode.getString("bindTarget");
+			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
+				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
+				if (resultChild == null) {
+					CompositeMap record = new CompositeMap("reocrd");
+					String name = currentNode.getString("name");
+					String prompt = currentNode.getString("prompt");
+					record.put("name",name );
+					record.setName("record");
+					if (header_id != null)
+						record.put("header_id", header_id);
+					if (form_id != null)
+						record.put("form_id", form_id);
+					record.put("cmp_id", fieldId);
+					if (promptProvider != null)
+						prompt = promptProvider.getMessage(prompt);
+					record.put("prompt", prompt);
+					record.put("enabled_flag", "Y");
+					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+					if (dataSet == null)
+						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
+					record.put("bm", dataSet.getString("model"));
+					record.put("editabled_flag", "Y");
+					record.put("required_flag", "N");
+					CompositeMap fields = dataSet.getChild("fields");
+					if (fields != null) {
+						CompositeMap datasetField = fields.getChildByAttrib("name",name);
+						if (datasetField != null) {
+							DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
+							if (fieldConfig.getReadOnly())
+								record.put("editabled_flag", "N");
+							if (fieldConfig.getRequired())
+								record.put("required_flag", "Y");
+						}
+					}
+					result.addChild(record);
+				}
+			}
+		}
+		List<CompositeMap> childList = currentNode.getChilds();
+		if (childList != null) {
+			for (CompositeMap child : childList) {
+				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
+			}
+		}
+	}
+	
+//	public CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws IOException, SAXException{
+//		CompositeMap fileContent = getFileContent(registry, filePath);
+//		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
+//		
+//		List<CompositeMap> childList = forms.getChilds();
+//		if (childList != null) {
+//			for (CompositeMap child : childList) {
+//				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
+//			}
+//		}
+//	}
 
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
 		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount }, iLocatable);
