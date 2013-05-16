@@ -579,6 +579,7 @@ public class CustomSourceCode {
 		if (sourceFile == null || !sourceFile.exists())
 			throw new ResourceNotDefinedException(filePath);
 		CompositeLoader cl = new CompositeLoader();
+		cl.ignoreAttributeCase();
 		CompositeMap source = cl.loadByFullFilePath(sourceFile.getCanonicalPath());
 		return source;
 	}
@@ -702,7 +703,7 @@ public class CustomSourceCode {
 			return;
 		if (element.isExtensionOf(fieldType)) {
 			String fieldId = currentNode.getString("id");
-			String bindTarget = currentNode.getString("bindTarget");
+			String bindTarget = currentNode.getString("bindtarget");
 			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
 					CompositeMap record = new CompositeMap("reocrd");
 					String name = currentNode.getString("name");
@@ -815,7 +816,7 @@ public class CustomSourceCode {
 		if (element.isExtensionOf(containerType))
 			return;
 		if (element.isExtensionOf(fieldType)) {
-			String bindTarget = currentNode.getString("bindTarget");
+			String bindTarget = currentNode.getString("bindtarget");
 			if (bindTarget != null && !"".equals(bindTarget)) {
 				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
 					if (dataSet == null)
