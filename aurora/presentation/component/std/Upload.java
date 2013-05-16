@@ -57,15 +57,14 @@ public class Upload extends Component {
 	}
 	
 	private void processHtml5Upload(CompositeMap view, Map  map, CompositeMap model,BuildSession session) throws IOException{
-		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
-		String sid = serviceInstance.getRequest().getSession(true).getId();
-		map.put("sessionId", sid);
-		
 		UploadConfig uc = UploadConfig.getInstance(view);
 		addUploadCard(uc,map,session,model);
-		
 		if(!uc.isShowUpload()) {
 			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
+		}else {
+			HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
+			String sid = serviceInstance.getRequest().getSession(true).getId();
+			map.put("sessionId", sid);			
 		}
 		map.put(UploadConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(uc.getText()));
 		addConfig(UploadConfig.PROPERTITY_SHOW_UPLOAD, uc.isShowUpload());
@@ -118,9 +117,6 @@ public class Upload extends Component {
 		tb_column.put(TableColumnConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb_column.put(TableColumnConfig.PROPERTITY_NAME, "file_name");
 		
-		if(!uc.isShowUpload()) {
-			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
-		}
 		if(!uc.isShowDelete()) {
 			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmNotDeleteRenderer");
 		}else {
@@ -140,11 +136,17 @@ public class Upload extends Component {
 	
 	
 	private void processNormalUpload(CompositeMap view, Map  map, CompositeMap model,BuildSession session) throws IOException{
-		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
-		String sid = serviceInstance.getRequest().getSession(true).getId();
 		
 		UploadConfig uc = UploadConfig.getInstance(view);
 		String id = uc.getId();
+		if(!uc.isShowUpload()) {
+			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
+		}else {
+			HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
+			String sid = serviceInstance.getRequest().getSession(true).getId();
+			map.put("sessionId", sid);
+		}
+		
 		
 		if(UploadConfig.DEFAULT_TYPE.equals(uc.getType())) {
 			addUploadList(uc,map,session,model);
@@ -167,7 +169,7 @@ public class Upload extends Component {
 		map.put(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
 		
 		
-		map.put("sessionId", sid);
+		
 		map.put(CONFIG, getConfigString());
 	}
 	
