@@ -75,7 +75,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid-min.js");
+		addJavaScript(session, context, "grid/Grid.js");
 	}
 	
 	protected int getDefaultWidth() {
@@ -455,7 +455,8 @@ public class Grid extends Component {
 						}else if("excel".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
 						}else if("customize".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize()}");
+							String path = model.getObject("/request/@context_path").toString();
+							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize('"+path+"')}");
 						}
 					}
 				}
