@@ -88,6 +88,10 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         		
         		
         		CompositeMap ds = new CompositeMap(DataSetConfig.TAG_NAME);
+        		ds.putBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false);
+        		ds.putBoolean(DataSetConfig.PROPERTITY_AUTO_QUERY, false);
+        		ds.putBoolean(DataSetConfig.PROPERTITY_FETCHALL, true);
+        		ds.putBoolean(DataSetConfig.PROPERTITY_CAN_QUERY, true);
         		ds.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
         		ds.putString(DataSetConfig.PROPERTITY_MODEL, DEFAULT_ATM_BM);
         		ds.put(ComponentConfig.PROPERTITY_ID, id+"_ds");
