@@ -622,6 +622,7 @@ public class CustomSourceCode {
 			}
 		} else if (element.isExtensionOf(gridLikeType)) {
 			String gridId = node.getString("id");
+			String bindTarget = node.getString("bindtarget");
 			// grid必须包含id属性，并且id属性内容不包含@
 			if (gridId != null && !gridId.contains("@")) {
 				String name = title;
@@ -633,6 +634,7 @@ public class CustomSourceCode {
 				CompositeMap grid = new CompositeMap("record");
 				grid.put("id", gridId);
 				grid.put("parent_id", "grids");
+				grid.put("bindtarget", bindTarget);
 				grid.put("type", "grid");
 				grid.put("name", "[" + nodeName + "]" + name);
 				result.addChild(grid);
