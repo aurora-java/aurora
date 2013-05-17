@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -404,14 +405,24 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
+	
+	private static String[] getMultiLangAttrs(String multiLangAttrs){
+		if(multiLangAttrs == null)
+			return null;
+		return multiLangAttrs.split(",");
+	}
 
 	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name, CompositeMap dbRecords)
 			throws IOException, SAXException {
-		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords, true);
+		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords,null, true);
+	}
+	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name, CompositeMap dbRecords,String multiLangAttrs)
+			throws IOException, SAXException {
+		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords,multiLangAttrs,true);
 	}
 
 	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
-			CompositeMap dbRecords, boolean isChangeName) throws IOException, SAXException {
+			CompositeMap dbRecords,String multiLangAttrs,boolean isChangeName) throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
@@ -435,6 +446,9 @@ public class CustomSourceCode {
 		if (schemaManager == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
+		ILogger logger = getLogger(registry);
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
+		
 		Element ele = schemaManager.getElement(node);
 		CompositeMap re_order = null;
 		if (ele == null)
@@ -478,6 +492,14 @@ public class CustomSourceCode {
 						it.remove();
 					else
 						record.setName("record");
+					if(multiLangAttrs != null){
+						String[] multiLangAttrList= getMultiLangAttrs(multiLangAttrs);
+						if(multiLangAttrList != null){
+							for(String multiLangAttr:multiLangAttrList){
+								record.put(multiLangAttr, promptProvider.getMessage(record.getString(multiLangAttr)));
+							}
+						}
+					}
 				}
 			}
 			if (re_order != null) {
@@ -489,6 +511,7 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
+	
 
 	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id, String array_name,
 			String index_field, String index_value, CompositeMap dbRecords) throws IOException, SAXException {
@@ -501,7 +524,7 @@ public class CustomSourceCode {
 		if (schemaManager == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
-		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(), false);
+		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(),null,false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
 		boolean fromDB = false;
@@ -760,18 +783,7 @@ public class CustomSourceCode {
 			}
 		}
 	}
-
-	public static CompositeMap getFormEditors(IObjectRegistry registry, String filePath, String formId, CompositeMap dbRecords,
-			String header_id, String form_id) throws IOException, SAXException {
-		CompositeMap fileContent = getFileContent(registry, filePath);
-		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
-		if (forms == null)
-			throw new RuntimeException(" Can't find the formLike Component with id:" + formId + " in " + filePath);
-		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
-		if (schemaManager == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
-					CustomSourceCode.class.getCanonicalName());
-		ILogger logger = getLogger(registry);
+	private static ILocalizedMessageProvider getPromptProvider(IObjectRegistry registry,ILogger logger){
 		IMessageProvider messageProvider = (IMessageProvider) registry.getInstanceOfType(IMessageProvider.class);
 		ILocalizedMessageProvider promptProvider = null;
 		if (messageProvider == null)
@@ -786,6 +798,21 @@ public class CustomSourceCode {
 				languageCode = messageProvider.getDefaultLang();
 			promptProvider = messageProvider.getLocalizedMessageProvider(languageCode);
 		}
+		return promptProvider;
+	}
+
+	public static CompositeMap getFormEditors(IObjectRegistry registry, String filePath, String formId, CompositeMap dbRecords,
+			String header_id, String form_id) throws IOException, SAXException {
+		CompositeMap fileContent = getFileContent(registry, filePath);
+		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
+		if (forms == null)
+			throw new RuntimeException(" Can't find the formLike Component with id:" + formId + " in " + filePath);
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
+		ILogger logger = getLogger(registry);
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
 		CompositeMap result = new CompositeMap("result");
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
