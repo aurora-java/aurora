@@ -839,8 +839,7 @@ public class CustomSourceCode {
 	}
 	
 	
-	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,
-			String header_id, String grid_id) throws IOException, SAXException {
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
 		if (gridComponent == null)
@@ -852,17 +851,20 @@ public class CustomSourceCode {
 		ILogger logger = getLogger(registry);
 		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
 		CompositeMap result = new CompositeMap("result");
+		String header_id = "";
+		String grid_id = "";
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
 		} else {
 			result = dbRecords;
 			result.setName("result");
+			List<CompositeMap> childList = result.getChilds();
+			if(childList != null){
+				CompositeMap record = childList.get(0);
+				header_id = record.getString("header_id");
+				grid_id = record.getString("grid_id");
+			}
 		}
-		QualifiedName fieldQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "Field");
-		IType fieldType = schemaManager.getType(fieldQN);
-		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
-		IType containerType = schemaManager.getType(containerQN);
-
 		CompositeMap columns = gridComponent.getChild("columns");
 		if(columns == null)
 			return result;
