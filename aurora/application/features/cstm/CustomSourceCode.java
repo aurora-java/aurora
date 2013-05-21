@@ -839,7 +839,7 @@ public class CustomSourceCode {
 	}
 	
 	
-	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords) throws IOException, SAXException {
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,String header_id) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
 		if (gridComponent == null)
@@ -851,7 +851,6 @@ public class CustomSourceCode {
 		ILogger logger = getLogger(registry);
 		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
 		CompositeMap result = new CompositeMap("result");
-		String header_id = "";
 		String grid_id = "";
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
@@ -861,7 +860,6 @@ public class CustomSourceCode {
 			List<CompositeMap> childList = result.getChilds();
 			if(childList != null){
 				CompositeMap record = childList.get(0);
-				header_id = record.getString("header_id");
 				grid_id = record.getString("grid_id");
 			}
 		}
