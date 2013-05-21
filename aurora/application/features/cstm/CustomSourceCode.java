@@ -53,6 +53,7 @@ import aurora.database.service.SqlServiceContext;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
+import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.security.ResourceNotDefinedException;
 import aurora.service.ServiceThreadLocal;
 
@@ -730,7 +731,7 @@ public class CustomSourceCode {
 			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindtarget");
 			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
-					CompositeMap record = new CompositeMap("reocrd");
+					CompositeMap record = new CompositeMap("record");
 					String name = currentNode.getString("name");
 					String prompt = currentNode.getString("prompt");
 					record.put("name",name );
@@ -833,6 +834,75 @@ public class CustomSourceCode {
 		}
 
 		logger.config(filePath + " getFormEditors result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
+
+		return result;
+	}
+	
+	
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,
+			String header_id, String grid_id) throws IOException, SAXException {
+		CompositeMap fileContent = getFileContent(registry, filePath);
+		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
+		if (gridComponent == null)
+			throw new RuntimeException(" Can't find the gridLike Component with id:" + gridId + " in " + filePath);
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
+		ILogger logger = getLogger(registry);
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
+		CompositeMap result = new CompositeMap("result");
+		if (dbRecords == null) {
+			result = new CompositeMap("result");
+		} else {
+			result = dbRecords;
+			result.setName("result");
+		}
+		QualifiedName fieldQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "Field");
+		IType fieldType = schemaManager.getType(fieldQN);
+		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
+		IType containerType = schemaManager.getType(containerQN);
+
+		CompositeMap columns = gridComponent.getChild("columns");
+		if(columns == null)
+			return result;
+		List<CompositeMap> columnList = columns.getChilds();
+		if (columnList != null) {
+			for (CompositeMap column : columnList) {
+				GridColumnConfig columnConfig = GridColumnConfig.getInstance(column);
+				CompositeMap record = new CompositeMap("record");
+				if(header_id != null)
+					record.put("header_id", header_id);
+				if(grid_id != null)
+					record.put("grid_id", grid_id);
+				record.put("cmp_id", gridId);
+				String name = columnConfig.getName();
+				record.put("name", name);
+				String prompt = columnConfig.getPrompt();
+				if (promptProvider != null)
+					prompt = promptProvider.getMessage(prompt);
+				record.put("prompt", prompt);
+				record.put("width",columnConfig.getWidth());
+				record.put("align",columnConfig.getAlign());
+				record.put("locked_flag",columnConfig.isLock()?"Y":"N");
+				record.put("hidden_flag",columnConfig.isHidden()?"Y":"N");
+				CompositeMap resultChild = result.getChildByAttrib("name", name);
+				if(resultChild == null){					
+					result.addChild(record);
+				}else{
+					for (Object attr : resultChild.entrySet()){
+						Map.Entry e = (Map.Entry)attr;
+						Object value = e.getValue();
+						if(value!=null&&!"".equals(value)&&!"null".equals(value)){
+							record.put(e.getKey(), value);
+						}
+					}
+					result.replaceChild(resultChild, record);
+				}
+			}
+		}
+
+		logger.config(filePath + " getGridColumns result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 
 		return result;
 	}
