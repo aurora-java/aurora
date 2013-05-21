@@ -839,7 +839,7 @@ public class CustomSourceCode {
 	}
 	
 	
-	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,int header_id) throws IOException, SAXException {
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,Long header_id) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
 		if (gridComponent == null)
