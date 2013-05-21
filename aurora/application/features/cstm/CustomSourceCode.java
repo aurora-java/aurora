@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,7 +32,6 @@ import uncertain.schema.CompositeMapSchemaUtil;
 import uncertain.schema.Element;
 import uncertain.schema.ISchemaManager;
 import uncertain.schema.IType;
-import uncertain.schema.SchemaManager;
 import uncertain.schema.editor.AttributeValue;
 import uncertain.schema.editor.CompositeMapEditor;
 import uncertain.util.resource.ILocatable;
@@ -41,7 +39,6 @@ import aurora.application.AuroraApplication;
 import aurora.application.sourcecode.SourceCodeUtil;
 import aurora.application.util.LanguageUtil;
 import aurora.bm.BusinessModel;
-import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.database.DBUtil;
 import aurora.database.FetchDescriptor;
@@ -738,8 +735,8 @@ public class CustomSourceCode {
 					record.setName("record");
 					if (header_id != null)
 						record.put("header_id", header_id);
-					if (form_id != null)
-						record.put("form_id", form_id);
+//					if (form_id != null)
+//						record.put("form_id", form_id);
 					record.put("cmp_id", fieldId);
 					if (promptProvider != null)
 						prompt = promptProvider.getMessage(prompt);
@@ -857,11 +854,6 @@ public class CustomSourceCode {
 		} else {
 			result = dbRecords;
 			result.setName("result");
-			List<CompositeMap> childList = result.getChilds();
-			if(childList != null){
-				CompositeMap record = childList.get(0);
-				grid_id = record.getString("grid_id");
-			}
 		}
 		CompositeMap columns = gridComponent.getChild("columns");
 		if(columns == null)
