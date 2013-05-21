@@ -848,7 +848,6 @@ public class CustomSourceCode {
 		ILogger logger = getLogger(registry);
 		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
 		CompositeMap result = new CompositeMap("result");
-		String grid_id = "";
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
 		} else {
@@ -865,8 +864,6 @@ public class CustomSourceCode {
 				CompositeMap record = new CompositeMap("record");
 				if(header_id > 0)
 					record.put("header_id", header_id);
-				if(grid_id != null)
-					record.put("grid_id", grid_id);
 				record.put("cmp_id", gridId);
 				String name = columnConfig.getName();
 				record.put("name", name);
