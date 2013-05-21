@@ -839,7 +839,7 @@ public class CustomSourceCode {
 	}
 	
 	
-	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,String header_id) throws IOException, SAXException {
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,int header_id) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
 		if (gridComponent == null)
@@ -871,7 +871,7 @@ public class CustomSourceCode {
 			for (CompositeMap column : columnList) {
 				GridColumnConfig columnConfig = GridColumnConfig.getInstance(column);
 				CompositeMap record = new CompositeMap("record");
-				if(header_id != null)
+				if(header_id > 0)
 					record.put("header_id", header_id);
 				if(grid_id != null)
 					record.put("grid_id", grid_id);
