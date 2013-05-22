@@ -46,6 +46,8 @@ import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
 import aurora.database.rsconsumer.CompositeMapCreator;
+import aurora.database.service.DatabaseServiceFactory;
+import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
@@ -403,24 +405,25 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
-	
-	private static String[] getMultiLangAttrs(String multiLangAttrs){
-		if(multiLangAttrs == null)
+
+	private static String[] getMultiLangAttrs(String multiLangAttrs) {
+		if (multiLangAttrs == null)
 			return null;
 		return multiLangAttrs.split(",");
 	}
 
 	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name, CompositeMap dbRecords)
 			throws IOException, SAXException {
-		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords,null, true);
-	}
-	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name, CompositeMap dbRecords,String multiLangAttrs)
-			throws IOException, SAXException {
-		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords,multiLangAttrs,true);
+		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords, null, true);
 	}
 
 	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
-			CompositeMap dbRecords,String multiLangAttrs,boolean isChangeName) throws IOException, SAXException {
+			CompositeMap dbRecords, String multiLangAttrs) throws IOException, SAXException {
+		return CustomSourceCode.getArrayList(registry, filePath, id, array_name, dbRecords, multiLangAttrs, true);
+	}
+
+	public static CompositeMap getArrayList(IObjectRegistry registry, String filePath, String id, String array_name,
+			CompositeMap dbRecords, String multiLangAttrs, boolean isChangeName) throws IOException, SAXException {
 		CompositeMap empty = new CompositeMap("result");
 		if (registry == null)
 			throw new RuntimeException("paramter error. 'registry' can not be null.");
@@ -445,8 +448,8 @@ public class CustomSourceCode {
 			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
 		ILogger logger = getLogger(registry);
-		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
-		
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry, logger);
+
 		Element ele = schemaManager.getElement(node);
 		CompositeMap re_order = null;
 		if (ele == null)
@@ -490,10 +493,10 @@ public class CustomSourceCode {
 						it.remove();
 					else
 						record.setName("record");
-					if(multiLangAttrs != null){
-						String[] multiLangAttrList= getMultiLangAttrs(multiLangAttrs);
-						if(multiLangAttrList != null){
-							for(String multiLangAttr:multiLangAttrList){
+					if (multiLangAttrs != null) {
+						String[] multiLangAttrList = getMultiLangAttrs(multiLangAttrs);
+						if (multiLangAttrList != null) {
+							for (String multiLangAttr : multiLangAttrList) {
 								record.put(multiLangAttr, promptProvider.getMessage(record.getString(multiLangAttr)));
 							}
 						}
@@ -509,7 +512,6 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
-	
 
 	public static CompositeMap getAttributeValues(IObjectRegistry registry, String filePath, String id, String array_name,
 			String index_field, String index_value, CompositeMap dbRecords) throws IOException, SAXException {
@@ -522,7 +524,7 @@ public class CustomSourceCode {
 		if (schemaManager == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException((new CompositeMap()).asLocatable(), ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
-		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(),null,false);
+		CompositeMap arrayList = getArrayList(registry, filePath, id, array_name, new CompositeMap(), null, false);
 		if (arrayList == null || arrayList.getChilds() == null)
 			return empty;
 		boolean fromDB = false;
@@ -728,50 +730,50 @@ public class CustomSourceCode {
 			String fieldId = currentNode.getString("id");
 			String bindTarget = currentNode.getString("bindtarget");
 			if (fieldId != null && !"".equals(fieldId) && bindTarget != null && !"".equals(bindTarget)) {
-					CompositeMap record = new CompositeMap("record");
-					String name = currentNode.getString("name");
-					String prompt = currentNode.getString("prompt");
-					record.put("name",name );
-					record.setName("record");
-					if (header_id != null)
-						record.put("header_id", header_id);
-//					if (form_id != null)
-//						record.put("form_id", form_id);
-					record.put("cmp_id", fieldId);
-					if (promptProvider != null)
-						prompt = promptProvider.getMessage(prompt);
-					record.put("prompt", prompt);
-					record.put("enabled_flag", "Y");
-					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
-					if (dataSet == null)
-						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
-					record.put("bm", dataSet.getString("model"));
-					record.put("editabled_flag", "Y");
-					record.put("required_flag", "N");
-					CompositeMap fields = dataSet.getChild("fields");
-					if (fields != null) {
-						CompositeMap datasetField = fields.getChildByAttrib("name",name);
-						if (datasetField != null) {
-							DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
-							if (fieldConfig.getReadOnly())
-								record.put("editabled_flag", "N");
-							if (fieldConfig.getRequired())
-								record.put("required_flag", "Y");
+				CompositeMap record = new CompositeMap("record");
+				String name = currentNode.getString("name");
+				String prompt = currentNode.getString("prompt");
+				record.put("name", name);
+				record.setName("record");
+				if (header_id != null)
+					record.put("header_id", header_id);
+				// if (form_id != null)
+				// record.put("form_id", form_id);
+				record.put("cmp_id", fieldId);
+				if (promptProvider != null)
+					prompt = promptProvider.getMessage(prompt);
+				record.put("prompt", prompt);
+				record.put("enabled_flag", "Y");
+				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+				if (dataSet == null)
+					throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
+				record.put("bm", dataSet.getString("model"));
+				record.put("editabled_flag", "Y");
+				record.put("required_flag", "N");
+				CompositeMap fields = dataSet.getChild("fields");
+				if (fields != null) {
+					CompositeMap datasetField = fields.getChildByAttrib("name", name);
+					if (datasetField != null) {
+						DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
+						if (fieldConfig.getReadOnly())
+							record.put("editabled_flag", "N");
+						if (fieldConfig.getRequired())
+							record.put("required_flag", "Y");
+					}
+				}
+				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
+				if (resultChild == null) {
+					result.addChild(record);
+				} else {
+					for (Object attr : resultChild.entrySet()) {
+						Map.Entry e = (Map.Entry) attr;
+						Object value = e.getValue();
+						if (value != null && !"".equals(value) && !"null".equals(value)) {
+							record.put(e.getKey(), value);
 						}
 					}
-					CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
-					if(resultChild == null){					
-						result.addChild(record);
-					}else{
-						for (Object attr : resultChild.entrySet()){
-							Map.Entry e = (Map.Entry)attr;
-							Object value = e.getValue();
-							if(value!=null&&!"".equals(value)&&!"null".equals(value)){
-								record.put(e.getKey(), value);
-							}
-						}
-						result.replaceChild(resultChild, record);
-					}
+					result.replaceChild(resultChild, record);
+				}
 			}
 		}
 		List<CompositeMap> childList = currentNode.getChilds();
@@ -781,7 +783,8 @@ public class CustomSourceCode {
 			}
 		}
 	}
-	private static ILocalizedMessageProvider getPromptProvider(IObjectRegistry registry,ILogger logger){
+
+	private static ILocalizedMessageProvider getPromptProvider(IObjectRegistry registry, ILogger logger) {
 		IMessageProvider messageProvider = (IMessageProvider) registry.getInstanceOfType(IMessageProvider.class);
 		ILocalizedMessageProvider promptProvider = null;
 		if (messageProvider == null)
@@ -810,7 +813,7 @@ public class CustomSourceCode {
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
 		ILogger logger = getLogger(registry);
-		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry, logger);
 		CompositeMap result = new CompositeMap("result");
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
@@ -834,9 +837,9 @@ public class CustomSourceCode {
 
 		return result;
 	}
-	
-	
-	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,Long header_id) throws IOException, SAXException {
+
+	public static CompositeMap getGridColumns(IObjectRegistry registry, String filePath, String gridId, CompositeMap dbRecords,
+			Long header_id) throws IOException, SAXException {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap gridComponent = SourceCodeUtil.searchNodeById(fileContent, gridId);
 		if (gridComponent == null)
@@ -846,7 +849,7 @@ public class CustomSourceCode {
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
 					CustomSourceCode.class.getCanonicalName());
 		ILogger logger = getLogger(registry);
-		ILocalizedMessageProvider promptProvider = getPromptProvider(registry,logger);
+		ILocalizedMessageProvider promptProvider = getPromptProvider(registry, logger);
 		CompositeMap result = new CompositeMap("result");
 		if (dbRecords == null) {
 			result = new CompositeMap("result");
@@ -855,14 +858,14 @@ public class CustomSourceCode {
 			result.setName("result");
 		}
 		CompositeMap columns = gridComponent.getChild("columns");
-		if(columns == null)
+		if (columns == null)
 			return result;
 		List<CompositeMap> columnList = columns.getChilds();
 		if (columnList != null) {
 			for (CompositeMap column : columnList) {
 				GridColumnConfig columnConfig = GridColumnConfig.getInstance(column);
 				CompositeMap record = new CompositeMap("record");
-				if(header_id > 0)
+				if (header_id > 0)
 					record.put("header_id", header_id);
 				record.put("cmp_id", gridId);
 				String name = columnConfig.getName();
@@ -871,18 +874,18 @@ public class CustomSourceCode {
 				if (promptProvider != null)
 					prompt = promptProvider.getMessage(prompt);
 				record.put("prompt", prompt);
-				record.put("width",columnConfig.getWidth());
-				record.put("align",columnConfig.getAlign());
-				record.put("locked_flag",columnConfig.isLock()?"Y":"N");
-				record.put("hidden_flag",columnConfig.isHidden()?"Y":"N");
+				record.put("width", columnConfig.getWidth());
+				record.put("align", columnConfig.getAlign());
+				record.put("locked_flag", columnConfig.isLock() ? "Y" : "N");
+				record.put("hidden_flag", columnConfig.isHidden() ? "Y" : "N");
 				CompositeMap resultChild = result.getChildByAttrib("name", name);
-				if(resultChild == null){					
+				if (resultChild == null) {
 					result.addChild(record);
-				}else{
-					for (Object attr : resultChild.entrySet()){
-						Map.Entry e = (Map.Entry)attr;
+				} else {
+					for (Object attr : resultChild.entrySet()) {
+						Map.Entry e = (Map.Entry) attr;
 						Object value = e.getValue();
-						if(value!=null&&!"".equals(value)&&!"null".equals(value)){
+						if (value != null && !"".equals(value) && !"null".equals(value)) {
 							record.put(e.getKey(), value);
 						}
 					}
@@ -895,7 +898,9 @@ public class CustomSourceCode {
 
 		return result;
 	}
-	private static void serachBusinessObjectInForm(IModelFactory factory,CompositeMap fileContent, CompositeMap currentNode, Map<String,String> result,ISchemaManager schemaManager,IType fieldType, IType containerType) throws IOException {
+
+	private static void serachBusinessObjectInForm(IModelFactory factory, CompositeMap fileContent, CompositeMap currentNode,
+			Map<String, String> result, ISchemaManager schemaManager, IType fieldType, IType containerType) throws IOException {
 		if (currentNode == null)
 			return;
 		Element element = schemaManager.getElement(currentNode);
@@ -907,27 +912,27 @@ public class CustomSourceCode {
 			String bindTarget = currentNode.getString("bindtarget");
 			if (bindTarget != null && !"".equals(bindTarget)) {
 				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
-					if (dataSet == null)
-						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
-					String bm = dataSet.getString("model");
-					if(dataSet != null){
-						BusinessModel model = factory.getModel(bm);
-						String tableName = model.getBaseTable();
-						if(tableName != null){
-							result.put(bm, tableName.toUpperCase());
-						}
+				if (dataSet == null)
+					throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
+				String bm = dataSet.getString("model");
+				if (dataSet != null) {
+					BusinessModel model = factory.getModel(bm);
+					String tableName = model.getBaseTable();
+					if (tableName != null) {
+						result.put(bm, tableName.toUpperCase());
 					}
+				}
 			}
 		}
 		List<CompositeMap> childList = currentNode.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachBusinessObjectInForm(factory,fileContent, child, result, schemaManager,fieldType, containerType);
+				serachBusinessObjectInForm(factory, fileContent, child, result, schemaManager, fieldType, containerType);
 			}
 		}
 	}
-	
-	public static CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws Exception{
+
+	public static CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws Exception {
 		CompositeMap fileContent = getFileContent(registry, filePath);
 		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
@@ -940,51 +945,53 @@ public class CustomSourceCode {
 					CustomSourceCode.class.getCanonicalName());
 		DataSource dataSource = (DataSource) registry.getInstanceOfType(DataSource.class);
 		if (dataSource == null)
-			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, DataSource.class,
-					CustomSourceCode.class.getCanonicalName());
-		
+			throw BuiltinExceptionFactory
+					.createInstanceNotFoundException(null, DataSource.class, CustomSourceCode.class.getCanonicalName());
+
 		ILogger logger = getLogger(registry);
 		QualifiedName fieldQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "Field");
 		IType fieldType = schemaManager.getType(fieldQN);
 		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
 		IType containerType = schemaManager.getType(containerQN);
-		
+
 		Map<String, String> bm_tables = new LinkedHashMap<String, String>();
 		List<CompositeMap> childList = forms.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachBusinessObjectInForm(factory,fileContent, child, bm_tables, schemaManager,fieldType, containerType);
+				serachBusinessObjectInForm(factory, fileContent, child, bm_tables, schemaManager, fieldType, containerType);
 			}
 		}
 		CompositeMap result = new CompositeMap("result");
-		if(bm_tables.size()<1)
+		if (bm_tables.size() < 1)
 			return result;
-		StringBuffer sql = new StringBuffer("select t.object_id, t.object_name, t.table_name, t.comments, b.bm_name  from sys_business_objects t,(");
-			       
+		StringBuffer sql = new StringBuffer(
+				"select t.object_id, t.object_name, t.table_name, t.comments, b.bm_name  from sys_business_objects t,(");
+
 		Set<Entry<String, String>> entrySet = bm_tables.entrySet();
 		String elementSql = "";
 		boolean firstElement = true;
-		for(Entry<String,String> element:entrySet){
-			if(firstElement){
-				elementSql = " select '"+element.getKey()+"' bm_name,'"+element.getValue()+"' table_name from dual";
+		for (Entry<String, String> element : entrySet) {
+			if (firstElement) {
+				elementSql = " select '" + element.getKey() + "' bm_name,'" + element.getValue() + "' table_name from dual";
 				firstElement = false;
-			}else{
-				elementSql = " union all select '"+element.getKey()+"' bm_name,'"+element.getValue()+"' table_name from dual ";
+			} else {
+				elementSql = " union all select '" + element.getKey() + "' bm_name,'" + element.getValue() + "' table_name from dual ";
 			}
 			sql.append(elementSql);
 		}
 		sql.append(") b  where t.table_name = b.table_name and t.enabled_flag = 'Y'");
-		
-		logger.config(" getBusinessObjectInForm sql:"+sql.toString());
-		
-		result = sqlQuery(dataSource,sql.toString());
-		
+
+		logger.config(" getBusinessObjectInForm sql:" + sql.toString());
+
+		result = sqlQuery(dataSource, sql.toString());
+
 		logger.config(filePath + " getBusinessObjectInForm result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 
 		return result;
-		
+
 	}
-	private static CompositeMap sqlQuery(DataSource dataSource,String sql) throws Exception {
+
+	public static CompositeMap sqlQuery(DataSource dataSource, String sql) throws Exception {
 		ResultSet resultSet = null;
 		SqlServiceContext sql_context = null;
 		CompositeMap result = new CompositeMap("result");
@@ -1006,10 +1013,15 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
+
 	private static ParsedSql createStatement(String sql) {
 		ParsedSql stmt = new ParsedSql();
 		stmt.parse(sql);
 		return stmt;
+	}
+
+	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath,Long form_field_id) throws Exception {
+		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath, form_field_id);
 	}
 
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
