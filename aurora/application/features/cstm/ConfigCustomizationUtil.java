@@ -65,7 +65,7 @@ public class ConfigCustomizationUtil {
 					String bm = record.getString("bm");
 					String row_num = record.getString("row_num");
 					String column_num = record.getString("column_num");
-					//是否弹性域字段
+					// 是否弹性域字段
 					if (flex_field_id < 0) {
 						CompositeMap editor = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
 						if (editor == null)
@@ -75,39 +75,40 @@ public class ConfigCustomizationUtil {
 							continue;
 						}
 						if (isNotNULL(prompt)) {
-							setElementAttribute(factory, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt, form_field_id);
+							setElementAttribute(factory, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,
+									form_field_id);
 						}
-						String bindTarget = editor.getString("bindtarget");
+						String dataSetID = editor.getString("bindtarget");
 						String editorName = editor.getString("name");
-						if (bindTarget == null || "".equals(bindTarget))
+						if (dataSetID == null || "".equals(dataSetID))
 							throw BuiltinExceptionFactory.createAttributeMissing(editor.asLocatable(), "bindtarget");
-						CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+						CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, dataSetID);
 						if (dataSet == null)
-							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", bindTarget);
-						
+							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", dataSetID);
+
 						CompositeMap fields = dataSet.getChild("fields");
-						if(fields == null){
+						if (fields == null) {
 							fields = dataSet.createChild("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "fields");
 						}
 						if (isNotNULL(enabled_flag) || isNotNULL(required_flag) || isNotNULL(bm)) {
 							CompositeMap fieldNode = fields.getChildByAttrib("name", editorName);
 							if (fieldNode != null) {
 								if (isNotNULL(enabled_flag)) {
-									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, cmp_id,"fields","name",editorName,"readonly", read_only,
-											form_field_id);
+									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, dataSetID, "fields",
+											"name", editorName, "readonly", read_only, form_field_id);
 								}
 								if (isNotNULL(required_flag)) {
-									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, cmp_id,"fields","name",editorName,"required", required,
-											form_field_id);
+									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, dataSetID, "fields",
+											"name", editorName, "required", required, form_field_id);
 								}
 								if (isNotNULL(bm)) {
-									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, cmp_id,"fields","name",editorName,"model", bm,
-											form_field_id);
+									setArrayElementAttribute(factory, service_name, dimension_type, dimension_value, dataSetID, "fields",
+											"name", editorName, "model", bm, form_field_id);
 								}
 							} else {
 								CompositeMap newField = new CompositeMap("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "field");
 								newField.put("name", editorName);
-								
+
 								if (isNotNULL(enabled_flag)) {
 									newField.put("readonly", read_only);
 								}
@@ -118,7 +119,8 @@ public class ConfigCustomizationUtil {
 									newField.put("model", bm);
 								}
 								String newFieldContent = XMLOutputter.defaultInstance().toXML(newField, false);
-								addArrayElement(factory, service_name, dimension_type, dimension_value, cmp_id,"fields","last_child",newFieldContent,form_field_id);
+								addArrayElement(factory, service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
+										newFieldContent, form_field_id);
 							}
 						}
 					} else {
@@ -186,8 +188,10 @@ public class ConfigCustomizationUtil {
 				ssc.freeConnection();
 		}
 	}
+
 	private static void addArrayElement(IDatabaseServiceFactory databasefactory, String source_file, String dimension_type,
-			String dimension_value, String id_value, String array_name, String position, String config_content,long form_field_id) throws SQLException {
+			String dimension_value, String id_value, String array_name, String position, String config_content, long form_field_id)
+			throws SQLException {
 		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,array_name,position,config_content,comments,created_by,creation_date,last_updated_by,last_update_date,form_field_id)values"
 				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'insert',?,?,?,'dynamic',0,sysdate,0,sysdate,?)";
