@@ -1011,7 +1011,11 @@ public class CustomSourceCode {
 			if (context == null)
 				throw new IllegalStateException("Can not get context from ServiceThreadLocal!");
 			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context);
-
+			Connection conn = sqlServiceContext.getNamedConnection(null);
+			if (conn == null) {
+				sqlServiceContext.initConnection(registry, null);
+				conn = sqlServiceContext.getNamedConnection(null);
+			}
 			ParsedSql stmt = createStatement(sql);
 			SqlRunner runner = new SqlRunner(sqlServiceContext, stmt);
 			resultSet = runner.query(null);
