@@ -25,11 +25,7 @@ public class ConfigCustomizationUtil {
 		if (form_field_id < 1)
 			throw new IllegalArgumentException("parameter form_field_id can not be null");
 		CompositeMap fileContent = CustomSourceCode.getFileContent(registry, filePath);
-		DataSource dataSource = (DataSource) registry.getInstanceOfType(DataSource.class);
-		if (dataSource == null)
-			throw BuiltinExceptionFactory
-					.createInstanceNotFoundException(null, DataSource.class, CustomSourceCode.class.getCanonicalName());
-		// 检查事务一致性
+
 		ILogger logger = CustomSourceCode.getLogger(registry);
 		StringBuffer config_sql = new StringBuffer(
 				"select s.service_name,h.dimension_type,h.dimension_value,t.cmp_id,t.name,t.prompt,"
@@ -40,7 +36,7 @@ public class ConfigCustomizationUtil {
 		// 删除以前的动态配置记录
 		sqlExecute(registry, delete_cust_sql.toString());
 		// 新增本次记录
-		CompositeMap result = CustomSourceCode.sqlQuery(dataSource, config_sql.toString());
+		CompositeMap result = CustomSourceCode.sqlQuery(registry, config_sql.toString());
 		if (result != null) {
 			List<CompositeMap> childList = result.getChilds();
 			if (childList != null) {

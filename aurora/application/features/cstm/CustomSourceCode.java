@@ -995,7 +995,7 @@ public class CustomSourceCode {
 
 		logger.config(" getBusinessObjectInForm sql:" + sql.toString());
 
-		result = sqlQuery(dataSource, sql.toString());
+		result = sqlQuery(registry, sql.toString());
 
 		logger.config(filePath + " getBusinessObjectInForm result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 
@@ -1003,15 +1003,17 @@ public class CustomSourceCode {
 
 	}
 
-	public static CompositeMap sqlQuery(DataSource dataSource, String sql) throws Exception {
+	public static CompositeMap sqlQuery(IObjectRegistry registry, String sql) throws Exception {
 		ResultSet resultSet = null;
-		SqlServiceContext sql_context = null;
 		CompositeMap result = new CompositeMap("result");
 		try {
-			Connection conn = dataSource.getConnection();
-			sql_context = SqlServiceContext.createSqlServiceContext(conn);
+			CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+			if (context == null)
+				throw new IllegalStateException("Can not get context from ServiceThreadLocal!");
+			SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context);
+
 			ParsedSql stmt = createStatement(sql);
-			SqlRunner runner = new SqlRunner(sql_context, stmt);
+			SqlRunner runner = new SqlRunner(sqlServiceContext, stmt);
 			resultSet = runner.query(null);
 			ResultSetLoader mRsLoader = new ResultSetLoader();
 			mRsLoader.setFieldNameCase(Character.LOWERCASE_LETTER);
@@ -1020,8 +1022,8 @@ public class CustomSourceCode {
 			mRsLoader.loadByResultSet(resultSet, desc, compositeCreator);
 		} finally {
 			DBUtil.closeResultSet(resultSet);
-			if (sql_context != null)
-				sql_context.freeConnection();
+//			if (sql_context != null)
+//				sql_context.freeConnection();
 		}
 		return result;
 	}
