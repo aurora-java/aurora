@@ -912,7 +912,7 @@ public class CustomSourceCode {
 	}
 
 	private static void serachBusinessObjectInForm(IModelFactory factory, CompositeMap fileContent, CompositeMap currentNode,
-			Map<String, String> result, ISchemaManager schemaManager, IType fieldType, IType containerType) throws IOException {
+			CompositeMap result, ISchemaManager schemaManager, IType fieldType, IType containerType) throws IOException {
 		if (currentNode == null)
 			return;
 		Element element = schemaManager.getElement(currentNode);
@@ -923,15 +923,22 @@ public class CustomSourceCode {
 		if (element.isExtensionOf(fieldType)) {
 			String bindTarget = currentNode.getString("bindtarget");
 			if (bindTarget != null && !"".equals(bindTarget)) {
-				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
-				if (dataSet == null)
-					throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
-				String bm = dataSet.getString("model");
-				if (dataSet != null) {
-					BusinessModel model = factory.getModel(bm);
-					String tableName = model.getBaseTable();
-					if (tableName != null) {
-						result.put(bm, tableName.toUpperCase());
+				CompositeMap resultChild = result.getChildByAttrib("bindtarget", bindTarget);
+				if(resultChild == null){
+					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+					if (dataSet == null)
+						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
+					String bm = dataSet.getString("model");
+					if (bm != null) {
+						BusinessModel model = factory.getModel(bm);
+						String tableName = model.getBaseTable();
+						if (tableName != null) {
+							CompositeMap record = new CompositeMap("record");
+							record.put("bindtarget",bindTarget);
+							record.put("model",bm);
+							record.put("table_name",tableName.toUpperCase());
+							result.addChild(record);
+						}
 					}
 				}
 			}
@@ -966,28 +973,30 @@ public class CustomSourceCode {
 		QualifiedName containerQN = new QualifiedName(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "ComplexField");
 		IType containerType = schemaManager.getType(containerQN);
 
-		Map<String, String> bm_tables = new LinkedHashMap<String, String>();
+		CompositeMap bos = new CompositeMap();
 		List<CompositeMap> childList = forms.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
-				serachBusinessObjectInForm(factory, fileContent, child, bm_tables, schemaManager, fieldType, containerType);
+				serachBusinessObjectInForm(factory, fileContent, child, bos, schemaManager, fieldType, containerType);
 			}
 		}
 		CompositeMap result = new CompositeMap("result");
-		if (bm_tables.size() < 1)
+		List<CompositeMap> boList = bos.getChilds();
+		if (boList== null || boList.size() < 1)
 			return result;
 		StringBuffer sql = new StringBuffer(
-				"select t.object_id, t.object_name, t.table_name, t.comments, b.bm_name  from sys_business_objects t,(");
+				"select t.object_id, t.object_name, t.table_name, t.comments,b.bindtarget, b.bm_name  from sys_business_objects t,(");
 
-		Set<Entry<String, String>> entrySet = bm_tables.entrySet();
 		String elementSql = "";
 		boolean firstElement = true;
-		for (Entry<String, String> element : entrySet) {
+		for (CompositeMap element : boList) {
 			if (firstElement) {
-				elementSql = " select '" + element.getKey() + "' bm_name,'" + element.getValue() + "' table_name from dual";
+				elementSql = " select '"+ element.getString("bindtarget") + "' bindtarget,'" + element.getString("model") + "' bm_name,'" 
+						+ element.getString("table_name") + "' table_name from dual";
 				firstElement = false;
 			} else {
-				elementSql = " union all select '" + element.getKey() + "' bm_name,'" + element.getValue() + "' table_name from dual ";
+				elementSql = " union all select '" + element.getString("bindtarget") + "' bindtarget,'" + element.getString("model") + "' bm_name,'" 
+						+ element.getString("table_name") + "' table_name from dual";
 			}
 			sql.append(elementSql);
 		}
