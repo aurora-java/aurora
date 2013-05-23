@@ -60,7 +60,7 @@ public class ConfigCustomizationUtil {
 						CompositeMap editor = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
 						if (editor == null)
 							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "editor", "id", cmp_id);
-						if (!"Y".equals(enabled_flag)) {
+						if ("N".equals(enabled_flag)) {
 							deleteNode(registry, service_name, dimension_type, dimension_value, cmp_id, form_field_id);
 							continue;
 						}
