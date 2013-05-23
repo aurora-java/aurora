@@ -80,10 +80,10 @@ public class ConfigCustomizationUtil {
 						if (fields == null) {
 							fields = dataSet.createChild("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "fields");
 						}
-						if (isNotNULL(enabled_flag) || isNotNULL(required_flag) || isNotNULL(bm)) {
+						if (isNotNULL(editabled_flag) || isNotNULL(required_flag) || isNotNULL(bm)) {
 							CompositeMap fieldNode = fields.getChildByAttrib("name", editorName);
 							if (fieldNode != null) {
-								if (isNotNULL(enabled_flag)) {
+								if (isNotNULL(editabled_flag)) {
 									setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, dataSetID, "fields",
 											"name", editorName, "readonly", read_only, form_field_id);
 								}
@@ -99,7 +99,7 @@ public class ConfigCustomizationUtil {
 								CompositeMap newField = new CompositeMap("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "field");
 								newField.put("name", editorName);
 
-								if (isNotNULL(enabled_flag)) {
+								if (isNotNULL(editabled_flag)) {
 									newField.put("readonly", read_only);
 								}
 								if (isNotNULL(required_flag)) {
