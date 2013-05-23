@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,8 +47,6 @@ import aurora.database.ParsedSql;
 import aurora.database.ResultSetLoader;
 import aurora.database.SqlRunner;
 import aurora.database.rsconsumer.CompositeMapCreator;
-import aurora.database.service.DatabaseServiceFactory;
-import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
 import aurora.i18n.ILocalizedMessageProvider;
 import aurora.i18n.IMessageProvider;
@@ -594,6 +593,19 @@ public class CustomSourceCode {
 		return result;
 	}
 
+	public static Connection getContextConnection(IObjectRegistry registry) throws SQLException {
+		CompositeMap context = ServiceThreadLocal.getCurrentThreadContext();
+		if (context == null)
+			throw new IllegalStateException("Can not get context from ServiceThreadLocal!");
+		SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context);
+		Connection conn = sqlServiceContext.getNamedConnection(null);
+		if (conn == null) {
+			sqlServiceContext.initConnection(registry, null);
+			conn = sqlServiceContext.getNamedConnection(null);
+		}
+		return conn;
+	}
+
 	public static CompositeMap getFileContent(IObjectRegistry registry, String filePath) throws IOException, SAXException {
 		if (registry == null)
 			throw new RuntimeException("parameter error. 'registry' can not be null.");
@@ -1020,7 +1032,7 @@ public class CustomSourceCode {
 		return stmt;
 	}
 
-	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath,Long form_field_id) throws Exception {
+	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long form_field_id) throws Exception {
 		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath, form_field_id);
 	}
 
