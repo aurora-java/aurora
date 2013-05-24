@@ -132,7 +132,7 @@ public class CustomSourceCode {
 						objectNode.getParent().removeChild(objectNode);
 					CompositeLoader compositeLoader = new CompositeLoader();
 					try {
-						objectNode.getParent().replaceChild(objectNode, compositeLoader.loadFromString(config_content));
+						objectNode.getParent().replaceChild(objectNode, compositeLoader.loadFromString(config_content,"UTF-8"));
 					} catch (Throwable e) {
 						if (e instanceof SAXParseException) {
 							SAXParseException saxPe = (SAXParseException) e;
@@ -252,7 +252,7 @@ public class CustomSourceCode {
 		CompositeLoader compositeLoader = new CompositeLoader();
 		CompositeMap newChild = null;
 		try {
-			newChild = compositeLoader.loadFromString(config_content);
+			newChild = compositeLoader.loadFromString(config_content,"UTF-8");
 		} catch (Throwable e) {
 			if (e instanceof SAXParseException) {
 				SAXParseException saxPe = (SAXParseException) e;
