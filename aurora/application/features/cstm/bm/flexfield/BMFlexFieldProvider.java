@@ -250,10 +250,17 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 	}
 	
 	private void init(){
+//		editor_datatype.put("TEXTFIELD", "java.lang.String");
+//		editor_datatype.put("NUMBERFIELD", "java.lang.Long");
+//		editor_datatype.put("NUMBERFIELD_ALLOWDECIMALS", "java.lang.Double");
+//		editor_datatype.put("DATEPICKER", "java.util.Date");
+//		editor_datatype.put("COMBOBOX", "java.lang.String");
+//		editor_datatype.put("LOV", "java.lang.String");
+		
 		editor_datatype.put("TEXTFIELD", "java.lang.String");
-		editor_datatype.put("NUMBERFIELD", "java.lang.Long");
-		editor_datatype.put("NUMBERFIELD_ALLOWDECIMALS", "java.lang.Double");
-		editor_datatype.put("DATEPICKER", "java.util.Date");
+		editor_datatype.put("NUMBERFIELD", "java.lang.String");
+		editor_datatype.put("NUMBERFIELD_ALLOWDECIMALS", "java.lang.String");
+		editor_datatype.put("DATEPICKER", "java.lang.String");
 		editor_datatype.put("COMBOBOX", "java.lang.String");
 		editor_datatype.put("LOV", "java.lang.String");
 	}
