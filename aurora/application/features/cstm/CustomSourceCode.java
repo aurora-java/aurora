@@ -1001,7 +1001,7 @@ public class CustomSourceCode {
 			}
 			sql.append(elementSql);
 		}
-		sql.append(") b  where t.table_name = b.table_name and t.enabled_flag = 'Y'");
+		sql.append(") b  where UPPER(t.table_name) = UPPER(b.table_name) and t.enabled_flag = 'Y'");
 
 		logger.config(" getBusinessObjectInForm sql:" + sql.toString());
 
