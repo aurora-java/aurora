@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import javax.sql.DataSource;
 
 import uncertain.composite.CompositeMap;
-import uncertain.composite.XMLOutputter;
 import uncertain.core.ILifeCycle;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.logging.ILogger;
@@ -31,8 +30,6 @@ import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.IDatabaseServiceFactory;
 import aurora.database.service.SqlServiceContext;
-import aurora.database.sql.Join;
-import aurora.events.E_PrepareBusinessModel;
 import aurora.service.ServiceThreadLocal;
 
 public class BMFlexFieldProvider extends AbstractLocatableObject implements ILifeCycle, IBMFlexFieldProvider {
@@ -41,7 +38,7 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 	public static final String TYPE_LEFT_OUTTER_JOIN = "LEFT OUTER"; 
 	
 	public final static String FIELD_NAME_PK = "field_name";
-	public final static String TYPE_PK = "type";
+	public final static String EDITOR_TYPE_PK = "editor_type";
 	public final static String NUMBER_ALLOWDECIMALS_PK = "number_allowdecimals";
 	public final static String COMBOBOX_VALUE_FIELD_PK = "combobox_value_field";
 	public final static String COMBOBOX_DISPLAY_FIELD_PK = "combobox_display_field";
@@ -97,9 +94,9 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 			String fieldName = record.getString(FIELD_NAME_PK);
 			if(fieldName == null)
 				throw BuiltinExceptionFactory.createAttributeMissing(flexFieldRecords.asLocatable(), FIELD_NAME_PK);
-			String editorType =  record.getString(TYPE_PK);
+			String editorType =  record.getString(EDITOR_TYPE_PK);
 			if(editorType == null)
-				throw BuiltinExceptionFactory.createAttributeMissing(flexFieldRecords.asLocatable(), TYPE_PK);
+				throw BuiltinExceptionFactory.createAttributeMissing(flexFieldRecords.asLocatable(), EDITOR_TYPE_PK);
 			Field field = Field.createField(fieldName.toLowerCase());
 			field.setDatabaseType(FLEXFIELD_DEFAULT_DATABASE_TYPE);
 			
@@ -200,10 +197,10 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 		try {
 			ssc = databaseServiceFactory.createContextWithConnection();
 
-			String flexFieldQuerySql = "select t.table_name, f.field_name, f.type, f.number_allowdecimals,f.combobox_datasource_type,"
+			String flexFieldQuerySql = "select t.table_name, f.field_name, f.editor_type, f.number_allowdecimals,f.combobox_datasource_type,"
 					+ " f.combobox_datasource_value," + " f.combobox_value_field," + " f.combobox_display_field," + " f.lov_bm,"
 					+ " f.lov_value_field," + " f.lov_display_field" + " from sys_business_objects t, sys_business_object_flexfields f"
-					+ " where f.business_object_id = t.object_id" + " and t.enabled_flag = 'Y'" + " and f.enabled_flag = 'Y'"
+					+ " where f.business_object_id = t.object_id" + " and t.enabled_flag = 'Y'" //+ " and f.enabled_flag = 'Y'"
 					+ " and t.table_name='" + tableName.toUpperCase() + "'";
 
 			LoggingContext.getLogger(model.getObjectContext(),this.getClass().getCanonicalName()).config("flexFieldQuerySql:" + flexFieldQuerySql);
