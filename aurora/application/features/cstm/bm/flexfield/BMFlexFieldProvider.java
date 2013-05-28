@@ -185,6 +185,8 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 	private String generateRelationName(BusinessModel mainModel,BusinessModel joinModel){
 		String joinModelName = joinModel.getName().toLowerCase().replace(".", "_");
 		String relationName = "re_"+joinModelName;
+		if(mainModel.getRelations() == null)
+			return relationName;
 		while(mainModel.getRelation(relationName) != null){
 			relationName = relationName+"_"+System.currentTimeMillis();
 		}
