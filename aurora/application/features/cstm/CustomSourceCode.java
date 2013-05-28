@@ -884,8 +884,11 @@ public class CustomSourceCode {
 				String name = columnConfig.getName();
 				record.put("name", name);
 				String prompt = columnConfig.getPrompt();
-				if (promptProvider != null)
-					prompt = promptProvider.getMessage(prompt);
+				if (promptProvider != null){
+					String localPrompt = promptProvider.getMessage(prompt);
+					if(localPrompt != null && !"".equals(localPrompt))
+						prompt = localPrompt;
+				}
 				record.put("prompt", prompt);
 				record.put("width", columnConfig.getWidth());
 				record.put("align", columnConfig.getAlign());
