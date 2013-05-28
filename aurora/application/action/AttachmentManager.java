@@ -15,6 +15,7 @@ import java.nio.channels.WritableByteChannel;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.apache.commons.io.FileUtils;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 import uncertain.composite.CompositeMap;
+import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
@@ -47,6 +49,7 @@ import aurora.datasource.DataSourceConfig;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
+import aurora.service.ServiceThreadLocal;
 import aurora.service.http.HttpServiceInstance;
 
 public class AttachmentManager extends AbstractEntry{
@@ -59,20 +62,23 @@ public class AttachmentManager extends AbstractEntry{
 	public static final String PROPERTITY_URL = "url";
 	public static final String PROPERTITY_RANDOM_NAME = "random_name";
 	
-	
 	private static final String SAVE_TYPE_DATABASE = "db";
 	private static final String SAVE_TYPE_FILE = "file";
+	
 	
 	public int Buffer_size = 500 * 1024;
 	
 	
 	private static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
 	
+	private int maxSize = 0;
+	private String fileType = null;
 	private String saveType;
 	private String savePath;
 	private String actionType;
 	private String useSubFolder = null;
 	private String randomName = "true";
+	private String dataSourcename = null;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
@@ -82,6 +88,18 @@ public class AttachmentManager extends AbstractEntry{
 	public AttachmentManager(IObjectRegistry registry) {
 		this.registry=registry;
 		databasefactory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
+	}
+	
+	public Connection getContextConnection(CompositeMap context) throws SQLException {
+		if (context == null)
+			throw new IllegalStateException("Can not get context from ServiceThreadLocal!");
+		SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context);
+		Connection conn = sqlServiceContext.getNamedConnection(null);
+		if (conn == null) {
+			sqlServiceContext.initConnection(registry, null);
+			conn = sqlServiceContext.getNamedConnection(null);
+		}
+		return conn;
 	}
 	
 	public void run(ProcedureRunner runner) throws Exception {
@@ -114,8 +132,8 @@ public class AttachmentManager extends AbstractEntry{
 		CompositeMap params = service.getParameter();
 		Object aid = (Object)params.getObject("@attachment_id");
 		if(aid!=null){
-			SqlServiceContext ssc = databasefactory.createContextWithConnection();
-			Connection conn = ssc.getConnection();
+			Connection conn = getContextConnection(context);
+			
 			Statement st = conn.createStatement();
 			ResultSet rs = null;
 			InputStream is = null;
@@ -179,13 +197,8 @@ public class AttachmentManager extends AbstractEntry{
 				}
 				response.setHeader("Connection", "close");
 			} finally{
-				
-				if (rs != null)
-					rs.close();
-				if (st != null)
-					st.close();
-				if (ssc != null)
-					ssc.freeConnection();
+				DBUtil.closeResultSet(rs);
+				DBUtil.closeStatement(st);
 				try{if(is!=null) is.close();
                 }catch(Exception ex){}
                 try{if(os!=null) os.close();
@@ -202,8 +215,7 @@ public class AttachmentManager extends AbstractEntry{
 		Object aid = serviceInstance.getRequest().getAttribute("attachment_id");
 		if(aid ==null) aid = (Object)params.getObject("/parameter/record/@attachment_id");
 		if(aid!=null && !"".equals(aid)){
-			SqlServiceContext ssc = databasefactory.createContextWithConnection();
-			Connection conn = ssc.getConnection();
+			Connection conn = getContextConnection(context);
 			Statement st = conn.createStatement();
 			ResultSet rs = null;
 			try {
@@ -219,12 +231,8 @@ public class AttachmentManager extends AbstractEntry{
 				st.execute("delete from fnd_atm_attachment at where at.attachment_id = " + aid);
 				st.execute("delete from fnd_atm_attachment_multi atm where atm.attachment_id = " + aid);
 			} finally{
-				if (rs != null)
-					rs.close();
-				if (st != null)
-					st.close();
-				if (ssc != null)
-					ssc.freeConnection();
+				DBUtil.closeResultSet(rs);
+				DBUtil.closeStatement(st);
 			}
 		}
 	}
@@ -236,6 +244,8 @@ public class AttachmentManager extends AbstractEntry{
 		CompositeMap params = service.getParameter();
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload up = new ServletFileUpload(factory);
+		int ms = getFileSize();
+		if(ms > 0)up.setSizeMax(ms);
 		List items = null;
 		List files = new ArrayList();
 		Connection conn = null;
@@ -258,7 +268,18 @@ public class AttachmentManager extends AbstractEntry{
 						serviceInstance.getRequest().setAttribute("attachment_id", value);
 					}
 				} else {
-					files.add(fileItem);
+					String fts = getFileType();
+					if(fts != null) {
+						String name = fileItem.getName().toLowerCase();
+						String ft = name.substring(name.lastIndexOf(".")+1,name.length());
+						if(fts.indexOf(ft)!=-1){
+							files.add(fileItem);							
+						}else {
+							throw new Exception("文件类型不匹配!只允许 " + fts);	
+						}
+					}else {
+						files.add(fileItem);			
+					}
 				}
 			}
 			Iterator it = files.iterator();
@@ -272,8 +293,7 @@ public class AttachmentManager extends AbstractEntry{
 				BusinessModelService modelService = databasefactory.getModelService(FND_UPLOAD_FILE_TYPE, context);
 				modelService.execute(null);
 				Object aid = service.getModel().getObject("/parameter/@attachment_id");
-				SqlServiceContext sqlServiceContext = SqlServiceContext.createSqlServiceContext(context);
-				conn = sqlServiceContext.getConnection();
+				conn = getContextConnection(context);
 	            InputStream in = fileItem.getInputStream();
 	            String attach_id = aid.toString();
 	            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
@@ -296,15 +316,9 @@ public class AttachmentManager extends AbstractEntry{
 			}
 			
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LoggingContext.getLogger(context,AttachmentManager.class.getCanonicalName()).log(ex.getMessage());
 			throw ex;
-		} finally {
-			//关闭连接,那么svc中其他的动作例如<a:model-update 就会报连接关闭.
-			//不关闭连接,不确定是否会有内存泄露...
-			//头大....
-//            if (conn != null)
-//                conn.close();
-        }
+		} 
 	}
 	
 	
@@ -393,6 +407,22 @@ public class AttachmentManager extends AbstractEntry{
 
 	public void setSaveType(String saveType) {
 		this.saveType = saveType;
+	}
+	
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+	
+	public int getFileSize() {
+		return maxSize;
+	}
+
+	public void setFileSize(int fileSize) {
+		this.maxSize = fileSize;
 	}
 
 	public String getSavePath() {
@@ -492,5 +522,14 @@ public class AttachmentManager extends AbstractEntry{
 	public void setRandomName(String randomName) {
 		this.randomName = randomName;
 	}
+	
+	public String getDataSourceName() {
+		return dataSourcename;
+	}
+
+	public void setDataSourceName(String name) {
+		this.dataSourcename = name;
+	}
+
 
 }
