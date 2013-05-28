@@ -63,7 +63,10 @@ public class Upload extends Component {
 			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
 		}else {
 			HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
-			String sid = serviceInstance.getRequest().getSession(true).getId();
+			String sid = "";
+			if(uc.isRequireSession()) {
+				sid = serviceInstance.getRequest().getSession(true).getId();
+			}
 			map.put("sessionId", sid);			
 		}
 		map.put(UploadConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(uc.getText()));
@@ -142,8 +145,11 @@ public class Upload extends Component {
 		if(!uc.isShowUpload()) {
 			map.put(UploadConfig.PROPERTITY_SHOW_UPLOAD, "none");
 		}else {
-			HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
-			String sid = serviceInstance.getRequest().getSession(true).getId();
+			String sid = "";
+			if(uc.isRequireSession()) {
+				HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
+				sid = serviceInstance.getRequest().getSession(true).getId();
+			}
 			map.put("sessionId", sid);
 		}
 		
