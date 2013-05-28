@@ -32,10 +32,10 @@ public class ComboBox extends TextField {
 		map.put(ComboBoxConfig.PROPERTITY_POPWIDTH, new Integer(width.intValue()-2));
 		
 		ComboBoxConfig cbc = ComboBoxConfig.getInstance(view);
-		if(cbc.getOptions()!=null)addConfig(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(cbc.getOptions(), model));
+//		if(cbc.getOptions()!=null)addConfig(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(cbc.getOptions(), model));
 		if(cbc.getRenderer()!=null)addConfig(ComboBoxConfig.PROPERTITY_RENDERER, cbc.getRenderer());
-		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
-		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());
+//		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
+//		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());
 		addConfig(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(cbc.isFetchRecord()));
 		
 		map.put(CONFIG, getConfigString());

@@ -75,7 +75,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid.js");
+		addJavaScript(session, context, "grid/Grid-min.js");
 	}
 	
 	protected int getDefaultWidth() {

@@ -23,7 +23,6 @@ import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
@@ -118,36 +117,35 @@ public class DataSet extends Component {
 				
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				
-				String options = field.getString(ComboBoxConfig.PROPERTITY_OPTIONS);
+				String options = field.getString(DataSetFieldConfig.PROPERTITY_OPTIONS);
 				if(options!=null){
-					field.putString(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
+					field.putString(DataSetFieldConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(options, model));
 				}
 				
-				LovConfig lc = LovConfig.getInstance(field);
-				if(null!=field.getString(LovConfig.PROPERTITY_FETCH_REMOTE))
-					field.putBoolean(LovConfig.PROPERTITY_FETCH_REMOTE, lc.getFetchRemote());
-				if(null!=field.getString(LovConfig.PROPERTITY_FETCH_SINGLE))
-					field.putBoolean(LovConfig.PROPERTITY_FETCH_SINGLE, lc.getFetchSingle());
+				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_FETCH_REMOTE))
+					field.putBoolean(DataSetFieldConfig.PROPERTITY_FETCH_REMOTE, sdfc.getFetchRemote());
+				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_FETCH_SINGLE))
+					field.putBoolean(DataSetFieldConfig.PROPERTITY_FETCH_SINGLE, sdfc.getFetchSingle());
 				
-				String lovService = field.getString(LovConfig.PROPERTITY_LOV_SERVICE);
+				String lovService = field.getString(DataSetFieldConfig.PROPERTITY_LOV_SERVICE);
 				if(lovService!=null && lovService.length()>0){
 					String baseModel = uncertain.composite.TextParser.parse(lovService, model);
-					field.putString(LovConfig.PROPERTITY_LOV_SERVICE,baseModel);
+					field.putString(DataSetFieldConfig.PROPERTITY_LOV_SERVICE,baseModel);
 					initLovService(baseModel,session,field);
 				}
-				String lovModel = field.getString(LovConfig.PROPERTITY_LOV_MODEL);
+				String lovModel = field.getString(DataSetFieldConfig.PROPERTITY_LOV_MODEL);
 				if(lovModel!=null){
 					String baseModel = uncertain.composite.TextParser.parse(lovModel, model);
-					field.putString(LovConfig.PROPERTITY_LOV_MODEL,baseModel);
+					field.putString(DataSetFieldConfig.PROPERTITY_LOV_MODEL,baseModel);
 					initLovService(baseModel,session,field);
 				}
-				String lovUrl = field.getString(LovConfig.PROPERTITY_LOV_URL);
+				String lovUrl = field.getString(DataSetFieldConfig.PROPERTITY_LOV_URL);
 				if(lovUrl!=null){
-					field.putString(LovConfig.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
+					field.putString(DataSetFieldConfig.PROPERTITY_LOV_URL, uncertain.composite.TextParser.parse(lovUrl, model));
 				}
-				String lovTitle = field.getString(LovConfig.PROPERTITY_TITLE);
+				String lovTitle = field.getString(DataSetFieldConfig.PROPERTITY_TITLE);
 				if(lovTitle!=null){
-					field.putString(LovConfig.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
+					field.putString(DataSetFieldConfig.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
 				}
 				
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
@@ -312,7 +310,7 @@ public class DataSet extends Component {
 		}else{
 			addConfig(DataSetConfig.PROPERTITY_MAX_PAGESIZE, new Integer(dsc.getMaxPageSize()));
 		}
-		int page_size = mDefaultPageSize < 0 ? dsc.getPageSize() : mDefaultPageSize;
+		int page_size = mDefaultPageSize < 0 ? dsc.getPageSize(model) : mDefaultPageSize;
 		addConfig(DataSetConfig.PROPERTITY_PAGESIZE, new Integer(page_size));
 		
 		Boolean isAutoCount = (dsc.isAutoCount() != null) ? dsc.isAutoCount() : autoCount;

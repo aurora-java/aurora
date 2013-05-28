@@ -53,14 +53,6 @@ public class DataSetConfig extends ComponentConfig {
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	
 	
-	public static CompositeMap createContext(CompositeMap map,String tagName) {
-		CompositeMap context = new CompositeMap(tagName);
-		if(map != null){
-			context.copy(map);
-		}
-		return context;		
-	}
-	
 	public String getSortType(){
 		return getString(PROPERTITY_SORT_TYPE);
 	}
@@ -160,8 +152,13 @@ public class DataSetConfig extends ComponentConfig {
 	public void setMaxPageSize(int size){
 		putInt(PROPERTITY_MAX_PAGESIZE, size);
 	}
-	public int getPageSize(){
-		return getInt(PROPERTITY_PAGESIZE, DEFAULT_PAGE_SIZE);		
+	public int getPageSize(CompositeMap model){
+		String pageSizeStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_PAGESIZE,""),model);
+		if("".equals(pageSizeStr)){
+			return DEFAULT_PAGE_SIZE;
+		}else {
+			return Integer.parseInt(pageSizeStr);
+		}
 	}
 	public void setPageSize(int size){
 		putInt(PROPERTITY_PAGESIZE, size);
