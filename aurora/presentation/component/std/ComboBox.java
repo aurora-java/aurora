@@ -8,7 +8,6 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComboBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 
 /**
@@ -35,8 +34,8 @@ public class ComboBox extends TextField {
 		ComboBoxConfig cbc = ComboBoxConfig.getInstance(view);
 //		if(cbc.getOptions()!=null)addConfig(ComboBoxConfig.PROPERTITY_OPTIONS, uncertain.composite.TextParser.parse(cbc.getOptions(), model));
 		if(cbc.getRenderer()!=null)addConfig(ComboBoxConfig.PROPERTITY_RENDERER, cbc.getRenderer());
-		addConfig(DataSetFieldConfig.PROPERTITY_VALUE_FIELD, view.getString(DataSetFieldConfig.PROPERTITY_VALUE_FIELD));
-		addConfig(DataSetFieldConfig.PROPERTITY_DISPLAY_FIELD, view.getString(DataSetFieldConfig.PROPERTITY_DISPLAY_FIELD));
+//		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
+//		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());
 		addConfig(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(cbc.isFetchRecord()));
 		
 		map.put(CONFIG, getConfigString());
