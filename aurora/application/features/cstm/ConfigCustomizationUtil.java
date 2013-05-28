@@ -242,7 +242,10 @@ public class ConfigCustomizationUtil {
 	private static CompositeMap createDatePicker(IObjectRegistry registry,String service_name, String dimension_type, String dimension_value, Long form_field_id,String bindTarget,CompositeMap field) throws SQLException{
 		DatePickerConfig dpf = DatePickerConfig.getInstance();
 		initEditorPropertity(dpf,bindTarget,field);
-		initDataSetField(registry,null,service_name, dimension_type, dimension_value, form_field_id,bindTarget,field);
+		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
+		dsfc.setName(field.getString("field_name"));
+		dsfc.setDataType("date");
+		initDataSetField(registry,dsfc,service_name, dimension_type, dimension_value, form_field_id,bindTarget,field);
 		String format = field.getString("datepicker_format");
 		if(format != null)dpf.setFormat(format);
 		Integer size  = field.getInt("datepicker_size");
