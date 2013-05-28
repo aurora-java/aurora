@@ -157,7 +157,13 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 		Field display_field = joinModel.getField(dbDisplayFieldName.toLowerCase());
 		if(display_field == null)
 			throw BmBuiltinExceptionFactory.createNamedFieldNotFound(dbDisplayFieldName.toLowerCase(), joinModel.getObjectContext());
-		boolean multiLanguage = display_field.getMultiLanguage();
+		
+		CompositeMap fields = joinModel.getObjectContext().getChild("fields");
+		CompositeMap multiLanguageIdField = fields.getChildByAttrib("multilanguagedescfield", dbDisplayFieldName.toLowerCase());
+		boolean multiLanguage = false;
+		if(multiLanguageIdField!= null){
+			multiLanguage = multiLanguageIdField.getBoolean("multilanguage");
+		}
 		Field ref_field = null;
 		if(multiLanguage){
 			ref_field = Field.createField(real_display_field_name+"_id");
@@ -165,7 +171,7 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 			ref_field.setMultiLanguage(true);
 			ref_field.setMultiLanguageDescField(real_display_field_name);
 			ref_field.setRelationName(relationName);
-			ref_field.setSourceField(dbDisplayFieldName.toLowerCase());
+			ref_field.setSourceField(multiLanguageIdField.getString("name"));
 		}else{
 			ref_field = Field.createField(real_display_field_name);
 			ref_field.setReferenceField(true);

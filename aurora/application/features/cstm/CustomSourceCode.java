@@ -749,11 +749,12 @@ public class CustomSourceCode {
 				record.setName("record");
 				if (header_id != null)
 					record.put("header_id", header_id);
-				// if (form_id != null)
-				// record.put("form_id", form_id);
 				record.put("cmp_id", fieldId);
-				if (promptProvider != null)
-					prompt = promptProvider.getMessage(prompt);
+				if (promptProvider != null){
+					String localPrompt = promptProvider.getMessage(prompt);
+					if(localPrompt != null && !"".equals(localPrompt))
+						prompt = localPrompt;
+				}
 				record.put("prompt", prompt);
 				record.put("enabled_flag", "Y");
 				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
