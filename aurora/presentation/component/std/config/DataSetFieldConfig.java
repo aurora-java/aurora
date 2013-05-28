@@ -37,6 +37,7 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	public static final String PROPERTITY_AUTOCOMPLETE_RENDERER = "autocompleterenderer";
 	public static final String PROPERTITY_FETCH_SINGLE = "fetchsingle";
 	public static final String PROPERTITY_LOV_PAGESIZE = "lovpagesize";
+	public static final String PROPERTITY_DATA_TYPE = "datatype";
 	
 	
 	
@@ -253,8 +254,17 @@ public class DataSetFieldConfig extends ComponentConfig  {
 		return getString(PROPERTITY_AUTOCOMPLETE_RENDERER);
 	}
 	
+	
 	public void setAutocompleteRenderer(String renderer) {
 		putString(PROPERTITY_AUTOCOMPLETE_RENDERER, renderer);
+	}
+	
+	public void setDataType(String type) {
+		putString(PROPERTITY_DATA_TYPE, type);
+	}
+	
+	public String getDataType() {
+		return getString(PROPERTITY_DATA_TYPE);
 	}
 	
 	public boolean getFetchSingle() {
