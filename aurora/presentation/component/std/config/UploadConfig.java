@@ -23,6 +23,7 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
 	public static final String PROPERTITY_SORT_SQL = "sortsql";
+	public static final String PROPERTITY_REQUIRE_SESSION = "requiresession";
 
 	public static final String DEFAULT_TYPE = "default";
 	public static final String DEFAULT_SORT_SQL = "creation_date desc";
@@ -136,6 +137,15 @@ public class UploadConfig extends ComponentConfig {
 	public void setShowDelete(boolean showDelete){
 		putBoolean(PROPERTITY_SHOW_DELETE, showDelete);
 	}
+	
+	public boolean isRequireSession(){
+		return getBoolean(PROPERTITY_REQUIRE_SESSION, true);
+	}
+	
+	public void setRequireSession(boolean requireSession){
+		putBoolean(PROPERTITY_REQUIRE_SESSION, requireSession);
+	}
+	
 	
 	public boolean isShowList(){
 		return getBoolean(PROPERTITY_SHOW_LIST, true);
