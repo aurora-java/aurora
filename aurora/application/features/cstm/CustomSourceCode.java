@@ -747,6 +747,7 @@ public class CustomSourceCode {
 				CompositeMap record = new CompositeMap("record");
 				String name = currentNode.getString("name");
 				String prompt = currentNode.getString("prompt");
+				Integer width = currentNode.getInt("width");
 				record.put("name", name);
 				record.setName("record");
 				if (header_id != null)
@@ -758,6 +759,7 @@ public class CustomSourceCode {
 						prompt = localPrompt;
 				}
 				record.put("prompt", prompt);
+				if(width!=null)record.put("width", width);
 				record.put("enabled_flag", "Y");
 				CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
 				if (dataSet == null)

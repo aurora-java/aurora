@@ -24,6 +24,7 @@ import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.DatePickerConfig;
 import aurora.presentation.component.std.config.FieldConfig;
+import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.LovConfig;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
@@ -49,9 +50,15 @@ public class ConfigCustomizationUtil {
 		StringBuffer config_sql = new StringBuffer();
 		config_sql.append(" select s.service_name,h.dimension_type,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
 		config_sql.append(" 	   t.editabled_flag,t.enabled_flag,t.required_flag,t.bm,t.field_id, ");
-		config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id ");
-		config_sql.append("   from sys_dynamic_forms t, sys_dynamic_headers h,sys_service s ");
-		config_sql.append("  where h.header_id = t.header_id and s.service_id = h.service_id and t.form_id = ? ");
+		config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id, ");
+		config_sql.append("        f.field_name,f.field_description,f.editor_type,nvl(t.width,f.width) width,f.height,");
+		config_sql.append("        f.string_length,f.string_format,f.string_case,");
+		config_sql.append("        f.number_allowdecimals,f.number_decimalprecision,f.number_allownegative,f.number_allowformat,f.number_allowpad,");
+		config_sql.append("        f.datepicker_format,f.datepicker_size,");
+		config_sql.append("        f.combobox_value_field,f.combobox_display_field,f.combobox_mapping,f.combobox_datasource_type,f.combobox_datasource_value,");
+		config_sql.append("        f.lov_height,f.lov_height,f.lov_width,f.lov_grid_height,f.lov_title,f.lov_bm,f.lov_value_field,f.lov_display_field,f.lov_mapping,f.lov_labelwidth ");		
+		config_sql.append("   from sys_dynamic_forms t, sys_dynamic_headers h,sys_service s, sys_business_object_flexfields f ");
+		config_sql.append("  where h.header_id = t.header_id and s.service_id = h.service_id and t.field_id = f.field_id(+) and t.form_id = ? ");
 		parameters[0] = new PrepareParameter(new IntegerType(), form_field_id);
 		CompositeMap result = CustomSourceCode.sqlQueryWithParas(registry, config_sql.toString(), parameters);
 		if (result != null) {
@@ -64,6 +71,7 @@ public class ConfigCustomizationUtil {
 
 					int flex_field_id = record.getInt("field_id", -1);
 					String prompt = record.getString("prompt");
+					String width = record.getString("width");
 					String service_name = record.getString("service_name");
 					String dimension_type = record.getString("dimension_type");
 					String dimension_value = record.getString("dimension_value");
@@ -89,6 +97,10 @@ public class ConfigCustomizationUtil {
 						}
 						if (isNotNULL(prompt)) {
 							setElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,
+									source_type, source_id);
+						}
+						if (isNotNULL(width)) {
+							setElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "width", width,
 									source_type, source_id);
 						}
 						String dataSetID = editor.getString("bindtarget");
@@ -137,44 +149,27 @@ public class ConfigCustomizationUtil {
 							}
 						}
 					} else {
-						StringBuffer field_sql = new StringBuffer("select ");
-						field_sql
-								.append("field_name,field_description,editor_type,width,height,")
-								.append("string_length,string_format,string_case,")
-								.append("number_allowdecimals,number_decimalprecision,number_allownegative,number_allowformat,number_allowpad,")
-								.append("datepicker_format,datepicker_size,")
-								.append("combobox_value_field,combobox_display_field,combobox_mapping,combobox_datasource_type,combobox_datasource_value,")
-								.append("lov_height,lov_height,lov_width,lov_grid_height,lov_title,lov_bm,lov_value_field,lov_display_field,lov_mapping,lov_labelwidth ")
-								.append("from sys_business_object_flexfields where field_id =").append(flex_field_id);
-						CompositeMap fields = CustomSourceCode.sqlQuery(registry, field_sql.toString());
-						if (fields != null && fields.getChilds() != null) {
-							CompositeMap field = (CompositeMap) fields.getChilds().get(0);
-							field.putString("field_description", prompt);
-							field.putString("editabled_flag", editabled_flag);
-							field.putString("required_flag", required_flag);
-
-							String editorType = field.getString("editor_type");
-							CompositeMap fieldObject = null;
-							if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-								fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, form_field_id,
-										bindTarget, field, source_type);
-							} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-								fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, form_field_id,
-										bindTarget, field, source_type);
-							} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-								fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, form_field_id,
-										bindTarget, field, source_type);
-							} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-								fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, form_field_id,
-										bindTarget, field, source_type);
-							} else if ("LOV".equalsIgnoreCase(editorType)) {
-								fieldObject = createLov(registry, service_name, dimension_type, dimension_value, form_field_id, bindTarget,
-										field, source_type);
-							}
-							if (fieldObject != null)
-								addArrayElement(registry, service_name, dimension_type, dimension_value, containerId, "", "last_child",
-										fieldObject.toXML(), source_type, source_id);
+						String editorType = record.getString("editor_type");
+						CompositeMap fieldObject = null;
+						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
+							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, form_field_id,
+									bindTarget, record, source_type);
+						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
+							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, form_field_id,
+									bindTarget, record, source_type);
+						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
+							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, form_field_id,
+									bindTarget, record, source_type);
+						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
+							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, form_field_id,
+									bindTarget, record, source_type);
+						} else if ("LOV".equalsIgnoreCase(editorType)) {
+							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, form_field_id, bindTarget,
+									record, source_type);
 						}
+						if (fieldObject != null)
+							addArrayElement(registry, service_name, dimension_type, dimension_value, containerId, "", "last_child",
+									fieldObject.toXML(), source_type, source_id);
 					}
 				}
 			}
@@ -198,12 +193,19 @@ public class ConfigCustomizationUtil {
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
 		config_sql.append(" select s.service_name,h.dimension_type,h.dimension_value, ");
-		config_sql.append("        t.cmp_id,t.name,t.prompt,t.width, ");
+		config_sql.append("        t.cmp_id,t.name,t.prompt,nvl(t.width,f.width) width ");
 		config_sql.append("        t.align,t.locked_flag,t.hidden_flag, ");
-		config_sql.append("        t.sequence,t.required_flag,t.field_id ");
-		config_sql.append("   from sys_dynamic_grids t, sys_dynamic_headers h, sys_service s ");
+		config_sql.append("        t.sequence,t.required_flag,t.field_id, ");
+		config_sql.append("        f.field_name,f.field_description,f.editor_type,f.height,");
+		config_sql.append("        f.string_length,f.string_format,f.string_case,");
+		config_sql.append("        f.number_allowdecimals,f.number_decimalprecision,f.number_allownegative,f.number_allowformat,f.number_allowpad,");
+		config_sql.append("        f.datepicker_format,f.datepicker_size,");
+		config_sql.append("        f.combobox_value_field,f.combobox_display_field,f.combobox_mapping,f.combobox_datasource_type,f.combobox_datasource_value,");
+		config_sql.append("        f.lov_height,f.lov_height,f.lov_width,f.lov_grid_height,f.lov_title,f.lov_bm,f.lov_value_field,f.lov_display_field,f.lov_mapping,f.lov_labelwidth ");
+		config_sql.append("   from sys_dynamic_grids t, sys_dynamic_headers h, sys_service s,sys_business_object_flexfields f  ");
 		config_sql.append("  where h.header_id = t.header_id ");
 		config_sql.append("        and s.service_id = h.service_id ");
+		config_sql.append("        and t.field_id = f.field_id(+) ");
 		config_sql.append("        and t.grid_id = ? ");
 		parameters[0] = new PrepareParameter(new IntegerType(), grid_field_id);
 		CompositeMap result = CustomSourceCode.sqlQueryWithParas(registry, config_sql.toString(), parameters);
@@ -230,11 +232,14 @@ public class ConfigCustomizationUtil {
 					CompositeMap fileContent = CustomSourceCode.getFileContent(registry, filePath);
 					int flex_field_id = record.getInt("field_id", -1);
 
+					CompositeMap grid = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
+					if (grid == null)
+						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "grid", "id", cmp_id);
+					String dataSetID = grid.getString("bindtarget");
+					if (dataSetID == null || "".equals(dataSetID))
+						throw BuiltinExceptionFactory.createAttributeMissing(grid.asLocatable(), "bindtarget");
 					// 是否弹性域字段
 					if (flex_field_id < 0) {
-						CompositeMap grid = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
-						if (grid == null)
-							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "grid", "id", cmp_id);
 						if ("Y".equals(hidden_flag)) {
 							deleteArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, source_type, source_id);
@@ -257,9 +262,7 @@ public class ConfigCustomizationUtil {
 									column_name, "lock", lock, source_type, source_id);
 						}
 						if (isNotNULL(required_flag)) {
-							String dataSetID = grid.getString("bindtarget");
-							if (dataSetID == null || "".equals(dataSetID))
-								throw BuiltinExceptionFactory.createAttributeMissing(grid.asLocatable(), "bindtarget");
+							
 							CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, dataSetID);
 							if (dataSet == null)
 								throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id",
@@ -288,7 +291,34 @@ public class ConfigCustomizationUtil {
 							}
 						}
 					} else {
-
+						String editorType = record.getString("editor_type");
+						CompositeMap fieldObject = null;
+						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
+							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, grid_field_id,
+									dataSetID, record, source_type);
+						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
+							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, grid_field_id,
+									dataSetID, record, source_type);
+						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
+							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, grid_field_id,
+									dataSetID, record, source_type);
+						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
+							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, grid_field_id,
+									dataSetID, record, source_type);
+						} else if ("LOV".equalsIgnoreCase(editorType)) {
+							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, grid_field_id, dataSetID,
+									record, source_type);
+						}
+						if (fieldObject != null) {
+							GridColumnConfig gcc = GridColumnConfig.getInstance();
+							FieldConfig fc = FieldConfig.getInstance(fieldObject);
+							gcc.setName(fc.getName());
+							gcc.setPrompt(fc.getPrompt());
+							gcc.setWidth(fc.getWidth());
+							if (isNotNULL(locked_flag)) gcc.setLock("Y".equals(locked_flag));
+							if (isNotNULL(align)) gcc.setAlign(align);
+							addArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "last_child",gcc.getObjectContext().toXML(), source_type, source_id);
+						}
 					}
 				}
 			}
@@ -367,10 +397,10 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void initEditorPropertity(FieldConfig cfg, String bindTarget, CompositeMap field) {
-		cfg.setName(field.getString("field_name"));
+	private static void initEditorPropertity(FieldConfig cfg, String name, String bindTarget, CompositeMap field) {
+		cfg.setName(name);
 		cfg.setBindTarget(bindTarget);
-		cfg.setPrompt(field.getString("field_description"));
+		cfg.setPrompt(field.getString("prompt"));
 
 		Integer width = field.getInt("width");
 		if (width != null)
@@ -388,7 +418,7 @@ public class ConfigCustomizationUtil {
 	private static CompositeMap createTextField(IObjectRegistry registry, String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException {
 		TextFieldConfig ttf = TextFieldConfig.getInstance();
-		initEditorPropertity(ttf, bindTarget, field);
+		initEditorPropertity(ttf, field.getString("field_name"),bindTarget, field);
 		initDataSetField(registry, null, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		Integer stringLeng = field.getInt("string_length");
 		String strCase = field.getString("string_case");
@@ -407,7 +437,7 @@ public class ConfigCustomizationUtil {
 	private static CompositeMap createNumberField(IObjectRegistry registry, String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException {
 		NumberFieldConfig nf = NumberFieldConfig.getInstance();
-		initEditorPropertity(nf, bindTarget, field);
+		initEditorPropertity(nf, field.getString("field_name"),bindTarget, field);
 		initDataSetField(registry, null, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		String allowdecimals = field.getString("number_allowdecimals");
 		if (allowdecimals != null) {
@@ -439,7 +469,7 @@ public class ConfigCustomizationUtil {
 	private static CompositeMap createDatePicker(IObjectRegistry registry, String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field,String source_type) throws SQLException {
 		DatePickerConfig dpf = DatePickerConfig.getInstance();
-		initEditorPropertity(dpf, bindTarget, field);
+		initEditorPropertity(dpf, field.getString("field_name"), bindTarget, field);
 		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
 		dsfc.setName(field.getString("field_name"));
 		dsfc.setDataType("date");
@@ -459,12 +489,11 @@ public class ConfigCustomizationUtil {
 	private static CompositeMap createLov(IObjectRegistry registry, String service_name, String dimension_type, String dimension_value,
 			Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException, JSONException {
 		LovConfig lc = LovConfig.getInstance();
-		initEditorPropertity(lc, bindTarget, field);
-
-		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
 		String name = field.getString("field_name");
 		String display = name + "_display";
-		lc.setName(display);
+		initEditorPropertity(lc,display, bindTarget, field);
+
+		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
 		dsfc.setName(display);
 		Integer lovHeight = field.getInt("lov_height");
 		if (lovHeight != null)
@@ -518,10 +547,9 @@ public class ConfigCustomizationUtil {
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException,
 			JSONException {
 		ComboBoxConfig cbc = ComboBoxConfig.getInstance();
-		initEditorPropertity(cbc, bindTarget, field);
 		String name = field.getString("field_name");
 		String display = name + "_display";
-		cbc.setName(display);
+		initEditorPropertity(cbc, display, bindTarget, field);
 
 		String dataType = field.getString("combobox_datasource_type");
 		String id = IDGenerator.getInstance().generate();
