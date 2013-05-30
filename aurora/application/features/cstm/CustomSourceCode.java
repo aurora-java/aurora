@@ -241,8 +241,8 @@ public class CustomSourceCode {
 		Element ele = schemaManager.getElement(objectNode);
 		if (ele != null && ele.isArray()) {
 			String index_field = dbRecord.getString(KEY_INDEX_FIELD);
-			CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager, objectNode, ele.getElementType().getQName());
 			if (index_field != null) {
+				CompositeMap newChild = CompositeMapSchemaUtil.addElement(schemaManager, objectNode, ele.getElementType().getQName());
 				String index_value = dbRecord.getString(KEY_INDEX_VALUE);
 				if (index_value == null)
 					throw SourceCodeUtil.createAttributeMissingException(KEY_RECORD_ID, record_id, KEY_INDEX_VALUE, dbRecord.asLocatable());
