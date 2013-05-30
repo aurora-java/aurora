@@ -3,8 +3,10 @@ package aurora.application.features.cstm;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -873,6 +875,10 @@ public class CustomSourceCode {
 		CompositeMap columns = gridComponent.getChild("columns");
 		if (columns == null)
 			return result;
+		String bindTarget = gridComponent.getString("bindtarget");
+		CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+		if (dataSet == null)
+			throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
 		List<CompositeMap> columnList = columns.getChilds();
 		if (columnList != null) {
 			for (CompositeMap column : columnList) {
@@ -894,6 +900,18 @@ public class CustomSourceCode {
 				record.put("align", columnConfig.getAlign());
 				record.put("locked_flag", columnConfig.isLock() ? "Y" : "N");
 				record.put("hidden_flag", columnConfig.isHidden() ? "Y" : "N");
+
+				record.put("required_flag", "N");
+				CompositeMap fields = dataSet.getChild("fields");
+				if (fields != null) {
+					CompositeMap datasetField = fields.getChildByAttrib("name", name);
+					if (datasetField != null) {
+						DataSetFieldConfig fieldConfig = DataSetFieldConfig.getInstance(datasetField);
+						if (fieldConfig.getRequired())
+							record.put("required_flag", "Y");
+					}
+				}
+				
 				CompositeMap resultChild = result.getChildByAttrib("name", name);
 				if (resultChild == null) {
 					result.addChild(record);
@@ -1045,6 +1063,51 @@ public class CustomSourceCode {
 		return result;
 	}
 
+	public static CompositeMap sqlQueryWithParas(IObjectRegistry registry, String prepareSQL, PrepareParameter[] prepareParameters)
+			throws Exception {
+		ResultSet resultSet = null;
+		CompositeMap result = new CompositeMap("result");
+		PreparedStatement st = null;
+		try {
+			Connection conn = CustomSourceCode.getContextConnection(registry);
+			st = conn.prepareStatement(prepareSQL);
+			if (prepareParameters != null) {
+				for (int i = 0; i < prepareParameters.length; i++) {
+					PrepareParameter parameter = prepareParameters[i];
+					parameter.getDataType().setParameter(st, i+1, parameter.getValue());
+				}
+			}
+			resultSet = st.executeQuery();
+			ResultSetLoader mRsLoader = new ResultSetLoader();
+			mRsLoader.setFieldNameCase(Character.LOWERCASE_LETTER);
+			FetchDescriptor desc = FetchDescriptor.fetchAll();
+			CompositeMapCreator compositeCreator = new CompositeMapCreator(result);
+			mRsLoader.loadByResultSet(resultSet, desc, compositeCreator);
+		} finally {
+			DBUtil.closeStatement(st);
+		}
+		return result;
+	}
+	
+	public static boolean sqlExecuteWithParas(IObjectRegistry registry, String prepareSQL,PrepareParameter[] prepareParameters) throws SQLException {
+		PreparedStatement st = null;
+		boolean success = false;
+		try {
+			Connection conn = CustomSourceCode.getContextConnection(registry);
+			st = conn.prepareStatement(prepareSQL);
+			if (prepareParameters != null) {
+				for (int i = 0; i <prepareParameters.length; i++) {
+					PrepareParameter parameter = prepareParameters[i];
+					parameter.getDataType().setParameter(st, i+1, parameter.getValue());
+				}
+			}
+			success = st.execute();
+		} finally {
+			DBUtil.closeStatement(st);
+		}
+		return success;
+	}
+
 	private static ParsedSql createStatement(String sql) {
 		ParsedSql stmt = new ParsedSql();
 		stmt.parse(sql);
@@ -1053,6 +1116,14 @@ public class CustomSourceCode {
 
 	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long form_field_id) throws Exception {
 		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath, form_field_id);
+	}
+	
+	public static void gridConfigConvertToCust(IObjectRegistry registry, Long grid_field_id) throws Exception {
+		ConfigCustomizationUtil.gridConfigConvertToCust(registry,grid_field_id);
+	}
+	
+	public static void gridConfigConvertToCustReOrder(IObjectRegistry registry,Long grid_header_id,String cmp_id) throws Exception{
+		ConfigCustomizationUtil.gridConfigConvertToCustReOrder(registry,grid_header_id,cmp_id);
 	}
 
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
