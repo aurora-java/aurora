@@ -311,6 +311,7 @@ public class ConfigCustomizationUtil {
 		config_sql.append("  			  from sys_dynamic_grids t");
 		config_sql.append("        		  where t.cmp_id = ? ");
 		config_sql.append("        		    and t.header_id = ? ");
+		config_sql.append("        		    and t.sequence is not null ");
 		config_sql.append("       		  order by t.sequence) g) column_names ");
 		config_sql.append("   from sys_dynamic_headers h, sys_service s");
 		config_sql.append("  where s.service_id = h.service_id ");
@@ -329,11 +330,12 @@ public class ConfigCustomizationUtil {
 					throw new IllegalArgumentException(" find more than one record with parameter:'grid_header_id'=" + grid_header_id
 							+ " cmp_id:" + cmp_id);
 				CompositeMap record = childList.get(0);
+				String column_names = record.getString("column_names");
+				if(!isNotNULL(column_names))
+					return;
 				String service_name = record.getString("service_name");
 				String dimension_type = record.getString("dimension_type");
 				String dimension_value = record.getString("dimension_value");
-				String column_names = record.getString("column_names");
-
 				StringBuffer delete_cust_sql = new StringBuffer(
 						"delete from sys_config_customization t where t.source_id = ? and upper(t.source_type)='" + source_type
 								+ "' and source_file = ?");

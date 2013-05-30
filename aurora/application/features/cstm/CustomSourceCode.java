@@ -134,7 +134,7 @@ public class CustomSourceCode {
 						objectNode.getParent().removeChild(objectNode);
 					CompositeLoader compositeLoader = new CompositeLoader();
 					try {
-						objectNode.getParent().replaceChild(objectNode, compositeLoader.loadFromString(config_content,"UTF-8"));
+						objectNode.getParent().replaceChild(objectNode, compositeLoader.loadFromString(config_content, "UTF-8"));
 					} catch (Throwable e) {
 						if (e instanceof SAXParseException) {
 							SAXParseException saxPe = (SAXParseException) e;
@@ -254,7 +254,7 @@ public class CustomSourceCode {
 		CompositeLoader compositeLoader = new CompositeLoader();
 		CompositeMap newChild = null;
 		try {
-			newChild = compositeLoader.loadFromString(config_content,"UTF-8");
+			newChild = compositeLoader.loadFromString(config_content, "UTF-8");
 		} catch (Throwable e) {
 			if (e instanceof SAXParseException) {
 				SAXParseException saxPe = (SAXParseException) e;
@@ -752,9 +752,9 @@ public class CustomSourceCode {
 				if (header_id != null)
 					record.put("header_id", header_id);
 				record.put("cmp_id", fieldId);
-				if (promptProvider != null){
+				if (promptProvider != null) {
 					String localPrompt = promptProvider.getMessage(prompt);
-					if(localPrompt != null && !"".equals(localPrompt))
+					if (localPrompt != null && !"".equals(localPrompt))
 						prompt = localPrompt;
 				}
 				record.put("prompt", prompt);
@@ -890,9 +890,9 @@ public class CustomSourceCode {
 				String name = columnConfig.getName();
 				record.put("name", name);
 				String prompt = columnConfig.getPrompt();
-				if (promptProvider != null){
+				if (promptProvider != null) {
 					String localPrompt = promptProvider.getMessage(prompt);
-					if(localPrompt != null && !"".equals(localPrompt))
+					if (localPrompt != null && !"".equals(localPrompt))
 						prompt = localPrompt;
 				}
 				record.put("prompt", prompt);
@@ -911,7 +911,7 @@ public class CustomSourceCode {
 							record.put("required_flag", "Y");
 					}
 				}
-				
+
 				CompositeMap resultChild = result.getChildByAttrib("name", name);
 				if (resultChild == null) {
 					result.addChild(record);
@@ -946,7 +946,7 @@ public class CustomSourceCode {
 			String bindTarget = currentNode.getString("bindtarget");
 			if (bindTarget != null && !"".equals(bindTarget)) {
 				CompositeMap resultChild = result.getChildByAttrib("bindtarget", bindTarget);
-				if(resultChild == null){
+				if (resultChild == null) {
 					CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
 					if (dataSet == null)
 						throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
@@ -956,9 +956,9 @@ public class CustomSourceCode {
 						String tableName = model.getBaseTable();
 						if (tableName != null) {
 							CompositeMap record = new CompositeMap("record");
-							record.put("bindtarget",bindTarget);
-							record.put("model",bm);
-							record.put("table_name",tableName.toUpperCase());
+							record.put("bindtarget", bindTarget);
+							record.put("model", bm);
+							record.put("table_name", tableName.toUpperCase());
 							result.addChild(record);
 						}
 					}
@@ -972,10 +972,18 @@ public class CustomSourceCode {
 			}
 		}
 	}
+	public static CompositeMap getBusinessObjectInContainer(IObjectRegistry registry, String filePath,String containerType,String containerId) throws Exception {
+		if("FORM".equalsIgnoreCase(containerType))
+			return getBusinessObjectInForm(registry,filePath,containerId);
+		if("GRID".equalsIgnoreCase(containerType))
+			return getBusinessObjectInGrid(registry,filePath,containerId);
+		CompositeMap result = new CompositeMap("result");
+		return result;
+	}
 
 	public static CompositeMap getBusinessObjectInForm(IObjectRegistry registry, String filePath, String formId) throws Exception {
 		CompositeMap fileContent = getFileContent(registry, filePath);
-		CompositeMap forms = SourceCodeUtil.searchNodeById(fileContent, formId);
+		CompositeMap form = SourceCodeUtil.searchNodeById(fileContent, formId);
 		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
 		if (schemaManager == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
@@ -996,7 +1004,7 @@ public class CustomSourceCode {
 		IType containerType = schemaManager.getType(containerQN);
 
 		CompositeMap bos = new CompositeMap();
-		List<CompositeMap> childList = forms.getChilds();
+		List<CompositeMap> childList = form.getChilds();
 		if (childList != null) {
 			for (CompositeMap child : childList) {
 				serachBusinessObjectInForm(factory, fileContent, child, bos, schemaManager, fieldType, containerType);
@@ -1004,7 +1012,7 @@ public class CustomSourceCode {
 		}
 		CompositeMap result = new CompositeMap("result");
 		List<CompositeMap> boList = bos.getChilds();
-		if (boList== null || boList.size() < 1)
+		if (boList == null || boList.size() < 1)
 			return result;
 		StringBuffer sql = new StringBuffer(
 				"select t.object_id, t.object_name, t.table_name, t.comments,b.bindtarget, b.bm_name  from sys_business_objects t,(");
@@ -1013,12 +1021,12 @@ public class CustomSourceCode {
 		boolean firstElement = true;
 		for (CompositeMap element : boList) {
 			if (firstElement) {
-				elementSql = " select '"+ element.getString("bindtarget") + "' bindtarget,'" + element.getString("model") + "' bm_name,'" 
+				elementSql = " select '" + element.getString("bindtarget") + "' bindtarget,'" + element.getString("model") + "' bm_name,'"
 						+ element.getString("table_name") + "' table_name from dual";
 				firstElement = false;
 			} else {
-				elementSql = " union all select '" + element.getString("bindtarget") + "' bindtarget,'" + element.getString("model") + "' bm_name,'" 
-						+ element.getString("table_name") + "' table_name from dual";
+				elementSql = " union all select '" + element.getString("bindtarget") + "' bindtarget,'" + element.getString("model")
+						+ "' bm_name,'" + element.getString("table_name") + "' table_name from dual";
 			}
 			sql.append(elementSql);
 		}
@@ -1030,6 +1038,55 @@ public class CustomSourceCode {
 
 		logger.config(filePath + " getBusinessObjectInForm result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
 
+		return result;
+
+	}
+
+	public static CompositeMap getBusinessObjectInGrid(IObjectRegistry registry, String filePath, String gridId) throws Exception {
+		CompositeMap fileContent = getFileContent(registry, filePath);
+		CompositeMap grid = SourceCodeUtil.searchNodeById(fileContent, gridId);
+		ISchemaManager schemaManager = (ISchemaManager) registry.getInstanceOfType(ISchemaManager.class);
+		if (schemaManager == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, ISchemaManager.class,
+					CustomSourceCode.class.getCanonicalName());
+		IModelFactory factory = (IModelFactory) registry.getInstanceOfType(IModelFactory.class);
+		if (factory == null)
+			throw BuiltinExceptionFactory.createInstanceNotFoundException(null, IModelFactory.class,
+					CustomSourceCode.class.getCanonicalName());
+		DataSource dataSource = (DataSource) registry.getInstanceOfType(DataSource.class);
+		if (dataSource == null)
+			throw BuiltinExceptionFactory
+					.createInstanceNotFoundException(null, DataSource.class, CustomSourceCode.class.getCanonicalName());
+
+		ILogger logger = getLogger(registry);
+
+		CompositeMap result = new CompositeMap("result");
+		String bindTarget = grid.getString("bindtarget");
+		if (bindTarget == null || "".equals(bindTarget))
+			throw BuiltinExceptionFactory.createAttributeMissing(grid.asLocatable(), "bindtarget");
+		CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, bindTarget);
+		if (dataSet == null)
+			throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", "dataSet");
+		String bm = dataSet.getString("model");
+		if (bm != null) {
+			BusinessModel model = factory.getModel(bm);
+			String tableName = model.getBaseTable();
+			if (tableName != null) {
+				StringBuffer sql = new StringBuffer(
+						"select t.object_id, t.object_name, t.table_name, t.comments,b.bindtarget, b.bm_name  from sys_business_objects t,(");
+
+				String elementSql = " select '" + bindTarget + "' bindtarget,'" + bm + "' bm_name,'" + tableName.toUpperCase()
+						+ "' table_name from dual";
+				sql.append(elementSql);
+				sql.append(") b  where UPPER(t.table_name) = UPPER(b.table_name) and t.enabled_flag = 'Y'");
+
+				logger.config(" getBusinessObjectInGrid sql:" + sql.toString());
+
+				result = sqlQuery(registry, sql.toString());
+
+				logger.config(filePath + " getBusinessObjectInGrid result is:" + XMLOutputter.LINE_SEPARATOR + result.toXML());
+			}
+		}
 		return result;
 
 	}
@@ -1057,8 +1114,8 @@ public class CustomSourceCode {
 			mRsLoader.loadByResultSet(resultSet, desc, compositeCreator);
 		} finally {
 			DBUtil.closeResultSet(resultSet);
-//			if (sql_context != null)
-//				sql_context.freeConnection();
+			// if (sql_context != null)
+			// sql_context.freeConnection();
 		}
 		return result;
 	}
@@ -1074,7 +1131,7 @@ public class CustomSourceCode {
 			if (prepareParameters != null) {
 				for (int i = 0; i < prepareParameters.length; i++) {
 					PrepareParameter parameter = prepareParameters[i];
-					parameter.getDataType().setParameter(st, i+1, parameter.getValue());
+					parameter.getDataType().setParameter(st, i + 1, parameter.getValue());
 				}
 			}
 			resultSet = st.executeQuery();
@@ -1088,17 +1145,18 @@ public class CustomSourceCode {
 		}
 		return result;
 	}
-	
-	public static boolean sqlExecuteWithParas(IObjectRegistry registry, String prepareSQL,PrepareParameter[] prepareParameters) throws SQLException {
+
+	public static boolean sqlExecuteWithParas(IObjectRegistry registry, String prepareSQL, PrepareParameter[] prepareParameters)
+			throws SQLException {
 		PreparedStatement st = null;
 		boolean success = false;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(prepareSQL);
 			if (prepareParameters != null) {
-				for (int i = 0; i <prepareParameters.length; i++) {
+				for (int i = 0; i < prepareParameters.length; i++) {
 					PrepareParameter parameter = prepareParameters[i];
-					parameter.getDataType().setParameter(st, i+1, parameter.getValue());
+					parameter.getDataType().setParameter(st, i + 1, parameter.getValue());
 				}
 			}
 			success = st.execute();
@@ -1117,13 +1175,13 @@ public class CustomSourceCode {
 	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long form_field_id) throws Exception {
 		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath, form_field_id);
 	}
-	
+
 	public static void gridConfigConvertToCust(IObjectRegistry registry, Long grid_field_id) throws Exception {
-		ConfigCustomizationUtil.gridConfigConvertToCust(registry,grid_field_id);
+		ConfigCustomizationUtil.gridConfigConvertToCust(registry, grid_field_id);
 	}
-	
-	public static void gridConfigConvertToCustReOrder(IObjectRegistry registry,Long grid_header_id,String cmp_id) throws Exception{
-		ConfigCustomizationUtil.gridConfigConvertToCustReOrder(registry,grid_header_id,cmp_id);
+
+	public static void gridConfigConvertToCustReOrder(IObjectRegistry registry, Long grid_header_id, String cmp_id) throws Exception {
+		ConfigCustomizationUtil.gridConfigConvertToCustReOrder(registry, grid_header_id, cmp_id);
 	}
 
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
