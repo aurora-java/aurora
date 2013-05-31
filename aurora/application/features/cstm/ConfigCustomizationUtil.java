@@ -152,20 +152,15 @@ public class ConfigCustomizationUtil {
 						String editorType = record.getString("editor_type");
 						CompositeMap fieldObject = null;
 						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, form_field_id,
-									bindTarget, record, source_type);
+							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, form_field_id,
-									bindTarget, record, source_type);
+							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, form_field_id,
-									bindTarget, record, source_type);
+							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, form_field_id,
-									bindTarget, record, source_type);
+							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("LOV".equalsIgnoreCase(editorType)) {
-							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, form_field_id, bindTarget,
-									record, source_type);
+							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, form_field_id, bindTarget,record, source_type);
 						}
 						if (fieldObject != null)
 							addArrayElement(registry, service_name, dimension_type, dimension_value, containerId, "", "last_child",
@@ -193,8 +188,8 @@ public class ConfigCustomizationUtil {
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
 		config_sql.append(" select s.service_name,h.dimension_type,h.dimension_value, ");
-		config_sql.append("        t.cmp_id,t.name,t.prompt,nvl(t.width,f.width) width ");
-		config_sql.append("        t.align,t.locked_flag,t.hidden_flag, ");
+		config_sql.append("        t.cmp_id,t.name,t.prompt,nvl(t.width,f.width) width, ");
+		config_sql.append("        t.align,t.locked_flag,t.hidden_flag,t.editabled_flag,");
 		config_sql.append("        t.sequence,t.required_flag,t.field_id, ");
 		config_sql.append("        f.field_name,f.field_description,f.editor_type,f.height,");
 		config_sql.append("        f.string_length,f.string_format,f.string_case,");
@@ -222,6 +217,7 @@ public class ConfigCustomizationUtil {
 					String prompt = record.getString("prompt");
 					String width = record.getString("width");
 					String align = record.getString("align");
+					String editabled_flag = record.getString("editabled_flag");
 					String locked_flag = record.getString("locked_flag");
 					String lock = "Y".equals(locked_flag) ? "true" : "false";
 					String hidden_flag = record.getString("hidden_flag");
@@ -294,30 +290,41 @@ public class ConfigCustomizationUtil {
 						String editorType = record.getString("editor_type");
 						CompositeMap fieldObject = null;
 						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, grid_field_id,
-									dataSetID, record, source_type);
+							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, grid_field_id,
-									dataSetID, record, source_type);
+							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, grid_field_id,
-									dataSetID, record, source_type);
+							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, grid_field_id,
-									dataSetID, record, source_type);
+							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("LOV".equalsIgnoreCase(editorType)) {
-							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, grid_field_id, dataSetID,
-									record, source_type);
+							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, grid_field_id, dataSetID,record, source_type);
 						}
+						
+						
 						if (fieldObject != null) {
 							GridColumnConfig gcc = GridColumnConfig.getInstance();
 							FieldConfig fc = FieldConfig.getInstance(fieldObject);
 							gcc.setName(fc.getName());
 							gcc.setPrompt(fc.getPrompt());
 							gcc.setWidth(fc.getWidth());
+							if("DATEPICKER".equalsIgnoreCase(editorType))
+								gcc.setRenderer("Aurora.formatDate");
+							String editor = null;
+							if("Y".equals(editabled_flag)){
+								editor = IDGenerator.getInstance().generate();
+								gcc.setEditor(editor);	
+							}
 							if (isNotNULL(locked_flag)) gcc.setLock("Y".equals(locked_flag));
 							if (isNotNULL(align)) gcc.setAlign(align);
 							addArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "last_child",gcc.getObjectContext().toXML(), source_type, source_id);
+							if("Y".equals(editabled_flag)){
+								fieldObject.put("name", null);
+								fieldObject.put("bindtarget", null);
+								fieldObject.put("id", editor);
+								fieldObject.put("prompt", null);
+								addArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "editors", "last_child",fieldObject.toXML(), source_type, source_id);
+							}
 						}
 					}
 				}
