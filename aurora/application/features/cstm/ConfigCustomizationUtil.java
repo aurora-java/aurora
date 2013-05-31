@@ -48,7 +48,7 @@ public class ConfigCustomizationUtil {
 
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
-		config_sql.append(" select s.service_name,h.dimension_type,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
+		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_type,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
 		config_sql.append(" 	   t.editabled_flag,t.enabled_flag,t.required_flag,t.bm,t.field_id, ");
 		config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id, ");
 		config_sql.append("        f.field_name,f.field_description,f.editor_type,nvl(t.width,f.width) width,f.height,");
@@ -71,6 +71,7 @@ public class ConfigCustomizationUtil {
 
 					int flex_field_id = record.getInt("field_id", -1);
 					String prompt = record.getString("prompt");
+					String customization_header_id = record.getString("customization_header_id");
 					String width = record.getString("width");
 					String service_name = record.getString("service_name");
 					String dimension_type = record.getString("dimension_type");
@@ -82,8 +83,8 @@ public class ConfigCustomizationUtil {
 					String required_flag = record.getString("required_flag");
 					String required = "Y".equals(required_flag) ? "true" : "false";
 					String bm = record.getString("bm");
-					String row_num = record.getString("row_num");
-					String column_num = record.getString("column_num");
+//					String row_num = record.getString("row_num");
+//					String column_num = record.getString("column_num");
 					String bindTarget = record.getString("bind_target");
 					String containerId = record.getString("container_id");
 					// 是否弹性域字段
@@ -92,16 +93,14 @@ public class ConfigCustomizationUtil {
 						if (editor == null)
 							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "editor", "id", cmp_id);
 						if ("N".equals(enabled_flag)) {
-							deleteNode(registry, service_name, dimension_type, dimension_value, cmp_id, source_type, source_id);
+							deleteNode(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, source_type, source_id);
 							continue;
 						}
 						if (isNotNULL(prompt)) {
-							setElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,
-									source_type, source_id);
+							setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,source_type, source_id);
 						}
 						if (isNotNULL(width)) {
-							setElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "width", width,
-									source_type, source_id);
+							setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "width", width,source_type, source_id);
 						}
 						String dataSetID = editor.getString("bindtarget");
 						String editorName = editor.getString("name");
@@ -119,15 +118,15 @@ public class ConfigCustomizationUtil {
 							CompositeMap fieldNode = fields.getChildByAttrib("name", editorName);
 							if (fieldNode != null) {
 								if (isNotNULL(editabled_flag)) {
-									setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, dataSetID, "fields",
+									setArrayElementAttribute(registry,customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields",
 											"name", editorName, "readonly", read_only, source_type, source_id);
 								}
 								if (isNotNULL(required_flag)) {
-									setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, dataSetID, "fields",
+									setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
 											"name", editorName, "required", required, source_type, source_id);
 								}
 								if (isNotNULL(bm)) {
-									setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, dataSetID, "fields",
+									setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
 											"name", editorName, "model", bm, source_type, source_id);
 								}
 							} else {
@@ -144,7 +143,7 @@ public class ConfigCustomizationUtil {
 									newField.put("model", bm);
 								}
 								String newFieldContent = XMLOutputter.defaultInstance().toXML(newField, false);
-								addArrayElement(registry, service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
+								addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
 										newFieldContent, source_type, source_id);
 							}
 						}
@@ -152,18 +151,18 @@ public class ConfigCustomizationUtil {
 						String editorType = record.getString("editor_type");
 						CompositeMap fieldObject = null;
 						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+							fieldObject = createTextField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+							fieldObject = createNumberField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+							fieldObject = createDatePicker(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+							fieldObject = createComboBox(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
 						} else if ("LOV".equalsIgnoreCase(editorType)) {
-							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, form_field_id, bindTarget,record, source_type);
+							fieldObject = createLov(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget,record, source_type);
 						}
 						if (fieldObject != null)
-							addArrayElement(registry, service_name, dimension_type, dimension_value, containerId, "", "last_child",
+							addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, containerId, "", "last_child",
 									fieldObject.toXML(), source_type, source_id);
 					}
 				}
@@ -187,7 +186,7 @@ public class ConfigCustomizationUtil {
 
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
-		config_sql.append(" select s.service_name,h.dimension_type,h.dimension_value, ");
+		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_type,h.dimension_value, ");
 		config_sql.append("        t.cmp_id,t.name,t.prompt,nvl(t.width,f.width) width, ");
 		config_sql.append("        t.align,t.locked_flag,t.hidden_flag,t.editabled_flag,");
 		config_sql.append("        t.sequence,t.required_flag,t.field_id, ");
@@ -210,6 +209,7 @@ public class ConfigCustomizationUtil {
 				for (CompositeMap record : childList) {
 					String service_name = record.getString("service_name");
 					String filePath = service_name;
+					String customization_header_id = record.getString("customization_header_id");
 					String dimension_type = record.getString("dimension_type");
 					String dimension_value = record.getString("dimension_value");
 					String column_name = record.getString("name");
@@ -237,24 +237,24 @@ public class ConfigCustomizationUtil {
 					// 是否弹性域字段
 					if (flex_field_id < 0) {
 						if ("Y".equals(hidden_flag)) {
-							deleteArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
+							deleteArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, source_type, source_id);
 							continue;
 						}
 						if (isNotNULL(prompt)) {
-							setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
+							setArrayElementAttribute(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, "prompt", source_type, prompt, source_id);
 						}
 						if (isNotNULL(width)) {
-							setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
+							setArrayElementAttribute(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, "width", width, source_type, source_id);
 						}
 						if (isNotNULL(align)) {
-							setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
+							setArrayElementAttribute(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, "align", align, source_type, source_id);
 						}
 						if (isNotNULL(locked_flag)) {
-							setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
+							setArrayElementAttribute(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "name",
 									column_name, "lock", lock, source_type, source_id);
 						}
 						if (isNotNULL(required_flag)) {
@@ -271,7 +271,7 @@ public class ConfigCustomizationUtil {
 							CompositeMap fieldNode = fields.getChildByAttrib("name", column_name);
 							if (fieldNode != null) {
 								if (isNotNULL(required_flag)) {
-									setArrayElementAttribute(registry, service_name, dimension_type, dimension_value, dataSetID, "fields",
+									setArrayElementAttribute(registry, customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields",
 											"name", column_name, "required", required, source_type, source_id);
 								}
 							} else {
@@ -282,7 +282,7 @@ public class ConfigCustomizationUtil {
 									newField.put("required", required);
 								}
 								String newFieldContent = XMLOutputter.defaultInstance().toXML(newField, false);
-								addArrayElement(registry, service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
+								addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
 										newFieldContent, source_type, source_id);
 							}
 						}
@@ -290,15 +290,15 @@ public class ConfigCustomizationUtil {
 						String editorType = record.getString("editor_type");
 						CompositeMap fieldObject = null;
 						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createTextField(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
+							fieldObject = createTextField(registry, customization_header_id,service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createNumberField(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
+							fieldObject = createNumberField(registry, customization_header_id,service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-							fieldObject = createDatePicker(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
+							fieldObject = createDatePicker(registry, customization_header_id,service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-							fieldObject = createComboBox(registry, service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
+							fieldObject = createComboBox(registry, customization_header_id,service_name, dimension_type, dimension_value, grid_field_id,dataSetID, record, source_type);
 						} else if ("LOV".equalsIgnoreCase(editorType)) {
-							fieldObject = createLov(registry, service_name, dimension_type, dimension_value, grid_field_id, dataSetID,record, source_type);
+							fieldObject = createLov(registry, customization_header_id,service_name, dimension_type, dimension_value, grid_field_id, dataSetID,record, source_type);
 						}
 						
 						
@@ -317,13 +317,13 @@ public class ConfigCustomizationUtil {
 							}
 							if (isNotNULL(locked_flag)) gcc.setLock("Y".equals(locked_flag));
 							if (isNotNULL(align)) gcc.setAlign(align);
-							addArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", "last_child",gcc.getObjectContext().toXML(), source_type, source_id);
+							addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "columns", "last_child",gcc.getObjectContext().toXML(), source_type, source_id);
 							if("Y".equals(editabled_flag)){
 								fieldObject.put("name", null);
 								fieldObject.put("bindtarget", null);
 								fieldObject.put("id", editor);
 								fieldObject.put("prompt", null);
-								addArrayElement(registry, service_name, dimension_type, dimension_value, cmp_id, "editors", "last_child",fieldObject.toXML(), source_type, source_id);
+								addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, "editors", "last_child",fieldObject.toXML(), source_type, source_id);
 							}
 						}
 					}
@@ -341,6 +341,7 @@ public class ConfigCustomizationUtil {
 
 		StringBuffer config_sql = new StringBuffer();
 		config_sql.append(" select s.service_name, ");
+		config_sql.append("        h.customization_header_id, ");
 		config_sql.append("        h.dimension_type, ");
 		config_sql.append("        h.dimension_value, ");
 		config_sql.append("        (select wmsys.wm_concat(g.name) ");
@@ -370,6 +371,7 @@ public class ConfigCustomizationUtil {
 				String column_names = record.getString("column_names");
 				if(!isNotNULL(column_names))
 					return;
+				String customization_header_id = record.getString("customization_header_id");
 				String service_name = record.getString("service_name");
 				String dimension_type = record.getString("dimension_type");
 				String dimension_value = record.getString("dimension_value");
@@ -382,13 +384,13 @@ public class ConfigCustomizationUtil {
 				// 删除以前的动态配置记录
 				CustomSourceCode.sqlExecuteWithParas(registry, delete_cust_sql.toString(), parameters);
 
-				reOrder(registry, service_name, dimension_type, dimension_value, cmp_id, "columns","name",column_names, source_type, source_id);
+				reOrder(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "columns","name",column_names, source_type, source_id);
 
 			}
 		}
 	}
 
-	private static void initDataSetField(IObjectRegistry registry, DataSetFieldConfig dsfc, String service_name, String dimension_type,
+	private static void initDataSetField(IObjectRegistry registry, DataSetFieldConfig dsfc, String customization_header_id,String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException {
 		String editabled_flag = field.getString("editabled_flag");
 		String required_flag = field.getString("required_flag");
@@ -399,7 +401,7 @@ public class ConfigCustomizationUtil {
 			}
 			dsfc.setReadOnly("N".equalsIgnoreCase(editabled_flag));
 			dsfc.setRequired("Y".equalsIgnoreCase(required_flag));
-			addArrayElement(registry, service_name, dimension_type, dimension_value, bindTarget, "fields", "last_child", dsfc
+			addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, bindTarget, "fields", "last_child", dsfc
 					.getObjectContext().toXML(), source_type, String.valueOf(form_field_id));
 		}
 	}
@@ -422,11 +424,11 @@ public class ConfigCustomizationUtil {
 	 * 
 	 * @throws SQLException
 	 */
-	private static CompositeMap createTextField(IObjectRegistry registry, String service_name, String dimension_type,
+	private static CompositeMap createTextField(IObjectRegistry registry, String customization_header_id,String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException {
 		TextFieldConfig ttf = TextFieldConfig.getInstance();
 		initEditorPropertity(ttf, field.getString("field_name"),bindTarget, field);
-		initDataSetField(registry, null, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
+		initDataSetField(registry, null, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		Integer stringLeng = field.getInt("string_length");
 		String strCase = field.getString("string_case");
 		if (stringLeng != null)
@@ -441,11 +443,11 @@ public class ConfigCustomizationUtil {
 	 * 
 	 * @throws SQLException
 	 */
-	private static CompositeMap createNumberField(IObjectRegistry registry, String service_name, String dimension_type,
+	private static CompositeMap createNumberField(IObjectRegistry registry, String customization_header_id,String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException {
 		NumberFieldConfig nf = NumberFieldConfig.getInstance();
 		initEditorPropertity(nf, field.getString("field_name"),bindTarget, field);
-		initDataSetField(registry, null, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
+		initDataSetField(registry, null, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		String allowdecimals = field.getString("number_allowdecimals");
 		if (allowdecimals != null) {
 			boolean isAllowdecimals = "Y".equalsIgnoreCase(allowdecimals);
@@ -473,14 +475,14 @@ public class ConfigCustomizationUtil {
 	 * 
 	 * @throws SQLException
 	 */
-	private static CompositeMap createDatePicker(IObjectRegistry registry, String service_name, String dimension_type,
+	private static CompositeMap createDatePicker(IObjectRegistry registry, String customization_header_id,String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field,String source_type) throws SQLException {
 		DatePickerConfig dpf = DatePickerConfig.getInstance();
 		initEditorPropertity(dpf, field.getString("field_name"), bindTarget, field);
 		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
 		dsfc.setName(field.getString("field_name"));
 		dsfc.setDataType("date");
-		initDataSetField(registry, dsfc, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field,source_type);
+		initDataSetField(registry, dsfc, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget, field,source_type);
 		String format = field.getString("datepicker_format");
 		if (format != null)
 			dpf.setFormat(format);
@@ -493,7 +495,7 @@ public class ConfigCustomizationUtil {
 	/**
 	 * 动态创建Lov
 	 */
-	private static CompositeMap createLov(IObjectRegistry registry, String service_name, String dimension_type, String dimension_value,
+	private static CompositeMap createLov(IObjectRegistry registry, String customization_header_id,String service_name, String dimension_type, String dimension_value,
 			Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException, JSONException {
 		LovConfig lc = LovConfig.getInstance();
 		String name = field.getString("field_name");
@@ -532,7 +534,7 @@ public class ConfigCustomizationUtil {
 				dsfc.addMap(map);
 			}
 		}
-		initDataSetField(registry, dsfc, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
+		initDataSetField(registry, dsfc, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		return lc.getObjectContext();
 	}
 
@@ -550,7 +552,7 @@ public class ConfigCustomizationUtil {
 	 * @throws SQLException
 	 * @throws JSONException
 	 */
-	private static CompositeMap createComboBox(IObjectRegistry registry, String service_name, String dimension_type,
+	private static CompositeMap createComboBox(IObjectRegistry registry,String customization_header_id, String service_name, String dimension_type,
 			String dimension_value, Long form_field_id, String bindTarget, CompositeMap field, String source_type) throws SQLException,
 			JSONException {
 		ComboBoxConfig cbc = ComboBoxConfig.getInstance();
@@ -568,8 +570,7 @@ public class ConfigCustomizationUtil {
 		} else {
 			dsc.setModel(field.getString("combobox_datasource_value"));
 		}
-		addArrayElement(registry, service_name, dimension_type, dimension_value, bindTarget, "", "before", dsc.getObjectContext().toXML(),
-				source_type, String.valueOf(form_field_id));
+		addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, bindTarget, "", "before", dsc.getObjectContext().toXML(),source_type, String.valueOf(form_field_id));
 
 		DataSetFieldConfig dsfc = DataSetFieldConfig.getInstance();
 		dsfc.setName(display);
@@ -594,20 +595,21 @@ public class ConfigCustomizationUtil {
 				dsfc.addMap(map);
 			}
 		}
-		initDataSetField(registry, dsfc, service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
+		initDataSetField(registry, dsfc, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget, field, source_type);
 		return cbc.getObjectContext();
 	}
 
-	private static void setElementAttribute(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
+	private static void setElementAttribute(IObjectRegistry registry, String header_id,String source_file, String dimension_type, String dimension_value,
 			String id_value, String attrib_key, String attrib_value, String source_type, String source_id) throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,attrib_key,attrib_value,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'set_attrib',?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'set_attrib',?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
@@ -622,17 +624,18 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void setArrayElementAttribute(IObjectRegistry registry, String source_file, String dimension_type,
+	private static void setArrayElementAttribute(IObjectRegistry registry, String header_id,String source_file, String dimension_type,
 			String dimension_value, String id_value, String array_name, String index_field, String index_value, String attrib_key,
 			String attrib_value, String source_type, String source_id) throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,array_name,index_field,index_value,attrib_key,attrib_value,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'set_attrib',?,?,?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'set_attrib',?,?,?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
@@ -650,17 +653,18 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void addArrayElement(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
+	private static void addArrayElement(IObjectRegistry registry, String header_id, String source_file, String dimension_type, String dimension_value,
 			String id_value, String array_name, String position, String config_content, String source_type, String source_id)
 			throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,array_name,position,config_content,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'insert',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'insert',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
@@ -676,16 +680,17 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void deleteNode(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
+	private static void deleteNode(IObjectRegistry registry, String header_id,String source_file, String dimension_type, String dimension_value,
 			String id_value, String source_type, String source_id) throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'delete','dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'delete','dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
@@ -698,17 +703,18 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void deleteArrayElement(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
+	private static void deleteArrayElement(IObjectRegistry registry, String header_id,String source_file, String dimension_type, String dimension_value,
 			String id_value, String array_name, String index_field, String index_value, String source_type, String source_id)
 			throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,array_name,index_field,index_value,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'delete',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'delete',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
@@ -724,16 +730,17 @@ public class ConfigCustomizationUtil {
 		}
 	}
 
-	private static void reOrder(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
+	private static void reOrder(IObjectRegistry registry, String header_id,String source_file, String dimension_type, String dimension_value,
 			String id_value, String array_name,String index_field,String fields_order, String source_type, String source_id) throws SQLException {
-		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
+		String insertSql = "insert into sys_config_customization(record_id,head_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
 				+ "mod_type,array_name,index_field,fields_order,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'re_order',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "(sys_config_customization_s.nextval,?,'Y',?,?,?,?,'re_order',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
 			st = conn.prepareStatement(insertSql);
 			int i = 1;
+			st.setString(i++, header_id);
 			st.setString(i++, source_file);
 			st.setString(i++, dimension_type);
 			st.setString(i++, dimension_value);
