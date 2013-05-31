@@ -382,7 +382,7 @@ public class ConfigCustomizationUtil {
 				// 删除以前的动态配置记录
 				CustomSourceCode.sqlExecuteWithParas(registry, delete_cust_sql.toString(), parameters);
 
-				reOrder(registry, service_name, dimension_type, dimension_value, cmp_id, "columns", column_names, source_type, source_id);
+				reOrder(registry, service_name, dimension_type, dimension_value, cmp_id, "columns","name",column_names, source_type, source_id);
 
 			}
 		}
@@ -725,10 +725,10 @@ public class ConfigCustomizationUtil {
 	}
 
 	private static void reOrder(IObjectRegistry registry, String source_file, String dimension_type, String dimension_value,
-			String id_value, String array_name, String fields_order, String source_type, String source_id) throws SQLException {
+			String id_value, String array_name,String index_field,String fields_order, String source_type, String source_id) throws SQLException {
 		String insertSql = "insert into sys_config_customization(record_id,enable_flag,source_file,dimension_type,dimension_value,id_value,"
-				+ "mod_type,array_name,fields_order,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
-				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'re_order',?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
+				+ "mod_type,array_name,index_field,fields_order,comments,created_by,creation_date,last_updated_by,last_update_date,source_type,source_id)values"
+				+ "(sys_config_customization_s.nextval,'Y',?,?,?,?,'re_order',?,?,?,'dynamic',0,sysdate,0,sysdate,?,?)";
 		PreparedStatement st = null;
 		try {
 			Connection conn = CustomSourceCode.getContextConnection(registry);
@@ -739,6 +739,7 @@ public class ConfigCustomizationUtil {
 			st.setString(i++, dimension_value);
 			st.setString(i++, id_value);
 			st.setString(i++, array_name);
+			st.setString(i++, index_field);
 			st.setString(i++, fields_order);
 			st.setString(i++, source_type);
 			st.setString(i++, source_id);
