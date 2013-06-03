@@ -43,10 +43,14 @@ public class Box extends GridLayout {
 			StringBuffer str = new StringBuffer();
 			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
 			String ps = field.getString(ComponentConfig.PROPERTITY_PROMPT_STYLE);
+			boolean hidden = field.getBoolean(ComponentConfig.PROPERTITY_HIDDEN, false);
 			if(!"".equals(ps))str.append(" style='"+ps+"' ");
 			str.append("width="+labelWidth+"><div");
 			if(!"".equals(id)){
 				str.append(" id='"+id+"_prompt'");
+			}
+			if(hidden){
+				str.append(" style='visibility:hidden'");
 			}
 			str.append(">");
 			str.append(label+labelSeparator+"</div></th>");
