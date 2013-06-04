@@ -48,7 +48,7 @@ public class ConfigCustomizationUtil {
 
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
-		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_type,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
+		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_code,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
 		config_sql.append(" 	   t.editabled_flag,t.enabled_flag,t.required_flag,t.bm,t.field_id, ");
 		config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id, ");
 		config_sql.append("        f.field_name,f.field_description,f.editor_type,nvl(t.width,f.width) width,f.height,");
@@ -74,7 +74,7 @@ public class ConfigCustomizationUtil {
 					String customization_header_id = record.getString("customization_header_id");
 					String width = record.getString("width");
 					String service_name = record.getString("service_name");
-					String dimension_type = record.getString("dimension_type");
+					String dimension_type = record.getString("dimension_code");
 					String dimension_value = record.getString("dimension_value");
 					String cmp_id = record.getString("cmp_id");
 					String editabled_flag = record.getString("editabled_flag");
@@ -186,7 +186,7 @@ public class ConfigCustomizationUtil {
 
 		// 新增本次记录
 		StringBuffer config_sql = new StringBuffer();
-		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_type,h.dimension_value, ");
+		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_code,h.dimension_value, ");
 		config_sql.append("        t.cmp_id,t.name,t.prompt,nvl(t.width,f.width) width, ");
 		config_sql.append("        t.align,t.locked_flag,t.hidden_flag,t.editabled_flag,");
 		config_sql.append("        t.sequence,t.required_flag,t.field_id, ");
@@ -210,7 +210,7 @@ public class ConfigCustomizationUtil {
 					String service_name = record.getString("service_name");
 					String filePath = service_name;
 					String customization_header_id = record.getString("customization_header_id");
-					String dimension_type = record.getString("dimension_type");
+					String dimension_type = record.getString("dimension_code");
 					String dimension_value = record.getString("dimension_value");
 					String column_name = record.getString("name");
 					String cmp_id = record.getString("cmp_id");
@@ -342,7 +342,7 @@ public class ConfigCustomizationUtil {
 		StringBuffer config_sql = new StringBuffer();
 		config_sql.append(" select s.service_name, ");
 		config_sql.append("        h.customization_header_id, ");
-		config_sql.append("        h.dimension_type, ");
+		config_sql.append("        h.dimension_code, ");
 		config_sql.append("        h.dimension_value, ");
 		config_sql.append("        (select wmsys.wm_concat(g.name) ");
 		config_sql.append("   		from (select t.name");
@@ -373,7 +373,7 @@ public class ConfigCustomizationUtil {
 					return;
 				String customization_header_id = record.getString("customization_header_id");
 				String service_name = record.getString("service_name");
-				String dimension_type = record.getString("dimension_type");
+				String dimension_type = record.getString("dimension_code");
 				String dimension_value = record.getString("dimension_value");
 				StringBuffer delete_cust_sql = new StringBuffer(
 						"delete from sys_config_customization t where t.source_id = ? and upper(t.source_type)='" + source_type
