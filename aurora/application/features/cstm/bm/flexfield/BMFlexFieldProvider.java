@@ -1,7 +1,5 @@
 package aurora.application.features.cstm.bm.flexfield;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,29 +14,24 @@ import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.AbstractLocatableObject;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.features.cstm.CustomSourceCode;
 import aurora.bm.BmBuiltinExceptionFactory;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.bm.Reference;
 import aurora.bm.Relation;
-import aurora.database.DBUtil;
-import aurora.database.FetchDescriptor;
 import aurora.database.ParsedSql;
-import aurora.database.ResultSetLoader;
-import aurora.database.SqlRunner;
-import aurora.database.rsconsumer.CompositeMapCreator;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.database.service.IDatabaseServiceFactory;
-import aurora.database.service.SqlServiceContext;
 import aurora.service.ServiceThreadLocal;
 
 public class BMFlexFieldProvider extends AbstractLocatableObject implements ILifeCycle, IBMFlexFieldProvider {
 
-	public final static String FLEXFIELD_DEFAULT_DATABASE_TYPE = "VARCHAR";
 	public static final String TYPE_LEFT_OUTTER_JOIN = "LEFT OUTER"; 
 	
 	public final static String FIELD_NAME_PK = "field_name";
 	public final static String EDITOR_TYPE_PK = "editor_type";
+	public final static String DATABASE_TYPE = "database_type";
 	public final static String NUMBER_ALLOWDECIMALS_PK = "number_allowdecimals";
 	public final static String COMBOBOX_VALUE_FIELD_PK = "combobox_value_field";
 	public final static String COMBOBOX_DISPLAY_FIELD_PK = "combobox_display_field";
@@ -51,7 +44,7 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 	private IDatabaseServiceFactory databaseServiceFactory;
 	private IObjectRegistry objectRegistry;
 	
-	private  Map<String,String> editor_datatype = new HashMap<String,String>();
+	private  Map<String,String> dbType_javaType = new HashMap<String,String>();
 	
 	private DataSource dataSource;
 	
@@ -97,12 +90,15 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 			String editorType =  record.getString(EDITOR_TYPE_PK);
 			if(editorType == null)
 				throw BuiltinExceptionFactory.createAttributeMissing(flexFieldRecords.asLocatable(), EDITOR_TYPE_PK);
+			String databaseType =  record.getString(DATABASE_TYPE);
+			if(databaseType == null)
+				throw BuiltinExceptionFactory.createAttributeMissing(flexFieldRecords.asLocatable(), DATABASE_TYPE);
 			Field field = Field.createField(fieldName.toLowerCase());
-			field.setDatabaseType(FLEXFIELD_DEFAULT_DATABASE_TYPE);
+			field.setDatabaseType(databaseType);
 			
-			String dataType = editor_datatype.get(editorType.toUpperCase());
-			if(editorType.equals("NUMBERFIELD") && "Y".equals(record.getString(NUMBER_ALLOWDECIMALS_PK))){
-				dataType = editor_datatype.get("NUMBERFIELD_ALLOWDECIMALS");
+			String dataType = dbType_javaType.get(databaseType.toUpperCase());
+			if("NUMBERFIELD".equalsIgnoreCase(editorType) && "Y".equalsIgnoreCase(record.getString(NUMBER_ALLOWDECIMALS_PK))){
+				dataType = dbType_javaType.get("NUMBER_ALLOWDECIMALS");
 			}
 			field.setDataType(dataType);
 			if("COMBOBOX".equalsIgnoreCase(editorType)){
@@ -199,40 +195,25 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 		String tableName = model.getBaseTable();
 		if (tableName == null || "".equals(tableName))
 			return null;
-		SqlServiceContext ssc = null;
-		ResultSet rs_details = null;
-		CompositeMap result = new CompositeMap("result");
+		CompositeMap result = null;
 		try {
-			ssc = databaseServiceFactory.createContextWithConnection();
-
-			String flexFieldQuerySql = "select t.table_name, f.field_name, f.editor_type, f.number_allowdecimals,f.combobox_datasource_type,"
-					+ " f.combobox_datasource_value," + " f.combobox_value_field," + " f.combobox_display_field," + " f.lov_bm,"
-					+ " f.lov_value_field," + " f.lov_display_field" + " from sys_business_objects t, sys_business_object_flexfields f"
-					+ " where f.business_object_id = t.object_id" + " and t.enabled_flag = 'Y'" //+ " and f.enabled_flag = 'Y'"
-					+ " and t.table_name='" + tableName.toUpperCase() + "'";
-
+			StringBuffer flexFieldQuerySql = new StringBuffer();
+			flexFieldQuerySql.append(" select t.table_name, f.field_name, f.editor_type, f.number_allowdecimals,f.combobox_datasource_type,");
+			flexFieldQuerySql.append(" 		  f.combobox_datasource_value,f.combobox_value_field,f.combobox_display_field,f.lov_bm,");
+			flexFieldQuerySql.append("        f.lov_value_field,f.lov_display_field,f.database_type");
+			flexFieldQuerySql.append("  from  sys_business_objects t, sys_business_object_flexfields f");
+			flexFieldQuerySql.append(" where  f.business_object_id = t.object_id and t.enabled_flag = 'Y'");
+			flexFieldQuerySql.append("   and t.table_name='" + tableName.toUpperCase() + "'");
+			
 			LoggingContext.getLogger(model.getObjectContext(),this.getClass().getCanonicalName()).config("flexFieldQuerySql:" + flexFieldQuerySql);
-			ParsedSql stmt = createStatement(flexFieldQuerySql);
-			SqlRunner runner = new SqlRunner(ssc, stmt);
-			rs_details = runner.query(context);
-			ResultSetLoader mRsLoader = new ResultSetLoader();
-			mRsLoader.setFieldNameCase(Character.LOWERCASE_LETTER);
-			FetchDescriptor desc = FetchDescriptor.fetchAll();
-			CompositeMapCreator compositeCreator = new CompositeMapCreator(result);
-			mRsLoader.loadByResultSet(rs_details, desc, compositeCreator);
+			
+			result = CustomSourceCode.sqlQuery(objectRegistry, flexFieldQuerySql.toString());
+
 			if (result.getChilds() == null)
 				return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} finally {
-			DBUtil.closeResultSet(rs_details);
-			if (ssc != null)
-				try {
-					ssc.freeConnection();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-		}
+		} 
 		return result;
 	}
 
@@ -250,19 +231,10 @@ public class BMFlexFieldProvider extends AbstractLocatableObject implements ILif
 	}
 	
 	private void init(){
-//		editor_datatype.put("TEXTFIELD", "java.lang.String");
-//		editor_datatype.put("NUMBERFIELD", "java.lang.Long");
-//		editor_datatype.put("NUMBERFIELD_ALLOWDECIMALS", "java.lang.Double");
-//		editor_datatype.put("DATEPICKER", "java.util.Date");
-//		editor_datatype.put("COMBOBOX", "java.lang.String");
-//		editor_datatype.put("LOV", "java.lang.String");
-		
-		editor_datatype.put("TEXTFIELD", "java.lang.String");
-		editor_datatype.put("NUMBERFIELD", "java.lang.String");
-		editor_datatype.put("NUMBERFIELD_ALLOWDECIMALS", "java.lang.String");
-		editor_datatype.put("DATEPICKER", "java.lang.String");
-		editor_datatype.put("COMBOBOX", "java.lang.String");
-		editor_datatype.put("LOV", "java.lang.String");
+		dbType_javaType.put("VARCHAR2", "java.lang.String");
+		dbType_javaType.put("DATE", "java.util.Date");
+		dbType_javaType.put("NUMBER_ALLOWDECIMALS", "java.lang.Double");
+		dbType_javaType.put("NUMBER", "java.lang.Long");
 	}
 
 	@Override
