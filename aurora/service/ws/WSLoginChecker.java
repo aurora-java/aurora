@@ -146,7 +146,7 @@ public class WSLoginChecker extends AbstractEntry {
 		proc_config.addChild(config);
 		Procedure proc = (Procedure) mOcManager.createObject(proc_config);
 
-		String name = "WSLoginChecker." + model;
+		String name = "webservice_loginchecker." + model;
 		IServiceFactory serviceFactory = (IServiceFactory) registry.getInstanceOfType(IServiceFactory.class);
 		if (serviceFactory == null)
 			throw BuiltinExceptionFactory.createInstanceNotFoundException(this, IServiceFactory.class, this.getClass().getCanonicalName());
