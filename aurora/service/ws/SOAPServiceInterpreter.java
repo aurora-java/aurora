@@ -59,6 +59,10 @@ public class SOAPServiceInterpreter {
 		}
 		service_context.setRequestType(HEAD_SOAP_PARAMETER);
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(service_context.getObjectContext());
+		
+		String soapActionParam = getSOAPAction(svc.getRequest());
+		service_context.getObjectContext().putObject("/request/@soapaction", soapActionParam, true);
+		
 		String soapContent = inputStream2String(svc.getRequest().getInputStream());
 		ILogger logger = LoggingContext.getLogger(service_context.getObjectContext(), this.getClass().getCanonicalName());
 		logger.config("request:" + LINE_SEPARATOR + soapContent);
@@ -93,7 +97,7 @@ public class SOAPServiceInterpreter {
 		while ((i = is.read()) != -1) {
 			baos.write(i);
 		}
-		String result = new String(baos.toByteArray(),"UTF-8");
+		String result = new String(baos.toByteArray(), "UTF-8");
 		return result;
 	}
 
@@ -238,11 +242,18 @@ public class SOAPServiceInterpreter {
 		return isSOAPRequest(svc.getRequest());
 	}
 
-	private boolean isSOAPRequest(HttpServletRequest svc) {
+	private String getSOAPAction(HttpServletRequest svc) {
 		String soapParam = svc.getHeader(HEAD_SOAP_PARAMETER);
 		if (soapParam != null)
-			return true;
+			return soapParam;
 		soapParam = svc.getParameter(HEAD_SOAP_PARAMETER);
+		if (soapParam != null)
+			return soapParam;
+		return null;
+	}
+
+	private boolean isSOAPRequest(HttpServletRequest svc) {
+		String soapParam = getSOAPAction(svc);
 		if (soapParam != null)
 			return true;
 		return false;
