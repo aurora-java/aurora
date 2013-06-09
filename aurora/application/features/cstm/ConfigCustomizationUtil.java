@@ -357,12 +357,13 @@ public class ConfigCustomizationUtil {
 		config_sql.append("        h.customization_header_id, ");
 		config_sql.append("        h.dimension_code, ");
 		config_sql.append("        h.dimension_value, ");
-		config_sql.append("        (select wmsys.wm_concat(g.name) ");
+		config_sql.append("        (select wmsys.wm_concat(g.name||decode(o.editor_type, 'LOV', '_display', 'COMBOBOX', '_display', '')) ");
 		config_sql.append("   		from (select t.name");
-		config_sql.append("  			  from sys_dynamic_grids t");
+		config_sql.append("  			  from sys_dynamic_grids t,sys_business_object_flexfields o");
 		config_sql.append("        		  where t.cmp_id = ? ");
 		config_sql.append("        		    and t.header_id = ? ");
 		config_sql.append("        		    and t.sequence is not null ");
+		config_sql.append("        		    and t.field_id = o.field_id(+)");
 		config_sql.append("       		  order by t.sequence) g) column_names ");
 		config_sql.append("   from sys_dynamic_headers h, sys_service s");
 		config_sql.append("  where s.service_id = h.service_id ");
