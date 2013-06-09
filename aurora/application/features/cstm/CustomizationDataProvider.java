@@ -119,7 +119,7 @@ public class CustomizationDataProvider extends AbstractLocatableObject implement
 					sb.append(" and ").append(data_query_sql);
 			}
 			if (!firstRecord)
-				sb.append(" order by 6,7,8,9,10 ");
+				sb.append(" order by 1,6,7,8,9,10 ");
 			if ("".equals(sb.toString()))
 				return null;
 			ParsedSql stmt = createStatement(sb.toString());

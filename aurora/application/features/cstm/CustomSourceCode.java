@@ -1174,8 +1174,8 @@ public class CustomSourceCode {
 		return stmt;
 	}
 
-	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long form_field_id) throws Exception {
-		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath, form_field_id);
+	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long headId, String containerId) throws Exception {
+		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath,  headId, containerId);
 	}
 
 	public static void gridConfigConvertToCust(IObjectRegistry registry, Long grid_field_id) throws Exception {

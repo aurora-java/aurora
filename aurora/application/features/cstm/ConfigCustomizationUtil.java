@@ -31,143 +31,156 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 
 public class ConfigCustomizationUtil {
 
-	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long form_field_id) throws Exception {
+	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long headId, String containerId) throws Exception {
 
-		if (form_field_id < 1)
-			throw new IllegalArgumentException("parameter form_field_id can not be null");
-
-		String source_type = "SYS_DYNAMIC_FORMS";
-		String source_id = String.valueOf(form_field_id);
-
-		// 删除以前的动态配置记录
-		PrepareParameter[] parameters = new PrepareParameter[1];
-		parameters[0] = new PrepareParameter(new StringType(), source_id);
-		StringBuffer delete_cust_sql = new StringBuffer(
-				"delete from sys_config_customization t where t.source_id = ? and upper(t.source_type)='" + source_type + "' ");
-		CustomSourceCode.sqlExecuteWithParas(registry, delete_cust_sql.toString(), parameters);
-
-		// 新增本次记录
-		StringBuffer config_sql = new StringBuffer();
-		config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_code,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
-		config_sql.append(" 	   t.editabled_flag,t.enabled_flag,t.required_flag,t.bm,t.field_id, ");
-		config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id, ");
-		config_sql.append("        f.field_name,f.field_description,f.editor_type,nvl(t.width,f.width) width,f.height,");
-		config_sql.append("        f.string_length,f.string_format,f.string_case,");
-		config_sql.append("        f.number_allowdecimals,f.number_decimalprecision,f.number_allownegative,f.number_allowformat,f.number_allowpad,");
-		config_sql.append("        f.datepicker_format,f.datepicker_size,");
-		config_sql.append("        f.combobox_value_field,f.combobox_display_field,f.combobox_mapping,f.combobox_datasource_type,f.combobox_datasource_value,");
-		config_sql.append("        f.lov_height,f.lov_height,f.lov_width,f.lov_grid_height,f.lov_title,f.lov_bm,f.lov_value_field,f.lov_display_field,f.lov_mapping,f.lov_labelwidth ");		
-		config_sql.append("   from sys_dynamic_forms t, sys_dynamic_headers h,sys_service s, sys_business_object_flexfields f ");
-		config_sql.append("  where h.header_id = t.header_id and s.service_id = h.service_id and t.field_id = f.field_id(+) and t.form_id = ? ");
-		parameters[0] = new PrepareParameter(new IntegerType(), form_field_id);
-		CompositeMap result = CustomSourceCode.sqlQueryWithParas(registry, config_sql.toString(), parameters);
-		if (result != null) {
-			List<CompositeMap> childList = result.getChilds();
-			if (childList != null) {
-				for (CompositeMap record : childList) {
-					if (filePath == null || "".equals(filePath))
-						filePath = record.getString("service_name");
-					CompositeMap fileContent = CustomSourceCode.getFileContent(registry, filePath);
-
-					int flex_field_id = record.getInt("field_id", -1);
-					String prompt = record.getString("prompt");
-					String customization_header_id = record.getString("customization_header_id");
-					String width = record.getString("width");
-					String service_name = record.getString("service_name");
-					String dimension_type = record.getString("dimension_code");
-					String dimension_value = record.getString("dimension_value");
-					String cmp_id = record.getString("cmp_id");
-					String editabled_flag = record.getString("editabled_flag");
-					String read_only = "Y".equals(editabled_flag) ? "false" : "true";
-					String enabled_flag = record.getString("enabled_flag");
-					String required_flag = record.getString("required_flag");
-					String required = "Y".equals(required_flag) ? "true" : "false";
-					String bm = record.getString("bm");
-//					String row_num = record.getString("row_num");
-//					String column_num = record.getString("column_num");
-					String bindTarget = record.getString("bind_target");
-					String containerId = record.getString("container_id");
-					// 是否弹性域字段
-					if (flex_field_id < 0) {
-						CompositeMap editor = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
-						if (editor == null)
-							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "editor", "id", cmp_id);
-						if ("N".equals(enabled_flag)) {
-							deleteNode(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, source_type, source_id);
-							continue;
-						}
-						if (isNotNULL(prompt)) {
-							setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,source_type, source_id);
-						}
-						if (isNotNULL(width)) {
-							setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "width", width,source_type, source_id);
-						}
-						String dataSetID = editor.getString("bindtarget");
-						String editorName = editor.getString("name");
-						if (dataSetID == null || "".equals(dataSetID))
-							throw BuiltinExceptionFactory.createAttributeMissing(editor.asLocatable(), "bindtarget");
-						CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, dataSetID);
-						if (dataSet == null)
-							throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", dataSetID);
-
-						CompositeMap fields = dataSet.getChild("fields");
-						if (fields == null) {
-							fields = dataSet.createChild("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "fields");
-						}
-						if (isNotNULL(editabled_flag) || isNotNULL(required_flag) || isNotNULL(bm)) {
-							CompositeMap fieldNode = fields.getChildByAttrib("name", editorName);
-							if (fieldNode != null) {
-								if (isNotNULL(editabled_flag)) {
-									setArrayElementAttribute(registry,customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields",
-											"name", editorName, "readonly", read_only, source_type, source_id);
+		if (headId < 1)
+			throw new IllegalArgumentException("parameter headId can not be null");
+		
+		StringBuffer query_sql = new StringBuffer();
+		query_sql.append("select form_id from sys_dynamic_forms where header_id = ? and container_id = ? order by sequence asc");
+		PrepareParameter[] queryPara = new PrepareParameter[2];
+		queryPara[0] = new PrepareParameter(new IntegerType(), headId);
+		queryPara[1] = new PrepareParameter(new StringType(), containerId);
+		CompositeMap queryResult = CustomSourceCode.sqlQueryWithParas(registry, query_sql.toString(), queryPara);		
+		List<CompositeMap> formList = queryResult.getChilds();
+		if (formList != null) {
+			for (CompositeMap formRecord : formList) {
+				Long form_field_id = formRecord.getLong("form_id");				
+				String source_type = "SYS_DYNAMIC_FORMS";
+				String source_id = String.valueOf(form_field_id);
+				
+				// 删除以前的动态配置记录
+				PrepareParameter[] parameters = new PrepareParameter[1];
+				parameters[0] = new PrepareParameter(new StringType(), source_id);
+				StringBuffer delete_cust_sql = new StringBuffer(
+						"delete from sys_config_customization t where t.source_id = ? and upper(t.source_type)='" + source_type + "' ");
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_cust_sql.toString(), parameters);
+				
+				// 新增本次记录
+				StringBuffer config_sql = new StringBuffer();
+				config_sql.append(" select s.service_name,h.customization_header_id,h.dimension_code,h.dimension_value,t.cmp_id,t.name,t.prompt, ");
+				config_sql.append(" 	   t.editabled_flag,t.enabled_flag,t.required_flag,t.bm,t.field_id, ");
+				config_sql.append(" 	   t.row_num,t.column_num,t.bind_target,t.container_id, ");
+				config_sql.append("        f.field_name,f.field_description,f.editor_type,nvl(t.width,f.width) width,f.height,");
+				config_sql.append("        f.string_length,f.string_format,f.string_case,");
+				config_sql.append("        f.number_allowdecimals,f.number_decimalprecision,f.number_allownegative,f.number_allowformat,f.number_allowpad,");
+				config_sql.append("        f.datepicker_format,f.datepicker_size,");
+				config_sql.append("        f.combobox_value_field,f.combobox_display_field,f.combobox_mapping,f.combobox_datasource_type,f.combobox_datasource_value,");
+				config_sql.append("        f.lov_height,f.lov_height,f.lov_width,f.lov_grid_height,f.lov_title,f.lov_bm,f.lov_value_field,f.lov_display_field,f.lov_mapping,f.lov_labelwidth ");		
+				config_sql.append("   from sys_dynamic_forms t, sys_dynamic_headers h,sys_service s, sys_business_object_flexfields f ");
+				config_sql.append("  where h.header_id = t.header_id and s.service_id = h.service_id and t.field_id = f.field_id(+) and t.form_id = ? ");
+				parameters[0] = new PrepareParameter(new IntegerType(), form_field_id);
+				CompositeMap result = CustomSourceCode.sqlQueryWithParas(registry, config_sql.toString(), parameters);
+				if (result != null) {
+					List<CompositeMap> childList = result.getChilds();
+					if (childList != null) {
+						for (CompositeMap record : childList) {
+							if (filePath == null || "".equals(filePath))
+								filePath = record.getString("service_name");
+							CompositeMap fileContent = CustomSourceCode.getFileContent(registry, filePath);
+							
+							int flex_field_id = record.getInt("field_id", -1);
+							String prompt = record.getString("prompt");
+							String customization_header_id = record.getString("customization_header_id");
+							String width = record.getString("width");
+							String service_name = record.getString("service_name");
+							String dimension_type = record.getString("dimension_code");
+							String dimension_value = record.getString("dimension_value");
+							String cmp_id = record.getString("cmp_id");
+							String editabled_flag = record.getString("editabled_flag");
+							String read_only = "Y".equals(editabled_flag) ? "false" : "true";
+							String enabled_flag = record.getString("enabled_flag");
+							String required_flag = record.getString("required_flag");
+							String required = "Y".equals(required_flag) ? "true" : "false";
+							String bm = record.getString("bm");
+							String bindTarget = record.getString("bind_target");
+//							String containerId = record.getString("container_id");
+							// 是否弹性域字段
+							if (flex_field_id < 0) {
+								CompositeMap editor = SourceCodeUtil.searchNodeById(fileContent, cmp_id);
+								if (editor == null)
+									throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "editor", "id", cmp_id);
+								if ("N".equals(enabled_flag)) {
+									deleteNode(registry, customization_header_id,service_name, dimension_type, dimension_value, cmp_id, source_type, source_id);
+									continue;
 								}
-								if (isNotNULL(required_flag)) {
-									setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
-											"name", editorName, "required", required, source_type, source_id);
+								if (isNotNULL(prompt)) {
+									setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "prompt", prompt,source_type, source_id);
 								}
-								if (isNotNULL(bm)) {
-									setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
-											"name", editorName, "model", bm, source_type, source_id);
+								if (isNotNULL(width)) {
+									setElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, cmp_id, "width", width,source_type, source_id);
+								}
+								String dataSetID = editor.getString("bindtarget");
+								String editorName = editor.getString("name");
+								if (dataSetID == null || "".equals(dataSetID))
+									throw BuiltinExceptionFactory.createAttributeMissing(editor.asLocatable(), "bindtarget");
+								CompositeMap dataSet = SourceCodeUtil.searchNodeById(fileContent, dataSetID);
+								if (dataSet == null)
+									throw BuiltinExceptionFactory.createUnknownNodeWithName(fileContent.asLocatable(), "dataSet", "id", dataSetID);
+								
+								CompositeMap fields = dataSet.getChild("fields");
+								if (fields == null) {
+									fields = dataSet.createChild("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "fields");
+								}
+								if (isNotNULL(editabled_flag) || isNotNULL(required_flag) || isNotNULL(bm)) {
+									CompositeMap fieldNode = fields.getChildByAttrib("name", editorName);
+									if (fieldNode != null) {
+										if (isNotNULL(editabled_flag)) {
+											setArrayElementAttribute(registry,customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields",
+													"name", editorName, "readonly", read_only, source_type, source_id);
+										}
+										if (isNotNULL(required_flag)) {
+											setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
+													"name", editorName, "required", required, source_type, source_id);
+										}
+										if (isNotNULL(bm)) {
+											setArrayElementAttribute(registry,customization_header_id, service_name, dimension_type, dimension_value, dataSetID, "fields",
+													"name", editorName, "model", bm, source_type, source_id);
+										}
+									} else {
+										CompositeMap newField = new CompositeMap("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "field");
+										newField.put("name", editorName);
+										
+										if (isNotNULL(editabled_flag)) {
+											newField.put("readonly", read_only);
+										}
+										if (isNotNULL(required_flag)) {
+											newField.put("required", required);
+										}
+										if (isNotNULL(bm)) {
+											newField.put("model", bm);
+										}
+										String newFieldContent = XMLOutputter.defaultInstance().toXML(newField, false);
+										addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
+												newFieldContent, source_type, source_id);
+									}
 								}
 							} else {
-								CompositeMap newField = new CompositeMap("a", AuroraApplication.AURORA_FRAMEWORK_NAMESPACE, "field");
-								newField.put("name", editorName);
-
-								if (isNotNULL(editabled_flag)) {
-									newField.put("readonly", read_only);
+								String editorType = record.getString("editor_type");
+								CompositeMap fieldObject = null;
+								if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
+									fieldObject = createTextField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+								} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
+									fieldObject = createNumberField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+								} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
+									fieldObject = createDatePicker(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+								} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
+									fieldObject = createComboBox(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
+								} else if ("LOV".equalsIgnoreCase(editorType)) {
+									fieldObject = createLov(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget,record, source_type);
 								}
-								if (isNotNULL(required_flag)) {
-									newField.put("required", required);
-								}
-								if (isNotNULL(bm)) {
-									newField.put("model", bm);
-								}
-								String newFieldContent = XMLOutputter.defaultInstance().toXML(newField, false);
-								addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, dataSetID, "fields", "last_child",
-										newFieldContent, source_type, source_id);
+								if (fieldObject != null)
+									addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, containerId, "", "last_child",
+											fieldObject.toXML(), source_type, source_id);
 							}
 						}
-					} else {
-						String editorType = record.getString("editor_type");
-						CompositeMap fieldObject = null;
-						if ("TEXTFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createTextField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
-						} else if ("NUMBERFIELD".equalsIgnoreCase(editorType)) {
-							fieldObject = createNumberField(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
-						} else if ("DATEPICKER".equalsIgnoreCase(editorType)) {
-							fieldObject = createDatePicker(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
-						} else if ("COMBOBOX".equalsIgnoreCase(editorType)) {
-							fieldObject = createComboBox(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id,bindTarget, record, source_type);
-						} else if ("LOV".equalsIgnoreCase(editorType)) {
-							fieldObject = createLov(registry, customization_header_id,service_name, dimension_type, dimension_value, form_field_id, bindTarget,record, source_type);
-						}
-						if (fieldObject != null)
-							addArrayElement(registry, customization_header_id,service_name, dimension_type, dimension_value, containerId, "", "last_child",
-									fieldObject.toXML(), source_type, source_id);
 					}
 				}
 			}
 		}
+		
+		
+		
 	}
 
 	public static void gridConfigConvertToCust(IObjectRegistry registry, Long grid_field_id) throws Exception {
