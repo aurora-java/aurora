@@ -780,7 +780,7 @@ public class CustomSourceCode {
 				}
 				CompositeMap resultChild = result.getChildByAttrib("cmp_id", fieldId);
 				if (resultChild == null) {
-					result.addChild(record);
+					result.addChild(0,record);
 				} else {
 					for (Object attr : resultChild.entrySet()) {
 						Map.Entry e = (Map.Entry) attr;
@@ -845,7 +845,8 @@ public class CustomSourceCode {
 
 		List<CompositeMap> childList = forms.getChilds();
 		if (childList != null) {
-			for (CompositeMap child : childList) {
+			for(int i = childList.size()-1;i>=0;i--) {
+				CompositeMap child = childList.get(i);
 				serachFormEditor(fileContent, child, result, header_id, form_id, schemaManager, promptProvider, fieldType, containerType);
 			}
 		}
