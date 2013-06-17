@@ -1174,6 +1174,10 @@ public class CustomSourceCode {
 		stmt.parse(sql);
 		return stmt;
 	}
+	
+	public static void formConfigConvertToCust(IObjectRegistry registry, Long form_id) throws Exception {
+		ConfigCustomizationUtil.formConfigConvertToCust(registry, form_id);
+	}
 
 	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long headId, String containerId) throws Exception {
 		ConfigCustomizationUtil.formConfigConvertToCust(registry, filePath,  headId, containerId);

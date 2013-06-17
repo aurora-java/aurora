@@ -30,6 +30,24 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 
 public class ConfigCustomizationUtil {
+	
+	
+	public static void formConfigConvertToCust(IObjectRegistry registry, Long form_id) throws Exception {
+		StringBuffer query_sql = new StringBuffer();
+		query_sql.append("select s.service_name,f.header_id,f.container_id from sys_dynamic_forms f,sys_dynamic_headers h,sys_service s where f.header_id=h.header_id and h.service_id=s.service_id and f.form_id = ?");
+		PrepareParameter[] queryPara = new PrepareParameter[1];
+		queryPara[0] = new PrepareParameter(new IntegerType(), form_id);
+		CompositeMap queryResult = CustomSourceCode.sqlQueryWithParas(registry, query_sql.toString(), queryPara);
+		List<CompositeMap> formList = queryResult.getChilds();
+		if (formList != null) {
+			for (CompositeMap formRecord : formList) {
+				String service_name = formRecord.getString("service_name");	
+				String container_id = formRecord.getString("container_id");	
+				Long header_id = formRecord.getLong("header_id");
+				formConfigConvertToCust(registry,service_name,header_id,container_id);
+			}
+		}
+	}
 
 	public static void formConfigConvertToCust(IObjectRegistry registry, String filePath, Long headId, String containerId) throws Exception {
 
@@ -323,6 +341,19 @@ public class ConfigCustomizationUtil {
 							gcc.setWidth(fc.getWidth());
 							if("DATEPICKER".equalsIgnoreCase(editorType))
 								gcc.setRenderer("Aurora.formatDate");
+							if("NUMBERFIELD".equalsIgnoreCase(editorType)) {
+								String allowformat = record.getString("number_allowformat");
+								if ("Y".equalsIgnoreCase(allowformat)) {
+									Integer decimalprecision = record.getInt("number_decimalprecision");
+									if(decimalprecision==null || decimalprecision==2){
+										gcc.setRenderer("Aurora.formatMoney");
+									}else {
+										gcc.setRenderer("Aurora.formatNumber");
+									}					
+								}
+							}
+							
+							
 							String editor = null;
 							if("Y".equals(editabled_flag)){
 								editor = IDGenerator.getInstance().generate();
