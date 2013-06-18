@@ -1194,4 +1194,9 @@ public class CustomSourceCode {
 	public static ConfigurationFileException createChildCountException(int sourceCount, int reOrderCount, ILocatable iLocatable) {
 		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount }, iLocatable);
 	}
+	
+	
+	public static void deleteBusinessObject(IObjectRegistry registry, Long object_id) throws Exception {
+		ConfigCustomizationUtil.deleteBusinessObject(registry, object_id);
+	}
 }

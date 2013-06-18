@@ -32,6 +32,61 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 public class ConfigCustomizationUtil {
 	
 	
+	public static void deleteBusinessObject(IObjectRegistry registry, Long object_id)throws Exception {
+		StringBuffer form_sql = new StringBuffer();
+		form_sql.append("select f.form_id,fl.field_id from sys_dynamic_forms f,sys_business_object_flexfields fl where f.field_id=fl.field_id and fl.business_object_id= ?");
+		PrepareParameter[] formPara = new PrepareParameter[1];
+		formPara[0] = new PrepareParameter(new IntegerType(), object_id);
+		CompositeMap formResult = CustomSourceCode.sqlQueryWithParas(registry, form_sql.toString(), formPara);
+		List<CompositeMap> formList = formResult.getChilds();
+		if (formList != null) {
+			String delete_form_sql = "delete from sys_dynamic_forms where field_id= ? ";
+			String delete_form_cust_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_FORMS' and source_id= ? ";
+			for (CompositeMap formRecord : formList) {
+				Long field_id = formRecord.getLong("field_id");
+				String form_id = formRecord.getString("form_id");
+				PrepareParameter[] p1 = new PrepareParameter[1];
+				p1[0] = new PrepareParameter(new IntegerType(), field_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_form_sql, p1);
+				PrepareParameter[] p2 = new PrepareParameter[1];
+				p2[0] = new PrepareParameter(new StringType(), form_id);				
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_form_cust_sql, p2);
+			}
+		}
+		
+		
+		StringBuffer grid_sql = new StringBuffer();
+		grid_sql.append("select g.grid_id,g.cmp_id,fl.field_id from sys_dynamic_grids g,sys_business_object_flexfields fl where g.field_id=fl.field_id and fl.business_object_id= ?");
+		CompositeMap gridResult = CustomSourceCode.sqlQueryWithParas(registry, grid_sql.toString(), formPara);
+		String cmp_id = null;
+		List<CompositeMap> gridList = gridResult.getChilds();
+		if (gridList != null) {
+			String delete_grid_sql = "delete from sys_dynamic_grids where field_id= ? ";
+			String delete_grid_cust_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_GRIDS' and source_id= ? ";
+			for (CompositeMap gridRecord : gridList) {
+				Long field_id = gridRecord.getLong("field_id");
+				String grid_id = gridRecord.getString("grid_id");
+				cmp_id = gridRecord.getString("cmp_id"); 
+				PrepareParameter[] p1 = new PrepareParameter[1];
+				p1[0] = new PrepareParameter(new IntegerType(), field_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_grid_sql, p1);
+				
+				PrepareParameter[] p2 = new PrepareParameter[1];
+				p2[0] = new PrepareParameter(new StringType(), grid_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_grid_cust_sql, p2);
+			}
+			if(cmp_id != null) {
+				String delete_reorder_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_GRIDS_CMP_ID' and source_id= ? ";
+				PrepareParameter[] parameters = new PrepareParameter[1];
+				parameters[0] = new PrepareParameter(new StringType(), cmp_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_reorder_sql, parameters);
+			}
+			
+		}
+	}
+	
+	
+	
 	public static void formConfigConvertToCust(IObjectRegistry registry, Long form_id) throws Exception {
 		StringBuffer query_sql = new StringBuffer();
 		query_sql.append("select s.service_name,f.header_id,f.container_id from sys_dynamic_forms f,sys_dynamic_headers h,sys_service s where f.header_id=h.header_id and h.service_id=s.service_id and f.form_id = ?");
