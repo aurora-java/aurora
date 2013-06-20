@@ -1195,8 +1195,15 @@ public class CustomSourceCode {
 		return new ConfigurationFileException(RE_ORDER_CHILD_COUNT, new Integer[] { sourceCount, reOrderCount }, iLocatable);
 	}
 	
-	
 	public static void deleteBusinessObject(IObjectRegistry registry, Long object_id) throws Exception {
 		ConfigCustomizationUtil.deleteBusinessObject(registry, object_id);
+	}
+	
+	public static void deleteDynamicScreen(IObjectRegistry registry, Long header_id) throws Exception {
+		ConfigCustomizationUtil.deleteDynamicScreen(registry, header_id);
+	}
+	
+	public static void updateDynamicScreen(IObjectRegistry registry, Long header_id,String dimension_type,String dimension_value) throws Exception {
+		ConfigCustomizationUtil.updateDynamicScreen(registry, header_id,dimension_type,dimension_value);
 	}
 }

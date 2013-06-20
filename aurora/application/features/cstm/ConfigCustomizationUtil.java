@@ -31,6 +31,70 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 
 public class ConfigCustomizationUtil {
 	
+	public static void updateDynamicScreen(IObjectRegistry registry, Long header_id,String dimension_type,String dimension_value)throws Exception {
+		StringBuffer update_form_sql = new StringBuffer();
+		update_form_sql.append("update sys_config_customization set dimension_type= ?,dimension_value = ? where source_id in(select f.form_id from sys_dynamic_forms f where f.header_id = ?) and source_type = 'SYS_DYNAMIC_FORMS'");
+		PrepareParameter[] para = new PrepareParameter[3];
+		para[0] = new PrepareParameter(new StringType(), dimension_type);
+		para[1] = new PrepareParameter(new StringType(), dimension_value);
+		para[2] = new PrepareParameter(new IntegerType(), header_id);
+		CustomSourceCode.sqlExecuteWithParas(registry, update_form_sql.toString(), para);
+		
+		StringBuffer update_grid_sql = new StringBuffer();
+		update_grid_sql.append("update sys_config_customization set dimension_type= ?, dimension_value = ? where source_id in (select g.grid_id from sys_dynamic_grids g where g.header_id = ?) and source_type = 'SYS_DYNAMIC_GRIDS'");
+		CustomSourceCode.sqlExecuteWithParas(registry, update_grid_sql.toString(), para);
+		
+		StringBuffer update_reorder_sql = new StringBuffer();
+		update_reorder_sql.append("update sys_config_customization set dimension_type= ?, dimension_value = ? where source_id in (select g.cmp_id from sys_dynamic_grids g where g.header_id = ?) and source_type = 'SYS_DYNAMIC_GRIDS_CMP_ID'");
+		CustomSourceCode.sqlExecuteWithParas(registry, update_reorder_sql.toString(), para);
+	}
+	
+	
+	public static void deleteDynamicScreen(IObjectRegistry registry, Long header_id)throws Exception {
+		StringBuffer form_sql = new StringBuffer();
+		form_sql.append("select f.form_id from sys_dynamic_forms f where f.header_id= ?");
+		PrepareParameter[] para = new PrepareParameter[1];
+		para[0] = new PrepareParameter(new IntegerType(), header_id);
+		CompositeMap formResult = CustomSourceCode.sqlQueryWithParas(registry, form_sql.toString(), para);
+		List<CompositeMap> formList = formResult.getChilds();
+		if (formList != null) {
+			String delete_form_sql = "delete from sys_dynamic_forms where header_id= ? ";
+			String delete_form_cust_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_FORMS' and source_id= ? ";
+			for (CompositeMap formRecord : formList) {
+				String form_id = formRecord.getString("form_id");
+				PrepareParameter[] p = new PrepareParameter[1];
+				p[0] = new PrepareParameter(new StringType(), form_id);				
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_form_cust_sql, p);
+			}
+			CustomSourceCode.sqlExecuteWithParas(registry, delete_form_sql, para);
+		}
+		
+		StringBuffer grid_sql = new StringBuffer();
+		grid_sql.append("select g.grid_id,g.cmp_id from sys_dynamic_grids g where g.header_id= ?");
+		CompositeMap gridResult = CustomSourceCode.sqlQueryWithParas(registry, grid_sql.toString(), para);
+		String cmp_id = null;
+		List<CompositeMap> gridList = gridResult.getChilds();
+		if (gridList != null) {
+			String delete_grid_sql = "delete from sys_dynamic_grids where header_id= ? ";
+			String delete_grid_cust_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_GRIDS' and source_id= ? ";
+			for (CompositeMap gridRecord : gridList) {
+				String grid_id = gridRecord.getString("grid_id");
+				cmp_id = gridRecord.getString("cmp_id"); 
+				
+				PrepareParameter[] parameters = new PrepareParameter[1];
+				parameters[0] = new PrepareParameter(new StringType(), grid_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_grid_cust_sql, parameters);
+			}
+			if(cmp_id != null) {
+				String delete_reorder_sql = "delete from sys_config_customization where upper(source_type) = 'SYS_DYNAMIC_GRIDS_CMP_ID' and source_id= ? ";
+				PrepareParameter[] parameters = new PrepareParameter[1];
+				parameters[0] = new PrepareParameter(new StringType(), cmp_id);
+				CustomSourceCode.sqlExecuteWithParas(registry, delete_reorder_sql, parameters);
+			}
+			CustomSourceCode.sqlExecuteWithParas(registry, delete_grid_sql, para);
+		}
+		
+	}
 	
 	public static void deleteBusinessObject(IObjectRegistry registry, Long object_id)throws Exception {
 		StringBuffer form_sql = new StringBuffer();
