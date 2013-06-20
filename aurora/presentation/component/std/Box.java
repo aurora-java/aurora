@@ -19,12 +19,6 @@ public class Box extends GridLayout {
 	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_TH_CLASS = "layout-th";
 	UncertainEngine ue;
-	protected int getLabelWidth(CompositeMap view){
-		BoxConfig bc = new BoxConfig();
-		bc.initialize(view);
-		int labelWidth = bc.getLabelWidth();
-		return labelWidth;
-	}
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		BoxConfig bc = new BoxConfig();
@@ -34,7 +28,7 @@ public class Box extends GridLayout {
 		String label = vlabel==null ? getFieldPrompt(session, field, field.getString(ComponentConfig.PROPERTITY_BINDTARGET, "")) : vlabel;
 		String id = field.getString(ComponentConfig.PROPERTITY_ID,"");
 		label = session.getLocalizedPrompt(label);
-		int labelWidth = bc.getLabelWidth();
+		int labelWidth = bc.getLabelWidth(model);
 		
 		String defaultLabelSeparator = session.getSessionContext().getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
 		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,(defaultLabelSeparator == null ? ":" : defaultLabelSeparator));

@@ -94,6 +94,13 @@ public class ComponentConfig extends DynamicObject {
 		putString(PROPERTITY_VALUE, value);
 	}
 
+	public int getWidth(CompositeMap model,int defaultValue) {
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_WIDTH), model);
+		if(null == str||"".equals(str)){
+			return defaultValue;
+		}
+		return Integer.valueOf(str).intValue();
+	}
 	
 	public int getWidth(int defaultValue) {
 		return getInt(PROPERTITY_WIDTH, defaultValue);
@@ -105,6 +112,14 @@ public class ComponentConfig extends DynamicObject {
 
 	public void setWidth(int width) {
 		putInt(PROPERTITY_WIDTH, width);
+	}
+	
+	public int getHeight(CompositeMap model,int defaultValue) {
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_HEIGHT), model);
+		if(null == str||"".equals(str)){
+			return defaultValue;
+		}
+		return Integer.valueOf(str).intValue();
 	}
 	
 	public int getHeight(int defaultHeight) {

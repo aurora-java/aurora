@@ -33,7 +33,7 @@ public class AutoForm implements IFeature{
         CompositeMap model = sc.getModel();
     	
     	FormConfig formConfig = FormConfig.getInstance(view);
-		formConfig.setCellspacing(0);
+		formConfig.setCellSpacing(0);
 		
 		String target = view.getString(ComponentConfig.PROPERTITY_BINDTARGET,"");
 		String handler = view.getString(PROPERTITY_ENTERDOWN_HANDLER);

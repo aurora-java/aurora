@@ -38,15 +38,17 @@ public class FieldSet extends Box {
 		String cls = fsc.getClassName("");
 		String style = fsc.getStyle("");
 		
-		String widthStr = String.valueOf(fsc.getWidth(0));//view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
-		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
-		int width = Integer.valueOf(wstr).intValue();
-		String heightStr = String.valueOf(fsc.getHeight(0));//view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
-		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
-		int height = Integer.valueOf(hstr).intValue();
+//		String widthStr = String.valueOf(fsc.getWidth(0));//view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
+//		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+//		int width = Integer.valueOf(wstr).intValue();
+//		String heightStr = String.valueOf(fsc.getHeight(0));//view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
+//		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
+//		int height = Integer.valueOf(hstr).intValue();
+		int width = fsc.getWidth(model, 0);
+		int height = fsc.getHeight(model, 0);
 		
-		int cellspacing = fsc.getCellSpacing();//view.getInt(PROPERTITY_CELLSPACING, 0);
-		int cellpadding = fsc.getCellPadding();//view.getInt(PROPERTITY_CELLPADDING, 0);
+		int cellspacing = fsc.getCellSpacing(model);//view.getInt(PROPERTITY_CELLSPACING, 0);
+		int cellpadding = fsc.getCellPadding(model);//view.getInt(PROPERTITY_CELLPADDING, 0);
 		
 		String className = DEFAULT_TABLE_CLASS;
 		String title = fsc.getTitle();

@@ -2,7 +2,7 @@ package aurora.presentation.component.std.config;
 
 import uncertain.composite.CompositeMap;
 
-public class FieldSetConfig extends GridLayouConfig {
+public class FieldSetConfig extends BoxConfig {
 	
 	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "fieldSet";

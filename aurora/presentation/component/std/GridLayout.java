@@ -50,22 +50,12 @@ public class GridLayout extends Component implements IViewBuilder{
 		return 0;
 	}
 		
-	protected int getRows(CompositeMap view){
-		int rows = view.getInt(ROWS, UNLIMITED);
-		return rows;
-	}
-	
-	protected int getColumns(CompositeMap view){
-		int columns = view.getInt(COLUMNS, UNLIMITED);
-		return columns;
-	}
-	
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		if(isHidden(field, model)) return;
 		GridLayouConfig glc = new GridLayouConfig();
 		glc.initialize(view);
 		Writer out = session.getWriter();
-		int padding = glc.getPadding(3);
+		int padding = glc.getPadding(model,3);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
@@ -158,8 +148,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		GridLayouConfig glc = new GridLayouConfig();
 		glc.initialize(view);
 		Writer out = session.getWriter();
-		int cellspacing = glc.getCellSpacing();
-		int cellpadding = glc.getCellPadding();
+		int cellspacing = glc.getCellSpacing(model);
+		int cellpadding = glc.getCellPadding(model);
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);		
 		
 //		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "0");
@@ -215,9 +205,10 @@ public class GridLayout extends Component implements IViewBuilder{
 		
 		Writer out = session.getWriter();
 		Iterator it = view.getChildIterator();
-		
-		int rows = getRows(view);
-		int columns = getColumns(view);
+		GridLayouConfig glc = new GridLayouConfig();
+		glc.initialize(view);
+		int rows = glc.getRow(model,UNLIMITED);
+		int columns = glc.getColumn(model,UNLIMITED);
 		if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;
