@@ -49,7 +49,18 @@ public class GridLayout extends Component implements IViewBuilder{
 	protected int getDefaultHeight(){
 		return 0;
 	}
-		
+	
+	protected int getRows(CompositeMap view,CompositeMap model){
+		GridLayouConfig glc = new GridLayouConfig();
+		glc.initialize(view);
+		return glc.getRow(model, UNLIMITED);
+	}
+	
+	protected int getColumns(CompositeMap view,CompositeMap model){
+		GridLayouConfig glc = new GridLayouConfig();
+		glc.initialize(view);
+		return glc.getColumn(model, UNLIMITED);
+	}
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		if(isHidden(field, model)) return;
 		GridLayouConfig glc = new GridLayouConfig();
@@ -205,10 +216,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		
 		Writer out = session.getWriter();
 		Iterator it = view.getChildIterator();
-		GridLayouConfig glc = new GridLayouConfig();
-		glc.initialize(view);
-		int rows = glc.getRow(model,UNLIMITED);
-		int columns = glc.getColumn(model,UNLIMITED);
+		int rows = getRows(view,model);//glc.getRow(model,UNLIMITED);
+		int columns = getColumns(view,model);//glc.getColumn(model,UNLIMITED);
 		if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;
