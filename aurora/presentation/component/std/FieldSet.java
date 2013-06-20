@@ -44,8 +44,8 @@ public class FieldSet extends Box {
 //		String heightStr = String.valueOf(fsc.getHeight(0));//view.getString(ComponentConfig.PROPERTITY_HEIGHT, "0");
 //		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 //		int height = Integer.valueOf(hstr).intValue();
-		int width = fsc.getWidth(model, 0);
-		int height = fsc.getHeight(model, 0);
+		int width = getComponentWidth(model, view, map).intValue();
+		int height = getComponentHeight(model, view, map).intValue();
 		
 		int cellspacing = fsc.getCellSpacing(model);//view.getInt(PROPERTITY_CELLSPACING, 0);
 		int cellpadding = fsc.getCellPadding(model);//view.getInt(PROPERTITY_CELLPADDING, 0);
