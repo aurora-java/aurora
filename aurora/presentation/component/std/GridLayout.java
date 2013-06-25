@@ -67,6 +67,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		glc.initialize(view);
 		Writer out = session.getWriter();
 		int padding = glc.getPadding(model,3);
+		int colspan = field.getInt(GridLayouConfig.PROPERTITY_COLSPAN,1);
+		int rowspan = field.getInt(GridLayouConfig.PROPERTITY_ROWSPAN,1);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
@@ -90,6 +92,8 @@ public class GridLayout extends Component implements IViewBuilder{
 				out.write("' width='"+width);
 			}
 		}
+		if(colspan > 1)out.write("' colspan='"+(colspan*2-1));
+		if(rowspan > 1)out.write("' rowspan='"+rowspan);
 		out.write("' style='padding:"+padding+"px'>");
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			
@@ -136,6 +140,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		while(it.hasNext()){
 			out.write("<tr>");
 			CompositeMap field = (CompositeMap)it.next();
+			field.putInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
+			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);	
 			out.write("</tr>");
 		}
@@ -147,6 +153,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		out.write("<tr>");
 		while(it.hasNext()){
 			CompositeMap field = (CompositeMap)it.next();
+			field.putInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
+			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);		
 		}
 		out.write("</tr>");
@@ -218,13 +226,13 @@ public class GridLayout extends Component implements IViewBuilder{
 		Iterator it = view.getChildIterator();
 		int rows = getRows(view,model);//glc.getRow(model,UNLIMITED);
 		int columns = getColumns(view,model);//glc.getColumn(model,UNLIMITED);
+		int cl = getChildLength(view,model);
 		if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;
 		}else if(rows == UNLIMITED && columns != UNLIMITED) {
 			List children = view.getChilds();
 			if(children!=null){
-				int cl = getChildLength(view,model);
 				rows = (int)Math.ceil((double)cl/columns);
 			}else{
 				rows = 1;				
@@ -232,7 +240,6 @@ public class GridLayout extends Component implements IViewBuilder{
 		} else if(rows != UNLIMITED && columns == UNLIMITED) {
 			List children = view.getChilds();
 			if(children!=null){
-				int cl = getChildLength(view,model);
 				columns = (int)Math.ceil((double)cl/rows);
 			}else{
 				columns = 1;				
@@ -246,12 +253,43 @@ public class GridLayout extends Component implements IViewBuilder{
 				}else if(columns == UNLIMITED){
 					buildColumns(session, model, view, it);
 				}else{
+					int[] rowspans = new int[columns];
+					for(int i=0;i<columns;i++){
+						rowspans[i]=0;
+					}
 					for( int n=0; n<rows; n++){
 						out.write("<tr>");
-						for( int k=0; k<columns; k++){
+						int k=0;
+						for(int j=0;j<columns;j++){
+							if(rowspans[j]>0){
+								k++;
+								rowspans[j]--;
+							}
+						}
+						for( ; k<columns; k++){
 							if(it.hasNext()){
 								CompositeMap field = (CompositeMap)it.next();
-								if(isHidden(field, model))k--;
+								if(isHidden(field, model)){
+									k--;
+									cl--;
+								}else{
+									int colspan = field.getInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
+									int rowspan = field.getInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
+									if(rowspan > 1){
+										cl += rowspan - 1;
+									}
+									rowspans[k] += rowspan-1;
+									if(colspan > 1){
+										if(k + colspan > columns){
+											colspan = columns - k;
+											field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, colspan);
+										}
+										k += colspan - 1;
+										cl += colspan - 1;
+									}
+									
+								}
+								rows = (int)Math.ceil((double)cl/columns);
 								buildCell(session,model,view, field);
 							}else{
 								out.write("<th class='layout-th'></th><td class='layout-td-cell'></td>");

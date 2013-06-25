@@ -29,13 +29,17 @@ public class Box extends GridLayout {
 		String id = field.getString(ComponentConfig.PROPERTITY_ID,"");
 		label = session.getLocalizedPrompt(label);
 		int labelWidth = bc.getLabelWidth(model);
+		int rowspan = field.getInt(BoxConfig.PROPERTITY_ROWSPAN, 1);
 		
 		String defaultLabelSeparator = session.getSessionContext().getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
 		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,(defaultLabelSeparator == null ? ":" : defaultLabelSeparator));
 		
+		StringBuffer str = new StringBuffer();
 		if(!"".equals(label)) {
-			StringBuffer str = new StringBuffer();
 			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
+			if(rowspan>1){
+				str.append(" rowspan='"+rowspan+"'");
+			}
 			String ps = field.getString(ComponentConfig.PROPERTITY_PROMPT_STYLE);
 			boolean hidden = field.getBoolean(ComponentConfig.PROPERTITY_HIDDEN, false);
 			if(!"".equals(ps))str.append(" style='"+ps+"' ");
@@ -48,8 +52,14 @@ public class Box extends GridLayout {
 			}
 			str.append(">");
 			str.append(label+labelSeparator+"</div></th>");
-			out.write(str.toString());
+		}else{
+			str.append("<th class='layout-th'");
+			if(rowspan>1){
+				str.append(" rowspan='"+rowspan+"'");
+			}
+			str.append("></th>");
 		}
+		out.write(str.toString());
 	}
 	
 //	private String getComponentLabel(BuildSession session, CompositeMap field){

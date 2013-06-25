@@ -12,6 +12,8 @@ public class GridLayouConfig extends ComponentConfig {
 	public static final String PROPERTITY_ROW = "row";
 	public static final String PROPERTITY_COLUMN = "column";
 	public static final String PROPERTITY_WRAPPER_ADJUST = "wrapperadjust";
+	public static final String PROPERTITY_ROWSPAN = "rowspan";
+	public static final String PROPERTITY_COLSPAN = "colspan";
 	
 	public int getCellPadding(CompositeMap model){
 		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_CELLPADDING), model);
