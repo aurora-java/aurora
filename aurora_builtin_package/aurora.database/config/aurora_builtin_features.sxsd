@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:o="aurora.database.local.oracle" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:f="aurora.database.features">
+<ss:schema xmlns:s="aurora.plugin.script" xmlns:o="aurora.database.local.oracle" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:f="aurora.database.features">
     <ss:types>
         <ss:complexType name="bm:feature" document="所有可以放置在bm的features部分的tag，必须继承此类型"/>
     </ss:types>
@@ -56,6 +56,11 @@
             </ss:extensions>
         </ss:element>
         <ss:element name="f:multi-language-storage" document="多语言存储">
+            <ss:extensions>
+                <ss:extension base="bm:feature"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="s:bm-script" document="使用服务端脚本修改bm">
             <ss:extensions>
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
