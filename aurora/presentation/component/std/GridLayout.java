@@ -227,6 +227,7 @@ public class GridLayout extends Component implements IViewBuilder{
 		int rows = getRows(view,model);//glc.getRow(model,UNLIMITED);
 		int columns = getColumns(view,model);//glc.getColumn(model,UNLIMITED);
 		int cl = getChildLength(view,model);
+		if(cl==0)return;
 		if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;

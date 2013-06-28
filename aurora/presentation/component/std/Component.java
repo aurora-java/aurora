@@ -361,6 +361,7 @@ public class Component {
 	public int getChildLength(CompositeMap view, CompositeMap model){
 		int count = 0;
 		Iterator it = view.getChildIterator();
+		if(it!=null)
 		while(it.hasNext()){
 			CompositeMap field = (CompositeMap)it.next();
 			if(isHidden(field,model)){
