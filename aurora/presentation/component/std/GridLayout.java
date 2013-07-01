@@ -143,7 +143,7 @@ public class GridLayout extends Component implements IViewBuilder{
 			field.putInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
 			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);	
-			out.write("</tr>");
+			out.write("<td width='100%'></td></tr>");
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class GridLayout extends Component implements IViewBuilder{
 			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);		
 		}
-		out.write("</tr>");
+		out.write("<td width='100%'></td></tr>");
 	}
 	
 
@@ -227,7 +227,6 @@ public class GridLayout extends Component implements IViewBuilder{
 		int rows = getRows(view,model);//glc.getRow(model,UNLIMITED);
 		int columns = getColumns(view,model);//glc.getColumn(model,UNLIMITED);
 		int cl = getChildLength(view,model);
-		if(cl==0)return;
 		if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;
@@ -297,7 +296,7 @@ public class GridLayout extends Component implements IViewBuilder{
 //								break;
 							}
 						}
-						out.write("</tr>");
+						out.write("<td width='100%'></td></tr>");
 					}
 				}
 			}
