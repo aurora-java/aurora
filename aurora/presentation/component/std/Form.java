@@ -27,7 +27,7 @@ public class Form extends Box {
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
 		title = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(title),model);
 		if(!"".equals(title)) {
-			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+(columns*2+1)+">");
+			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
 			out.write(title);
 			out.write("</th></tr></thead>");
 		}
@@ -40,7 +40,7 @@ public class Form extends Box {
 		
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
-		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td colspan="+(columns*2+1)+"></td></tr>");
+		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td colspan="+columns*2+"></td></tr>");
 		super.afterBuildTop(session, model, view,columns);
 	}
 	
@@ -134,7 +134,7 @@ public class Form extends Box {
 		Writer out = session.getWriter();
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
-		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td colspan="+(columns*2+1)+"></td></tr>");
+		if("true".equals(showmargin) && !showBorder)out.write("<tr height='5'><td colspan="+columns*2+"></td></tr>");
 	}
 	
 	protected void afterBuildBottom(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
