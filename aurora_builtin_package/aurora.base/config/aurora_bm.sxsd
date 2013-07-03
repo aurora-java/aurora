@@ -32,6 +32,7 @@
         <ss:simpleType name="bm:LocalFieldReference" base="ss:string" document="对同一BM中其它字段的引用" editor="bm:LocalFieldReferenceEditor" referenceType="bm:localField"/>
         <ss:simpleType name="bm:ForeignFieldReference" base="ss:string" document="对其它BM字段的引用" editor="bm:ForeignFieldReferenceEditor" referenceType="bm:foreignField"/>
         <ss:simpleType name="bm:Prompts" base="ss:string" document="对应字段的prompt"/>
+        <ss:simpleType name="bm:Lookupcode" base="ss:string" document="值列表的CODE"/>
         <ss:complexType name="bm:AbstractOperation">
             <ss:attributes>
                 <ss:attribute name="name" use="required"/>
@@ -72,7 +73,7 @@
             <ss:attributes>
                 <ss:attribute name="name" document="字段的名称" type="bm:LocalFieldReference" use="required"/>
                 <ss:attribute name="relationName" document="关系的名称"/>
-                <ss:attribute name="sourceField" document="源字段的名称"/>
+                <ss:attribute name="sourceField" document="源字段的名称" type="bm:ForeignFieldReference"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="bm:pk-field">

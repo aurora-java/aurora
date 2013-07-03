@@ -20,7 +20,7 @@
                 <ss:attribute name="fetchAll" default="false" document="是否查询所有数据" editor="" type="ss:boolean"/>
                 <ss:attribute name="canQuery" default="true" document="是否可查询" editor="" type="ss:boolean"/>
                 <ss:attribute name="canSubmit" default="true" document="是否可以提交" type="ss:boolean"/>
-                <ss:attribute name="lookupCode" document="值列表的CODE"/>
+                <ss:attribute name="lookupCode" document="值列表的CODE" type="bm:Lookupcode"/>
                 <ss:attribute name="autoPageSize" default="false" document="根据Grid的高度，自适应分页大小。注：只在grid初次加载时生效，如果Grid设定了marginHeigt，行数不会根据窗口大小的调整而调整。" type="ss:boolean"/>
                 <ss:attribute name="maxPageSize" default="1000" document="查询的分页大小的最大值，用于限制navBar中的分页输入框的输入上限" type="ss:int"/>
                 <ss:attribute name="pageSize" default="10" document="查询的分页大小" type="ss:int"/>
@@ -151,8 +151,8 @@
                 <ss:attribute name="lovUrl" document="自定义URL" type="a:URLReference"/>
                 <ss:attribute name="autoComplete" default="false" document="是否开启lov的autoComplete功能" type="ss:boolean"/>
                 <ss:attribute name="autoCompleteField" document="autoComplete的查询字段，如果没有设定该值则默认取通过mapping映射本组件绑定字段的lov查询字段。\n例如：&lt;a:field name=&apos;value&apos;&gt;\n&lt;a:mapping&gt;\n&lt;a:map from=&apos;code&apos; to=&apos;value&apos;&gt;&lt;/a:map&gt;\n&lt;/a:mapping&gt;&lt;/a:field&gt;\n中code就是默认autoCompleteField。"/>
-                <ss:attribute name="autoCompleteSize" document="autoComplete触发最小字符数" default="2" type="ss:int"/>
-                <ss:attribute name="autoCompletePageSize" document="autoComplete分页大小" default="10" type="ss:int"/>
+                <ss:attribute name="autoCompleteSize" default="2" document="autoComplete触发最小字符数" type="ss:int"/>
+                <ss:attribute name="autoCompletePageSize" default="10" document="autoComplete分页大小" type="ss:int"/>
                 <ss:attribute name="validator" document="自定义校验函数\n函数参数为 function(record,name,value)\n返回值:\n(1)校验成功返回true\n(2)校验失败返回错误的描述信息(文本格式)"/>
                 <ss:attribute name="datatype" document="field的数据类型" type="ss:String"/>
                 <ss:attribute name="typeCase" document="textField中输入大小写类型" type="ss:String"/>

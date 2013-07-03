@@ -9,7 +9,7 @@
     <sxsd:typeExtends>
         <sxsd:typeExtend name="lookupCode" base="bm:field" document="值列表属性">
             <sxsd:attributes>
-                <sxsd:attribute name="lookupCode" document="值列表编码" type="sxsd:string"/>
+                <sxsd:attribute name="lookupCode" document="值列表编码" type="bm:Lookupcode"/>
                 <sxsd:attribute name="lookupField" document="值列表字段" type="sxsd:string"/>
             </sxsd:attributes>
         </sxsd:typeExtend>
