@@ -92,8 +92,8 @@ public class Accordion extends Component {
 		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
 				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='strip'>");
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
-		sb.append(session.getLocalizedPrompt(accordion
-				.getString(ComponentConfig.PROPERTITY_PROMPT)));
+		sb.append(uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
+				.getString(ComponentConfig.PROPERTITY_PROMPT)),model));
 		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='height:"
 				+ bodyHeight + "px;"+(isSelected?"":"visibility:hidden")+"'>");
 		String ref = accordion.getString(REF, "");
