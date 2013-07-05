@@ -28,6 +28,7 @@ public class CacheProviderRegistry {
 		Set<Entry<String, ICacheProvider>> entrySet = providerMap.entrySet();
 		for (Entry<String, ICacheProvider> entry : entrySet) {
 			ICacheProvider provider = entry.getValue();
+			boolean periodMode = false;
 			if (provider != null) {
 				CompositeMap record = new CompositeMap("record");
 				record.put(KEY_CACHE_NAME, entry.getKey());
@@ -45,13 +46,17 @@ public class CacheProviderRegistry {
 					record.put(KEY_PAST_TIME, "");
 				}
 				if (provider instanceof PeriodModeCacheProvider) {
+					periodMode = true;
 					record.put(KEY_RELOAD_TYPE, "periodMode");
 					record.put(KEY_RELOAD_INTERVAL, ((PeriodModeCacheProvider) provider).getRefreshInterval());
 				} else {
 					record.put(KEY_RELOAD_TYPE, "");
 					record.put(KEY_RELOAD_INTERVAL, "");
 				}
-				result.addChild(record);
+				if(!periodMode)
+					result.addChild(0, record);
+				else
+					result.addChild(record);
 			}
 		}
 		return result;
