@@ -14,7 +14,8 @@ public class ScreenBody extends VBox {
 	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
-		view.put(ComponentConfig.PROPERTITY_STYLE, "margin:5px;");
+		String style = view.getString(ComponentConfig.PROPERTITY_STYLE);
+		view.put(ComponentConfig.PROPERTITY_STYLE, "margin:5px;"+style);
 		super.buildView(session, view_context);
 	}
 }
