@@ -90,7 +90,7 @@ public class Component {
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
 		map.put(ComponentConfig.PROPERTITY_OLD_WIDTH, width);
-		Integer marginWidth = cc.getMarginWidth();
+		Integer marginWidth = cc.getMarginWidth(model);
 		if (marginWidth != null && vw != null) {
 			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
 			//中集特殊做法！
