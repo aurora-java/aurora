@@ -98,7 +98,10 @@ public class ScreenInclude implements IViewBuilder{
     {
         //CompositeMap context = view_context.getModel().getRoot();
         HttpServiceInstance parent = (HttpServiceInstance)ServiceInstance.getInstance(context);
-        HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent);
+//        HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent);
+        
+        HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent.getRequest(),parent.getResponse(),parent.getServlet());
+        
         
         final CompositeMap config = mServiceFactory.loadServiceConfig(name);
         ScreenConfig scc = ScreenConfig.createScreenConfig(config);
@@ -122,26 +125,30 @@ public class ScreenInclude implements IViewBuilder{
         screen_name = session.parseString(screen_name, model );
         // Added by mark.ma -- parse parameter
         int parameterpositiion = screen_name.lastIndexOf("?");
+        CompositeMap para = new CompositeMap("parameter");;
         if (parameterpositiion != -1) {
             String parameter = screen_name.substring(parameterpositiion + 1,
                     screen_name.length());
             screen_name = screen_name.substring(0, parameterpositiion);
             String[] parameters = parameter.split("&");
-            CompositeMap pcm = root.getChild("parameter");
+//            CompositeMap pcm = root.getChild("parameter");
+            
             for (int i = 0; i < parameters.length; i++) {
                 String p = parameters[i];
                 String key = p.substring(0, p.indexOf("="));
                 key = session.parseString(key, model);
                 String value = p.substring(p.indexOf("=") + 1, p.length());
                 value = session.parseString(value, model);
-                pcm.put( key, value);
+                para.put( key, value);
             }
         }        
         // end
         ServiceInstance old_inst = ServiceInstance.getInstance(root);
         // Run service
         try{
+        	
             HttpServiceInstance sub_instance = createSubInstance(screen_name, root);
+            sub_instance.getContextMap().replaceChild("parameter", para);
             ScreenConfig sub_config = ScreenConfig.createScreenConfig(sub_instance.getServiceConfigData());
             if(sub_config.isCacheEnabled()){
                 if(mCacheListener!=null){
