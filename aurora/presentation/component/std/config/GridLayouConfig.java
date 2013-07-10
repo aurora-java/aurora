@@ -49,7 +49,7 @@ public class GridLayouConfig extends ComponentConfig {
 	}
 	
 	public boolean isWrapperAdjust(){
-		return getBoolean(PROPERTITY_WRAPPER_ADJUST, true);
+		return getBoolean(PROPERTITY_WRAPPER_ADJUST, false);
 	}
 	public void setWrapperAdjust(boolean v){
 		putBoolean(PROPERTITY_WRAPPER_ADJUST, v);
