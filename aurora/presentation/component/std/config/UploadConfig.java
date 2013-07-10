@@ -45,7 +45,7 @@ public class UploadConfig extends ComponentConfig {
 	}
 	
 	public void setType(String type){
-		putString(PROPERTITY_TYPE, DEFAULT_TYPE);
+		putString(PROPERTITY_TYPE, type);
 	}
 
 	

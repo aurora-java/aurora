@@ -93,6 +93,10 @@ public class DataSetConfig extends ComponentConfig {
 		return getBoolean(PROPERTITY_AUTO_QUERY, false);
 	}
 	
+	public String getQueryUrl(){
+		return getString(PROPERTITY_QUERYURL, "");
+	}
+	
 	public String getQueryUrl(CompositeMap model){
 		String str = getString(PROPERTITY_QUERYURL, "");		
 		return uncertain.composite.TextParser.parse(str, model);
