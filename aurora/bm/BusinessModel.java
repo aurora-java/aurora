@@ -293,7 +293,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	}
 
 	public void setBaseTable(String table) {
-		System.out.print(table);
+		// System.out.print(table);
 		put(KEY_BASE_TABLE, table);
 	}
 
