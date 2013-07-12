@@ -10,15 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import uncertain.composite.CompositeMap;
-import uncertain.event.Configuration;
 import uncertain.event.EventModel;
-import uncertain.ocm.IObjectRegistry;
 import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.bm.IModelFactory;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
+import aurora.events.E_PrepareServiceConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
@@ -29,8 +28,8 @@ import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.service.IService;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
-import aurora.events.E_PrepareServiceConfig;
 
+@SuppressWarnings("unchecked")
 public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 
     IModelFactory mFactory;
@@ -39,7 +38,8 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
         this.mFactory = factory;
     }
     
-    public int onPrepareServiceConfig( IService service ) throws Exception {
+    
+	public int onPrepareServiceConfig( IService service ) throws Exception {
         
         ServiceContext sc = service.getServiceContext();
         CompositeMap model = sc.getModel();
@@ -85,52 +85,38 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 
     private void processDataSet(CompositeMap ds,CompositeMap model,List dslist,ScreenConfig screen) throws Exception{
     	DataSetConfig dsc = DataSetConfig.getInstance(ds);
-//		String href = ds.getString(DataSetConfig.PROPERTITY_HREF, "");
-		String queryUrl = dsc.getQueryUrl();//ds.getString(DataSetConfig.PROPERTITY_QUERYURL,"");
-		String submitUrl = dsc.getSubmitUrl();//ds.getString(DataSetConfig.PROPERTITY_SUBMITURL,"");
-		String baseModel = dsc.getModel();//ds.getString(DataSetConfig.PROPERTITY_MODEL,"");
-		boolean cq = dsc.isCanQuery();//ds.getBoolean(DataSetConfig.PROPERTITY_CAN_QUERY,true);
-		boolean cs = dsc.isCanSubmit();//ds.getBoolean(DataSetConfig.PROPERTITY_CAN_SUBMIT,true);
+		String queryUrl = dsc.getQueryUrl();
+		String submitUrl = dsc.getSubmitUrl();
+		String baseModel = dsc.getModel();
+		boolean cq = dsc.isCanQuery();
+		boolean cs = dsc.isCanSubmit();
 		
 		
 		if(baseModel!=null && dsc.getLoadData() == true){
 			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
 			mqc.setModel(baseModel);
-//			mqc.setRootPath("/model/"+baseModel);
 			mqc.setRootPath("/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
-			mqc.setAutoCount(false);//ds.getBoolean(DataSetConfig.PROPERTITY_AUTO_COUNT, false)
-			mqc.setFetchAll(true);//ds.getBoolean(DataSetConfig.PROPERTITY_FETCHALL, true)
+			mqc.setAutoCount(false);
+			mqc.setFetchAll(true);
 			screen.addInitProcedureAction(mqc.getObjectContext());
 			//mConfig.loadConfig(mqc.getObjectContext());
 			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
 			if(datas == null){
 				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
 			}
-//			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+baseModel);
 			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
 		}
 		if(cq && "".equals(queryUrl) && baseModel!=null){
 			ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/query");
 		}
-		if(cs){
-			if(!"".equals(submitUrl)){
-				submitUrl = uncertain.composite.TextParser.parse(submitUrl, model);
-				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, submitUrl);
-			}else if(baseModel!=null){
-				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/batch_update");
-			}
+		if(cs && "".equals(submitUrl) && baseModel!=null){
+			ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/batch_update");
 		}
 		if(baseModel!=null){
 			baseModel = uncertain.composite.TextParser.parse(baseModel, model);
 			BusinessModel bm = null;
             bm = mFactory.getModelForRead(baseModel);
-/*
-            try {
-
-			}catch(Exception e){
-				bm = mFactory.getModelForRead(baseModel,"xml");
-			}
-*/			
+			
 			Field[] bmfields = bm.getFields();
 			if(bmfields != null){
 				CompositeMap fields = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
