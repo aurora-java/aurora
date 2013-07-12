@@ -32,8 +32,8 @@ public class Accordion extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addStyleSheet(session, context, "accordion/Accordion.css");
-		addJavaScript(session, context, "accordion/Accordion.js");
+		addStyleSheet(session, context, "accordion/Accordion-min.css");
+		addJavaScript(session, context, "accordion/Accordion-min.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
@@ -90,7 +90,7 @@ public class Accordion extends Component {
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
 		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
-				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='strip'>");
+				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='accordion-strip'>");
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
 		sb.append(uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)),model));
