@@ -336,6 +336,8 @@ public class Grid extends Component {
 						column.putString(COLUMN_TYPE, TYPE_CELL_CHECKBOX);
 					}
 					if(!"".equals(editor)) column.put(GridColumnConfig.PROPERTITY_EDITOR, uncertain.composite.TextParser.parse(editor, model));
+					String renderer = column.getString(GridColumnConfig.PROPERTITY_RENDERER, "");
+					if(!"".equals(renderer))  column.put(GridColumnConfig.PROPERTITY_RENDERER, uncertain.composite.TextParser.parse(editor, model));
 					toJSONForParentColumn(column);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);
