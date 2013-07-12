@@ -337,7 +337,7 @@ public class Grid extends Component {
 					}
 					if(!"".equals(editor)) column.put(GridColumnConfig.PROPERTITY_EDITOR, uncertain.composite.TextParser.parse(editor, model));
 					String renderer = column.getString(GridColumnConfig.PROPERTITY_RENDERER, "");
-					if(!"".equals(renderer))  column.put(GridColumnConfig.PROPERTITY_RENDERER, uncertain.composite.TextParser.parse(editor, model));
+					if(!"".equals(renderer))  column.put(GridColumnConfig.PROPERTITY_RENDERER, uncertain.composite.TextParser.parse(renderer, model));
 					toJSONForParentColumn(column);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);

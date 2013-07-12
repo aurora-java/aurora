@@ -124,7 +124,7 @@ public class AutoGrid implements IFeature{
 					column.setWidth(field.getDisplayWidth());
 					column.setAlign(field.getDisplayAlign());
 //					column.setName(column.getName());
-					if(field.isDateType() && "".equals(column.getRenderer())){
+					if(field.isDateType() && "".equals(column.getRenderer(model))){
 						column.setRenderer("Aurora.formatDate");
 					}
 					bmColumns.add(column);

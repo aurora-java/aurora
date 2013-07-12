@@ -162,8 +162,9 @@ public class GridColumnConfig extends ComponentConfig {
 		putString(PROPERTITY_FOOTER_RENDERER, renderer);
 	}
 	
-	public String getRenderer(){
-		return getString(PROPERTITY_RENDERER, "");		
+	public String getRenderer(CompositeMap model){
+		String renderer =  getString(PROPERTITY_RENDERER, "");		
+		return uncertain.composite.TextParser.parse(renderer, model);
 	}
 	public void setRenderer(String renderer){
 		putString(PROPERTITY_RENDERER, renderer);
