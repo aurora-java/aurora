@@ -10,20 +10,25 @@ import java.io.Writer;
 import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
+import uncertain.core.ConfigurationError;
+import uncertain.event.RuntimeContext;
 import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.IObjectRegistry;
+import uncertain.ocm.ISingleton;
 import uncertain.proc.IProcedureManager;
 import uncertain.proc.Procedure;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
-import aurora.application.AuroraApplication;
 import aurora.application.IApplicationConfig;
+import aurora.application.AuroraApplication;
 import aurora.application.config.ScreenConfig;
 import aurora.application.features.CachedScreenListener;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.controller.ControllerProcedures;
 import aurora.service.http.AbstractFacadeServlet;
@@ -68,7 +73,11 @@ public class ScreenInclude implements IViewBuilder{
         mCacheListener = (CachedScreenListener)reg.getInstanceOfType(CachedScreenListener.class);
         init(fact, pm, config);
     }
-    
+    /*
+    public ScreenInclude( HttpServiceFactory fact, IProcedureManager pm, IApplicationConfig config ){
+        init(fact, pm, config);
+    }
+    */
     private void init(HttpServiceFactory fact, IProcedureManager pm, IApplicationConfig config ){
         mServiceFactory = fact;
         mProcedureManager = pm;
@@ -86,10 +95,18 @@ public class ScreenInclude implements IViewBuilder{
     }
 
     
-    public HttpServiceInstance createSubInstance( String name, CompositeMap context) throws SAXException, IOException {
+    public HttpServiceInstance createSubInstance( String name, CompositeMap context, CompositeMap para)
+        throws SAXException, IOException
+    {
         //CompositeMap context = view_context.getModel().getRoot();
         HttpServiceInstance parent = (HttpServiceInstance)ServiceInstance.getInstance(context);
         HttpServiceInstance svc = mServiceFactory.createHttpService(name, parent);
+        
+        
+        svc.getContextMap().put(ServiceContext.KEY_CURRENT_PARAMETER, null);
+        svc.getContextMap().replaceChild("parameter", para);
+        svc.getContextMap().replaceChild("model", new CompositeMap("model"));
+        
         
         final CompositeMap config = mServiceFactory.loadServiceConfig(name);
         ScreenConfig scc = ScreenConfig.createScreenConfig(config);
@@ -102,7 +119,9 @@ public class ScreenInclude implements IViewBuilder{
         return svc;
     }
     
-    public void doScreenInclude( BuildSession session, CompositeMap model, CompositeMap view, CompositeMap root) throws Exception {
+    public void doScreenInclude( BuildSession session, CompositeMap model, CompositeMap view, CompositeMap root)
+        throws Exception
+    {
         String screen_name = view.getString(KEY_SCREEN);
         if(screen_name==null)
             throw BuiltinExceptionFactory.createAttributeMissing(view.asLocatable(), "screen"); 
@@ -111,12 +130,13 @@ public class ScreenInclude implements IViewBuilder{
         screen_name = session.parseString(screen_name, model );
         // Added by mark.ma -- parse parameter
         int parameterpositiion = screen_name.lastIndexOf("?");
+        CompositeMap pcm = new CompositeMap("parameter");
         if (parameterpositiion != -1) {
             String parameter = screen_name.substring(parameterpositiion + 1,
                     screen_name.length());
             screen_name = screen_name.substring(0, parameterpositiion);
             String[] parameters = parameter.split("&");
-            CompositeMap pcm = root.getChild("parameter");
+            //root.getChild("parameter");            
             for (int i = 0; i < parameters.length; i++) {
                 String p = parameters[i];
                 String key = p.substring(0, p.indexOf("="));
@@ -130,7 +150,8 @@ public class ScreenInclude implements IViewBuilder{
         ServiceInstance old_inst = ServiceInstance.getInstance(root);
         // Run service
         try{
-            HttpServiceInstance sub_instance = createSubInstance(screen_name, root);
+        	
+            HttpServiceInstance sub_instance = createSubInstance(screen_name, root, pcm);
             ScreenConfig sub_config = ScreenConfig.createScreenConfig(sub_instance.getServiceConfigData());
             if(sub_config.isCacheEnabled()){
                 if(mCacheListener!=null){
@@ -146,13 +167,14 @@ public class ScreenInclude implements IViewBuilder{
             ServiceInstance.setInstance(root, sub_instance);
             Procedure proc = AbstractFacadeServlet.getProcedureToRun(mProcedureManager, sub_instance);
             if(proc!=null)
-                sub_instance.invoke(proc);          
+                sub_instance.invoke(proc);
         }finally{
             ServiceInstance.setInstance(root, old_inst);
         }        
     }
 
-    public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
+    public void buildView(BuildSession session, ViewContext view_context)
+            throws IOException, ViewCreationException {
         CompositeMap view = view_context.getView();
         CompositeMap model = view_context.getModel();
         try{
