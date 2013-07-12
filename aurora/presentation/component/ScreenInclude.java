@@ -148,6 +148,8 @@ public class ScreenInclude implements IViewBuilder{
         }        
         // end
         ServiceInstance old_inst = ServiceInstance.getInstance(root);
+        CompositeMap old_parameter = old_inst.getContextMap().getChild("parameter");
+        CompositeMap old_model = old_inst.getContextMap().getChild("model");
         // Run service
         try{
         	
@@ -169,6 +171,8 @@ public class ScreenInclude implements IViewBuilder{
             if(proc!=null)
                 sub_instance.invoke(proc);
         }finally{
+        	old_inst.getContextMap().replaceChild("parameter", old_parameter);
+        	old_inst.getContextMap().replaceChild("model", old_model);
             ServiceInstance.setInstance(root, old_inst);
         }        
     }
