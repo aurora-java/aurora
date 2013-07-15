@@ -90,12 +90,13 @@ public class Accordion extends Component {
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
 		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
-				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px;width:100%'><DIV class='accordion-strip'>");
+				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='accordion-strip'>");
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
-		sb.append(uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
-				.getString(ComponentConfig.PROPERTITY_PROMPT)),model));
+		String prompt = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
+				.getString(ComponentConfig.PROPERTITY_PROMPT)),model);
+		if(null!=prompt)sb.append(prompt);
 		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='height:"
-				+ bodyHeight + "px;"+(isSelected?"":"visibility:hidden;width:100%")+"'>");
+				+ bodyHeight + "px;"+(isSelected?"":"visibility:hidden")+"'>");
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
@@ -110,7 +111,7 @@ public class Accordion extends Component {
 						throw new IOException(e.getMessage());
 					}
 				}
-			} else if (!"".equals(accordion.getText())) {
+			} else if (null!=accordion.getText() && !"".equals(accordion.getText())) {
 				sb.append(accordion.getText());
 			}
 		}
