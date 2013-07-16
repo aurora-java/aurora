@@ -1,10 +1,11 @@
 package aurora.service.ws;
 
 import uncertain.composite.CompositeMap;
-import uncertain.core.IGlobalInstance;
+import uncertain.core.ILifeCycle;
+import uncertain.exception.BuiltinExceptionFactory;
 import uncertain.ocm.AbstractLocatableObject;
 
-public class SOAPConfiguration extends AbstractLocatableObject implements ISOAPConfiguration,IGlobalInstance{
+public class SOAPConfiguration extends AbstractLocatableObject implements ISOAPConfiguration,ILifeCycle{
 
 	
 	private CompositeMap defaultResponse;
@@ -25,5 +26,17 @@ public class SOAPConfiguration extends AbstractLocatableObject implements ISOAPC
 	}
 	public void setModel(String model) {
 		this.model = model;
+	}
+
+	@Override
+	public boolean startup() {
+		if(defaultResponse == null)
+			throw BuiltinExceptionFactory.createNodeMissing(this, "soapResponse");
+		return true;
+	}
+
+	@Override
+	public void shutdown() {
+		defaultResponse.clear();
 	}
 }
