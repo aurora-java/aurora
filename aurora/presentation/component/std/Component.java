@@ -122,7 +122,7 @@ public class Component {
 		String heightStr = view.getString(ComponentConfig.PROPERTITY_HEIGHT, "" + getDefaultHeight());
 		String hstr = uncertain.composite.TextParser.parse(heightStr, model);
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
-		Integer marginHeight = cc.getMarginHeight();
+		Integer marginHeight = cc.getMarginHeight(model);
 		if (marginHeight != null && vh != null) {
 //			height = new Integer((vh.intValue() - marginHeight.intValue()) > height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
 			height = new Integer((vh.intValue() - marginHeight.intValue()) > 0 ? (vh.intValue() - marginHeight.intValue()) : height.intValue());

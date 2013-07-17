@@ -209,8 +209,12 @@ public class ComponentConfig extends DynamicObject {
 		putInt(PROPERTITY_MARGIN_WIDTH, w);
 	}
 	
-	public Integer getMarginHeight() {
-		return getInteger(PROPERTITY_MARGIN_HEIGHT);
+	public Integer getMarginHeight(CompositeMap model) {
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_MARGIN_HEIGHT), model);
+		if(null == str||"".equals(str)){
+			return null;
+		}
+		return Integer.valueOf(str);
 	}
 
 	public void setMarginHeight(Integer v) {
