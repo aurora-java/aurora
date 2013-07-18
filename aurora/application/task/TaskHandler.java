@@ -60,7 +60,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 	private String updateTaskBM;
 	private String finishTaskBM;
 	private int threadCount = 2;
-	private int fetchTaskTimerInterval = 10000;//默认10秒
+	private int fetchTaskTimerInterval = 10000;// 默认10秒
 
 	private IDatabaseServiceFactory databaseServiceFactory;
 	private DataSource dataSource;
@@ -171,8 +171,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 				executeProc(proc_file_path, task_id, context, connection);
 			} else {
 				if (proc_content == null)
-					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + ","
-							+ TaskTableFields.PROC_CONTENT);
+					throw BuiltinExceptionFactory.createOneAttributeMissing(null, TaskTableFields.PROC_FILE_PATH + "," + TaskTableFields.PROC_CONTENT);
 				executeProc(proc_content, task_id, context, connection);
 			}
 		} else if (TaskTableFields.PROCEDURE_TYPE.equals(task_type)) {
@@ -295,24 +294,15 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 
 	protected void executeProc(String procedure_name, int taskId, CompositeMap context, Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_name });
-		Procedure proc = null;
-		try {
-			proc = procedureManager.loadProcedure(procedure_name);
-			executeProc(taskId, proc, context, connection);
-		} catch (Exception ex) {
-			throw BuiltinExceptionFactory.createResourceLoadException(null, procedure_name, ex);
-		}
+		Procedure proc = procedureManager.loadProcedure(procedure_name);
+		executeProc(taskId, proc, context, connection);
 	}
 
 	protected void executeProc(CompositeMap procedure_config, int taskId, CompositeMap context, Connection connection) {
 		logger.log(Level.CONFIG, "load procedure:{0}", new Object[] { procedure_config.toXML() });
 		Procedure proc = null;
-		try {
-			proc = procedureManager.createProcedure(procedure_config);
-			executeProc(taskId, proc, context, connection);
-		} catch (Exception ex) {
-			throw BuiltinExceptionFactory.createResourceLoadException(null, String.valueOf(taskId), ex);
-		}
+		proc = procedureManager.createProcedure(procedure_config);
+		executeProc(taskId, proc, context, connection);
 	}
 
 	protected void executeProc(int taskId, Procedure proc, CompositeMap context, Connection connection) {
@@ -607,12 +597,10 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							if (failedTime < retryTime) {
 								closeConnection(connection);
 								connection = getConnection();
-								logger.log(Level.SEVERE, "It has failed " + failedTime
-										+ " time when get task from database,please check the configuration!");
+								logger.log(Level.SEVERE, "It has failed " + failedTime + " time when get task from database,please check the configuration!");
 								continue;
 							} else {
-								logger.log(Level.SEVERE, "It has failed " + failedTime
-										+ " time when get task from database! It will quit now.");
+								logger.log(Level.SEVERE, "It has failed " + failedTime + " time when get task from database! It will quit now.");
 								break;
 							}
 						}
@@ -654,8 +642,7 @@ public class TaskHandler extends AbstractLocatableObject implements ILifeCycle, 
 							Thread.sleep(1000);
 							continue;
 						}
-						logger.log(Level.CONFIG,
-								"get a task record from queue,task is" + LINE_SEPARATOR + LINE_SEPARATOR + taskRecord.toXML());
+						logger.log(Level.CONFIG, "get a task record from queue,task is" + LINE_SEPARATOR + LINE_SEPARATOR + taskRecord.toXML());
 						Object task_id = taskRecord.get(TaskTableFields.TASK_ID);
 						if (task_id == null || "null".equals(task_id)) {
 							Thread.sleep(1000);
