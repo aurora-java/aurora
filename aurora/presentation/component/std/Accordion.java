@@ -22,9 +22,13 @@ public class Accordion extends Component {
 	private static final String SELECTED = "selected";
 	private static final String REF = "ref";
 	
-	private int bodyHeight;
+	private Integer bodyHeight;
 	private int stripHeight = 25;
 
+	protected int getDefaultHeight() {
+		return -1;
+	}
+	
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
 		return DEFAULT_CLASS;
 	}
@@ -60,10 +64,13 @@ public class Accordion extends Component {
 				int numAccordions = childs.size();
 				int i = 0;
 				boolean isSelected = false, singleMode = ac.isSingleMode(),showIcon = ac.isShowIcon();
-				bodyHeight = (((Integer) map
-						.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - numAccordions
-						* stripHeight)
-						/ (singleMode ? 1 : numAccordions);
+				int height = ((Integer) map
+						.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue();
+				if(height>0){
+					bodyHeight = new Integer((height - numAccordions
+							* stripHeight)
+							/ (singleMode ? 1 : numAccordions));
+				}
 				Iterator it = childs.iterator();
 				addConfig(AccordionConfig.PROPERTITY_SINGLE_MODE, new Boolean(singleMode));
 				addConfig(AccordionConfig.PROPERTITY_SHOW_ICON, new Boolean(showIcon));
@@ -90,13 +97,14 @@ public class Accordion extends Component {
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
 		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
-				+ (isSelected ? bodyHeight + stripHeight : stripHeight) + "px'><DIV class='accordion-strip'>");
+				+ (isSelected ? bodyHeight ==null?"":(bodyHeight + stripHeight) : stripHeight) + "px'><DIV class='accordion-strip'>");
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
 		String prompt = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)),model);
 		if(null!=prompt)sb.append(prompt);
-		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='height:"
-				+ bodyHeight + "px;"+(isSelected?"":"visibility:hidden")+"'>");
+		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='");
+		if(bodyHeight!=null)sb.append("height:"+ bodyHeight + "px;");
+		sb.append((isSelected?"":"visibility:hidden")+"'>");
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
 			List accordionChilds = accordion.getChilds();
