@@ -63,6 +63,7 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         	Iterator it = list.iterator();
         	while(it.hasNext()){
         		CompositeMap view = (CompositeMap)it.next();
+        		UploadConfig uc = UploadConfig.getInstance(view);
         		String id = view.getString(ComponentConfig.PROPERTITY_ID);
         		if(id==null){
         			id = "up_"+IDGenerator.getInstance().generate();
@@ -70,20 +71,21 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         		}
         		
         		ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
-    			mqc.setModel(DEFAULT_ATM_BM);
-    			mqc.setRootPath("/model/"+id);
-    			mqc.setAutoCount(false);
-    			mqc.setFetchAll(true);
-    			String st = view.getString(UploadConfig.PROPERTITY_SOURCE_TYPE, "");
-    			if(st.indexOf("${") == -1) {
-    				st = "'" + st + "'";
-    			}
-    			String pk = view.getString(UploadConfig.PROPERTITY_PK_VALUE, "-1");
-    			if(pk.indexOf("${") == -1) {
-    				pk = "'" + pk + "'";
-    			}
-    			UploadConfig uc = UploadConfig.getInstance(view);
-    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by fa." + uc.getSortSql());
+	    		mqc.setModel(DEFAULT_ATM_BM);
+    			if(uc.isShowList()) {
+	    			mqc.setRootPath("/model/"+id);
+	    			mqc.setAutoCount(false);
+	    			mqc.setFetchAll(true);
+	    			String st = view.getString(UploadConfig.PROPERTITY_SOURCE_TYPE, "");
+	    			if(st.indexOf("${") == -1) {
+	    				st = "'" + st + "'";
+	    			}
+	    			String pk = view.getString(UploadConfig.PROPERTITY_PK_VALUE, "-1");
+	    			if(pk.indexOf("${") == -1) {
+	    				pk = "'" + pk + "'";
+	    			}
+	    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by fa." + uc.getSortSql());
+        		}
     			screen.addInitProcedureAction(mqc.getObjectContext());
         		
         		
