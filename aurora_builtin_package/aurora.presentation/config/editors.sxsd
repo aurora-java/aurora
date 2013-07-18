@@ -145,12 +145,19 @@
                 <ss:attribute name="fileType" document="上传文件类型"/>
                 <ss:attribute name="pkvalue" document="主键"/>
                 <ss:attribute name="sourcetype" document="源类型"/>
-                <ss:attribute name="text" document="显示的文本"/>
+                <ss:attribute name="filesize" document="上传文件大小,默认无大小限制" type="ss:int"/>
+                <ss:attribute name="totalfilesize" document="上传文件总大小,默认无大小限制" type="ss:int"/>
+                <ss:attribute name="filetype" document="上传文件类型"/>
+                <ss:attribute name="text" document="上传按钮文字"/>
+                <ss:attribute name="type" document="上传类型默认是卡片模式,type=default是列表方式"/>
                 <ss:attribute name="uploadurl" document="上传路径"/>
                 <ss:attribute name="deleteurl" document="删除路径"/>
                 <ss:attribute name="downloadurl" document="下载路径"/>
                 <ss:attribute name="showdelete" document="是否显示删除的文件" type="ss:boolean"/>
                 <ss:attribute name="showupload" document="是否显示上传的文件" type="ss:boolean"/>
+                <ss:attribute name="showlist" document="是否显示文件列表" type="ss:boolean"/>
+                <ss:attribute name="sortsql" document="排序字段,默认是按照creation_date排序，例如: sortsql='file_name asc'"/>
+                <ss:attribute name="requiresession" document="是否需要session" type="ss:boolean"/>
             </ss:attributes>
             <ss:extensions>
                 <ss:extension base="a:Field"/>
