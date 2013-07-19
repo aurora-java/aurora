@@ -109,6 +109,7 @@ public class Component {
 		String vhs = null;
 		Integer vh = null;
 		if (root != null) {
+			vhs = (String) root.getObject("/parameter/@_vh");
 			if (vhs == null) {
 				vhc = (CompositeMap) root.getObject("/cookie/@vh");
 				if (vhc != null && !vhc.get("value").equals("NaN")) {
