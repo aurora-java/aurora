@@ -91,6 +91,18 @@ public class DesEncrypt {
 			e.printStackTrace();
 		}
 	}
+	
+	
+//	public void getKey(String strKey) {
+//		try {
+//			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+//			DESKeySpec keySpec = new DESKeySpec(strKey.getBytes("UTF-8"));
+//			keyFactory.generateSecret(keySpec);
+//			key= keyFactory.generateSecret(keySpec);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	/**
 	 * 加密String明文输入,String密文输出
