@@ -97,7 +97,7 @@ public class Accordion extends Component {
 		CompositeMap model = context.getModel();
 		StringBuffer sb = new StringBuffer();
 		sb.append("<DIV class='" + (isSelected ? "item-accordion selected" : "item-accordion") + "' style='height:"
-				+ (isSelected ? bodyHeight ==null?"":(bodyHeight + stripHeight) : stripHeight) + "px'><DIV class='accordion-strip'>");
+				+  stripHeight + "px'><DIV class='accordion-strip'>");
 		if(showIcon)sb.append("<div class='item-accordion-btn'></div>");
 		String prompt = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(accordion
 				.getString(ComponentConfig.PROPERTITY_PROMPT)),model);
