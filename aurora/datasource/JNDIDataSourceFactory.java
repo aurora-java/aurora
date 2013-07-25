@@ -1,11 +1,7 @@
 package aurora.datasource;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
