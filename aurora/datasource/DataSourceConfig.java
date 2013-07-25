@@ -201,7 +201,7 @@ public class DataSourceConfig implements ILifeCycle {
 		}
 	}
 
-	public synchronized Connection getNativeJdbcExtractor(Connection conn) throws Exception {
+	public Connection getNativeJdbcExtractor(Connection conn) throws Exception {
 		Connection nativeConn = null;
 		IDataSourceFactory dbFactory;
 		try {
