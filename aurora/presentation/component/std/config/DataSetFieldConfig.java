@@ -38,6 +38,7 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	public static final String PROPERTITY_FETCH_SINGLE = "fetchsingle";
 	public static final String PROPERTITY_LOV_PAGESIZE = "lovpagesize";
 	public static final String PROPERTITY_DATA_TYPE = "datatype";
+	public static final String PROPERTITY_FUZZY_FETCH = "fuzzyfetch";
 	
 	
 	
@@ -272,6 +273,12 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	}
 	public void setFetchSingle(boolean fetchSingle) {
 		putBoolean(PROPERTITY_FETCH_SINGLE, fetchSingle);
+	}
+	public Boolean getFuzzyFetch() {
+		return getBoolean(PROPERTITY_FUZZY_FETCH);
+	}
+	public void setFuzzyFetch(boolean fuzzyFetch) {
+		putBoolean(PROPERTITY_FUZZY_FETCH, fuzzyFetch);
 	}
 	
 	public int getLovPageSize() {

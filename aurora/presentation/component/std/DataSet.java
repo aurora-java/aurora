@@ -94,7 +94,7 @@ public class DataSet extends Component {
 	   	    	autoCount = view_config.getDefaultAutoCount();
 	   	     }
 	   	}
-		
+		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 		DataSetConfig dsc = DataSetConfig.getInstance(view);
 		CompositeMap fields = dsc.getFields();
 		if(fields != null) {
@@ -114,7 +114,7 @@ public class DataSet extends Component {
 //					field.putString(DataSetFieldConfig.PROPERTITY_TOOLTIP, sdfc.getTooltip());
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_AUTO_COMPLETE))
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_AUTO_COMPLETE, sdfc.getAutoComplete());
-				
+				field.putBoolean(DataSetFieldConfig.PROPERTITY_FUZZY_FETCH, sdfc.getFuzzyFetch()==null?view_config.getDefaultFuzzyFetch():sdfc.getFuzzyFetch());
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				
 				String options = field.getString(DataSetFieldConfig.PROPERTITY_OPTIONS);

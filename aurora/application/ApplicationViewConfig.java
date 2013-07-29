@@ -25,6 +25,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_AUTO_ADJUST_GRID = "defaultautoadjustgrid";
 	public static final String KEY_DEFAULT_MODIFIED_CHECK = "defaultmodifiedcheck";
 	public static final String KEY_DEFAULT_GRID_SUBMASK = "defaultgridsubmask";
+	public static final String KEY_DEFAULT_FUZZY_FETCH = "defautlfuzzyfetch";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -72,8 +73,8 @@ public class ApplicationViewConfig extends DynamicObject {
 		return getString(KEY_DEFAULT_LABEL_SEPARATOR);
 	}
 
-	public void setDefaultLabelSeparator(String radioseparator) {
-		putString(KEY_DEFAULT_LABEL_SEPARATOR, radioseparator);
+	public void setDefaultLabelSeparator(String labelSeparator) {
+		putString(KEY_DEFAULT_LABEL_SEPARATOR, labelSeparator);
 	}
 	
 	public int getDefaultMarginWidth() {
@@ -117,6 +118,12 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	public void setDefaultGridSubmask(boolean submask) {
 		putBoolean(KEY_DEFAULT_GRID_SUBMASK, submask);
+	}
+	public boolean getDefaultFuzzyFetch() {
+		return getBoolean(KEY_DEFAULT_FUZZY_FETCH,false);
+	}
+	public void setDefaultFuzzyFetch(boolean fuzzyFetch) {
+		putBoolean(KEY_DEFAULT_FUZZY_FETCH, fuzzyFetch);
 	}
 	
 	public boolean getDefaultModifiedCheck() {

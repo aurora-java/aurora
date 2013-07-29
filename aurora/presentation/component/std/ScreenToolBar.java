@@ -1,5 +1,7 @@
 package aurora.presentation.component.std;
 
+import uncertain.ocm.IObjectRegistry;
+
 /**
  * Screen ToolBar
  * @version $Id$
@@ -7,4 +9,8 @@ package aurora.presentation.component.std;
  */
 public class ScreenToolBar extends HBox {
 	public static final String VERSION = "$Revision$";
+	
+	public ScreenToolBar(IObjectRegistry registry) {
+		super(registry);
+	}
 }

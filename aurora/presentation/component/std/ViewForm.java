@@ -1,5 +1,7 @@
 package aurora.presentation.component.std;
 
+import uncertain.ocm.IObjectRegistry;
+
 /**
  * 
  * @version $Id$
@@ -7,4 +9,8 @@ package aurora.presentation.component.std;
  */
 public class ViewForm extends Form {
 	public static final String VERSION = "$Revision$";
+	
+	public ViewForm(IObjectRegistry registry) {
+		super(registry);
+	}
 }

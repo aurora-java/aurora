@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -17,6 +18,10 @@ public class Form extends Box {
 	
 	private static final String DEFAULT_HEAD_CLASS = "form_head";
 	private static final String DEFAULT_BODY_CLASS = "form_body";
+	
+	public Form(IObjectRegistry registry) {
+		super(registry);
+	}
 	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		String theme = session.getTheme();

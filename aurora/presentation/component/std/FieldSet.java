@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FieldSetConfig;
@@ -12,6 +13,10 @@ import aurora.presentation.component.std.config.FormConfig;
 public class FieldSet extends Box {
 	
 	public static final String VERSION = "$Revision$";
+	
+	public FieldSet(IObjectRegistry registry) {
+			super(registry);
+	}
 	
 	private static final String DEFAULT_BODY_CLASS = "form_body";
 	

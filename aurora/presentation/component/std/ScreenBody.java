@@ -3,6 +3,7 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -11,6 +12,10 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class ScreenBody extends VBox {
 	public static final String VERSION = "$Revision$";
+	
+	public ScreenBody(IObjectRegistry registry) {
+		super(registry);
+	}
 	
 	public void buildView(BuildSession session, ViewContext view_context) throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();

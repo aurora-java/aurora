@@ -4,6 +4,10 @@ import java.io.Writer;
 
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
+import aurora.application.IApplicationConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.TemplateRenderer;
 import aurora.presentation.component.std.config.BoxConfig;
@@ -19,9 +23,17 @@ public class Box extends GridLayout {
 	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_TH_CLASS = "layout-th";
 	UncertainEngine ue;
+	private IObjectRegistry mRegistry;
+    private ApplicationConfig mApplicationConfig;
+	
+	public Box(IObjectRegistry registry) {
+		this.mRegistry = registry;
+		mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
+	}
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		BoxConfig bc = new BoxConfig();
+		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 		bc.initialize(view);
 		Writer out = session.getWriter();
 		String vlabel = field.getString(ComponentConfig.PROPERTITY_PROMPT);
@@ -31,8 +43,7 @@ public class Box extends GridLayout {
 		int labelWidth = bc.getLabelWidth(model);
 		int rowspan = field.getInt(BoxConfig.PROPERTITY_ROWSPAN, 1);
 		
-		String defaultLabelSeparator = session.getSessionContext().getString(TemplateRenderer.KEY_LABEL_SEPARATOR);
-		String labelSeparator = view.getString(BoxConfig.PROPERTITY_LABEL_SEPARATOR,(defaultLabelSeparator == null ? ":" : defaultLabelSeparator));
+		String labelSeparator = bc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():bc.getLabelSeparator();
 		
 		StringBuffer str = new StringBuffer();
 		if(!"".equals(label)) {
