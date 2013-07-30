@@ -25,7 +25,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_AUTO_ADJUST_GRID = "defaultautoadjustgrid";
 	public static final String KEY_DEFAULT_MODIFIED_CHECK = "defaultmodifiedcheck";
 	public static final String KEY_DEFAULT_GRID_SUBMASK = "defaultgridsubmask";
-	public static final String KEY_DEFAULT_FUZZY_FETCH = "defautlfuzzyfetch";
+	public static final String KEY_DEFAULT_FUZZY_FETCH = "defaultfuzzyfetch";
 	
 	private static final String DEFAULT_THEME = "default";
 
