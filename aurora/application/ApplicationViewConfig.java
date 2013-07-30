@@ -70,7 +70,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 
 	public String getDefaultLabelSeparator() {
-		return getString(KEY_DEFAULT_LABEL_SEPARATOR);
+		return getString(KEY_DEFAULT_LABEL_SEPARATOR,":");
 	}
 
 	public void setDefaultLabelSeparator(String labelSeparator) {
