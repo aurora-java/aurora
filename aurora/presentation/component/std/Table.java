@@ -174,21 +174,21 @@ public class Table extends Component {
 				addRowSpan(column);
 			}
 		}
-
-		if (tc.isShowHead()) {
-			for (int i = 1; i <= rows.intValue(); i++) {
-				List list = (List) pro.get("l" + i);
-				if (null != list) {
-					sb.append("<TR height='25px'>");
-					Iterator cit = list.iterator();
-					if (null != cit) {
-						while (cit.hasNext()) {
-							sb.append(createColumn((CompositeMap) cit.next(),
-									session, bindTarget));
-						}
+		boolean showHead = tc.isShowHead();
+		for (int i = 1; i <= rows.intValue(); i++) {
+			List list = (List) pro.get("l" + i);
+			if (null != list) {
+				sb.append("<TR height='");
+				sb.append(showHead?"25":"0");
+				sb.append("'>");
+				Iterator cit = list.iterator();
+				if (null != cit) {
+					while (cit.hasNext()) {
+						sb.append(createColumn((CompositeMap) cit.next(),
+								session, bindTarget,showHead));
 					}
-					sb.append("</TR>");
 				}
+				sb.append("</TR>");
 			}
 		}
 		map.put(HEADS, sb.toString());
@@ -292,7 +292,7 @@ public class Table extends Component {
 	}
 
 	private String createColumn(CompositeMap column, BuildSession session,
-			String dataset) {
+			String dataset,boolean showHead) {
 		StringBuffer sb = new StringBuffer();
 		TableColumnConfig tcc = TableColumnConfig.getInstance(column);
 		String ct = column.getString(COLUMN_TYPE);
@@ -302,16 +302,18 @@ public class Table extends Component {
 		if (null != column.getString(ComponentConfig.PROPERTITY_WIDTH))
 			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH) + "px";
 
+		sb.append("<TD");
+		if(showHead)sb.append("class='table-hc'");
 		if (TYPE_ROW_CHECKBOX.equals(ct)) {
-			sb.append("<TD class='table-hc' atype='table.rowcheck' style='width:25px;' rowspan='"
-					+ column.getInt(ROW_SPAN)
-					+ "'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center></TD>");
+			sb.append(" atype='table.rowcheck' style='width:25px;' rowspan='");
+			sb.append(column.getInt(ROW_SPAN));
+			sb.append("'><center><div atype='table.headcheck' class='table-ckb item-ckb-u'></div></center>");
 		} else if (TYPE_ROW_RADIO.equals(ct)) {
-			sb.append("<TD class='table-hc' atype='table.rowradio' style='width:25px;' rowspan='"
-					+ column.getInt(ROW_SPAN)
-					+ "'><div style='width:13px'>&nbsp;</div></TD>");
+			sb.append(" atype='table.rowradio' style='width:25px;' rowspan='");
+			sb.append(column.getInt(ROW_SPAN));
+			sb.append("'><div style='width:13px'>&nbsp;</div>");
 		} else {
-			sb.append("<TD class='table-hc' dataindex='");
+			sb.append(" dataindex='");
 			sb.append(tcc.getName());
 			sb.append("' colspan='");
 			sb.append(column.getInt(COL_SPAN, 1));
@@ -323,11 +325,13 @@ public class Table extends Component {
 				sb.append(" style='display:none'");
 			}
 			sb.append(">");
+			if(showHead){
 			String text = session.getLocalizedPrompt(getFieldPrompt(session,
 					column, dataset));
 			sb.append("".equals(text) ? "&#160;" : text);
-			sb.append("</TD>");
+			}
 		}
+		sb.append("</TD>");
 		return sb.toString();
 	}
 
