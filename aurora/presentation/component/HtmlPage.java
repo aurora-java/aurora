@@ -64,7 +64,7 @@ public class HtmlPage implements IViewBuilder {
             try{
                 _session.buildViews(model, view_list);
             }catch(Exception ex){
-                throw new RuntimeException("error when building page content",ex);
+                throw new RuntimeException(ex);
             }
             return null;
         }

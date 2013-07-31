@@ -10,6 +10,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.TreeConfig;
 
+@SuppressWarnings("unchecked")
 public class Tree extends Component {
 	public static final String VERSION = "$Revision$";
 	

@@ -47,6 +47,10 @@ public class Upload extends Component {
 		UploadConfig uc = UploadConfig.getInstance(view);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
 		
+		boolean showList = uc.isShowList();
+		map.put("linestyle", showList ? "block" : "none");
+		
+		
 		if(!UploadConfig.DEFAULT_TYPE.equals(uc.getType()) && isSupportFileAPI(serviceInstance.getRequest())) {
 			context.setTemplate(session.getTemplateByName(HTML5_TEMPLATE));
 			processHtml5Upload(view,map,model,session);
@@ -129,7 +133,7 @@ public class Upload extends Component {
 		tb_columns.addChild(tb_column);
 		try {
 			boolean showList = uc.isShowList();
-			map.put("linestyle", showList ? "block" : "none");
+//			map.put("linestyle", showList ? "block" : "none");
 			if(showList)
 			map.put("up_table", session.buildViewAsString(model, tb));
 		} catch (Exception e) {

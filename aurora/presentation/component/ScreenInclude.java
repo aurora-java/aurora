@@ -119,9 +119,7 @@ public class ScreenInclude implements IViewBuilder{
         return svc;
     }
     
-    public void doScreenInclude( BuildSession session, CompositeMap model, CompositeMap view, CompositeMap root)
-        throws Exception
-    {
+    public void doScreenInclude( BuildSession session, CompositeMap model, CompositeMap view, CompositeMap root) throws Exception {
         String screen_name = view.getString(KEY_SCREEN);
         if(screen_name==null)
             throw BuiltinExceptionFactory.createAttributeMissing(view.asLocatable(), "screen"); 
@@ -169,7 +167,7 @@ public class ScreenInclude implements IViewBuilder{
             ServiceInstance.setInstance(root, sub_instance);
             Procedure proc = AbstractFacadeServlet.getProcedureToRun(mProcedureManager, sub_instance);
             if(proc!=null)
-                sub_instance.invoke(proc);
+                sub_instance.invoke(proc);        
         }finally{
         	old_inst.getContextMap().replaceChild("parameter", old_parameter);
         	old_inst.getContextMap().replaceChild("model", old_model);
@@ -184,10 +182,11 @@ public class ScreenInclude implements IViewBuilder{
         try{
             doScreenInclude(session, model, view_context.getView(), model.getRoot());
         }catch(Exception ex){
-            throw new ViewCreationException("aurora.presentation.component.screen_include_invoke_error", 
-                    new Object[]{view.toXML()}, 
-                    ex,
-                    view);
+        	throw new ViewCreationException(ex);
+//            throw new ViewCreationException("aurora.presentation.component.screen_include_invoke_error", 
+//                    new Object[]{view.toXML()}, 
+//                    ex,
+//                    view);
         }
     }
 

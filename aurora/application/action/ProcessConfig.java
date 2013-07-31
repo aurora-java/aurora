@@ -11,10 +11,12 @@ import uncertain.ocm.IConfigurable;
 import uncertain.proc.Procedure;
 import uncertain.proc.ProcedureRunner;
 
+@SuppressWarnings("unchecked")
 public class ProcessConfig extends Procedure implements IConfigurable {
 
 	private CompositeMap config;
 
+	
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap datas = runner.getContext();
 		List childs = config.getChilds();
@@ -43,6 +45,10 @@ public class ProcessConfig extends Procedure implements IConfigurable {
 				view.put(key, TextParser.parse((String) view.get(key),model));
 			}
 		}
+		String text = view.getText();
+		if(text!=null)view.setText(TextParser.parse(text,model));
+		
+		
 		List children = view.getChilds();
 		if(children!=null){
 			Iterator it = children.iterator();

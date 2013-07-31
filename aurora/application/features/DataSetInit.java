@@ -6,8 +6,10 @@ package aurora.application.features;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.event.EventModel;
@@ -15,6 +17,7 @@ import aurora.application.config.ScreenConfig;
 import aurora.bm.BusinessModel;
 import aurora.bm.Field;
 import aurora.bm.IModelFactory;
+import aurora.database.actions.ModelQuery;
 import aurora.database.actions.config.ActionConfigManager;
 import aurora.database.actions.config.ModelQueryConfig;
 import aurora.events.E_PrepareServiceConfig;
@@ -90,32 +93,42 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 		String baseModel = dsc.getModel();
 		boolean cq = dsc.isCanQuery();
 		boolean cs = dsc.isCanSubmit();
-		
-		
-		if(baseModel!=null && dsc.getLoadData() == true){
-			ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
-			mqc.setModel(baseModel);
-			mqc.setRootPath("/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
-			mqc.setAutoCount(false);
-			mqc.setFetchAll(true);
-			screen.addInitProcedureAction(mqc.getObjectContext());
-			//mConfig.loadConfig(mqc.getObjectContext());
-			CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
-			if(datas == null){
-				datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
-			}
-			datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
-		}
-		if(cq && "".equals(queryUrl) && baseModel!=null){
-			ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/query");
-		}
-		if(cs && "".equals(submitUrl) && baseModel!=null){
-			ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/batch_update");
-		}
 		if(baseModel!=null){
 			baseModel = uncertain.composite.TextParser.parse(baseModel, model);
+			int pi = baseModel.indexOf("?");
+//			Map para = new HashMap();
+			if(pi!= -1){
+				String pstr =  baseModel.substring(pi+1,baseModel.length());
+				baseModel = baseModel.substring(0,pi);
+//				String[] ps = pstr.split("&");
+//				for(int i=0;i<ps.length;i++){
+//					String[] pa = ps[i].split("=");
+//					para.put(pa[0], pa[1]);
+//				}
+			}
+			
+			if(dsc.getLoadData() == true){
+				ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
+				mqc.setModel(baseModel);
+				mqc.setRootPath("/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
+				mqc.setAutoCount(false);
+				mqc.setFetchAll(true);
+				screen.addInitProcedureAction(mqc.getObjectContext());
+				//mConfig.loadConfig(mqc.getObjectContext());
+				CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
+				if(datas == null){
+					datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
+				}
+				datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
+			}
+			if(cq && "".equals(queryUrl)){
+				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/query");
+			}
+			if(cs && "".equals(submitUrl)){
+				ds.putString(DataSetConfig.PROPERTITY_SUBMITURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/batch_update");
+			}
 			BusinessModel bm = null;
-            bm = mFactory.getModelForRead(baseModel);
+			bm = mFactory.getModelForRead(baseModel);
 			
 			Field[] bmfields = bm.getFields();
 			if(bmfields != null){
@@ -163,6 +176,7 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 				fields.getChilds().addAll(childs);
 			}
 		}
+		
     }
     
     private void processField(CompositeMap model,Field field,List list) {
