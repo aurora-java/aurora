@@ -303,7 +303,7 @@ public class Table extends Component {
 			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH) + "px";
 
 		sb.append("<TD");
-		if(showHead)sb.append("class='table-hc'");
+		if(showHead)sb.append(" class='table-hc'");
 		if (TYPE_ROW_CHECKBOX.equals(ct)) {
 			sb.append(" atype='table.rowcheck' style='width:25px;' rowspan='");
 			sb.append(column.getInt(ROW_SPAN));
