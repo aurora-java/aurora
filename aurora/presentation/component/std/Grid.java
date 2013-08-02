@@ -324,7 +324,7 @@ public class Grid extends Component {
 					
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
-						column.putString(GridColumnConfig.PROPERTITY_PROMPT,uncertain.composite.TextParser.parse(session.getLocalizedPrompt(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget))),model));
+						column.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget)),model)));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
@@ -340,7 +340,7 @@ public class Grid extends Component {
 					if(!"".equals(renderer))  column.put(GridColumnConfig.PROPERTITY_RENDERER, uncertain.composite.TextParser.parse(renderer, model));
 					String footerRenderer = column.getString(GridColumnConfig.PROPERTITY_FOOTER_RENDERER, "");
 					if(!"".equals(footerRenderer))  column.put(GridColumnConfig.PROPERTITY_FOOTER_RENDERER, uncertain.composite.TextParser.parse(footerRenderer, model));
-					toJSONForParentColumn(column);
+					toJSONForParentColumn(column,session,model,bindTarget);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);
 				}
@@ -365,13 +365,15 @@ public class Grid extends Component {
 	}
 	
 	
-	private void toJSONForParentColumn(CompositeMap column){
+	private void toJSONForParentColumn(CompositeMap column,BuildSession session,CompositeMap model,String bindTarget){
 		CompositeMap parent=null;
 		if(column.get("_parent") instanceof CompositeMap){
 			parent=(CompositeMap) column.get("_parent");
 			if(parent!=null){
-				if(!parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))parent.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
-				toJSONForParentColumn(parent);
+				if(!parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
+					parent.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
+				parent.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(parent.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget)),model)));
+				toJSONForParentColumn(parent,session,model,bindTarget);
 				column.put("_parent", new JSONObject(parent));
 			}
 		}
