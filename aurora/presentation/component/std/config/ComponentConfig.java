@@ -25,6 +25,7 @@ public class ComponentConfig extends DynamicObject {
 	public static final String PROPERTITY_MARGIN_WIDTH = "marginwidth";
 	public static final String PROPERTITY_MARGIN_HEIGHT = "marginheight";
 	public static final String PROPERTITY_OLD_WIDTH = "oldwidth";
+	public static final String PROPERTITY_CLIENT_RESIZE = "clientresize";
 
 	public static CompositeMap createContext(CompositeMap map, String tagName) {
 		CompositeMap context = new CompositeMap(tagName);
@@ -180,6 +181,13 @@ public class ComponentConfig extends DynamicObject {
 
 	public void setTabIndex(int width) {
 		putInt(PROPERTITY_TAB_INDEX, width);
+	}
+	public boolean isClientResize() {
+		return getBoolean(PROPERTITY_CLIENT_RESIZE, true);
+	}
+	
+	public void setClientResize(boolean clientResize) {
+		putBoolean(PROPERTITY_CLIENT_RESIZE, clientResize);
 	}
 
 	private CompositeMap getEvents() {

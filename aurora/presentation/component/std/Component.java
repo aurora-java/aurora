@@ -187,6 +187,8 @@ public class Component {
 		String value = cc.getValue();
 		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
 
+		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, cc.isClientResize());
+		
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
 		if (events != null) {
