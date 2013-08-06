@@ -281,16 +281,16 @@ public class GridLayout extends Component implements IViewBuilder{
 									int colspan = field.getInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
 									int rowspan = field.getInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
 									if(rowspan > 1 || colspan > 1){
-										for(int cn=0;cn<colspan;cn++){
-											rowspans[k+cn] += rowspan-1;
-										}
 										if(colspan > 1){
 											if(k + colspan > columns){
 												colspan = columns - k;
 												field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, colspan);
 											}
-											k += colspan - 1;
 										}
+										for(int cn=0;cn<colspan;cn++){
+											rowspans[k+cn] += rowspan-1;
+										}
+										k += colspan-1;
 										cl += rowspan * colspan -1;
 									}
 									
