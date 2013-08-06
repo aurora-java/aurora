@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -19,6 +20,9 @@ import aurora.presentation.component.std.config.EventConfig;
 
 public class Chart extends Component {
 	
+	public Chart(IObjectRegistry registry) {
+		super(registry);
+	}
 	public static final String VERSION = "$Revision$";
 	
 	public static String INPUT_TYPE = "inputtype";

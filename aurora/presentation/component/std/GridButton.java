@@ -5,6 +5,7 @@ import java.util.List;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ButtonConfig;
@@ -13,6 +14,11 @@ import aurora.presentation.component.std.config.GridConfig;
 
 public class GridButton extends ToolBarButton {
 	
+	public GridButton(IObjectRegistry registry) {
+		super(registry);
+	}
+
+
 	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "gridButton";

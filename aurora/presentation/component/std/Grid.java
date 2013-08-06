@@ -68,6 +68,7 @@ public class Grid extends Component {
 	
 	
 	public Grid(IObjectRegistry registry) {
+		super(registry);
 		this.mRegistry = registry;
         mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }

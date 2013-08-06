@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.util.XMLWritter;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
@@ -19,6 +20,11 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.SandBoxConfig;
 
 public class SandBox extends Component {
+	
+	public SandBox(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	private static final String DEFAULT_CLASS = "sandbox";

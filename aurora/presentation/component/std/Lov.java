@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -12,6 +13,11 @@ import aurora.presentation.component.std.config.InputFieldConfig;
 import aurora.presentation.component.std.config.LovConfig;
 
 public class Lov extends TextField {
+	
+	public Lov(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{

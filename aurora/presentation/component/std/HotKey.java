@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
@@ -13,6 +14,10 @@ import aurora.presentation.ViewCreationException;
 
 public class HotKey extends Component  implements IViewBuilder {
 	
+	public HotKey(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	private static final String KEYS = "keys";

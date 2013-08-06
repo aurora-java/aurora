@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
@@ -18,6 +19,10 @@ import aurora.presentation.component.std.config.ToolBarButtonConfig;
 
 public class ScreenTopToolbar extends Component implements IViewBuilder {
 	
+	public ScreenTopToolbar(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	protected int getDefaultHeight() {

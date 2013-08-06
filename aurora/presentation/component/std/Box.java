@@ -27,6 +27,7 @@ public class Box extends GridLayout {
     private ApplicationConfig mApplicationConfig;
 	
 	public Box(IObjectRegistry registry) {
+		super(registry);
 		this.mRegistry = registry;
 		mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
 	}

@@ -10,12 +10,14 @@ import org.json.JSONObject;
 import org.json.JSONString;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationConfig;
+import aurora.application.IApplicationConfig;
 import aurora.application.config.ScreenConfig;
 import aurora.application.features.cstm.CustomSourceCode;
 import aurora.application.features.cstm.CustomizationDataProvider;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
@@ -45,6 +47,11 @@ public class Component {
 	private JSONObject listeners = new JSONObject();
 	private StringBuffer bsb = new StringBuffer();
 	private JSONObject config = new JSONObject();
+	private ApplicationConfig mApplicationConfig;	
+	
+	public Component(IObjectRegistry registry){
+        mApplicationConfig = (ApplicationConfig) registry.getInstanceOfType(IApplicationConfig.class);
+	}
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 

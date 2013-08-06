@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -25,6 +26,11 @@ import aurora.service.http.UserAgentTools;
 @SuppressWarnings("unchecked")
 public class Upload extends Component {
 	
+	public Upload(IObjectRegistry registry) {
+		super(registry);
+	}
+
+
 	public static final String VERSION = "$Revision$";
 	public static final String HTML5_TEMPLATE = "upload_html5.tplt";
 	

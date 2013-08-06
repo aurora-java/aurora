@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.AccordionConfig;
@@ -16,6 +17,10 @@ import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Accordion extends Component {
 	
+	public Accordion(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	private static final String DEFAULT_CLASS = "layout-accordion";

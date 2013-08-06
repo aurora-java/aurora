@@ -40,6 +40,7 @@ public class Radio extends Component {
 		return DEFAULT_CLASS;
 	}
 	public Radio(IObjectRegistry registry) {
+		super( registry);
 		this.mRegistry = registry;
         mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }

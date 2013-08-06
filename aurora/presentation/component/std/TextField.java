@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import uncertain.util.template.TextTemplate;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -18,6 +19,10 @@ import aurora.presentation.component.std.config.TextFieldConfig;
  */
 public class TextField extends InputField {	
 	
+	public TextField(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	public static String INPUT_TYPE = "inputtype";
 	public static String DEFAULT_INPUT_TYPE = "input";

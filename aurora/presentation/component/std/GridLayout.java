@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
@@ -24,6 +25,10 @@ import aurora.presentation.component.std.config.GridLayouConfig;
 @SuppressWarnings("unchecked")
 public class GridLayout extends Component implements IViewBuilder{
 	
+	public GridLayout(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	public static final String ROWS = "row";

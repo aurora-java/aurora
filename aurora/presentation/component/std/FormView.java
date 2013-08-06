@@ -30,6 +30,7 @@ public class FormView extends Component implements IViewBuilder{
 	IObjectRegistry mObjectRegistry;
 
 	public FormView(IObjectRegistry rg) {
+		super(rg);
 		this.mObjectRegistry = rg;
 	}
 	

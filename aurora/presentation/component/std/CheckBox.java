@@ -4,12 +4,18 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.CheckBoxConfig;
 
 @SuppressWarnings("unchecked")
 public class CheckBox extends Component {
+	
+	public CheckBox(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{

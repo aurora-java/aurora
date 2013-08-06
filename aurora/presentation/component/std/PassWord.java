@@ -3,11 +3,17 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 import java.util.Map;
 
+import uncertain.ocm.IObjectRegistry;
+
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
 public class PassWord extends TextField {
 	
+	public PassWord(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	public static String DEFAULT_INPUT_TYPE = "password";

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -18,6 +19,10 @@ import aurora.presentation.component.std.config.InputFieldConfig;
  */
 public class DatePicker extends TextField {
 	
+	public DatePicker(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	private static final String VERSION = "$Revision$";
 
 	public static final String BODY = "body";

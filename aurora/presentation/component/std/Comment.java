@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
+import uncertain.ocm.IObjectRegistry;
 import aurora.application.AuroraApplication;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.IDatabaseServiceFactory;
@@ -45,7 +46,8 @@ public class Comment extends Component {
 		return DEFAULT_CLASS;
 	}
 
-	public Comment(IDatabaseServiceFactory factory) {
+	public Comment(IObjectRegistry registry,IDatabaseServiceFactory factory) {
+		super(registry);
 		this.factory = factory;
 		parseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		formatDate = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");

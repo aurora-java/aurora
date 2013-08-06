@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -12,6 +13,10 @@ import aurora.presentation.component.std.config.ImageCodeConfig;
 @SuppressWarnings("unchecked")
 public class ImageCode extends Component {
 	
+	public ImageCode(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";	
 	
 	private String PROPERTITY_SRC_VALUE = "imagecode";

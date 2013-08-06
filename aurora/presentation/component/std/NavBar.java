@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 
 import uncertain.composite.CompositeLoader;
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
@@ -20,6 +21,10 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 @SuppressWarnings("unchecked")
 public class NavBar extends ToolBar {
 	
+	public NavBar(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	protected int getDefaultWidth() {

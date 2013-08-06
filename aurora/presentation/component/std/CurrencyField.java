@@ -3,12 +3,17 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.NumberFieldConfig;
 
 public class CurrencyField extends NumberField {
 	
+	public CurrencyField(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	private static final String DEFAULT_TEMPLATE = "numberField.tplt";

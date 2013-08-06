@@ -65,6 +65,7 @@ public class QueryForm extends Component implements IViewBuilder {
 		return 0;
 	}
 	public QueryForm( IObjectRegistry reg ) {
+		super(reg);
 		mObjectRegistry = reg;
 	}
 	

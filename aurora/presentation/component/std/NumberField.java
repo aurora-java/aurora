@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.NumberFieldConfig;
@@ -11,6 +12,11 @@ import aurora.presentation.component.std.config.NumberFieldConfig;
 @SuppressWarnings("unchecked")
 public class NumberField extends TextField {	
 	
+	public NumberField(IObjectRegistry registry) {
+		super(registry);
+	}
+
+
 	public static final String VERSION = "$Revision$";
 	
 	

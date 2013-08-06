@@ -1,10 +1,15 @@
 package aurora.presentation.component.std;
 
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 
 public class RoundButton extends Button {
 	
+	public RoundButton(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "roundButton";

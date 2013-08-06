@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.FieldConfig;
@@ -22,6 +23,12 @@ import aurora.presentation.component.std.config.FieldConfig;
  */
 @SuppressWarnings("unchecked")
 public class Field extends Component {
+	
+	public Field(IObjectRegistry registry) {
+		super(registry);
+	}
+
+
 	public static final String VERSION = "$Revision$";
 	
 	protected static final String CLASSNAME_WRAP = "item-wrap";

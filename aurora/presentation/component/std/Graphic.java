@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -24,6 +25,9 @@ import aurora.presentation.component.std.config.GraphicConfig;
  */
 public class Graphic extends Component {
 	
+	public Graphic(IObjectRegistry registry) {
+		super(registry);
+	}
 	public static final String VERSION = "$Revision$";
 	
 	protected int getDefaultWidth() {

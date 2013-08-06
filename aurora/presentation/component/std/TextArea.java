@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -11,6 +12,10 @@ import aurora.presentation.component.std.config.TextAreaConfig;
 
 public class TextArea extends Component {
 	
+	public TextArea(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_CLASS = "item-textarea";
 	protected static final String CLASSNAME_READONLY = "item-readOnly";

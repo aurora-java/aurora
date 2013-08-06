@@ -31,6 +31,7 @@ public class ListView extends Component implements IViewBuilder {
 	IObjectRegistry mObjectRegistry;
 
 	public ListView(IObjectRegistry rg) {
+		super(rg);
 		this.mObjectRegistry = rg;
 	}
 	

@@ -3,6 +3,8 @@ package aurora.presentation.component.std;
 import java.io.IOException;
 import java.util.Map;
 
+import uncertain.ocm.IObjectRegistry;
+
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.DateTimePickerConfig;
@@ -15,6 +17,10 @@ import aurora.presentation.component.std.config.DateTimePickerConfig;
  */
 public class DateTimePicker extends DatePicker {
 	
+	public DateTimePicker(IObjectRegistry registry) {
+		super(registry);
+	}
+
 	public static final String VERSION = "$Revision$";
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)

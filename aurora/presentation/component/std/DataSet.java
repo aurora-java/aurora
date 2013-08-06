@@ -45,17 +45,18 @@ public class DataSet extends Component {
     private ApplicationConfig mApplicationConfig;
 	
 	public DataSet(IObjectRegistry registry,IModelFactory factory, ILookupCodeProvider lookupProvider) {
+		super(registry);
 		this.mRegistry = registry;
         this.mFactory = factory;
         this.lookupProvider = lookupProvider;
         mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
-	public DataSet(IObjectRegistry registry,IModelFactory factory){
-        this.mRegistry = registry;
-        this.mFactory = factory;
-        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
-	}
+//	public DataSet(IObjectRegistry registry,IModelFactory factory){
+//        this.mRegistry = registry;
+//        this.mFactory = factory;
+//        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
+//	}
 	
 	private void initLovService(String baseModel,BuildSession session,CompositeMap field) throws IOException{
 		BusinessModel bm = null;
