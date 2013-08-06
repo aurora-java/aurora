@@ -91,7 +91,7 @@ public class Tab extends Component {
 								try {
 									sb.append(session.buildViewAsString(model, tabchild));
 								} catch (Exception e) {
-									throw new IOException(e.getMessage());
+									throw new IOException(e);
 								}			
 							}
 						}	
