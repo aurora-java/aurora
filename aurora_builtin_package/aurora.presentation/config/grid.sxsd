@@ -51,6 +51,7 @@
                 <ss:attribute name="exportDataFormat" document="导出数据格式"/>
                 <ss:attribute name="exportDataType" document="导出数据类型"/>
                 <ss:attribute name="exportField" document="导出列对应的Dataset的field,默认为name属性的值"/>
+                <ss:attribute name="showTitle" default="false" document="Grid的单元格上是否显示浮动信息" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="a:column"/>

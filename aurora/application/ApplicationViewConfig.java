@@ -26,6 +26,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_MODIFIED_CHECK = "defaultmodifiedcheck";
 	public static final String KEY_DEFAULT_GRID_SUBMASK = "defaultgridsubmask";
 	public static final String KEY_DEFAULT_FUZZY_FETCH = "defaultfuzzyfetch";
+	public static final String KEY_DEFAULT_CLIENT_RESIZE = "defaultclientresize";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -124,6 +125,12 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	public void setDefaultFuzzyFetch(boolean fuzzyFetch) {
 		putBoolean(KEY_DEFAULT_FUZZY_FETCH, fuzzyFetch);
+	}
+	public boolean getDefaultClientResize() {
+		return getBoolean(KEY_DEFAULT_CLIENT_RESIZE,true);
+	}
+	public void setDefaultClientResize(boolean fuzzyFetch) {
+		putBoolean(KEY_DEFAULT_CLIENT_RESIZE, fuzzyFetch);
 	}
 	
 	public boolean getDefaultModifiedCheck() {

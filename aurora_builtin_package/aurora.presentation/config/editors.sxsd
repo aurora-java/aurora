@@ -134,9 +134,14 @@
                 <ss:attribute name="autoCompleteRenderer" document="autoComplete的渲染函数"/>
             </ss:attributes>
         </ss:element>
-        <ss:element name="a:textArea" document="TextArea">
+        <ss:element name="a:textArea" document="TextArea组件">
             <ss:extensions>
                 <ss:extension base="a:InputField"/>
+            </ss:extensions>
+        </ss:element>
+        <ss:element name="a:percentField" document="PercentField组件">
+            <ss:extensions>
+                <ss:extension base="a:numberField"/>
             </ss:extensions>
         </ss:element>
         <ss:element name="a:upload" document="Upload">

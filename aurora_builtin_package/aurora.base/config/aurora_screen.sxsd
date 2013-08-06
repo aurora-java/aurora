@@ -153,6 +153,7 @@
                 <ss:attribute name="autoCompleteField" document="autoComplete的查询字段，如果没有设定该值则默认取通过mapping映射本组件绑定字段的lov查询字段。\n例如：&lt;a:field name=&apos;value&apos;&gt;\n&lt;a:mapping&gt;\n&lt;a:map from=&apos;code&apos; to=&apos;value&apos;&gt;&lt;/a:map&gt;\n&lt;/a:mapping&gt;&lt;/a:field&gt;\n中code就是默认autoCompleteField。"/>
                 <ss:attribute name="autoCompleteSize" default="2" document="autoComplete触发最小字符数" type="ss:int"/>
                 <ss:attribute name="autoCompletePageSize" default="10" document="autoComplete分页大小" type="ss:int"/>
+                <ss:attribute name="fuzzyFetch" default="false" document="autoComplete和lov在fetch的时候查询条件是否自动在尾部拼接%" type="ss:boolean"/>
                 <ss:attribute name="validator" document="自定义校验函数\n函数参数为 function(record,name,value)\n返回值:\n(1)校验成功返回true\n(2)校验失败返回错误的描述信息(文本格式)"/>
                 <ss:attribute name="datatype" document="field的数据类型" type="ss:String"/>
                 <ss:attribute name="typeCase" document="textField中输入大小写类型" type="ss:String"/>

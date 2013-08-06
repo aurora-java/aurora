@@ -12,6 +12,7 @@ import org.json.JSONString;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.ApplicationConfig;
+import aurora.application.ApplicationViewConfig;
 import aurora.application.IApplicationConfig;
 import aurora.application.config.ScreenConfig;
 import aurora.application.features.cstm.CustomSourceCode;
@@ -47,7 +48,7 @@ public class Component {
 	private JSONObject listeners = new JSONObject();
 	private StringBuffer bsb = new StringBuffer();
 	private JSONObject config = new JSONObject();
-	private ApplicationConfig mApplicationConfig;	
+	protected ApplicationConfig mApplicationConfig;	
 	
 	public Component(IObjectRegistry registry){
         mApplicationConfig = (ApplicationConfig) registry.getInstanceOfType(IApplicationConfig.class);
@@ -145,6 +146,7 @@ public class Component {
 		Map map = context.getMap();
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
+		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
 		
 		Boolean isCust = cc.isCust();
 		/** ID属性 * */
@@ -193,8 +195,8 @@ public class Component {
 		/** 值 * */
 		String value = cc.getValue();
 		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
-
-		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, cc.isClientResize());
+		
+		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, cc.isClientResize()==null?view_config.getDefaultClientResize():cc.isClientResize());
 		
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);

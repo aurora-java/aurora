@@ -5,11 +5,8 @@ import java.io.Writer;
 import uncertain.composite.CompositeMap;
 import uncertain.core.UncertainEngine;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
-import aurora.application.IApplicationConfig;
 import aurora.presentation.BuildSession;
-import aurora.presentation.component.TemplateRenderer;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 
@@ -23,13 +20,9 @@ public class Box extends GridLayout {
 	public static final String VERSION = "$Revision$";
 	private static final String DEFAULT_TH_CLASS = "layout-th";
 	UncertainEngine ue;
-	private IObjectRegistry mRegistry;
-    private ApplicationConfig mApplicationConfig;
 	
 	public Box(IObjectRegistry registry) {
 		super(registry);
-		this.mRegistry = registry;
-		mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
 	}
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{

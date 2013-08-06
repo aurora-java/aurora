@@ -41,15 +41,11 @@ public class DataSet extends Component {
 	private static final String VALID_SCRIPT = "validscript";
 	private IModelFactory mFactory;
 	private ILookupCodeProvider lookupProvider;
-    private IObjectRegistry mRegistry;
-    private ApplicationConfig mApplicationConfig;
 	
 	public DataSet(IObjectRegistry registry,IModelFactory factory, ILookupCodeProvider lookupProvider) {
 		super(registry);
-		this.mRegistry = registry;
         this.mFactory = factory;
         this.lookupProvider = lookupProvider;
-        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
 //	public DataSet(IObjectRegistry registry,IModelFactory factory){

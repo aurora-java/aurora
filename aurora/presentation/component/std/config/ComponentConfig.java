@@ -182,8 +182,8 @@ public class ComponentConfig extends DynamicObject {
 	public void setTabIndex(int width) {
 		putInt(PROPERTITY_TAB_INDEX, width);
 	}
-	public boolean isClientResize() {
-		return getBoolean(PROPERTITY_CLIENT_RESIZE, true);
+	public Boolean isClientResize() {
+		return getBoolean(PROPERTITY_CLIENT_RESIZE);
 	}
 	
 	public void setClientResize(boolean clientResize) {

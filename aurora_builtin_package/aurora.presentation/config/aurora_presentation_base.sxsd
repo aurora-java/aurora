@@ -25,6 +25,7 @@
                 <ss:attribute name="height" document="组件的高度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="marginWidth" document="组件的边缘宽度,单位是像素(px)" type="ss:int"/>
                 <ss:attribute name="marginHeight" document="组件的边缘高度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="clientResize" document="组件的边缘高度和宽度是否随着页面尺寸的调整而调整" type="ss:boolean"/>
             </ss:attributes>
         </ss:complexType>
         <ss:complexType name="a:BaseViewComponent" document="基础UI组件"/>
@@ -76,8 +77,8 @@
         <ss:complexType name="a:InputField">
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
-                <ss:attribute name="editable" document="是否可编辑" type="a:boolean" default="true"/>
-                <ss:attribute name="transformCharacter" document="是否转换全角" type="a:boolean" default="true"/>
+                <ss:attribute name="editable" document="是否可编辑" type="ss:boolean" default="true"/>
+                <ss:attribute name="transformCharacter" document="是否转换全角" type="ss:boolean" default="true"/>
                 <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>
             </ss:attributes>
             <ss:extensions>

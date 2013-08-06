@@ -32,8 +32,6 @@ public class Radio extends Component {
 	
 	public static final String VERSION = "$Revision$";
 	
-	private IObjectRegistry mRegistry;
-	private ApplicationConfig mApplicationConfig;
 	private static final String DEFAULT_CLASS = "item-radio";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
@@ -41,8 +39,6 @@ public class Radio extends Component {
 	}
 	public Radio(IObjectRegistry registry) {
 		super( registry);
-		this.mRegistry = registry;
-        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{

@@ -63,14 +63,9 @@ public class Grid extends Component {
 	private static final String TYPE_ROW_RADIO = "rowradio";
 	private static final String TYPE_ROW_NUMBER = "rownumber";
 	
-    private IObjectRegistry mRegistry;
-    private ApplicationConfig mApplicationConfig;
-	
 	
 	public Grid(IObjectRegistry registry) {
 		super(registry);
-		this.mRegistry = registry;
-        mApplicationConfig = (ApplicationConfig) mRegistry.getInstanceOfType(IApplicationConfig.class);
     }
 	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
