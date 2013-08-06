@@ -121,7 +121,7 @@ public class Accordion extends Component {
 						sb.append(session.buildViewAsString(model,
 								accordionChild));
 					} catch (Exception e) {
-						throw new IOException(e.getMessage());
+						throw new IOException(e);
 					}
 				}
 			} else if (null!=accordion.getText() && !"".equals(accordion.getText())) {

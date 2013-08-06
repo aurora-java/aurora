@@ -55,7 +55,7 @@ public class NavBar extends ToolBar {
 				createComplexNavBar(session, context);
 			}
 		} catch (SAXException e) {
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 		super.onCreateViewContent(session, context);
 	}

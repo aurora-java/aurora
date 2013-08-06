@@ -61,7 +61,7 @@ public class Switch implements IViewBuilder {
 		try {
 			session.buildViews(model, child_views);
 		} catch (Exception e) {
-			throw new aurora.presentation.ViewCreationException(e.getMessage());
+			throw new aurora.presentation.ViewCreationException(e);
 		}
 	}
 

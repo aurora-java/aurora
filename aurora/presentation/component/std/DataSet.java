@@ -178,7 +178,7 @@ public class DataSet extends Component {
 					try {
 						json.put(DataSetConfig.PROPERTITY_MAPPING, maplist);
 					} catch (JSONException e) {
-						throw new IOException(e.getMessage());
+						throw new IOException(e);
 					}
 				}
 				fieldList.put(json);
@@ -237,7 +237,7 @@ public class DataSet extends Component {
 				try {
 					list = provider.getLookupList(session.getLanguage(), lcode);
 				} catch (Exception e) {
-					throw new IOException(e.getMessage());
+					throw new IOException(e);
 				}
 //				if(llist!=null){
 //					Iterator it = llist.iterator();

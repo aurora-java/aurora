@@ -146,7 +146,7 @@ public class Table extends Component {
 				try {
 					sb.append(session.buildViewAsString(model, editor));
 				} catch (Exception e) {
-					throw new IOException(e.getMessage());
+					throw new IOException(e);
 				}
 			}
 		}
@@ -392,7 +392,7 @@ public class Table extends Component {
 			try {
 				sb.append(session.buildViewAsString(model, navbar));
 			} catch (Exception e) {
-				throw new IOException(e.getMessage());
+				throw new IOException(e);
 			}
 			sb.append("</caption>");
 			map.put("navbar", sb.toString());

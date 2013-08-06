@@ -83,7 +83,7 @@ public class Comment extends Component {
 			map.put("btn", createButton(session, context));
 			
 		} catch (Exception e) {
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 		addConfig("submiturl", session.getContextPath() + "/autocrud/" + model);
 		map.put("config", getConfigString());

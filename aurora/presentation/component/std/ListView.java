@@ -149,7 +149,7 @@ public class ListView extends Component implements IViewBuilder {
 				out.flush();
 				return out.toString();
 			} catch (Exception e) {
-				throw new aurora.presentation.ViewCreationException(e.getMessage());
+				throw new aurora.presentation.ViewCreationException(e);
 			} finally {
 				if(reader != null) reader.close();
 				if(out != null) out.close();

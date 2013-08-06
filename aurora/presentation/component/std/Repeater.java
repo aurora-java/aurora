@@ -39,7 +39,7 @@ public class Repeater implements IViewBuilder {
 				session.buildViews(childModel, childViews);
 			}
         } catch (Exception e) {
-        	throw new aurora.presentation.ViewCreationException(e.getMessage());
+        	throw new aurora.presentation.ViewCreationException(e);
         }
 	}
 

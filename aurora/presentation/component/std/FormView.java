@@ -111,7 +111,7 @@ public class FormView extends Component implements IViewBuilder{
 					out.write(sw.toString());
 					out.write("</span>");
 				} catch (Exception e) {
-					throw new aurora.presentation.ViewCreationException(e.getMessage());
+					throw new aurora.presentation.ViewCreationException(e);
 				} finally {
 					if(reader != null) reader.close();
 					if(sw != null) sw.close();
@@ -307,7 +307,7 @@ public class FormView extends Component implements IViewBuilder{
 				sw.flush();
 				out.write(sw.toString());
 			} catch (Exception e) {
-				throw new aurora.presentation.ViewCreationException(e.getMessage());
+				throw new aurora.presentation.ViewCreationException(e);
 			} finally {
 				if(reader != null) reader.close();
 				if(sw != null) sw.close();

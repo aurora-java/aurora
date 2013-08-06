@@ -391,7 +391,7 @@ public class Grid extends Component {
 				try {
 					sb.append(session.buildViewAsString(model, editor));
 				} catch (Exception e) {
-					throw new IOException(e.getMessage());
+					throw new IOException(e);
 				}
 			}
 		}
@@ -468,7 +468,7 @@ public class Grid extends Component {
 			try {
 				sb.append(session.buildViewAsString(model, tb));
 			} catch (Exception e) {
-				throw new IOException(e.getMessage());
+				throw new IOException(e);
 			}
 			sb.append("</td></tr>");
 		}
@@ -624,7 +624,7 @@ public class Grid extends Component {
 			try {
 				sb.append(session.buildViewAsString(model, navbar));
 			} catch (Exception e) {
-				throw new IOException(e.getMessage());
+				throw new IOException(e);
 			}
 			sb.append("</td></tr>");
 			map.put("navbar", sb.toString());

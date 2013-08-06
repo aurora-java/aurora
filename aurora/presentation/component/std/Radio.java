@@ -57,7 +57,7 @@ public class Radio extends Component {
 			try {
 				createOptions(session,view,map,items,layout,labelField,valueField, rc.getLabelExpression());
 			} catch (JSONException e) {
-				throw new IOException(e.getMessage());
+				throw new IOException(e);
 			}
 		}else {
 			String ds = rc.getOptions();
@@ -67,7 +67,7 @@ public class Radio extends Component {
 				try {
 					createOptions(session,view,map,options,layout,labelField,valueField, rc.getLabelExpression());
 				} catch (JSONException e) {
-					throw new IOException(e.getMessage());
+					throw new IOException(e);
 				}
 			}
 			

@@ -143,7 +143,7 @@ public class Upload extends Component {
 			if(showList)
 			map.put("up_table", session.buildViewAsString(model, tb));
 		} catch (Exception e) {
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 	}
 	

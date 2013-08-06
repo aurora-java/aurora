@@ -128,7 +128,7 @@ public class SandBox extends Component {
 		try {
 			return session.buildViewAsString(model, button);
 		} catch (Exception e) {
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 	}
 

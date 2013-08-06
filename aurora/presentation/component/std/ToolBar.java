@@ -48,7 +48,7 @@ public class ToolBar extends Component {
 				try {
 					sb.append(session.buildViewAsString(model, editor));
 				} catch (Exception e) {
-					throw new IOException(e.getMessage());
+					throw new IOException(e);
 				}
 			}
 		}
