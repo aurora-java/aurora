@@ -12,6 +12,7 @@ public class GridColumnConfig extends ComponentConfig {
 	
 	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_ALIGN = "align";
+	public static final String PROPERTITY_HEAD_STYLE = "headstyle";
 	public static final String PROPERTITY_LOCK = "lock";
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	public static final String PROPERTITY_VISIABLE = "visiable";
@@ -90,6 +91,14 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setSortable(boolean sortable){
 		putBoolean(PROPERTITY_SORTABLE, sortable);
+	}
+	
+	public String getHeadStyle(){
+		return getString(PROPERTITY_HEAD_STYLE);		
+	}
+	
+	public void setHeadStyle(String style){
+		putString(PROPERTITY_HEAD_STYLE, style);
 	}
 	
 	public String getSortField(){
