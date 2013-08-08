@@ -769,7 +769,12 @@ public class Grid extends Component {
 							if(headTitle!=null && headTitle.equals(prompt)){
 								headTitle = uncertain.composite.TextParser.parse(prompt, model);
 							}
-							hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
+							GridColumnConfig gcc = GridColumnConfig.getInstance(column);
+							hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
+							if(gcc.getHeadStyle() != null){
+								hsb.append(" style='").append(gcc.getHeadStyle()).append("");
+							}
+							hsb.append(">"+headTitle+"</div></TD>");
 						}
 					}
 				}
@@ -833,7 +838,12 @@ public class Grid extends Component {
 					if(headTitle!=null && headTitle.equals(prompt)){
 						headTitle = uncertain.composite.TextParser.parse(prompt, model);
 					}
-					hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div>"+headTitle+"</div></TD>");
+					GridColumnConfig gcc = GridColumnConfig.getInstance(column);					
+					hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
+					if(gcc.getHeadStyle() != null){
+						hsb.append(" style='").append(gcc.getHeadStyle()).append("");
+					}
+					hsb.append(">"+headTitle+"</div></TD>");
 				}
 			}
 			hsb.append("</TR>");
