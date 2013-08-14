@@ -151,13 +151,13 @@ public class Component {
 		Boolean isCust = cc.isCust();
 		/** ID属性 * */
 		id = cc.getId();
-		if (id == null) {
+		id = uncertain.composite.TextParser.parse(id, model);
+		if (id == null || "".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}else if(isCust==null){
 			isCust =  new Boolean(true);
 		}
 		addConfig(ComponentConfig.PROPERTITY_IS_CUST,isCust);
-		id = uncertain.composite.TextParser.parse(id, model);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 

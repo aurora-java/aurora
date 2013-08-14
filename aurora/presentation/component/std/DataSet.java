@@ -319,7 +319,10 @@ public class DataSet extends Component {
 		if(dsc.isSelectable())addConfig(DataSetConfig.PROPERTITY_SELECTABLE, new Boolean(dsc.isSelectable()));
 		if(null!=dsc.getSelectFunction())addConfig(DataSetConfig.PROPERTITY_SELECT_FUNCTION,dsc.getSelectFunction());
 		if(!DataSetConfig.DEFAULT_SELECTION_MODEL.equals(dsc.getSelectionModel()))addConfig(DataSetConfig.PROPERTITY_SELECTION_MODEL, dsc.getSelectionModel());
-		if(!"".equals(dsc.getProcessFunction())) addConfig(DataSetConfig.PROPERTITY_PROCESS_FUNCTION, dsc.getProcessFunction());
+		String pf = uncertain.composite.TextParser.parse(dsc.getProcessFunction(),model);
+		if(!"".equals(pf)){
+			addConfig(DataSetConfig.PROPERTITY_PROCESS_FUNCTION, pf);
+		}
 		map.put(CONFIG, getConfigString());
 	}
 }
