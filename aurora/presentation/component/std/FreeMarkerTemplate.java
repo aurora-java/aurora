@@ -49,6 +49,7 @@ public class FreeMarkerTemplate implements IViewBuilder {
 			t = new Template(view.getName(), reader, provider.getFreeMarkerConfiguration(), provider.getDefaultEncoding());
 			out = new StringWriter();
 			Map p = new HashMap();
+			p.put("buildSession", session);
 			p.put("view", view);
 			p.put("model", model);
 			t.process(p, out);
