@@ -144,7 +144,10 @@ public class DataSet extends Component {
 				if(lovTitle!=null){
 					field.putString(DataSetFieldConfig.PROPERTITY_TITLE, session.getLocalizedPrompt(lovTitle));
 				}
-				
+				String requiredMessage = field.getString(DataSetFieldConfig.PROPERTITY_REQUIRED_MESSAGE);
+				if(requiredMessage!=null){
+					field.putString(DataSetFieldConfig.PROPERTITY_REQUIRED_MESSAGE, uncertain.composite.TextParser.parse(requiredMessage,model));
+				}
 				String returnField = sdfc.getReturnField();//field.getString(DataSetFieldConfig.PROPERTITY_RETURN_FIELD, "");
 				boolean addReturn = returnField!=null;//!"".equals(returnField);
 				

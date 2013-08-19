@@ -232,7 +232,9 @@ public class GridLayout extends Component implements IViewBuilder{
 		int rows = getRows(view,model);//glc.getRow(model,UNLIMITED);
 		int columns = getColumns(view,model);//glc.getColumn(model,UNLIMITED);
 		int cl = getChildLength(view,model);
-		if(rows == UNLIMITED && columns == UNLIMITED) {
+		if(rows == 0 || columns == 0){
+			
+		}else if(rows == UNLIMITED && columns == UNLIMITED) {
 			rows = UNLIMITED;
 			columns = 1;
 		}else if(rows == UNLIMITED && columns != UNLIMITED) {
@@ -252,7 +254,7 @@ public class GridLayout extends Component implements IViewBuilder{
 		}
 		try {
 			buildTop(session, model, view, map, rows, columns,id);
-			if (it != null) {
+			if (it != null && rows!=0 && columns!=0) {
 				if(rows == UNLIMITED){
 					buildRows(session, model, view, it);
 				}else if(columns == UNLIMITED){
