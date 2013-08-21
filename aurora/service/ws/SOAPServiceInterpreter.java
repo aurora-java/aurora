@@ -41,6 +41,7 @@ public class SOAPServiceInterpreter {
 	public static final String HEAD_SOAP_PARAMETER = "soapaction";
 
 	public static final QualifiedName ENVELOPE = new QualifiedName("soapenv", "http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
+	public static final QualifiedName HEADER = new QualifiedName("soapenv", "http://schemas.xmlsoap.org/soap/envelope/", "Header");
 	public static final QualifiedName BODY = new QualifiedName("soapenv", "http://schemas.xmlsoap.org/soap/envelope/", "Body");
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -56,20 +57,26 @@ public class SOAPServiceInterpreter {
 			return EventModel.HANDLE_NORMAL;
 		}
 		service_context.setRequestType(HEAD_SOAP_PARAMETER);
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(service_context.getObjectContext());
+		CompositeMap context = service_context.getObjectContext();
+		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		HttpServletRequest request = svc.getRequest();
 		String soapActionParam = getSOAPAction(request);
-		service_context.getObjectContext().putObject("/request/@soapaction", soapActionParam, true);
+		context.putObject("/request/@soapaction", soapActionParam, true);
 
 		String soapContent = inputStream2String(svc.getRequest().getInputStream());
-		ILogger logger = LoggingContext.getLogger(service_context.getObjectContext(), this.getClass().getCanonicalName());
+		ILogger logger = LoggingContext.getLogger(context, this.getClass().getCanonicalName());
 		logger.config("request:" + LINE_SEPARATOR + soapContent);
 		if (soapContent == null || "".equals(soapContent))
 			return EventModel.HANDLE_NORMAL;
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap soap = cl.loadFromString(soapContent, "UTF-8");
-		CompositeMap parameter = (CompositeMap) soap.getChild(BODY.getLocalName()).getChilds().get(0);
-		service_context.setParameter(parameter);
+		
+		if(soap.getChild(HEADER.getLocalName())!= null){
+			service_context.setParameter(soap);
+		}else{
+			CompositeMap parameter = (CompositeMap) soap.getChild(BODY.getLocalName()).getChilds().get(0);
+			service_context.setParameter(parameter);
+		}
 		parseAuthorization(service_context);
 		logger.config("context:" + LINE_SEPARATOR + service_context.getObjectContext().toXML());
 		return EventModel.HANDLE_NORMAL;
@@ -112,11 +119,17 @@ public class SOAPServiceInterpreter {
 	public void writeResponse(ServiceContext service_context) throws Exception {
 		CompositeMap context = service_context.getObjectContext();
 		ILogger logger = LoggingContext.getLogger(context, this.getClass().getCanonicalName());
-		logger.config("context:" + context.toString());
+		logger.config("context:" + context.toXML());
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		HttpServletRequest request = svc.getRequest();
 		if (!isSOAPRequest(request))
 			return;
+		String soapFullControl = context.getString("soapResponseFullControl","N");
+		if("Y".equalsIgnoreCase(soapFullControl)){
+			CompositeMap result = getServiceOutput(service_context,svc,logger);
+			writeResponse(svc.getResponse(),logger,result);
+			return;
+		}
 		boolean isBMRequest = isBMRequest(request);
 		ISOAPConfiguration soapConfiguration = (ISOAPConfiguration) mRegistry.getInstanceOfType(ISOAPConfiguration.class);
 		if (soapConfiguration == null)
@@ -137,42 +150,23 @@ public class SOAPServiceInterpreter {
 				CompositeMap response_content = (new CompositeLoader()).loadFromString(response_xml, "UTF-8");
 				body.addChild(response_content);
 			} else {
-				String output = null;
-				ServiceOutputConfig cfg = svc.getServiceOutputConfig();
-				if (cfg != null)
-					output = cfg.getOutput();
-
-				boolean write_result = service_context.getBoolean("write_result", true);
-				if (write_result) {
-					CompositeMap result = null;
-					if (output != null) {
-						Object obj = service_context.getObjectContext().getObject(output);
-						if (obj != null) {
-							if (!(obj instanceof CompositeMap))
-								throw new IllegalArgumentException("Target for SOAP output is not instance of CompositeMap: " + obj);
-							result = (CompositeMap) obj;
-						} else
-							result = new CompositeMap("result");
-					} else {
-						result = service_context.getModel();
-					}
-					result.put("success", service_context.isSuccess());
-					if(result.getNamespaceURI() == null){
-						result.setNameSpaceURI(WSDLUtil.TARGET_NAMESPACE);
-					}
-					body.addChild(result);
-				}
+				CompositeMap result = getServiceOutput(service_context,svc,logger);
+				result.put("success", service_context.isSuccess());
+				body.addChild(result);
 			}
 		}
-		prepareResponse(svc.getResponse());
-		PrintWriter out = svc.getResponse().getWriter();
+		writeResponse(svc.getResponse(),logger,body.getRoot());
+	}
+	private void writeResponse(HttpServletResponse response,ILogger logger,CompositeMap soapResponse) throws IOException{
+		prepareResponse(response);
+		PrintWriter out = response.getWriter();
 		out.append("<?xml version='1.0' encoding='UTF-8'?>").append(LINE_SEPARATOR);
-		String content = XMLOutputter.defaultInstance().toXML(body.getRoot());
+		String content = XMLOutputter.defaultInstance().toXML(soapResponse);
 		logger.config("response content:" + LINE_SEPARATOR + content);
 		out.print(content);
 		out.flush();
 	}
-
+	
 	public void onCreateSuccessResponse(ServiceContext service_context) throws Exception {
 		if (isSOAPRequest(service_context))
 			writeResponse(service_context);
@@ -283,5 +277,31 @@ public class SOAPServiceInterpreter {
 		CompositeMap body = new CompositeMap(BODY.getPrefix(), BODY.getNameSpace(), BODY.getLocalName());
 		env.addChild(body);
 		return body;
+	}
+	private CompositeMap getServiceOutput(ServiceContext service_context,HttpServiceInstance svc,ILogger logger){
+		String output = null;
+		ServiceOutputConfig cfg = svc.getServiceOutputConfig();
+		if (cfg != null)
+			output = cfg.getOutput();
+		logger.config("ServiceOutputPath:" + output);
+		CompositeMap result = null;
+		boolean write_result = service_context.getBoolean("write_result", true);
+		if (write_result) {
+			if (output != null) {
+				Object obj = service_context.getObjectContext().getObject(output);
+				if (obj != null) {
+					if (!(obj instanceof CompositeMap))
+						throw new IllegalArgumentException("Target for SOAP output is not instance of CompositeMap: " + obj);
+					result = (CompositeMap) obj;
+				} else
+					result = new CompositeMap("result");
+			} else {
+				result = service_context.getModel();
+			}
+			if(result.getNamespaceURI() == null){
+				result.setNameSpaceURI(WSDLUtil.TARGET_NAMESPACE);
+			}
+		}
+		return result;
 	}
 }
