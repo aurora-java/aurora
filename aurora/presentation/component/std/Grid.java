@@ -310,6 +310,10 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
 						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 						if(hidden) column.putBoolean(GridColumnConfig.PROPERTITY_VISIABLE, false);
+						String showTitle = uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_SHOW_TITLE),model);
+						if(null!=showTitle){
+							column.putBoolean(GridColumnConfig.PROPERTITY_SHOW_TITLE, Boolean.parseBoolean(showTitle));
+						}
 						column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, hidden);
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, column.getBoolean(GridColumnConfig.PROPERTITY_RESIZABLE, true));
@@ -336,6 +340,8 @@ public class Grid extends Component {
 					if(!"".equals(renderer))  column.put(GridColumnConfig.PROPERTITY_RENDERER, uncertain.composite.TextParser.parse(renderer, model));
 					String footerRenderer = column.getString(GridColumnConfig.PROPERTITY_FOOTER_RENDERER, "");
 					if(!"".equals(footerRenderer))  column.put(GridColumnConfig.PROPERTITY_FOOTER_RENDERER, uncertain.composite.TextParser.parse(footerRenderer, model));
+					String exportDataType = column.getString(GridColumnConfig.PROPERTITY_EXPORT_DATA_TYPE, "");
+					if(!"".equals(exportDataType))  column.put(GridColumnConfig.PROPERTITY_EXPORT_DATA_TYPE, uncertain.composite.TextParser.parse(exportDataType, model));
 					toJSONForParentColumn(column,session,model,bindTarget);
 					JSONObject json = new JSONObject(column);
 					jsons.put(json);

@@ -28,6 +28,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_EDITOR_FUNCTION = "editorfunction";
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	public static final String PROPERTITY_MAX_ADJUST_WIDTH = "maxadjustwidth";
+	public static final String PROPERTITY_SHOW_TITLE = "showtitle";
 	
 	
 	private static final String DEFAULT_ALIGN = "left";
@@ -149,6 +150,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setAutoAdjust(boolean autoAdjust){
 		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
+	}
+	public Boolean getShowTitle(){
+		return getBoolean(PROPERTITY_SHOW_TITLE);
+	}
+
+	public void setShowTitle(boolean showTitle){
+		putBoolean(PROPERTITY_SHOW_TITLE, showTitle);
 	}
 	public void setMaxAdjustWidth(int maxAdjustWidth) {
 		putInt(PROPERTITY_MAX_ADJUST_WIDTH, maxAdjustWidth);
