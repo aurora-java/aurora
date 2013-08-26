@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -33,10 +34,13 @@ public class Label extends Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();	
+		CompositeMap model = context.getModel();
 		LabelConfig lc = LabelConfig.getInstance(view);
 		Map map = context.getMap();
-		String renderer = lc.getRenderer();
-		if(!"".equals(renderer)) addConfig(LabelConfig.PROPERTITY_RENDERER, renderer);
+		String renderer = TextParser.parse(lc.getRenderer(),model);
+		if(null!=renderer && !"".equals(renderer)){
+			addConfig(LabelConfig.PROPERTITY_RENDERER, TextParser.parse(renderer,model));
+		}
 		map.put(CONFIG, getConfigString());
 	}
 }

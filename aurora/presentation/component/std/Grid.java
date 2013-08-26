@@ -116,7 +116,7 @@ public class Grid extends Component {
 		if(hasToolBar) sh +=25;
 		if(hasFooterBar) sh +=25;
 		if(hasNavBar) sh +=25;
-		map.put(TABLE_HEIGHT, new Integer(height.intValue()-sh));
+		map.put(TABLE_HEIGHT, new Integer(height.intValue()-sh)<DEFALUT_HEAD_HEIGHT*2?DEFALUT_HEAD_HEIGHT*2:new Integer(height.intValue()-sh));
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
 		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
