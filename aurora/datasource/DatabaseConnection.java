@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import aurora.security.crypto.encrypt.TextEncryptor;
+
 import uncertain.composite.CompositeMap;
 
 public class DatabaseConnection {
@@ -14,15 +16,18 @@ public class DatabaseConnection {
 	String password;
 	String initSql;
 	boolean pool = true;
-	
+
 	// JNDI相关参数
 	String jndiName;
 	String containerName = "WEBLOGIC";// WEBLOGIC or TOMCAT,default is WEBLOGIC.
 	int listenerPort = 7001;// only for WEBLOGIC
-	
+
+	// password加密类
+	String passwordEncryptorClass;
+
 	CompositeMap config = null;
-	Properties properties=new Properties();
-	
+	Properties properties = new Properties();
+
 	public String getInitSql() {
 		return initSql;
 	}
@@ -64,7 +69,17 @@ public class DatabaseConnection {
 	}
 
 	public String getPassword() {
-		return password;
+		try {
+			String className=this.getPasswordEncryptorClass();
+			if(className!=null){
+				TextEncryptor encryptor=(TextEncryptor)Class.forName(className).newInstance();
+				return encryptor.decrypt(this.password);
+			}else{
+				return password;
+			}
+		} catch (Exception e) {			
+			throw new RuntimeException(e);
+		}		
 	}
 
 	public void setPassword(String password) {
@@ -86,14 +101,14 @@ public class DatabaseConnection {
 	public void setConfig(CompositeMap config) {
 		this.config = config;
 	}
-	
-	public Properties getPoolProperties(){
+
+	public Properties getPoolProperties() {
 		return this.properties;
 	}
 
 	public void addProperties(CompositeMap config) throws Exception {
 		String key;
-		String text = config.getText();	
+		String text = config.getText();
 
 		ByteArrayInputStream stream = new ByteArrayInputStream(
 				text.getBytes("UTF-8"));
@@ -131,4 +146,13 @@ public class DatabaseConnection {
 	public void setListenerPort(int listenerPort) {
 		this.listenerPort = listenerPort;
 	}
+
+	public String getPasswordEncryptorClass() {
+		return passwordEncryptorClass;
+	}
+
+	public void setPasswordEncryptorClass(String passwordEncryptorClass) {
+		this.passwordEncryptorClass = passwordEncryptorClass;
+	}
+
 }
