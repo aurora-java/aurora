@@ -2,7 +2,10 @@ package aurora.security.crypto.encrypt;
 
 import aurora.security.crypto.keygen.KeyGenerators;
 
-public class AESEncryptor {
+public class AESEncryptor implements TextEncryptor{
+	public AESEncryptor(){
+		
+	}
 	public static TextEncryptor queryableText(CharSequence password,
 			CharSequence salt) {
 		return new HexEncodingTextEncryptor(new AesBytesEncryptor(
@@ -40,5 +43,17 @@ public class AESEncryptor {
 		rawPassword = textEncryptor.decrypt(encodedPassword);
 		System.out.println(encodedPassword);
 		System.out.println(rawPassword);
+	}
+
+	@Override
+	public String encrypt(String paramString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String decrypt(String paramString) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

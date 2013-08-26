@@ -2,8 +2,8 @@ package aurora.security.crypto.encrypt;
 
 import aurora.security.crypto.codec.Base64;
 
-public class Base64Encryptor {
-	public static String decrypt(String encryptedText) {
+public class Base64Encryptor implements TextEncryptor{
+	public String decrypt(String encryptedText) {
 		String text = null;
 		try {
 			byte[] b = encryptedText.getBytes();
@@ -17,13 +17,14 @@ public class Base64Encryptor {
 		}
 	}
 
-	public static String encrypt(String text) {
+	public String encrypt(String text) {
 		return new String(Base64.encode(text.getBytes()));
 	}
 
 	public static void main(String[] args) {
-		String a=Base64Encryptor.encrypt("123");
-		String b=Base64Encryptor.decrypt(a);
+		Base64Encryptor encryptor=new Base64Encryptor();
+		String a=encryptor.encrypt("hec2test");
+		String b=encryptor.decrypt(a);
 		System.out.println(a);
 		System.out.println(b);
 	}
