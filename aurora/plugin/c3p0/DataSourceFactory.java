@@ -21,10 +21,10 @@ public class DataSourceFactory implements IDataSourceFactory {
 		Connection conn = null;
 		try {
 			ds = DataSources.unpooledDataSource(dbConfig.getUrl(),
-					dbConfig.getUserName(), dbConfig.getPassword());
-			conn = ds.getConnection();
+					dbConfig.getUserName(), dbConfig.getPassword());			
 			((DriverManagerDataSource) ds).setDriverClass(dbConfig
 					.getDriverClass());
+			conn = ds.getConnection();
 			if (dbConfig.getName() != null)
 				((DriverManagerDataSource) ds).setDescription(dbConfig
 						.getName());
