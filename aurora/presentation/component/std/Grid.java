@@ -71,7 +71,7 @@ public class Grid extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "grid/Grid-min.css");
-		addJavaScript(session, context, "grid/Grid-min.js");
+		addJavaScript(session, context, "grid/Grid.js");
 	}
 	
 	protected int getDefaultWidth() {
@@ -520,7 +520,7 @@ public class Grid extends Component {
 		boolean hasFooterBar = false;
 		GridColumnConfig gcc = GridColumnConfig.getInstance(column);
 		String footerRenderer = gcc.getFooterRenderer();
-		if(footerRenderer!=null){
+		if(!"".equals(footerRenderer)){
 			return true;
 		}
 		List childs = column.getChilds();

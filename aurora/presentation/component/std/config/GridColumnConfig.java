@@ -173,7 +173,7 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	
 	public String getFooterRenderer(){
-		return getString(PROPERTITY_FOOTER_RENDERER);
+		return getString(PROPERTITY_FOOTER_RENDERER,"");
 	}
 	public void setFooterRenderer(String renderer){
 		putString(PROPERTITY_FOOTER_RENDERER, renderer);
