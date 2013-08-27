@@ -42,7 +42,7 @@ public class GridButton extends ToolBarButton {
 					view.putString(ComponentConfig.PROPERTITY_ID, id);
 				}
 				
-				String fileName = view.getString("filename","");
+				String fileName = uncertain.composite.TextParser.parse(view.getString("filename",""),model);
 				if("add".equalsIgnoreCase(type)){
 					view = createButton(view,session.getLocalizedPrompt("HAP_NEW"),"grid-add2","","function(){$('"+grid+"').showEditorByRecord($('"+dataset+"').create())}");
 				}else if("delete".equalsIgnoreCase(type)){

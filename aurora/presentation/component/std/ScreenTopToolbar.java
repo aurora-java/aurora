@@ -62,7 +62,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder {
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI())){
 						cs = "float:left;margin-right:1px;margin-top:2px;line-height:"+(height)+"px;" + cs;
 					} else{
-						cs = "float:left;margin-right:1px;" + cs;					
+						cs = "float:left;margin-right:1px;" + cs;
 					}
 					cmp.put(ComponentConfig.PROPERTITY_STYLE, cs);
 					sb.append(session.buildViewAsString(model, cmp));

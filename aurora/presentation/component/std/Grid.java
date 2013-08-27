@@ -451,6 +451,7 @@ public class Grid extends Component {
 //				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
+					String fileName = uncertain.composite.TextParser.parse(item.getString("filename",""),model);
 					if(!"".equals(type)){
 						if("add".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"grid-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
@@ -461,7 +462,11 @@ public class Grid extends Component {
 						}else if("clear".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
+						}else if("excel2007".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
+						}else if("txt".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"')}");
 						}else if("customize".equalsIgnoreCase(type)){
 							String path = model.getObject("/request/@context_path").toString();
 							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"grid-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize('"+path+"')}");
