@@ -460,7 +460,7 @@ public class Grid extends Component {
 						}else if("save".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"grid-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
 						}else if("clear".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -53px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"grid-clear","background-position:0px -52px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
 							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"grid-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
 						}else if("excel2007".equalsIgnoreCase(type)){
