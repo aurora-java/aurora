@@ -181,6 +181,7 @@ public class ServiceLogging extends LoggerProvider implements
     
     public void onInitialize(){
         // create default IPerObjectLoggingConfig instance if not set yet
+    	mRegistry.registerInstance(ServiceLogging.class, this);
         if(mEnablePerServiceConfig){
             mPerObjectLoggingConfig = (IPerObjectLoggingConfig)mRegistry.getInstanceOfType(IPerObjectLoggingConfig.class);
             if(mPerObjectLoggingConfig==null){
