@@ -7,6 +7,7 @@
     <class-mapping className="aurora.application.action.AuroraCookie" elementName="put-cookie" nameSpace="http://www.aurora-framework.org/application"/>
     <class-mapping className="aurora.application.action.ImageValidate" elementName="img-validate" nameSpace="http://www.aurora-framework.org/application"/>
     <class-mapping className="aurora.application.action.AttachmentManager" elementName="atm-manager" nameSpace="http://www.aurora-framework.org/application"/>
+    <class-mapping className="aurora.application.action.JavaScriptEncode" elementName="javascript-encode" nameSpace="http://www.aurora-framework.org/application"/>
     <class-mapping className="aurora.application.action.RefreshPrompts" elementName="refresh-prompts" nameSpace="http://www.aurora-framework.org/application"/>
 	<package-mapping packageName="aurora.application.features.cstm"/>
 	<package-mapping packageName="aurora.application.features"/>
