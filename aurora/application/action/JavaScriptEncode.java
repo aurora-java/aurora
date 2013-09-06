@@ -14,12 +14,18 @@ public class JavaScriptEncode extends AbstractEntry {
 		CompositeMap context = runner.getContext();
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		CompositeMap params = service.getParameter();
-		String key = getKey();
-		if (key != null) {
-			String keyValue = params.getString(key);
-			if(keyValue!=null){
-				params.put(key, filter(keyValue));				
+		String keyStr = getKey();
+		if (keyStr != null) {
+			String[] keys = keyStr.split(",");
+			for(int i=0;i<keys.length;i++){
+				String key = keys[i];
+				String keyValue = params.getString(key);
+				if(keyValue!=null){
+					params.put(key, filter(keyValue));				
+				}
 			}
+			
+			
 		}
 	}
 
