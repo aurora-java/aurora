@@ -30,7 +30,7 @@ public class DeleteSqlCreator extends AbstractSqlCreator {
     }    
 
     public DeleteStatement createDeleteStatement(BusinessModel model){
-        DeleteStatement stmt = new DeleteStatement(model.getBaseTable());
+        DeleteStatement stmt = new DeleteStatement(model.getBaseTable(), model.getAlias());
         return stmt;
     }
     
