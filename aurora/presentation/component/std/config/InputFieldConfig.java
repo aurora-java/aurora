@@ -9,6 +9,7 @@ public class InputFieldConfig extends FieldConfig {
 	public static final String PROPERTITY_EDITABLE = "editable";
 	public static final String PROPERTITY_MAX_LENGHT = "maxlength";
 	public static final String PROPERTITY_CHARA_TRANSFORM = "transformcharacter";
+	public static final String PROPERTITY_AUTO_SELECT = "autoselect";
 	
 
 	private int DEFAULT_INPUT_WIDTH = 100;
@@ -49,5 +50,11 @@ public class InputFieldConfig extends FieldConfig {
     }
     public void setTransformCharacter(boolean tc){
         putBoolean(PROPERTITY_CHARA_TRANSFORM, tc);
+    }
+    public boolean isAutoSelect(){
+    	return getBoolean(PROPERTITY_AUTO_SELECT, true);
+    }
+    public void setAutoSelect(boolean as){
+    	putBoolean(PROPERTITY_AUTO_SELECT, as);
     }
 }

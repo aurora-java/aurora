@@ -77,6 +77,7 @@
         <ss:complexType name="a:InputField">
             <ss:attributes>
                 <ss:attribute name="emptyText" document="描述字段"/>
+                <ss:attribute name="autoSelect" document="是否自动全选" type="ss:boolean" default="true"/>
                 <ss:attribute name="editable" document="是否可编辑" type="ss:boolean" default="true"/>
                 <ss:attribute name="transformCharacter" document="是否转换全角" type="ss:boolean" default="true"/>
                 <ss:attribute name="maxLength" document="最大允许输入长度" type="ss:int"/>

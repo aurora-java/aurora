@@ -22,6 +22,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
+import aurora.presentation.component.std.config.FieldConfig;
 import aurora.presentation.markup.HtmlPageContext;
 import aurora.service.IService;
 import aurora.service.ServiceInstance;
@@ -197,6 +198,11 @@ public class Component {
 		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
 		
 		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, cc.isClientResize()==null?view_config.getDefaultClientResize():cc.isClientResize());
+		
+		/** 是否隐藏 **/
+		boolean hidden = cc.getHidden(false);
+		if(hidden != false)
+		addConfig(FieldConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
 		
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);

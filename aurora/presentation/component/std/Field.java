@@ -68,11 +68,6 @@ public class Field extends Component {
 		map.put(FieldConfig.PROPERTITY_REQUIRED, notBlank);
 		addConfig(FieldConfig.PROPERTITY_REQUIRED, Boolean.valueOf(notBlank));
 		
-		/** 是否隐藏 **/
-		boolean hidden = fc.getHidden(false);
-		if(hidden != false)
-		addConfig(FieldConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
-		
 		/** Renderer **/
 		String renderer = fc.getRenderer();
 		if(renderer != null)

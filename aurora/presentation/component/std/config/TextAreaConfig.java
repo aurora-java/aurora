@@ -3,12 +3,11 @@ package aurora.presentation.component.std.config;
 import uncertain.composite.CompositeMap;
 
 
-public class TextAreaConfig extends ComponentConfig {
+public class TextAreaConfig extends InputFieldConfig {
 
 	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "textArea";
-	public static final String PROPERTITY_READONLY = "readonly";
 
 	
 	public static TextAreaConfig getInstance(){
@@ -25,10 +24,4 @@ public class TextAreaConfig extends ComponentConfig {
         return model;
     }
 	
-	public boolean isReadOnly(){
-        return getBoolean(PROPERTITY_READONLY,false);
-    }
-    public void setReadOnly(boolean readonly){
-        putBoolean(PROPERTITY_READONLY, readonly);
-    }
 }

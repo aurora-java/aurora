@@ -55,7 +55,12 @@ public class InputField extends Field {
 		
 		/** 是否转换全角 **/
 		boolean isTranChara = ifc.isTransformCharacter();
-		addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
+		if(!isTranChara)addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
+		
+		/** 是否自动全选 **/
+		boolean isAutoSelect = ifc.isAutoSelect();
+		if(!isAutoSelect)addConfig(InputFieldConfig.PROPERTITY_AUTO_SELECT, isAutoSelect);
+		
 		
 		/** 值 **/
 		String value = (String)map.get(ComponentConfig.PROPERTITY_VALUE);
