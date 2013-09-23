@@ -111,6 +111,7 @@ public class HttpSessionOperate extends AbstractEntry  {
         if(mTarget!=null){
             HttpSession session = request.getSession(true);
             Object value = context.getObject(mSource);
+            mTarget = uncertain.composite.TextParser.parse(mTarget, context);
             session.setAttribute(mTarget, value);
         }else{
             Object value = context.getObject(mSource);
