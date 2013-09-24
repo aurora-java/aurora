@@ -15,7 +15,9 @@ public class CheckBox extends Component {
 	public CheckBox(IObjectRegistry registry) {
 		super(registry);
 	}
-
+	protected int getDefaultWidth() {
+		return -1;
+	}
 	public static final String VERSION = "$Revision$";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext view_context) throws IOException{
