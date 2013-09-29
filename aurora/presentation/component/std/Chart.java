@@ -585,10 +585,10 @@ public class Chart extends Component {
 	}
 	private void putColorCfg(CompositeMap parent,String key, Map map){
 		Map cfg = new HashMap();	
-		String linearGradient = "linearGradient";
-		String stops = "stops";
 		CompositeMap view = parent.getChild(key);
 		if(view != null){
+			String linearGradient = "linearGradient";
+			String stops = "stops";
 			putArrayCfg(view, linearGradient, cfg);
 			putArrayCfg(view, stops, cfg);
 			if(!cfg.isEmpty())
@@ -899,7 +899,7 @@ public class Chart extends Component {
 	private void processPlot(CompositeMap view,Map cfg){
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
-		putStringCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putColorCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTENDS, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTNULLS, cfg);
 		putLongCfg(view, PROPERTITY_PLOTOPTIONS_CROPTHRESHOLD, cfg);
@@ -935,7 +935,7 @@ public class Chart extends Component {
 		Map cfg = new HashMap();	
 		if(view != null){
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_ENABLED, cfg);			
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR, cfg);
+			putColorCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR, cfg);
 			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR, cfg);
 			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH, cfg);			
 			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_RADIUS, cfg);
@@ -1344,10 +1344,10 @@ public class Chart extends Component {
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
 					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_COLOR, cfg);
-					putIntCfg(pb, PROPERTITY_AXIS_PLOTBANDS_FROM, cfg);
+					putFloatCfg(pb, PROPERTITY_AXIS_PLOTBANDS_FROM, cfg);
 					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_ID, cfg);
 					createPlotLabel(pb,cfg);
-					putIntCfg(pb, PROPERTITY_AXIS_PLOTBANDS_TO, cfg);
+					putFloatCfg(pb, PROPERTITY_AXIS_PLOTBANDS_TO, cfg);
 					putIntCfg(pb, PROPERTITY_AXIS_PLOTBANDS_ZINDEX, cfg);
 					putEvents(pb, cfg);
 					array.put(cfg);
