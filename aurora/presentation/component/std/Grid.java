@@ -320,7 +320,7 @@ public class Grid extends Component {
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
 						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, hidden?false:column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getString(COLUMN_TYPE)==null?true:false));
 					
-						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
+						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, false));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
 						column.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget)),model)));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
