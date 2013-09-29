@@ -70,16 +70,24 @@ public class SOAPServiceInterpreter {
 			return EventModel.HANDLE_NORMAL;
 		CompositeLoader cl = new CompositeLoader();
 		CompositeMap soap = cl.loadFromString(soapContent, "UTF-8");
-		
-		if(soap.getChild(HEADER.getLocalName())!= null){
+
+		if (isHasHeaderMessage(soap)) {
 			service_context.setParameter(soap);
-		}else{
+		} else {
 			CompositeMap parameter = (CompositeMap) soap.getChild(BODY.getLocalName()).getChilds().get(0);
 			service_context.setParameter(parameter);
 		}
 		parseAuthorization(service_context);
 		logger.config("context:" + LINE_SEPARATOR + service_context.getObjectContext().toXML());
 		return EventModel.HANDLE_NORMAL;
+	}
+	private boolean isHasHeaderMessage(CompositeMap soap){
+		CompositeMap header = soap.getChild(HEADER.getLocalName());
+		if(header == null)
+			return false;
+		if(header.isEmpty()&&header.getChilds()==null)
+			return false;
+		return true;
 	}
 
 	private void parseAuthorization(ServiceContext service_context) {
@@ -124,10 +132,16 @@ public class SOAPServiceInterpreter {
 		HttpServletRequest request = svc.getRequest();
 		if (!isSOAPRequest(request))
 			return;
-		String soapFullControl = context.getString("soapResponseFullControl","N");
-		if("Y".equalsIgnoreCase(soapFullControl)){
-			CompositeMap result = getServiceOutput(service_context,svc,logger);
-			writeResponse(svc.getResponse(),logger,result);
+
+		// set status and message
+		String status = service_context.isSuccess()?"Y":"N";
+		context.put("status", status);
+		context.put("message", "successful");
+
+		String soapFullControl = context.getString("soapResponseFullControl", "N");
+		if ("Y".equalsIgnoreCase(soapFullControl)) {
+			CompositeMap result = getServiceOutput(service_context, svc, logger);
+			writeResponse(svc.getResponse(), logger, result);
 			return;
 		}
 		boolean isBMRequest = isBMRequest(request);
@@ -150,14 +164,15 @@ public class SOAPServiceInterpreter {
 				CompositeMap response_content = (new CompositeLoader()).loadFromString(response_xml, "UTF-8");
 				body.addChild(response_content);
 			} else {
-				CompositeMap result = getServiceOutput(service_context,svc,logger);
+				CompositeMap result = getServiceOutput(service_context, svc, logger);
 				result.put("success", service_context.isSuccess());
 				body.addChild(result);
 			}
 		}
-		writeResponse(svc.getResponse(),logger,body.getRoot());
+		writeResponse(svc.getResponse(), logger, body.getRoot());
 	}
-	private void writeResponse(HttpServletResponse response,ILogger logger,CompositeMap soapResponse) throws IOException{
+
+	private void writeResponse(HttpServletResponse response, ILogger logger, CompositeMap soapResponse) throws IOException {
 		prepareResponse(response);
 		PrintWriter out = response.getWriter();
 		out.append("<?xml version='1.0' encoding='UTF-8'?>").append(LINE_SEPARATOR);
@@ -166,7 +181,7 @@ public class SOAPServiceInterpreter {
 		out.print(content);
 		out.flush();
 	}
-	
+
 	public void onCreateSuccessResponse(ServiceContext service_context) throws Exception {
 		if (isSOAPRequest(service_context))
 			writeResponse(service_context);
@@ -184,6 +199,14 @@ public class SOAPServiceInterpreter {
 		if (thr != null) {
 			LoggingUtil.logException(thr, logger);
 		}
+		// set status and message
+		String status = service_context.isSuccess()?"Y":"N";
+		String message = (String)context.getObject("/error/@message");
+		if(message == null)
+			message = "fail";
+		context.put("status", status);
+		context.put("message", message);
+
 		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		HttpServletResponse response = svc.getResponse();
 		prepareResponse(response);
@@ -228,7 +251,7 @@ public class SOAPServiceInterpreter {
 		CompositeMap parameter = new CompositeMap("parameter");
 		parameter.put("url", url);
 		parameter.put("response_format_fixed", "Y");
-		parameter.put("enabled_flag","Y");
+		parameter.put("enabled_flag", "Y");
 		return queryBM(model, parameter);
 	}
 
@@ -278,7 +301,8 @@ public class SOAPServiceInterpreter {
 		env.addChild(body);
 		return body;
 	}
-	private CompositeMap getServiceOutput(ServiceContext service_context,HttpServiceInstance svc,ILogger logger){
+
+	private CompositeMap getServiceOutput(ServiceContext service_context, HttpServiceInstance svc, ILogger logger) {
 		String output = null;
 		ServiceOutputConfig cfg = svc.getServiceOutputConfig();
 		if (cfg != null)
@@ -298,7 +322,7 @@ public class SOAPServiceInterpreter {
 			} else {
 				result = service_context.getModel();
 			}
-			if(result.getNamespaceURI() == null){
+			if (result.getNamespaceURI() == null) {
 				result.setNameSpaceURI(WSDLUtil.TARGET_NAMESPACE);
 			}
 		}
