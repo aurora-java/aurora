@@ -118,7 +118,7 @@ public class Portal extends Component {
 		sb.append("</tr>");
 		sb.append("</thead>");
 		sb.append("<tbody>");
-		sb.append("<tr>");
+		sb.append("<tr style='height:" + (blockHeight - 26) + "px'>");
 		sb.append("<td class='portal-item-body' valign='top' unselectable='on'>");
 		sb.append("<div class='portal-item-content' style='height:" + (blockHeight - 26) + "px'>");
 		String ref = portal.getString(REF, "");
