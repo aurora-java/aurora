@@ -118,9 +118,9 @@ public class Portal extends Component {
 		sb.append("</tr>");
 		sb.append("</thead>");
 		sb.append("<tbody>");
-		sb.append("<tr style='height:" + (blockHeight - 26) + "px'>");
+		sb.append("<tr>");
 		sb.append("<td class='portal-item-body' valign='top' unselectable='on'>");
-		sb.append("<div class='portal-item-content'>");
+		sb.append("<div class='portal-item-content' style='height:" + (blockHeight - 26) + "px'>");
 		String ref = portal.getString(REF, "");
 		if ("".equals(ref)) {
 			sb.append("<script>(function(){var a = window.__host = Ext.get(Ext.fly('"+this.id+"').select('.portal-item-content:last').elements[0]);if(!a.cmps)a.cmps={};})()</script>");
