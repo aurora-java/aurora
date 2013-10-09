@@ -24,8 +24,14 @@ public class SQLExceptionDescriptor implements IExceptionDescriptor {
     String    mDefaultMessage;
 
     public CompositeMap process(ServiceContext context, Throwable exception) {        
-        return getParsedError( context, exception );
+        return getParsedError( context, getRootCause(exception) );
     }
+    
+    private Throwable getRootCause(Throwable thr) {
+  		while (thr.getCause() != null)
+  			thr = thr.getCause();
+  		return thr;
+  	}
     
     public ErrorMessage getErrorMessage(  SQLException sex ){
         int code = sex.getErrorCode();
