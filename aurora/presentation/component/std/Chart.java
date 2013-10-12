@@ -63,6 +63,11 @@ public class Chart extends Component {
 	private static final String PROPERTITY_CHART_TYPE = "type";
 	private static final String PROPERTITY_CHART_ZOOMTYPE = "zoomType";
 	
+	private static final String PROPERTITY_CHART_RESETZOOMBUTTON = "resetZoomButton";
+	private static final String PROPERTITY_CHART_RESETZOOMBUTTON_RELATIVETO = "relativeTo";
+	private static final String PROPERTITY_CHART_RESETZOOMBUTTON_THEME = "theme";
+	
+	
 	private static final String PROPERTITY_CHART_POLAR = "polar";
 	private static final String PROPERTITY_CHART_NAME_FIELD = "namefield";
 	private static final String PROPERTITY_CHART_VALUE_FIELD = "valuefield";
@@ -81,7 +86,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_CREDITS_STYLE = "style";
 	private static final String PROPERTITY_CREDITS_TEXT = "text";
 	
-	private static final String PROPERTITY_LABELS = "labels";
+	private static final String PROPERTITY_LABELS = "chartLabels";
 	private static final String PROPERTITY_LABELS_STYLE = "style";
 	private static final String PROPERTITY_LABELS_LABEL_HTML = "html";
 	private static final String PROPERTITY_LABELS_LABEL_STYLE = "style";
@@ -108,11 +113,18 @@ public class Chart extends Component {
 	private static final String PROPERTITY_LEGEND_ITEMMARGINTOP = "itemMarginTop";
 	private static final String PROPERTITY_LEGEND_ITEMSTYLE = "itemStyle";
 	private static final String PROPERTITY_LEGEND_ITEMWIDTH = "itemWidth";
-	private static final String PROPERTITY_LEGEND_LAYOUT = "layout";
 	private static final String PROPERTITY_LEGEND_LABELFORMAT = "labelFormat";
 	private static final String PROPERTITY_LEGEND_LABELFORMATTER = "labelFormatter";
+	private static final String PROPERTITY_LEGEND_LAYOUT = "layout";
+	private static final String PROPERTITY_LEGEND_LINEHEIGHT = "lineHeight";
 	private static final String PROPERTITY_LEGEND_MARGIN = "margin";
 	private static final String PROPERTITY_LEGEND_MAXHEIGHT = "maxHeight";
+	private static final String PROPERTITY_LEGEND_NAVIGATION = "legendNavigation";
+	private static final String PROPERTITY_LEGEND_NAVIGATION_ACTIVECOLOR = "activeColor";
+	private static final String PROPERTITY_LEGEND_NAVIGATION_ANIMATION = "animation";
+	private static final String PROPERTITY_LEGEND_NAVIGATION_ARROWSIZE = "arrowSize";
+	private static final String PROPERTITY_LEGEND_NAVIGATION_INACTIVECOLOR = "inactiveColor";
+	private static final String PROPERTITY_LEGEND_NAVIGATION_STYLE = "style";
 	private static final String PROPERTITY_LEGEND_PADDING = "padding";
 	private static final String PROPERTITY_LEGEND_REVERSED = "reversed";
 	private static final String PROPERTITY_LEGEND_RTL = "rtl";
@@ -120,37 +132,37 @@ public class Chart extends Component {
 	private static final String PROPERTITY_LEGEND_STYLE = "style";
 	private static final String PROPERTITY_LEGEND_SYMBOLPADDING = "symbolPadding";
 	private static final String PROPERTITY_LEGEND_SYMBOLWIDTH = "symbolWidth";
+	
+	private static final String PROPERTITY_LEGEND_TITLE = "legendTitle";
+	
+	private static final String PROPERTITY_LEGEND_USEHTML = "useHTML";
 	private static final String PROPERTITY_LEGEND_VERTICALALIGN = "verticalAlign";
 	private static final String PROPERTITY_LEGEND_WIDTH = "width";
 	private static final String PROPERTITY_LEGEND_X = "x";
 	private static final String PROPERTITY_LEGEND_Y = "y";
 	
-	private static final String PROPERTITY_LEGEND_NAVIGATION = "legendNavigation";
-	private static final String PROPERTITY_LEGEND_NAVIGATION_ACTIVECOLOR = "activeColor";
-	private static final String PROPERTITY_LEGEND_NAVIGATION_ANIMATION = "animation";
-	private static final String PROPERTITY_LEGEND_NAVIGATION_ARROWSIZE = "arrowSize";
-	private static final String PROPERTITY_LEGEND_NAVIGATION_INACTIVECOLOR = "inactiveColor";
-	private static final String PROPERTITY_LEGEND_NAVIGATION_STYLE = "style";
 	
 	
 	private static final String PROPERTITY_SUBTITLE = "subtitle";
-	private static final String PROPERTITY_SUBTITLE_TEXT = "text";
-	private static final String PROPERTITY_SUBTITLE_X = "x";
-	private static final String PROPERTITY_SUBTITLE_Y = "y";
 	private static final String PROPERTITY_SUBTITLE_ALIGN = "align";
 	private static final String PROPERTITY_SUBTITLE_FLOATING = "floating";
 	private static final String PROPERTITY_SUBTITLE_STYLE = "style";
+	private static final String PROPERTITY_SUBTITLE_TEXT = "text";
+	private static final String PROPERTITY_SUBTITLE_USEHTML = "useHTML";
 	private static final String PROPERTITY_SUBTITLE_VERTICALALIGN = "verticalAlign";
+	private static final String PROPERTITY_SUBTITLE_X = "x";
+	private static final String PROPERTITY_SUBTITLE_Y = "y";
 	
 	private static final String PROPERTITY_TITLE = "title";
+	private static final String PROPERTITY_TITLE_ALIGN = "align";
+	private static final String PROPERTITY_TITLE_FLOATING = "floating";
+	private static final String PROPERTITY_TITLE_MARGIN = "margin";
+	private static final String PROPERTITY_TITLE_STYLE = "style";
 	private static final String PROPERTITY_TITLE_TEXT = "text";
+	private static final String PROPERTITY_TITLE_USEHTML = "useHTML";
+	private static final String PROPERTITY_TITLE_VERTICALALIGN = "verticalAlign";
 	private static final String PROPERTITY_TITLE_X = "x";
 	private static final String PROPERTITY_TITLE_Y = "y";
-	private static final String PROPERTITY_TITLE_ALIGN = "align";
-	private static final String PROPERTITY_TITLE_MARGIN = "margin";
-	private static final String PROPERTITY_TITLE_FLOATING = "floating";
-	private static final String PROPERTITY_TITLE_STYLE = "style";
-	private static final String PROPERTITY_TITLE_VERTICALALIGN = "verticalAlign";
 	
 	private static final String PROPERTITY_TOOLTIP = "tooltip";
 	private static final String PROPERTITY_TOOLTIP_ANIMATION = "animation";
@@ -186,8 +198,43 @@ public class Chart extends Component {
 	
 	
 	private static final String PROPERTITY_EXPORTING = "exporting";
-	private static final String PROPERTITY_EXPORTING_URL = "url";
+	private static final String PROPERTITY_EXPORTING_BUTTONS = "buttons";
+	private static final String PROPERTITY_EXPORTING_BUTTONS_CONTEXTBUTTON = "contextButton";
+	private static final String PROPERTITY_EXPORTING_CHARTOPTIONS = "chartOptions";
 	private static final String PROPERTITY_EXPORTING_ENABLED = "enabled";
+	private static final String PROPERTITY_EXPORTING_FILENAME = "filename";
+	private static final String PROPERTITY_EXPORTING_SCALE = "scale";
+	private static final String PROPERTITY_EXPORTING_SOURCEHEIGHT = "sourceHeight";
+	private static final String PROPERTITY_EXPORTING_SOURCEWIDTH = "sourceWidth";
+	private static final String PROPERTITY_EXPORTING_TYPE = "type";
+	private static final String PROPERTITY_EXPORTING_URL = "url";
+	private static final String PROPERTITY_EXPORTING_WIDTH = "width";
+	
+	private static final String PROPERTITY_NAVIGATION = "navigation";
+	
+	private static final String PROPERTITY_BUTTON_OPTIONS = "buttonOptions";
+	private static final String PROPERTITY_BUTTON_OPTIONS_ALIGN = "align";
+	private static final String PROPERTITY_BUTTON_OPTIONS_ENABLED = "enabled";
+	private static final String PROPERTITY_BUTTON_OPTIONS_HEIGHT = "height";
+	private static final String PROPERTITY_BUTTON_OPTIONS_MENUITEMS = "menuItems";
+	private static final String PROPERTITY_BUTTON_OPTIONS_ONCLICK = "onclick";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOL = "symbol";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLFILL = "symbolFill";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLSIZE = "symbolSize";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKE = "symbolStroke";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKEWIDTH = "symbolStrokeWidth";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLX = "symbolX";
+	private static final String PROPERTITY_BUTTON_OPTIONS_SYMBOLY = "symbolY";
+	private static final String PROPERTITY_BUTTON_OPTIONS_TEXT = "text";
+	private static final String PROPERTITY_BUTTON_OPTIONS_THEME = "theme";
+	private static final String PROPERTITY_BUTTON_OPTIONS_VERTICALALIGN = "verticalAlign";
+	private static final String PROPERTITY_BUTTON_OPTIONS_WIDTH = "width";
+	private static final String PROPERTITY_BUTTON_OPTIONS_X = "x";
+	private static final String PROPERTITY_BUTTON_OPTIONS_Y = "y";
+	
+	private static final String PROPERTITY_NAVIGATION_MENUITEMHOVERSTYLE = "menuItemHoverStyle";
+	private static final String PROPERTITY_NAVIGATION_MENUITEMSTYLE = "menuItemStyle";
+	private static final String PROPERTITY_NAVIGATION_MENUSTYLE = "menuStyle";
 	
 	private static final String PROPERTITY_AXIS_X = "xAxis";
 	private static final String PROPERTITY_AXIS_Y = "yAxis";
@@ -235,6 +282,9 @@ public class Chart extends Component {
 	private static final String PROPERTITY_AXIS_PLOTBANDS_COLOR = "color";
 	private static final String PROPERTITY_AXIS_PLOTBANDS_FROM = "from";
 	private static final String PROPERTITY_AXIS_PLOTBANDS_ID = "id";
+	private static final String PROPERTITY_AXIS_PLOTBANDS_INNERRADIUS = "innerRadius";
+	private static final String PROPERTITY_AXIS_PLOTBANDS_OUTERRADIUS = "outerRadius";
+	private static final String PROPERTITY_AXIS_PLOTBANDS_THICKNESS = "thickness";
 	private static final String PROPERTITY_AXIS_PLOTBANDS_TO = "to";
 	private static final String PROPERTITY_AXIS_PLOTBANDS_ZINDEX = "zIndex";
 	
@@ -297,9 +347,12 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_AXIS_LABELS = "labels";
 	private static final String PROPERTITY_AXIS_LABELS_ALIGN = "align";
+	private static final String PROPERTITY_AXIS_LABELS_DISTANCE = "distance";
 	private static final String PROPERTITY_AXIS_LABELS_ENABLED = "enabled";
 	private static final String PROPERTITY_AXIS_LABELS_FORMAT = "format";
 	private static final String PROPERTITY_AXIS_LABELS_FORMATTER = "formatter";
+	private static final String PROPERTITY_AXIS_LABELS_MAXSTAGGERLINES = "maxStaggerLines"; 
+	private static final String PROPERTITY_AXIS_LABELS_OVERFLOW = "overflow"; 
 	private static final String PROPERTITY_AXIS_LABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_AXIS_LABELS_STAGGERLINES = "staggerLines"; 
 	private static final String PROPERTITY_AXIS_LABELS_STEP = "step";
@@ -316,10 +369,11 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_PANE = "pane";
 	private static final String PROPERTITY_PANE_BACKGROUNDS = "backgrounds";
-	private static final String PROPERTITY_PANE_BACKGROUNDS_BACKGROUNDCOLOR = "backgroundColor";
-	private static final String PROPERTITY_PANE_BACKGROUNDS_BORDERWIDTH = "borderWidth";
-	private static final String PROPERTITY_PANE_BACKGROUNDS_OUTERRADIUS = "outerRadius";
-	private static final String PROPERTITY_PANE_BACKGROUNDS_INTERRADIUS = "interRadius";
+	private static final String PROPERTITY_PANE_BACKGROUND = "background";
+	private static final String PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR = "backgroundColor";
+	private static final String PROPERTITY_PANE_BACKGROUND_BORDERWIDTH = "borderWidth";
+	private static final String PROPERTITY_PANE_BACKGROUND_OUTERRADIUS = "outerRadius";
+	private static final String PROPERTITY_PANE_BACKGROUND_INTERRADIUS = "interRadius";
 	private static final String PROPERTITY_PANE_CENTER = "center";
 	private static final String PROPERTITY_PANE_ENDANGLE = "endAngle";
 	private static final String PROPERTITY_PANE_STARTANGLE = "startAngle";
@@ -327,14 +381,19 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_PLOTOPTIONS = "plotOptions";
 	
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER = "marker";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_ENABLED = "enabled";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR = "fillColor";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR = "lineColor";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH = "lineWidth";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_RADIUS = "radius";
-	private static final String PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL = "symbol";
-	
+	private static final String PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT = "allowPointSelect";
+	private static final String PROPERTITY_PLOTOPTIONS_ANIMATION = "animation";
+	private static final String PROPERTITY_PLOTOPTIONS_BORDERCOLOR = "borderColor";
+	private static final String PROPERTITY_PLOTOPTIONS_BORDERRADIUS = "borderRadius";
+	private static final String PROPERTITY_PLOTOPTIONS_BORDERWIDTH = "borderWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_CENTER = "center";
+	private static final String PROPERTITY_PLOTOPTIONS_COLOR = "color";
+	private static final String PROPERTITY_PLOTOPTIONS_COLORBYPOINT = "colorByPoint";
+	private static final String PROPERTITY_PLOTOPTIONS_COLORS = "colors";
+	private static final String PROPERTITY_PLOTOPTIONS_CONNECTENDS = "connectEnds";
+	private static final String PROPERTITY_PLOTOPTIONS_CONNECTNULLS = "connectNulls";
+	private static final String PROPERTITY_PLOTOPTIONS_CROPTHRESHOLD = "cropThreshold";
+	private static final String PROPERTITY_PLOTOPTIONS_CURSOR = "cursor";
 	private static final String PROPERTITY_PLOTOPTIONS_DASHSTYLE = "dashStyle"; 
 	
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS = "dataLabels";
@@ -344,6 +403,8 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_COLOR = "borderColor";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_RADIUS = "borderRadius";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_WIDTH = "borderWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CROP = "crop";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE = "inside";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED = "enabled";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER = "formatter";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING = "padding"; 
@@ -353,29 +414,76 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_USEHTML = "useHTML"; 
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_X = "x";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_Y = "y";	
-	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ZINDEX = "zIndex";	
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ZINDEX = "zIndex";
 	
-	private static final String PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT = "allowPointSelect";
-	private static final String PROPERTITY_PLOTOPTIONS_ANIMATION = "animation";
-	private static final String PROPERTITY_PLOTOPTIONS_CONNECTENDS = "connectEnds";
-	private static final String PROPERTITY_PLOTOPTIONS_CONNECTNULLS = "connectNulls";
-	private static final String PROPERTITY_PLOTOPTIONS_CROPTHRESHOLD = "cropThreshold";
-	private static final String PROPERTITY_PLOTOPTIONS_COLOR = "color"; 
-	private static final String PROPERTITY_PLOTOPTIONS_CURSOR = "cursor";
-	private static final String PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING = "enableMouseTracking"; 
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL = "dial";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_BACKGROUNDCOLOR = "backgroundColor";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_BASELENGTH = "baseLength";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_BASEWIDTH = "baseWidth";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_BORDERCOLOR = "borderColor";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_BORDERWIDTH = "borderWidth";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_RADIUS = "radius";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_REARLENGTH = "rearLength";	
+	private static final String PROPERTITY_PLOTOPTIONS_DIAL_TOPWIDTH = "topWidth";	
+
+	
+	private static final String PROPERTITY_PLOTOPTIONS_DISPLAYNEGATIVE = "displayNegative";	
+	private static final String PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING = "enableMouseTracking";
+	private static final String PROPERTITY_PLOTOPTIONS_ENDANGLE = "endAngle";
+	private static final String PROPERTITY_PLOTOPTIONS_FILLCOLOR = "fillColor";
+	private static final String PROPERTITY_PLOTOPTIONS_FILLOPACITY = "fillOpacity";
+	private static final String PROPERTITY_PLOTOPTIONS_GROUPPADDING = "groupPadding";
+	private static final String PROPERTITY_PLOTOPTIONS_GROUPING = "grouping";
+	private static final String PROPERTITY_PLOTOPTIONS_HEIGHT = "height";
 	private static final String PROPERTITY_PLOTOPTIONS_ID = "id"; 
+	private static final String PROPERTITY_PLOTOPTIONS_IGNOREHIDDENPOINT = "ignoreHiddenPoint";
+	private static final String PROPERTITY_PLOTOPTIONS_INNERSIZE = "innerSize";
 	private static final String PROPERTITY_PLOTOPTIONS_LINEWIDTH = "lineWidth"; 	
-	private static final String PROPERTITY_PLOTOPTIONS_LINKEDTO = "linkedTo"; 	
+	private static final String PROPERTITY_PLOTOPTIONS_LINECOLOR = "lineColor";
+	private static final String PROPERTITY_PLOTOPTIONS_LINKEDTO = "linkedTo";
+	
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER = "marker";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_ENABLED = "enabled";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR = "fillColor";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR = "lineColor";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH = "lineWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_RADIUS = "radius";
+	private static final String PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL = "symbol";
+	
+	private static final String PROPERTITY_PLOTOPTIONS_MAXSIZE = "maxSize";
+	private static final String PROPERTITY_PLOTOPTIONS_MEDIANCOLOR = "medianColor";
+	private static final String PROPERTITY_PLOTOPTIONS_MEDIANWIDTH = "medianWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_MINPOINTLENGTH = "minPointLength";
+	private static final String PROPERTITY_PLOTOPTIONS_MINSIZE = "minSize";
+	private static final String PROPERTITY_PLOTOPTIONS_NECKHEIGHT = "neckHeight";
+	private static final String PROPERTITY_PLOTOPTIONS_NECKWIDTH = "neckWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_NEGATIVECOLOR = "negativeColor"; 	
+	private static final String PROPERTITY_PLOTOPTIONS_NEGATIVEFILLCOLOR = "negativeFillColor";
+
+	private static final String PROPERTITY_PLOTOPTIONS_PIVOT = "pivot";
+	private static final String PROPERTITY_PLOTOPTIONS_PIVOT_BACKGROUNDCOLOR = "backgroundColor";
+	private static final String PROPERTITY_PLOTOPTIONS_PIVOT_BORDERCOLOR = "borderColor";
+	private static final String PROPERTITY_PLOTOPTIONS_PIVOT_BORDERWIDTH = "borderWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_PIVOT_RADIUS = "radius";
+
 	private static final String PROPERTITY_PLOTOPTIONS_POINT = "point";
 	private static final String PROPERTITY_PLOTOPTIONS_POINTINTERVAL = "pointInterval";
+	private static final String PROPERTITY_PLOTOPTIONS_POINTPADDING = "pointPadding";
 	private static final String PROPERTITY_PLOTOPTIONS_POINTPLACEMENT = "pointPlacement";
+	private static final String PROPERTITY_PLOTOPTIONS_POINTRANGE = "pointRange";
 	private static final String PROPERTITY_PLOTOPTIONS_POINTSTART = "pointStart";
+	private static final String PROPERTITY_PLOTOPTIONS_POINTWIDTH = "pointWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_SELECTED = "selected";
 	private static final String PROPERTITY_PLOTOPTIONS_SHADOW = "shadow";
 	private static final String PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX = "showCheckbox";
 	private static final String PROPERTITY_PLOTOPTIONS_SHOWINLEGEND = "showInLegend";
+	private static final String PROPERTITY_PLOTOPTIONS_SIZE = "size";
+	private static final String PROPERTITY_PLOTOPTIONS_SLICEDOFFSET = "slicedOffset";
 	private static final String PROPERTITY_PLOTOPTIONS_STACKING = "stacking";
+	private static final String PROPERTITY_PLOTOPTIONS_STARTANGLE = "startAngle";
+	private static final String PROPERTITY_PLOTOPTIONS_STEMCOLOR = "stemColor";
+	private static final String PROPERTITY_PLOTOPTIONS_STEMDASHSTYLE = "stemDashStyle";
+	private static final String PROPERTITY_PLOTOPTIONS_STEMWIDTH = "stemWidth";
 	
 	private static final String PROPERTITY_PLOTOPTIONS_STATES = "states";
 	private static final String PROPERTITY_PLOTOPTIONS_STATES_HOVER = "hover";
@@ -386,54 +494,24 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_STATES_LINEWIDTH = "lineWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_STATES_RADIUS = "radius";
 	private static final String PROPERTITY_PLOTOPTIONS_STATES_HOVER_BRIGHTNESS = "brightness";
-	
+
+	private static final String PROPERTITY_PLOTOPTIONS_STEP = "step";
 	private static final String PROPERTITY_PLOTOPTIONS_STICKYTRACKING = "stickyTracking";
+	private static final String PROPERTITY_PLOTOPTIONS_THRESHOLD = "threshold";
+	
+	private static final String PROPERTITY_PLOTOPTIONS_TOOLTIP = "plotTooltip";
+	
+	
+	private static final String PROPERTITY_PLOTOPTIONS_TRACKBYAREA = "trackByArea";
 	private static final String PROPERTITY_PLOTOPTIONS_TURBOTHRESHOLD = "turboThreshold";
 	private static final String PROPERTITY_PLOTOPTIONS_VISIBLE = "visible";
+	private static final String PROPERTITY_PLOTOPTIONS_WHISKERCOLOR = "whiskerColor";
+	private static final String PROPERTITY_PLOTOPTIONS_WHISKERLENGTH = "whiskerLength";
+	private static final String PROPERTITY_PLOTOPTIONS_WHISKERWIDTH = "whiskerWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_WIDTH = "width";
+	private static final String PROPERTITY_PLOTOPTIONS_WRAP = "wrap";
 	private static final String PROPERTITY_PLOTOPTIONS_ZINDEX = "zIndex";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN = "chartcolumn";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERCOLOR = "borderColor";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS = "borderRadius";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH = "borderWidth";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT = "colorByPoint";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_COLORS = "colors";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING = "groupPadding";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_GROUPING = "grouping";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH = "minPointLength";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING = "pointPadding";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTRANGE = "pointRange";
-	private static final String PROPERTITY_PLOTOPTIONS_COLUMN_POINTWIDTH = "pointWidth";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_AREA = "area";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR = "fillColor";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY = "fillOpacity";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR = "lineColor";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_NEGATIVEFILLCOLOR = "negativeFillColor";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD = "threshold";
-	private static final String PROPERTITY_PLOTOPTIONS_AREA_TRACKBYAREA = "trackByArea";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_PIE = "pie";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_BORDERCOLOR = "borderColor";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_BORDERWIDTH = "borderWidth";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_CENTER = "center";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_COLORS = "colors";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_IGNOREHIDDENPOINT = "ignoreHiddenPoint";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_INNERSIZE = "innerSize";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_MINSIZE = "minSize";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_SIZE = "size";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_SLICEDOFFSET = "slicedOffset";
-	private static final String PROPERTITY_PLOTOPTIONS_PIE_STARTANGLE = "startAngle";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_SCATTER = "scatter";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_LINE = "line";
-	private static final String PROPERTITY_PLOTOPTIONS_LINE_STEP = "step";
-	
-	private static final String PROPERTITY_PLOTOPTIONS_AREASPLINE = "areaspline";
-	private static final String PROPERTITY_PLOTOPTIONS_SPLINE = "spline";
-	private static final String PROPERTITY_PLOTOPTIONS_BAR = "bar";
-	private static final String PROPERTITY_PLOTOPTIONS_SERIES = "series";
+	private static final String PROPERTITY_PLOTOPTIONS_ZTHRESHOLD = "zThreshold";
 	
 	private static final String PROPERTITY_COLORS = "colors";
 	
@@ -496,101 +574,95 @@ public class Chart extends Component {
 	private void putStringCfg(CompositeMap view,String key, Map map){
 		String value = view.getString(key.toLowerCase());
 		if("null".equals(value))map.put(key, null);
-		else if(value!=null) map.put(key, value);		
+		else if(null != value) map.put(key, value);		
 	}
 	
 	
-	private void putIntCfg(CompositeMap view,String key, Map map){
+	private void putNumberCfg(CompositeMap view,String key, Map map){
 		String valuestr = view.getString(key.toLowerCase());
-		if("auto".equals(valuestr)){
-			map.put(key, valuestr);
-			return;
+		if(null != valuestr){
+			if("auto".equals(valuestr) || valuestr.indexOf("%") != -1){
+				map.put(key, valuestr);
+				return;
+			}
+			if(valuestr.indexOf(".") != -1){
+				Double value = view.getDouble(key.toLowerCase());
+				if(null != value) map.put(key, value);
+			}else{
+				Long value = view.getLong(key.toLowerCase());
+				if(null != value) map.put(key, value);
+			}
 		}
-		Integer value = view.getInt(key.toLowerCase());
-		if(value!=null) map.put(key, value);		
-	}
-	private void putFloatCfg(CompositeMap view,String key, Map map){
-		String valuestr = view.getString(key.toLowerCase());
-		if("auto".equals(valuestr)){
-			map.put(key, valuestr);
-			return;
-		}
-		Float value = view.getFloat(key.toLowerCase());
-		if(value!=null) map.put(key, value);		
-	}
-	
-	private void putLongCfg(CompositeMap view,String key, Map map){
-		String valuestr = view.getString(key.toLowerCase());
-		if("auto".equals(valuestr)){
-			map.put(key, valuestr);
-			return;
-		}
-		Long value = view.getLong(key.toLowerCase());
-		if(value!=null) map.put(key, value);		
 	}
 	
 	private void putBooleanCfg(CompositeMap view,String key, Map map){
 		Boolean value = view.getBoolean(key.toLowerCase());
-		if(value!=null) map.put(key, value);		
+		if(null != value) map.put(key, value);		
 	}
 	
 	private void putFunctionCfg(CompositeMap view,String key, Map map){
 		String value = view.getString(key.toLowerCase());
-		if(value!=null) map.put(key, new JSONFunction(value));		
+		if(null != value) map.put(key, new JSONFunction(value));		
 	}
 	
 	private void putArrayCfg(CompositeMap view,String key, Map map){
 		String value = view.getString(key.toLowerCase());
-		if(value!=null){
-			JSONFunction arr;
-				arr =  new JSONFunction("["+value+"]");
-				map.put(key, arr);
+		if(null != value){
+			map.put(key, new JSONFunction("["+value+"]"));
 		}
 	}
 	private void putStyleCfg(CompositeMap view,String key, Map map) {
 		String value = view.getString(key.toLowerCase());
-		if(value!=null) {
+		if(null != value) {
 			JSONObject smap = new JSONObject();
 			String[] sts = value.split(";");
 			for(int i=0;i<sts.length;i++){
 				String style = sts[i];
 				if(!"".equals(style)&& style.indexOf(":")!=-1){
-					String[] vs = style.split(":");
+					String[] vs = style.trim().split(":");
 					String k = vs[0];
 					String v = vs[1];
 					v = v.replaceAll("'", "");
 					String[] ks = k.split("-");
-					if(ks.length == 2){
-						k = ks[0]+ks[1].substring(0,1).toUpperCase()+ks[1].substring(1);
-					}
-					Integer iv = null;
+					k = "";
+					for(int j = 0; j < ks.length; j++){
+						ks[j] = ks[j].toLowerCase();
+			            if(j > 0){
+			                String e = ks[j];
+			                ks[j] = "" + (char)(e.charAt(0) - 32) + e.substring(1);
+			            }
+			            k+=ks[j];
+			        }
+					
+					Long lv = null;
+					Double dv = null;
 					try{
-						iv = Integer.valueOf(v);
+						dv = Double.valueOf(v);
+						lv = Long.valueOf(v);
 					}catch(Exception e){}
 					try {
-						if(iv==null){
-							smap.put(k,v);
+						if(null != lv){
+							smap.put(k,lv);
+						}else if(null != dv){
+							smap.put(k,dv);
 						}else{
-							smap.put(k,iv);
+							smap.put(k,v);
 						}
 					} catch (JSONException e) {
 						throw new RuntimeException(e);
 					}
 				}
 			}
-			if(PROPERTITY_CHART_STYLE.equals(key))
-				key = "style";
-			map.put(key, smap);	
+			map.put("style", smap);	
 		}
 	}
+	
 	private void putColorCfg(CompositeMap parent,String key, Map map){
 		Map cfg = new HashMap();	
 		CompositeMap view = parent.getChild(key);
-		if(view != null){
-			String linearGradient = "linearGradient";
-			String stops = "stops";
-			putArrayCfg(view, linearGradient, cfg);
-			putArrayCfg(view, stops, cfg);
+		if(null != view){
+			putArrayCfg(view, "linearGradient", cfg);
+			putArrayCfg(view, "stops", cfg);
 			if(!cfg.isEmpty())
 				map.put(key, new JSONObject(cfg));
 		}else{
@@ -598,77 +670,11 @@ public class Chart extends Component {
 		}
 	}
 	
-	private void processChartConfig(ViewContext context){
-		Map chart = new HashMap();
-		CompositeMap view = context.getView();
-		Map map = context.getMap();	
-		
-		chart.put(PROPERTITY_CHART_RENDERTO, (String)map.get(ComponentConfig.PROPERTITY_ID) + "_c");
-		
-		String value = view.getString(PROPERTITY_CHART_TYPE.toLowerCase());
-		putStringCfg(view,PROPERTITY_CHART_TYPE,chart);
-		putBooleanCfg(view,PROPERTITY_CHART_POLAR,chart);
-		putBooleanCfg(view,PROPERTITY_CHART_ALIGNTICKS,chart);
-		putBooleanCfg(view,PROPERTITY_CHART_ANIMATION,chart);
-		putColorCfg(view,PROPERTITY_CHART_BACKGROUNDCOLOR,chart);
-		putFloatCfg(view,PROPERTITY_CHART_BORDERRADIUS,chart);
-		putStringCfg(view,PROPERTITY_CHART_BORDERCOLOR,chart);
-		putFloatCfg(view,PROPERTITY_CHART_BORDERWIDTH,chart);
-		putStringCfg(view, PROPERTITY_CHART_CLASSNAME, chart);
-		putLongCfg(view, ComponentConfig.PROPERTITY_HEIGHT, chart);
-		putStringCfg(view, PROPERTITY_CHART_DEFAULTSERIESTYPE, chart);
-		putBooleanCfg(view, PROPERTITY_CHART_IGNORE_HIDDEN_SERIES, chart);
-		putBooleanCfg(view, PROPERTITY_CHART_INVERTED, chart);
-		putArrayCfg(view,PROPERTITY_CHART_MARGIN,chart);
-		putIntCfg(view,PROPERTITY_CHART_MARGIN_TOP,chart);
-		putIntCfg(view,PROPERTITY_CHART_MARGIN_RIGHT,chart);
-		putIntCfg(view,PROPERTITY_CHART_MARGIN_LEFT,chart);
-		putIntCfg(view,PROPERTITY_CHART_MARGIN_BOTTOM,chart);
-		putStringCfg(view, PROPERTITY_CHART_PINCH_TYPE, chart);
-		putColorCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_COLOR, chart);
-		putStringCfg(view, PROPERTITY_CHART_PLOT_BACKGROUND_IMAGE, chart);
-		putStringCfg(view, PROPERTITY_CHART_PLOT_BORDER_COLOR, chart);
-		putFloatCfg(view,PROPERTITY_CHART_PLOT_BORDER_WIDTH,chart);
-		putBooleanCfg(view, PROPERTITY_CHART_PLOT_SHADOW, chart);
-		putBooleanCfg(view, PROPERTITY_CHART_REFLOW, chart);
-		putStringCfg(view, PROPERTITY_CHART_SELECTIONMARKERFILL, chart);
-		putBooleanCfg(view, PROPERTITY_CHART_SHADOW, chart);
-		putBooleanCfg(view, PROPERTITY_CHART_SHOW_AXES, chart);
-		putIntCfg(view,PROPERTITY_CHART_SPACING_TOP,chart);
-		putIntCfg(view,PROPERTITY_CHART_SPACING_RIGHT,chart);
-		putIntCfg(view,PROPERTITY_CHART_SPACING_BOTTOM,chart);
-		putIntCfg(view,PROPERTITY_CHART_SPACING_LEFT,chart);
-		putStyleCfg(view,PROPERTITY_CHART_STYLE,chart);
-		putLongCfg(view, ComponentConfig.PROPERTITY_WIDTH, chart);
-		putStringCfg(view, PROPERTITY_CHART_ZOOMTYPE, chart);
-		
-		putStringCfg(view, PROPERTITY_CHART_NAME_FIELD, chart);
-		putStringCfg(view, PROPERTITY_CHART_VALUE_FIELD, chart);
-		putStringCfg(view, PROPERTITY_CHART_GROUPBY, chart);
-		putEvents(view,chart);
-		
-		addConfig("chart", new JSONObject(chart));
-		
-		processCredits(view);
-		processLabels(view);
-		processLegend(view);
-		processLoading(view);
-		processPlotOptions(view);
-		processSubTitle(view);
-		processTitle(view);
-		processTooltip(view,null);
-		processExporting(view);
-		processColors(view);
-		processPane(view);
-		createAxis(view,PROPERTITY_AXIS_X);
-		createAxis(view,PROPERTITY_AXIS_Y);
-	}
-	
 	private void putEvents(CompositeMap view, Map map){
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
-		if(events != null){
+		if(null != events){
 			List list = events.getChilds();
-			if(list != null){
+			if(null != list){
 				JSONObject eo = new JSONObject();
 				Iterator it = list.iterator();
 				while(it.hasNext()){
@@ -686,424 +692,220 @@ public class Chart extends Component {
 				map.put(ComponentConfig.PROPERTITY_EVENTS, eo);
 			}
 		}
+	}
+	
+	private void processChartConfig(ViewContext context){
+		CompositeMap view = context.getView();
+		Map chart = new HashMap();
+		Map map = context.getMap();	
 		
+		chart.put(PROPERTITY_CHART_RENDERTO, (String)map.get(ComponentConfig.PROPERTITY_ID) + "_c");
+		
+		createChartOption(view,chart);
+		
+		addConfig("chart", new JSONObject(chart));
+		
+		processColors(view);
+		processCredits(view);
+		processExporting(view);
+		processLabels(view);
+		processLegend(view);
+		processLoading(view);
+		processNavigation(view);
+		processPane(view);
+		processPlotOptions(view);
+		processSubTitle(view);
+		processTitle(view);
+		processTooltip(view);
+		processXAxis(view);
+		processYAxis(view);
 	}
 	
-	private void processTitle(CompositeMap parent){
-		Map title = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_TITLE);
-		if(view!=null){
-			putStyleCfg(view,PROPERTITY_TITLE_STYLE,title);
-			putStringCfg(view,PROPERTITY_TITLE_TEXT,title);
-			putIntCfg(view,PROPERTITY_TITLE_X,title);
-			putIntCfg(view,PROPERTITY_TITLE_Y,title);
-			putStringCfg(view,PROPERTITY_TITLE_ALIGN,title);
-			putIntCfg(view,PROPERTITY_TITLE_MARGIN,title);
-			putBooleanCfg(view, PROPERTITY_TITLE_FLOATING, title);
-			putStringCfg(view,PROPERTITY_TITLE_VERTICALALIGN,title);
-		}
-		if(!title.isEmpty())
-			addConfig(PROPERTITY_TITLE, new JSONObject(title));
-	}
 	
-	private void processSubTitle(CompositeMap parent){
-		Map title = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_SUBTITLE);
-		if(view!=null){
-			putStyleCfg(view,PROPERTITY_SUBTITLE_STYLE,title);
-			putStringCfg(view,PROPERTITY_SUBTITLE_TEXT,title);
-			putIntCfg(view,PROPERTITY_SUBTITLE_X,title);
-			putIntCfg(view,PROPERTITY_SUBTITLE_Y,title);
-			putBooleanCfg(view, PROPERTITY_TITLE_FLOATING, title);
-			putStringCfg(view,PROPERTITY_SUBTITLE_ALIGN,title);
-			putBooleanCfg(view, PROPERTITY_SUBTITLE_FLOATING, title);
-			putStringCfg(view,PROPERTITY_SUBTITLE_VERTICALALIGN,title);
-		}
-		if(!title.isEmpty())
-			addConfig(PROPERTITY_SUBTITLE, new JSONObject(title));
+	private void createChartOption(CompositeMap parent,Map cfg){
+		putStringCfg(parent,PROPERTITY_CHART_TYPE,cfg);
+		putBooleanCfg(parent,PROPERTITY_CHART_POLAR,cfg);
+		putBooleanCfg(parent,PROPERTITY_CHART_ALIGNTICKS,cfg);
+		putBooleanCfg(parent,PROPERTITY_CHART_ANIMATION,cfg);
+		putColorCfg(parent,PROPERTITY_CHART_BACKGROUNDCOLOR,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_BORDERRADIUS,cfg);
+		putStringCfg(parent,PROPERTITY_CHART_BORDERCOLOR,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_BORDERWIDTH,cfg);
+		putStringCfg(parent, PROPERTITY_CHART_CLASSNAME, cfg);
+		putNumberCfg(parent, ComponentConfig.PROPERTITY_HEIGHT, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_DEFAULTSERIESTYPE, cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_IGNORE_HIDDEN_SERIES, cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_INVERTED, cfg);
+		putArrayCfg(parent,PROPERTITY_CHART_MARGIN,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_MARGIN_TOP,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_MARGIN_RIGHT,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_MARGIN_LEFT,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_MARGIN_BOTTOM,cfg);
+		putStringCfg(parent, PROPERTITY_CHART_PINCH_TYPE, cfg);
+		putColorCfg(parent, PROPERTITY_CHART_PLOT_BACKGROUND_COLOR, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_PLOT_BACKGROUND_IMAGE, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_PLOT_BORDER_COLOR, cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_PLOT_BORDER_WIDTH,cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_PLOT_SHADOW, cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_REFLOW, cfg);
+		processResetZoomButton(parent,cfg);
+		putStringCfg(parent, PROPERTITY_CHART_SELECTIONMARKERFILL, cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_SHADOW, cfg);
+		putBooleanCfg(parent, PROPERTITY_CHART_SHOW_AXES, cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_SPACING_TOP,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_SPACING_RIGHT,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_SPACING_BOTTOM,cfg);
+		putNumberCfg(parent,PROPERTITY_CHART_SPACING_LEFT,cfg);
+		putStyleCfg(parent,PROPERTITY_CHART_STYLE,cfg);
+		putNumberCfg(parent, ComponentConfig.PROPERTITY_WIDTH, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_ZOOMTYPE, cfg);
+		
+		putStringCfg(parent, PROPERTITY_CHART_NAME_FIELD, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_VALUE_FIELD, cfg);
+		putStringCfg(parent, PROPERTITY_CHART_GROUPBY, cfg);
+		putEvents(parent,cfg);
 	}
-	
-	private void processLegend(CompositeMap parent){
+	private void processColors(CompositeMap parent){
 		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_LEGEND);
-		
+		putArrayCfg(parent, PROPERTITY_COLORS, cfg);
+		if(!cfg.isEmpty())
+			addConfig(PROPERTITY_COLORS, cfg.get(PROPERTITY_COLORS));
+	}
+	
+	private void processResetZoomButton(CompositeMap cview, Map map){
+		CompositeMap view = cview.getChild(PROPERTITY_CHART_RESETZOOMBUTTON);
+		Map cfg = new HashMap();
 		if(view !=null) {
-			putIntCfg(view,PROPERTITY_LEGEND_ITEMDISTANCE,cfg);
-			putStyleCfg(view,PROPERTITY_LEGEND_ITEMHIDDENSTYLE,cfg);
-			putStyleCfg(view,PROPERTITY_LEGEND_ITEMHOVERSTYLE,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_ITEMMARGINBOTTOM,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_ITEMMARGINTOP,cfg);
-			putStyleCfg(view,PROPERTITY_LEGEND_ITEMSTYLE,cfg);
-			putFloatCfg(view,PROPERTITY_LEGEND_ITEMWIDTH,cfg);
-			putStyleCfg(view,PROPERTITY_LEGEND_STYLE,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_ALIGN,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_BACKGROUNDCOLOR,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_BORDERCOLOR,cfg);
-			putFloatCfg(view,PROPERTITY_LEGEND_BORDERWIDTH,cfg);
-			putFloatCfg(view,PROPERTITY_LEGEND_BORDERRADIUS,cfg);
-			putBooleanCfg(view,PROPERTITY_LEGEND_ENABLED,cfg);
-			putBooleanCfg(view, PROPERTITY_LEGEND_FLOATING, cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_LAYOUT,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_LABELFORMAT,cfg);
-			putFunctionCfg(view,PROPERTITY_LEGEND_LABELFORMATTER,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_MARGIN,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_MAXHEIGHT,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_PADDING,cfg);
-			putBooleanCfg(view, PROPERTITY_LEGEND_REVERSED, cfg);
-			putBooleanCfg(view, PROPERTITY_LEGEND_RTL, cfg);
-			putBooleanCfg(view, PROPERTITY_LEGEND_SHADOW, cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_SYMBOLPADDING,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_SYMBOLWIDTH,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_VERTICALALIGN,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_WIDTH,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_X,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_Y,cfg);
-			createNavigation(view,cfg);
+			createPosition(view, cfg);
+			putStringCfg(view,PROPERTITY_CHART_RESETZOOMBUTTON_RELATIVETO,cfg);
+			putStringCfg(view,PROPERTITY_CHART_RESETZOOMBUTTON_THEME,cfg);
 		}
 		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_LEGEND, new JSONObject(cfg));
+			map.put(PROPERTITY_CHART_RESETZOOMBUTTON, new JSONObject(cfg));
 	}
 	
-	private void processPane(CompositeMap parent){
-		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_PANE);
-		
-		if(view !=null) {
-			createBackgrounds(view, cfg);
-			putArrayCfg(view,PROPERTITY_PANE_CENTER,cfg);
-			putIntCfg(view,PROPERTITY_PANE_ENDANGLE,cfg);
-			putIntCfg(view,PROPERTITY_PANE_STARTANGLE,cfg);
-			putIntCfg(view,PROPERTITY_PANE_SIZE,cfg);
+	private void processCredits(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_CREDITS);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putBooleanCfg(view,PROPERTITY_CREDITS_ENABLED,cfg);
+			createPosition(view,cfg);
+			putStringCfg(view,PROPERTITY_CREDITS_HREF,cfg);
+			putStyleCfg(view,PROPERTITY_CREDITS_STYLE,cfg);
+			putStringCfg(view, PROPERTITY_CREDITS_TEXT, cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_CREDITS, new JSONObject(cfg));
 		}
-		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_PANE, new JSONObject(cfg));
 	}
 	
-	private void createBackgrounds(CompositeMap view, Map map){
-		CompositeMap pbs = view.getChild(PROPERTITY_PANE_BACKGROUNDS);
-		if(pbs!=null){
+	private void createPosition(CompositeMap parent,Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_POSITION);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_POSITION_ALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_POSITION_X,cfg);
+			putStringCfg(view, PROPERTITY_POSITION_VERTICALALIGN, cfg);
+			putNumberCfg(view,PROPERTITY_POSITION_Y,cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_POSITION, new JSONObject(cfg));
+		}
+	}
+	
+	private void processExporting(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_EXPORTING);
+		if(null != view) {
+			Map cfg = new HashMap();
+			createExportingButtons(view,cfg);
+			CompositeMap chartOptions= view.getChild(PROPERTITY_EXPORTING_CHARTOPTIONS);
+			if(null != chartOptions){
+				Map cfg2 = new HashMap();
+				createChartOption(chartOptions,cfg2);
+				if(!cfg.isEmpty())
+					cfg.put(PROPERTITY_EXPORTING_CHARTOPTIONS, new JSONObject(cfg2));
+			}
+			putBooleanCfg(view, PROPERTITY_EXPORTING_ENABLED, cfg);
+			putStringCfg(view,PROPERTITY_EXPORTING_FILENAME,cfg);
+			putNumberCfg(view,PROPERTITY_EXPORTING_SCALE,cfg);
+			putNumberCfg(view,PROPERTITY_EXPORTING_SOURCEHEIGHT,cfg);
+			putNumberCfg(view,PROPERTITY_EXPORTING_SOURCEWIDTH,cfg);
+			putStringCfg(view,PROPERTITY_EXPORTING_TYPE,cfg);
+			putStringCfg(view,PROPERTITY_EXPORTING_URL,cfg);
+			putNumberCfg(view,PROPERTITY_EXPORTING_WIDTH,cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_EXPORTING, new JSONObject(cfg));
+		}
+	}
+	
+	private void createExportingButtons(CompositeMap cview, Map map){
+		CompositeMap view = cview.getChild(PROPERTITY_EXPORTING_BUTTONS);
+		if(null != view) {
+			Map cfg = new HashMap();
+			createButtonOptions(view,cfg,PROPERTITY_EXPORTING_BUTTONS_CONTEXTBUTTON);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_EXPORTING_BUTTONS, new JSONObject(cfg));
+		}
+	}
+	
+	private void createButtonOptions(CompositeMap cview, Map map,String name){
+		CompositeMap view = cview.getChild(name);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_ALIGN,cfg);
+			putBooleanCfg(view,PROPERTITY_BUTTON_OPTIONS_ENABLED,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_HEIGHT,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOL,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLFILL,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLSIZE,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKE,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKEWIDTH,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLX,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLY,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_TEXT,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_THEME,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_VERTICALALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_WIDTH,cfg);
+			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_Y,cfg);
+			if(PROPERTITY_EXPORTING_BUTTONS_CONTEXTBUTTON.equals(name)){
+				createMenuItems(view,cfg);
+				putFunctionCfg(view,PROPERTITY_BUTTON_OPTIONS_ONCLICK,cfg);
+				putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_X,cfg);
+			}
+			if(!cfg.isEmpty())
+				map.put(name, new JSONObject(cfg));
+		}
+	}
+	
+	private void createMenuItems(CompositeMap view, Map map){
+		CompositeMap pbs = view.getChild(PROPERTITY_BUTTON_OPTIONS_MENUITEMS);
+		if(null != pbs){
 			List list = pbs.getChilds();
-			JSONArray array = null;
-			if(list!=null) {
-				array = new JSONArray();
+			if(null != list) {
+				JSONArray array = new JSONArray();
 				Iterator it = list.iterator();
 				while(it.hasNext()){
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
-					putColorCfg(pb, PROPERTITY_PANE_BACKGROUNDS_BACKGROUNDCOLOR, cfg);
-					putIntCfg(pb, PROPERTITY_PANE_BACKGROUNDS_BORDERWIDTH, cfg);
-					putStringCfg(pb, PROPERTITY_PANE_BACKGROUNDS_OUTERRADIUS, cfg);
-					putStringCfg(pb, PROPERTITY_PANE_BACKGROUNDS_INTERRADIUS, cfg);
+					putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
+					putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
+					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
+					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INTERRADIUS, cfg);
 					array.put(cfg);
 				}
-				if(array != null)
-					map.put("background", array);
+				if(array.length() > 0)
+					map.put(PROPERTITY_BUTTON_OPTIONS_MENUITEMS, array);
 			}
 		}
-	}
-	
-	private void processPlotOptions(CompositeMap parent) {
-		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS);
-		
-		if(view !=null) {
-			List children = view.getChilds();
-			if(children!=null){
-				Iterator it = children.iterator();
-				while(it.hasNext()){
-					CompositeMap option = (CompositeMap)it.next();
-					String name = option.getName().toLowerCase();
-					if(PROPERTITY_PLOTOPTIONS_LINE.equals(name)){
-						cfg.put(name, processPlotLine(option));
-					}else if(PROPERTITY_PLOTOPTIONS_SPLINE.equals(name)){
-						cfg.put(name, processPlotSeries(option));
-					}else if(PROPERTITY_PLOTOPTIONS_BAR.equals(name)){
-						cfg.put(name, processPlotColumn(option));
-					}else if(PROPERTITY_PLOTOPTIONS_COLUMN.equals(name)){
-						cfg.put("column", processPlotColumn(option));
-					}else if(PROPERTITY_PLOTOPTIONS_AREA.equals(name)){
-						cfg.put(name, processPlotArea(option));
-					}else if(PROPERTITY_PLOTOPTIONS_AREASPLINE.equals(name)){
-						cfg.put(name, processPlotArea(option));
-					}else if(PROPERTITY_PLOTOPTIONS_PIE.equals(name)){
-						cfg.put(name, processPlotPie(option));
-					}else if(PROPERTITY_PLOTOPTIONS_SERIES.equals(name)){
-						cfg.put(name, processPlotSeries(option));
-					}else if(PROPERTITY_PLOTOPTIONS_SCATTER.equals(name)){
-						cfg.put(name, processPlotSeries(option));
-					}
-				}
-				
-			}
-		}
-		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_PLOTOPTIONS, new JSONObject(cfg));
-	}
-	
-	private JSONObject processPlotLine(CompositeMap view){
-		Map cfg = new HashMap();		
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_LINE_STEP, cfg);
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	
-	private JSONObject processPlotColumn(CompositeMap view){
-		Map cfg = new HashMap();		
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERCOLOR, cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERRADIUS, cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_BORDERWIDTH, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_COLORBYPOINT, cfg);
-		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_COLORS, cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_GROUPPADDING, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_GROUPING, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_MINPOINTLENGTH, cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTPADDING, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTRANGE, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_COLUMN_POINTWIDTH, cfg);
-		putEvents(view, cfg);
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	
-	private JSONObject processPlotArea(CompositeMap view){
-		Map cfg = new HashMap();		
-		putColorCfg(view,PROPERTITY_PLOTOPTIONS_AREA_FILLCOLOR,cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_AREA_FILLOPACITY, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_AREA_LINECOLOR, cfg);
-		putColorCfg(view, PROPERTITY_PLOTOPTIONS_AREA_NEGATIVEFILLCOLOR, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_AREA_THRESHOLD, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_AREA_TRACKBYAREA, cfg);
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	private JSONObject processPlotPie(CompositeMap view){
-		Map cfg = new HashMap();
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIE_BORDERCOLOR, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_BORDERWIDTH, cfg);
-		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_PIE_CENTER, cfg);
-		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_PIE_COLORS, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_PIE_IGNOREHIDDENPOINT, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIE_INNERSIZE, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_MINSIZE, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIE_SIZE, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_SLICEDOFFSET, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_PIE_STARTANGLE, cfg);
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	private JSONObject processPlotSeries(CompositeMap view){
-		Map cfg = new HashMap();		
-		processPlot(view,cfg);
-		return new JSONObject(cfg);
-	}
-	private void processPlot(CompositeMap view,Map cfg){
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
-		putColorCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTENDS, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTNULLS, cfg);
-		putLongCfg(view, PROPERTITY_PLOTOPTIONS_CROPTHRESHOLD, cfg);
-		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
-		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg); 
-		processPlotDataLabels(view,cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
-		putEvents(view, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
-		putFloatCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_LINKEDTO, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_NEGATIVECOLOR, cfg);
-		processPlotMarker(view,cfg,true);
-		processPlotPoint(view, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_POINTPLACEMENT, cfg);
-		putLongCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
-		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
-		processPlotStates(view, cfg,false);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
-		processTooltip(view,cfg);
-		putLongCfg(view, PROPERTITY_PLOTOPTIONS_TURBOTHRESHOLD, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
-		putIntCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
-	}
-	
-	private void processPlotMarker(CompositeMap parent, Map map, boolean includeStates){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_MARKER);
-		Map cfg = new HashMap();	
-		if(view != null){
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_ENABLED, cfg);			
-			putColorCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR, cfg);
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR, cfg);
-			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH, cfg);			
-			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_RADIUS, cfg);
-			if(includeStates){
-				processPlotStates(view,cfg,true);
-			}
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_PLOTOPTIONS_MARKER, new JSONObject(cfg));
-	}
-	private void processPlotStates(CompositeMap parent, Map map,boolean underMarker){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES);
-		Map cfg = new HashMap();	
-		if(view != null){
-			processPlotStatesHover(view,cfg,!underMarker);
-			if(underMarker){
-				processPlotStatesSelect(view,cfg);
-			}
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_PLOTOPTIONS_STATES, new JSONObject(cfg));
-	}
-	private void processPlotStatesHover(CompositeMap parent, Map map,boolean includeMaker){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES_HOVER);
-		Map cfg = new HashMap();
-		if(null != view){
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STATES_ENABLED, cfg);
-			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINEWIDTH, cfg);
-			if(includeMaker){
-				putFloatCfg(view, PROPERTITY_PLOTOPTIONS_STATES_HOVER_BRIGHTNESS, cfg);
-				processPlotMarker(view, cfg,false);
-			}else{
-				putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_FILLCOLOR, cfg);
-				putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINECOLOR, cfg);
-				putFloatCfg(view, PROPERTITY_PLOTOPTIONS_STATES_RADIUS, cfg);
-			}
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_PLOTOPTIONS_STATES_HOVER, new JSONObject(cfg));
-	}
-	private void processPlotStatesSelect(CompositeMap parent, Map map){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES_SELECT);
-		Map cfg = new HashMap();
-		if(null != view){
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STATES_ENABLED, cfg);
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_FILLCOLOR, cfg);
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINECOLOR, cfg);
-			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINEWIDTH, cfg);
-			putFloatCfg(view, PROPERTITY_PLOTOPTIONS_STATES_RADIUS, cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_PLOTOPTIONS_STATES_SELECT, new JSONObject(cfg));
-	}
-	private void processPlotPoint(CompositeMap parent, Map map){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_POINT);
-		if(view != null){
-			putEvents(view, map);
-		}
-	}
-	
-	private void processPlotDataLabels(CompositeMap parent, Map map){
-		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_DATALABELS);
-		Map cfg = new HashMap();	
-		if(view != null){
-			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN,cfg);
-			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR,cfg);
-			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR,cfg);
-			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_COLOR,cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_RADIUS, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_WIDTH, cfg);
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED, cfg);
-			putFunctionCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION, cfg);
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_SHADOW, cfg);
-			putStyleCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE, cfg);
-			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_USEHTML, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_X, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_Y, cfg);
-			putIntCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ZINDEX, cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_PLOTOPTIONS_DATALABELS, new JSONObject(cfg));
-	}
-	
-	private void processTooltip(CompositeMap parent,Map map){
-		Map cfg = new HashMap();
-		CompositeMap view;
-		if(null == map)
-			view= parent.getChild(PROPERTITY_TOOLTIP);
-		else
-			view = parent.getChild("plotTooltip");
-		if(view !=null) {
-			if(null == map){
-				putBooleanCfg(view,PROPERTITY_TOOLTIP_ANIMATION,cfg);
-				putStringCfg(view,PROPERTITY_TOOLTIP_BACKGROUNDCOLOR,cfg);
-				putStringCfg(view,PROPERTITY_TOOLTIP_BORDERCOLOR,cfg);
-				putIntCfg(view,PROPERTITY_TOOLTIP_BORDERRADIUS,cfg);
-				putIntCfg(view,PROPERTITY_TOOLTIP_BORDERWIDTH,cfg);
-				creatToolTipCrosshairs(view,cfg);
-				putBooleanCfg(view, PROPERTITY_TOOLTIP_ENABLED, cfg);
-				putFunctionCfg(view,PROPERTITY_TOOLTIP_FORMATTER,cfg);
-				putFunctionCfg(view,PROPERTITY_TOOLTIP_POSITIONER,cfg);
-				putBooleanCfg(view, PROPERTITY_TOOLTIP_SHADOW, cfg);
-				putBooleanCfg(view, PROPERTITY_TOOLTIP_SHARED, cfg);
-				putIntCfg(view,PROPERTITY_TOOLTIP_SNAP,cfg);
-				putStyleCfg(view,PROPERTITY_TOOLTIP_STYLE,cfg);
-				putBooleanCfg(view, PROPERTITY_TOOLTIP_USEHTML, cfg);
-			}
-			createDateTimeLabelFormats(view,cfg);
-			putBooleanCfg(view, PROPERTITY_TOOLTIP_FOLLOWPOINTER, cfg);
-			putBooleanCfg(view, PROPERTITY_TOOLTIP_FOLLOWTOUCHMOVE, cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_FOOTERFORMAT,cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_HEADERFORMAT,cfg);
-			putIntCfg(view,PROPERTITY_TOOLTIP_HIDEDELAY,cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_POINTFORMAT,cfg);
-			putIntCfg(view,PROPERTITY_TOOLTIP_VALUEDECIMALS,cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_VALUEPREFIX,cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_VALUESUFFIX,cfg);
-			putStringCfg(view,PROPERTITY_TOOLTIP_XDATEFORMAT,cfg);
-		}
-		if(!cfg.isEmpty()){
-			if(null!=map){
-				map.put(PROPERTITY_TOOLTIP, new JSONObject(cfg));
-			}else
-				addConfig(PROPERTITY_TOOLTIP, new JSONObject(cfg));
-		}
-	}
-	
-	private void processCredits(CompositeMap parent){
-		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_CREDITS);
-		
-		if(view !=null) {
-			putBooleanCfg(view,PROPERTITY_CREDITS_ENABLED,cfg);
-			processCreditsPosition(view,cfg);
-			putStringCfg(view,PROPERTITY_CREDITS_HREF,cfg);
-			putStyleCfg(view,PROPERTITY_CREDITS_STYLE,cfg);
-			putStringCfg(view, PROPERTITY_CREDITS_TEXT, cfg);
-		}
-		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_CREDITS, new JSONObject(cfg));
-	}
-	private void processCreditsPosition(CompositeMap parent,Map map){
-		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_POSITION);
-		
-		if(view !=null) {
-			putStringCfg(view,PROPERTITY_POSITION_ALIGN,cfg);
-			putIntCfg(view,PROPERTITY_POSITION_X,cfg);
-			putStringCfg(view, PROPERTITY_POSITION_VERTICALALIGN, cfg);
-			putIntCfg(view,PROPERTITY_POSITION_Y,cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_POSITION, new JSONObject(cfg));
 	}
 	
 	private void processLabels(CompositeMap parent){
-		Map cfg = new HashMap();
 		CompositeMap view = parent.getChild(PROPERTITY_LABELS);
-		
-		JSONArray array = null;
-		if(view !=null) {
+		if(null == view) view = parent.getChild(PROPERTITY_AXIS_LABELS);
+		if(null != view) {
+			Map cfg = new HashMap();
 			putStyleCfg(view,PROPERTITY_LABELS_STYLE,cfg);
 			List list = view.getChilds();
-			if(list!=null){
-				array = new JSONArray();
+			if(null != list){
+				JSONArray array = new JSONArray();
 				Iterator it = list.iterator();
 				while(it.hasNext()){
 					CompositeMap label = (CompositeMap)it.next();
@@ -1112,98 +914,500 @@ public class Chart extends Component {
 					putStyleCfg(label,PROPERTITY_LABELS_LABEL_STYLE,icfg);
 					array.put(icfg);
 				}
-				cfg.put(PROPERTITY_LABELS_ITEMS, array);
+				if(array.length() > 0)
+					cfg.put(PROPERTITY_LABELS_ITEMS, array);
+			}
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_AXIS_LABELS, new JSONObject(cfg));
+		}
+	}
+	
+	private void processLegend(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_LEGEND);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_LEGEND_ALIGN,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_BACKGROUNDCOLOR,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_BORDERCOLOR,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_BORDERRADIUS,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_BORDERWIDTH,cfg);
+			putBooleanCfg(view,PROPERTITY_LEGEND_ENABLED,cfg);
+			putBooleanCfg(view, PROPERTITY_LEGEND_FLOATING, cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_ITEMDISTANCE,cfg);
+			putStyleCfg(view,PROPERTITY_LEGEND_ITEMHIDDENSTYLE,cfg);
+			putStyleCfg(view,PROPERTITY_LEGEND_ITEMHOVERSTYLE,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_ITEMMARGINBOTTOM,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_ITEMMARGINTOP,cfg);
+			putStyleCfg(view,PROPERTITY_LEGEND_ITEMSTYLE,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_ITEMWIDTH,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_LABELFORMAT,cfg);
+			putFunctionCfg(view,PROPERTITY_LEGEND_LABELFORMATTER,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_LAYOUT,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_LINEHEIGHT,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_MARGIN,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_MAXHEIGHT,cfg);
+			createLegendNavigation(view,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_PADDING,cfg);
+			putBooleanCfg(view, PROPERTITY_LEGEND_REVERSED, cfg);
+			putBooleanCfg(view, PROPERTITY_LEGEND_RTL, cfg);
+			putBooleanCfg(view, PROPERTITY_LEGEND_SHADOW, cfg);
+			putStyleCfg(view,PROPERTITY_LEGEND_STYLE,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_SYMBOLPADDING,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_SYMBOLWIDTH,cfg);
+			createLegendTitle(view,cfg);
+			putBooleanCfg(view,PROPERTITY_LEGEND_USEHTML,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_VERTICALALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_WIDTH,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_X,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_Y,cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_LEGEND, new JSONObject(cfg));
+		}
+	}
+	
+	private void createLegendNavigation(CompositeMap cview, Map map){
+		CompositeMap view = cview.getChild(PROPERTITY_LEGEND_NAVIGATION);
+		if(null == view) view = cview.getChild(PROPERTITY_NAVIGATION);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_LEGEND_NAVIGATION_ACTIVECOLOR,cfg);
+			putBooleanCfg(view,PROPERTITY_LEGEND_NAVIGATION_ANIMATION,cfg);
+			putNumberCfg(view,PROPERTITY_LEGEND_NAVIGATION_ARROWSIZE,cfg);
+			putStringCfg(view,PROPERTITY_LEGEND_NAVIGATION_INACTIVECOLOR,cfg);
+			putStyleCfg(view,PROPERTITY_LEGEND_NAVIGATION_STYLE,cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_NAVIGATION, new JSONObject(cfg));
+		}
+	}
+	private void createLegendTitle(CompositeMap cview, Map map){
+		CompositeMap view = cview.getChild(PROPERTITY_LEGEND_TITLE);
+		if(null == view) view = cview.getChild(PROPERTITY_TITLE);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStyleCfg(view,PROPERTITY_TITLE_STYLE,cfg);
+			putStringCfg(view,PROPERTITY_TITLE_TEXT,cfg);
+			
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_TITLE, new JSONObject(cfg));
+		}
+	}
+	
+	private void processLoading(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_LOADING);
+		
+		if(null != view) {
+			Map cfg = new HashMap();
+			putNumberCfg(view,PROPERTITY_LOADING_HIDEDURATION,cfg);
+			putStyleCfg(view, PROPERTITY_LOADING_LABELSTYLE, cfg);
+			putNumberCfg(view,PROPERTITY_LOADING_SHOWDURATION,cfg);
+			putStyleCfg(view, PROPERTITY_LOADING_STYLE, cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_LOADING, new JSONObject(cfg));
+		}
+	}
+	
+	
+	private void processNavigation(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_NAVIGATION);
+		
+		if(null != view) {
+			Map cfg = new HashMap();
+			createButtonOptions(view,cfg,PROPERTITY_BUTTON_OPTIONS);
+			putStyleCfg(view, PROPERTITY_NAVIGATION_MENUITEMHOVERSTYLE,cfg);
+			putStyleCfg(view, PROPERTITY_NAVIGATION_MENUITEMSTYLE, cfg);
+			putStyleCfg(view, PROPERTITY_NAVIGATION_MENUSTYLE, cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_NAVIGATION, new JSONObject(cfg));
+		}
+	}
+	
+	
+	private void processPane(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_PANE);
+		if(null != view) {
+			Map cfg = new HashMap();
+			createBackgrounds(view, cfg);
+			putArrayCfg(view,PROPERTITY_PANE_CENTER,cfg);
+			putNumberCfg(view,PROPERTITY_PANE_ENDANGLE,cfg);
+			putNumberCfg(view,PROPERTITY_PANE_STARTANGLE,cfg);
+			putNumberCfg(view,PROPERTITY_PANE_SIZE,cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_PANE, new JSONObject(cfg));
+		}
+	}
+	private void createBackgrounds(CompositeMap view, Map map){
+		CompositeMap pbs = view.getChild(PROPERTITY_PANE_BACKGROUNDS);
+		if(null != pbs){
+			List list = pbs.getChilds();
+			if(null != list) {
+				JSONArray array = new JSONArray();
+				Iterator it = list.iterator();
+				while(it.hasNext()){
+					Map cfg = new HashMap();
+					CompositeMap pb = (CompositeMap)it.next();
+					if(PROPERTITY_PANE_BACKGROUND.equals(pb.getName())){
+						putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
+						putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
+						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
+						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INTERRADIUS, cfg);
+						array.put(cfg);
+					}
+				}
+				if(array.length() > 0)
+					map.put(PROPERTITY_PANE_BACKGROUND, array);
 			}
 		}
-		if(array != null)
-			addConfig(PROPERTITY_LABELS, new JSONObject(cfg));
 	}
-	private void processExporting(CompositeMap parent){
+	private void processPlotOptions(CompositeMap parent) {
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS);
+		if(null != view) {
+			Map cfg = new HashMap();
+			List children = view.getChilds();
+			if(children!=null){
+				Iterator it = children.iterator();
+				while(it.hasNext()){
+					CompositeMap option = (CompositeMap)it.next();
+					String name = option.getName().toLowerCase();
+					if("chartcolumn".equals(name)){
+						name = "column";
+					}
+					cfg.put(name, createPlotOption(option));
+				}
+				
+			}
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_PLOTOPTIONS, new JSONObject(cfg));
+		}
+	}
+	private JSONObject createPlotOption(CompositeMap view){
 		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_EXPORTING);
-
-		if(view !=null) {
-			putStringCfg(view,PROPERTITY_EXPORTING_URL,cfg);
-			putBooleanCfg(view, PROPERTITY_EXPORTING_ENABLED, cfg);
+		
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_BORDERCOLOR, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_BORDERRADIUS, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_BORDERWIDTH, cfg);
+		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_CENTER, cfg);
+		putColorCfg(view,PROPERTITY_PLOTOPTIONS_COLOR,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_COLORBYPOINT, cfg);
+		putArrayCfg(view, PROPERTITY_PLOTOPTIONS_COLORS, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTENDS, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_CONNECTNULLS, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_CROPTHRESHOLD, cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_CURSOR,cfg);
+		putStringCfg(view,PROPERTITY_PLOTOPTIONS_DASHSTYLE,cfg);
+		createPlotOptionDial(view,cfg); 
+		createPlotOptionDataLabels(view,cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DISPLAYNEGATIVE, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENDANGLE, cfg);
+		putEvents(view, cfg);
+		putColorCfg(view,PROPERTITY_PLOTOPTIONS_FILLCOLOR,cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_FILLOPACITY, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_GROUPPADDING, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_GROUPING, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_HEIGHT, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_ID, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_IGNOREHIDDENPOINT, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_INNERSIZE, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_LINECOLOR, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_LINEWIDTH, cfg); 
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_LINKEDTO, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MAXSIZE, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MEDIANCOLOR, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MEDIANWIDTH, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MINPOINTLENGTH, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MINSIZE, cfg);
+		createPlotOptionMarker(view,cfg,true);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_NECKHEIGHT, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_NECKWIDTH, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_NEGATIVECOLOR, cfg);
+		putColorCfg(view, PROPERTITY_PLOTOPTIONS_NEGATIVEFILLCOLOR, cfg);
+		createPlotOptionPivot(view, cfg);
+		createPlotOptionPoint(view, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_POINTINTERVAL, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_POINTPADDING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_POINTPLACEMENT, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_POINTRANGE, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_POINTSTART, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_POINTWIDTH, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SELECTED, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHADOW, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWCHECKBOX, cfg); 
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_SIZE, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_SLICEDOFFSET, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STARTANGLE, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STEMCOLOR, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STEMDASHSTYLE, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STEMWIDTH, cfg);
+		createPlotOptionStates(view, cfg,false);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STEP, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STICKYTRACKING, cfg); 
+		createPlotOptionTooltip(view,cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_THRESHOLD, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_TRACKBYAREA, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_TURBOTHRESHOLD, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_VISIBLE, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_WHISKERCOLOR, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_WHISKERLENGTH, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_WHISKERWIDTH, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_WIDTH, cfg);
+		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_WRAP, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_ZINDEX, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_ZTHRESHOLD, cfg);
+		
+		return new JSONObject(cfg);
+	}
+	
+	private void createPlotOptionDataLabels(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_DATALABELS);
+		Map cfg = new HashMap();	
+		if(view != null){
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN,cfg);
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR,cfg);
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR,cfg);
+			putStringCfg(view,PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_COLOR,cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_RADIUS, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_WIDTH, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_CROP, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED, cfg);
+			putFunctionCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_SHADOW, cfg);
+			putStyleCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_USEHTML, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_X, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_Y, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ZINDEX, cfg);
 		}
 		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_EXPORTING, new JSONObject(cfg));
+			map.put(PROPERTITY_PLOTOPTIONS_DATALABELS, new JSONObject(cfg));
 	}
-	private void processColors(CompositeMap parent){
+	private void createPlotOptionDial(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_DIAL);
 		Map cfg = new HashMap();
-		putArrayCfg(parent, PROPERTITY_COLORS, cfg);
+		if(view!=null){
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_BACKGROUNDCOLOR, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_BASELENGTH, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_BASEWIDTH, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_BORDERCOLOR, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_BORDERWIDTH, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_RADIUS, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_REARLENGTH, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DIAL_TOPWIDTH, cfg);
+		}
 		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_COLORS, cfg.get(PROPERTITY_COLORS));
+			map.put(PROPERTITY_PLOTOPTIONS_DIAL, new JSONObject(cfg));
 	}
-	private void creatToolTipCrosshairs(CompositeMap view, Map map){
+	private void createPlotOptionMarker(CompositeMap parent, Map map, boolean includeStates){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_MARKER);
+		if(null != view){
+			Map cfg = new HashMap();	
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_ENABLED, cfg);			
+			putColorCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_FILLCOLOR, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINECOLOR, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_LINEWIDTH, cfg);			
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_RADIUS, cfg);
+			if(includeStates){
+				createPlotOptionStates(view,cfg,true);
+			}
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_PLOTOPTIONS_MARKER, new JSONObject(cfg));
+		}
+	}
+	
+	private void createPlotOptionPivot(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_PIVOT);
+		if(null != view){
+			Map cfg = new HashMap();
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIVOT_BACKGROUNDCOLOR, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_PIVOT_BORDERCOLOR, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_PIVOT_BORDERWIDTH, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_PIVOT_RADIUS, cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_PLOTOPTIONS_PIVOT, new JSONObject(cfg));
+		}
+	}
+	private void createPlotOptionPoint(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_POINT);
+		if(null != view){
+			Map cfg = new HashMap();
+			putEvents(view, cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_PLOTOPTIONS_POINT, new JSONObject(cfg));
+		}
+	}
+	private void createPlotOptionStates(CompositeMap parent, Map map,boolean underMarker){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES);
+		if(null != view){
+			Map cfg = new HashMap();	
+			createPlotOptionStatesHover(view,cfg,!underMarker);
+			if(underMarker){
+				createPlotOptionStatesSelect(view,cfg);
+			}
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_PLOTOPTIONS_STATES, new JSONObject(cfg));
+		}
+	}
+	private void createPlotOptionStatesHover(CompositeMap parent, Map map,boolean includeMaker){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES_HOVER);
+		if(null != view){
+			Map cfg = new HashMap();
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STATES_ENABLED, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINEWIDTH, cfg);
+			if(includeMaker){
+				putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STATES_HOVER_BRIGHTNESS, cfg);
+				createPlotOptionMarker(view, cfg,false);
+			}else{
+				putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_FILLCOLOR, cfg);
+				putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINECOLOR, cfg);
+				putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STATES_RADIUS, cfg);
+			}
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_PLOTOPTIONS_STATES_HOVER, new JSONObject(cfg));
+		}
+	}
+	private void createPlotOptionStatesSelect(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_PLOTOPTIONS_STATES_SELECT);
+		Map cfg = new HashMap();
+		if(null != view){
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STATES_ENABLED, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_FILLCOLOR, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINECOLOR, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STATES_LINEWIDTH, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STATES_RADIUS, cfg);
+		}
+		if(!cfg.isEmpty())
+			map.put(PROPERTITY_PLOTOPTIONS_STATES_SELECT, new JSONObject(cfg));
+	}
+	
+	
+	private void createPlotOptionTooltip(CompositeMap parent,Map map){
+		CompositeMap view;
+		if(null == map)
+			view= parent.getChild(PROPERTITY_TOOLTIP);
+		else
+			view = parent.getChild(PROPERTITY_PLOTOPTIONS_TOOLTIP);
+		if(null == view)view= parent.getChild(PROPERTITY_TOOLTIP);
+		if(view !=null) {
+			Map cfg = new HashMap();
+			if(null == map){
+				putBooleanCfg(view,PROPERTITY_TOOLTIP_ANIMATION,cfg);
+				putStringCfg(view,PROPERTITY_TOOLTIP_BACKGROUNDCOLOR,cfg);
+				putStringCfg(view,PROPERTITY_TOOLTIP_BORDERCOLOR,cfg);
+				putNumberCfg(view,PROPERTITY_TOOLTIP_BORDERRADIUS,cfg);
+				putNumberCfg(view,PROPERTITY_TOOLTIP_BORDERWIDTH,cfg);
+				createToolTipCrosshairs(view,cfg);
+				putBooleanCfg(view, PROPERTITY_TOOLTIP_ENABLED, cfg);
+				putFunctionCfg(view,PROPERTITY_TOOLTIP_FORMATTER,cfg);
+				putFunctionCfg(view,PROPERTITY_TOOLTIP_POSITIONER,cfg);
+				putBooleanCfg(view, PROPERTITY_TOOLTIP_SHADOW, cfg);
+				putBooleanCfg(view, PROPERTITY_TOOLTIP_SHARED, cfg);
+				putNumberCfg(view,PROPERTITY_TOOLTIP_SNAP,cfg);
+				putStyleCfg(view,PROPERTITY_TOOLTIP_STYLE,cfg);
+				putBooleanCfg(view, PROPERTITY_TOOLTIP_USEHTML, cfg);
+			}
+			createDateTimeLabelFormats(view,cfg);
+			putBooleanCfg(view, PROPERTITY_TOOLTIP_FOLLOWPOINTER, cfg);
+			putBooleanCfg(view, PROPERTITY_TOOLTIP_FOLLOWTOUCHMOVE, cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_FOOTERFORMAT,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_HEADERFORMAT,cfg);
+			putNumberCfg(view,PROPERTITY_TOOLTIP_HIDEDELAY,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_POINTFORMAT,cfg);
+			putNumberCfg(view,PROPERTITY_TOOLTIP_VALUEDECIMALS,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_VALUEPREFIX,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_VALUESUFFIX,cfg);
+			putStringCfg(view,PROPERTITY_TOOLTIP_XDATEFORMAT,cfg);
+			if(!cfg.isEmpty()){
+				if(null!=map){
+					map.put(PROPERTITY_TOOLTIP, new JSONObject(cfg));
+				}else
+					addConfig(PROPERTITY_TOOLTIP, new JSONObject(cfg));
+			}
+		}
+	}
+	
+	private void processSubTitle(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_SUBTITLE);
+		if(null != view){
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_SUBTITLE_ALIGN,cfg);
+			putBooleanCfg(view, PROPERTITY_SUBTITLE_FLOATING, cfg);
+			putStyleCfg(view,PROPERTITY_SUBTITLE_STYLE,cfg);
+			putStringCfg(view,PROPERTITY_SUBTITLE_TEXT,cfg);
+			putBooleanCfg(view,PROPERTITY_SUBTITLE_USEHTML,cfg);
+			putStringCfg(view,PROPERTITY_SUBTITLE_VERTICALALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_SUBTITLE_X,cfg);
+			putNumberCfg(view,PROPERTITY_SUBTITLE_Y,cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_SUBTITLE, new JSONObject(cfg));
+		}
+	}
+	
+	private void processTitle(CompositeMap parent){
+		CompositeMap view = parent.getChild(PROPERTITY_TITLE);
+		if(null != view){
+			Map cfg = new HashMap();
+			putBooleanCfg(view, PROPERTITY_TITLE_FLOATING, cfg);
+			putStringCfg(view,PROPERTITY_TITLE_ALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_TITLE_MARGIN,cfg);
+			putStyleCfg(view,PROPERTITY_TITLE_STYLE,cfg);
+			putStringCfg(view,PROPERTITY_TITLE_TEXT,cfg);
+			putBooleanCfg(view, PROPERTITY_TITLE_USEHTML, cfg);
+			putStringCfg(view,PROPERTITY_TITLE_VERTICALALIGN,cfg);
+			putNumberCfg(view,PROPERTITY_TITLE_X,cfg);
+			putNumberCfg(view,PROPERTITY_TITLE_Y,cfg);
+			if(!cfg.isEmpty())
+				addConfig(PROPERTITY_TITLE, new JSONObject(cfg));
+		}
+	}
+	
+	private void processTooltip(CompositeMap parent){
+		createPlotOptionTooltip(parent,null);
+	}
+	
+	private void createToolTipCrosshairs(CompositeMap view, Map map){
 		CompositeMap pbs = view.getChild(PROPERTITY_TOOLTIP_CROSSHAIRS);
-		if(pbs!=null){
+		if(null != pbs){
 			List list = pbs.getChilds();
-			JSONArray array = null;
-			if(list!=null) {
-				array = new JSONArray();
+			if(null != list) {
+				JSONArray array = new JSONArray();
 				Iterator it = list.iterator();
 				while(it.hasNext()){
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
 					putStringCfg(pb, PROPERTITY_TOOLTIP_CROSSHAIRS_COLOR, cfg);
 					putStringCfg(pb, PROPERTITY_TOOLTIP_CROSSHAIRS_DASHSTYLE, cfg);
-					putIntCfg(pb, PROPERTITY_TOOLTIP_CROSSHAIRS_WIDTH, cfg);
+					putNumberCfg(pb, PROPERTITY_TOOLTIP_CROSSHAIRS_WIDTH, cfg);
 					array.put(cfg);
 				}
-				if(array != null)
+				if(array.length() > 0)
 					map.put(PROPERTITY_TOOLTIP_CROSSHAIRS, array);
+			}
+		}else{
+			String crosshairs = view.getString(PROPERTITY_TOOLTIP_CROSSHAIRS);
+			if(null != crosshairs){
+				if(crosshairs.indexOf(",")!=-1){
+					putArrayCfg(view, PROPERTITY_TOOLTIP_CROSSHAIRS, map);
+				}else{
+					putBooleanCfg(view, PROPERTITY_TOOLTIP_CROSSHAIRS, map);
+				}
 			}
 		}
 	}
-	private void processLoading(CompositeMap parent){
-		Map cfg = new HashMap();
-		CompositeMap view = parent.getChild(PROPERTITY_LOADING);
-		
-		if(view !=null) {
-			putLongCfg(view,PROPERTITY_LOADING_HIDEDURATION,cfg);
-			putStyleCfg(view, PROPERTITY_LOADING_LABELSTYLE, cfg);
-			putLongCfg(view,PROPERTITY_LOADING_SHOWDURATION,cfg);
-			putStyleCfg(view, PROPERTITY_LOADING_STYLE, cfg);
-		}
-		if(!cfg.isEmpty())
-			addConfig(PROPERTITY_LOADING, new JSONObject(cfg));
-	}
-	private void createLabels(CompositeMap cview, Map map){
-		CompositeMap view = cview.getChild(PROPERTITY_AXIS_LABELS);
-		Map cfg = new HashMap();
-		if(view !=null) {
-			putStringCfg(view,PROPERTITY_AXIS_LABELS_ALIGN,cfg);
-			putBooleanCfg(view,PROPERTITY_AXIS_LABELS_ENABLED,cfg);
-			putStringCfg(view,PROPERTITY_AXIS_LABELS_FORMAT,cfg);
-			putFunctionCfg(view,PROPERTITY_AXIS_LABELS_FORMATTER,cfg);
-			putIntCfg(view,PROPERTITY_AXIS_LABELS_ROTATION,cfg);
-			putIntCfg(view,PROPERTITY_AXIS_LABELS_STAGGERLINES,cfg);
-			putIntCfg(view,PROPERTITY_AXIS_LABELS_STEP,cfg);
-			putStyleCfg(view,PROPERTITY_AXIS_LABELS_STYLE,cfg);
-			putBooleanCfg(view,PROPERTITY_AXIS_LABELS_USEHTML,cfg);
-			putIntCfg(view,PROPERTITY_AXIS_LABELS_X,cfg);
-			putIntCfg(view,PROPERTITY_AXIS_LABELS_Y,cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_AXIS_LABELS, new JSONObject(cfg));
-	}
 	
-	private void createNavigation(CompositeMap cview, Map map){
-		CompositeMap view = cview.getChild(PROPERTITY_LEGEND_NAVIGATION);
-		Map cfg = new HashMap();
-		if(view !=null) {
-			putStringCfg(view,PROPERTITY_LEGEND_NAVIGATION_ACTIVECOLOR,cfg);
-			putBooleanCfg(view,PROPERTITY_LEGEND_NAVIGATION_ANIMATION,cfg);
-			putIntCfg(view,PROPERTITY_LEGEND_NAVIGATION_ARROWSIZE,cfg);
-			putStringCfg(view,PROPERTITY_LEGEND_NAVIGATION_INACTIVECOLOR,cfg);
-			putStyleCfg(view,PROPERTITY_LEGEND_NAVIGATION_STYLE,cfg);
-		}
-		if(!cfg.isEmpty())
-			map.put("navigation", new JSONObject(cfg));
+	private void processXAxis(CompositeMap parent){
+		processAxis(parent,PROPERTITY_AXIS_X);
 	}
-	
-	private void createAxis(CompositeMap parent,String name){
+	private void processYAxis(CompositeMap parent){
+		processAxis(parent,PROPERTITY_AXIS_Y);
+	}
+	private void processAxis(CompositeMap parent,String name){
 		CompositeMap axis = parent.getChild(name);
 		if(axis!=null){
 			List list = axis.getChilds();
@@ -1223,61 +1427,83 @@ public class Chart extends Component {
 					putStringCfg(axi, PROPERTITY_AXIS_GRIDLINECOLOR, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_GRIDLINEDASHSTYLE, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_GRIDLINEINTERPOLATION, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_GRIDLINEWIDTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_GRIDLINEWIDTH, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_ID, cfg);
-					createLabels(axi,cfg);
+					createAxisLabels(axi,cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_LINECOLOR, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_LINEWIDTH, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_LINKEDTO, cfg); 
-					putFloatCfg(axi, PROPERTITY_AXIS_MAX, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MAXPADDING, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MIN, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MINTICKINTERVAL, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_LINEWIDTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_LINKEDTO, cfg); 
+					putNumberCfg(axi, PROPERTITY_AXIS_MAX, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MAXPADDING, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MIN, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINTICKINTERVAL, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_MINORGRIDLINECOLOR, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_MINORGRIDLINEDASHSTYLE, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MINORGRIDLINEWIDTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINORGRIDLINEWIDTH, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_MINORTICKCOLOR, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MINORTICKINTERVAL, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_MINORTICKLENGTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINORTICKINTERVAL, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINORTICKLENGTH, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_MINORTICKPOSITION, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MINORTICKWIDTH, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_MINRANGE, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_MINPADDING, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_OFFSET, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINORTICKWIDTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINRANGE, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_MINPADDING, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_OFFSET, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_OPPOSITE, cfg);
-					creatPlotBands(axi,cfg);
-					creatPlotLines(axi,cfg);
+					createPlotBands(axi,cfg);
+					createPlotLines(axi,cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_REVERSED, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_SHOWEMPTY, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_SHOWFIRSTLABEL, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_SHOWLASTLABEL, cfg);
 					if(PROPERTITY_AXIS_Y.equals(name))
 						createStackLabels(axi,cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_STARTOFWEEK, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_STARTOFWEEK, cfg);
 					putBooleanCfg(axi, PROPERTITY_AXIS_STARTONTICK, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_TICKCOLOR, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_TICKINTERVAL, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_TICKLENGTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_TICKINTERVAL, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_TICKLENGTH, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_TICKMARKPLACEMENT, cfg);
-					putIntCfg(axi, PROPERTITY_AXIS_TICKPIXELINTERVAL, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_TICKPIXELINTERVAL, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_TICKPOSITION, cfg);
 					putFunctionCfg(axi, PROPERTITY_AXIS_TICKPOSITIER, cfg);
 					putArrayCfg(axi, PROPERTITY_AXIS_TICKPOSITIONS, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_TICKWIDTH, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_TICKWIDTH, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_LINECOLOR, cfg);
-					createTitle(axi,cfg);
+					processTitle(axi,cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_TYPE, cfg);					
 					putEvents(axi, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_NAME, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_BINDTARGET, cfg);
 					putStringCfg(axi, PROPERTITY_AXIS_DATEFORMAT, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_STARTANGLE, cfg);
-					putFloatCfg(axi, PROPERTITY_AXIS_ENDANGLE, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_STARTANGLE, cfg);
+					putNumberCfg(axi, PROPERTITY_AXIS_ENDANGLE, cfg);
 					array.put(cfg);
 				}
 				if(array != null)
 					addConfig(name, array);
 			}
+		}
+	}
+	private void createAxisLabels(CompositeMap cview, Map map){
+		CompositeMap view = cview.getChild(PROPERTITY_AXIS_LABELS);
+		if(null != view) {
+			Map cfg = new HashMap();
+			putStringCfg(view,PROPERTITY_AXIS_LABELS_ALIGN,cfg);
+			putBooleanCfg(view,PROPERTITY_AXIS_LABELS_ENABLED,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_DISTANCE,cfg);
+			putStringCfg(view,PROPERTITY_AXIS_LABELS_FORMAT,cfg);
+			putFunctionCfg(view,PROPERTITY_AXIS_LABELS_FORMATTER,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_MAXSTAGGERLINES,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_ROTATION,cfg);
+			putStringCfg(view,PROPERTITY_AXIS_LABELS_OVERFLOW,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_STAGGERLINES,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_STEP,cfg);
+			putStyleCfg(view,PROPERTITY_AXIS_LABELS_STYLE,cfg);
+			putBooleanCfg(view,PROPERTITY_AXIS_LABELS_USEHTML,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_X,cfg);
+			putNumberCfg(view,PROPERTITY_AXIS_LABELS_Y,cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_AXIS_LABELS, new JSONObject(cfg));
 		}
 	}
 	
@@ -1301,8 +1527,8 @@ public class Chart extends Component {
 //	}
 	private void createDateTimeLabelFormats(CompositeMap view, Map map){
 		CompositeMap formats = view.getChild(PROPERTITY_AXIS_DATETIMELABELFORMATS);
-		Map cfg = new HashMap();
-		if(formats!=null){
+		if(null != formats){
+			Map cfg = new HashMap();
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_MILLISECOND, cfg);
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_SECOND, cfg);
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_MINUTE, cfg);
@@ -1311,9 +1537,9 @@ public class Chart extends Component {
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_WEEK, cfg);
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_MONTH, cfg);
 			putStringCfg(formats, PROPERTITY_AXIS_DATETIMELABELFORMATS_YEAR, cfg);
+			if(!cfg.isEmpty())
+				map.put(PROPERTITY_AXIS_DATETIMELABELFORMATS, new JSONObject(cfg));
 		}
-		if(!cfg.isEmpty())
-			map.put(PROPERTITY_AXIS_DATETIMELABELFORMATS, new JSONObject(cfg));
 	}
 	private void createStackLabels(CompositeMap view, Map map){
 		CompositeMap formats = view.getChild(PROPERTITY_AXIS_STACKLABELS);
@@ -1325,14 +1551,14 @@ public class Chart extends Component {
 			putBooleanCfg(formats, PROPERTITY_AXIS_STACKLABELS_ENABLED, cfg);
 			putFunctionCfg(formats, PROPERTITY_AXIS_STACKLABELS_FORMATTER, cfg);
 			putStyleCfg(formats, PROPERTITY_AXIS_STACKLABELS_STYLE, cfg);
-			putFloatCfg(formats, PROPERTITY_AXIS_STACKLABELS_ROTATION, cfg);
-			putIntCfg(formats, PROPERTITY_AXIS_STACKLABELS_X, cfg);
-			putIntCfg(formats, PROPERTITY_AXIS_STACKLABELS_Y, cfg);
+			putNumberCfg(formats, PROPERTITY_AXIS_STACKLABELS_ROTATION, cfg);
+			putNumberCfg(formats, PROPERTITY_AXIS_STACKLABELS_X, cfg);
+			putNumberCfg(formats, PROPERTITY_AXIS_STACKLABELS_Y, cfg);
 		}
 		if(!cfg.isEmpty())
 			map.put(PROPERTITY_AXIS_STACKLABELS, new JSONObject(cfg));
 	}
-	private void creatPlotBands(CompositeMap view, Map map){
+	private void createPlotBands(CompositeMap view, Map map){
 		CompositeMap pbs = view.getChild(PROPERTITY_AXIS_PLOTBANDS);
 		if(pbs!=null){
 			List list = pbs.getChilds();
@@ -1344,11 +1570,14 @@ public class Chart extends Component {
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
 					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_COLOR, cfg);
-					putFloatCfg(pb, PROPERTITY_AXIS_PLOTBANDS_FROM, cfg);
+					putNumberCfg(pb, PROPERTITY_AXIS_PLOTBANDS_FROM, cfg);
 					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_ID, cfg);
-					createPlotLabel(pb,cfg);
-					putFloatCfg(pb, PROPERTITY_AXIS_PLOTBANDS_TO, cfg);
-					putIntCfg(pb, PROPERTITY_AXIS_PLOTBANDS_ZINDEX, cfg);
+					processPlotLabel(pb,cfg);
+					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_INNERRADIUS, cfg);
+					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_OUTERRADIUS, cfg);
+					putStringCfg(pb, PROPERTITY_AXIS_PLOTBANDS_THICKNESS, cfg);
+					putNumberCfg(pb, PROPERTITY_AXIS_PLOTBANDS_TO, cfg);
+					putNumberCfg(pb, PROPERTITY_AXIS_PLOTBANDS_ZINDEX, cfg);
 					putEvents(pb, cfg);
 					array.put(cfg);
 				}
@@ -1358,7 +1587,7 @@ public class Chart extends Component {
 		}
 	}
 	
-	private void creatPlotLines(CompositeMap view, Map map){
+	private void createPlotLines(CompositeMap view, Map map){
 		CompositeMap pls = view.getChild(PROPERTITY_AXIS_PLOTLINES);
 		if(pls!=null){
 			List list = pls.getChilds();
@@ -1372,10 +1601,10 @@ public class Chart extends Component {
 					
 					putStringCfg(pl, PROPERTITY_AXIS_PLOTLINES_COLOR, cfg);
 					putStringCfg(pl, PROPERTITY_AXIS_PLOTLINES_ID, cfg);
-					putIntCfg(pl, PROPERTITY_AXIS_PLOTLINES_VALUE, cfg);
-					putIntCfg(pl, PROPERTITY_AXIS_PLOTLINES_WIDTH, cfg);
-					createPlotLabel(pl,cfg);
-					putIntCfg(pl, PROPERTITY_AXIS_PLOTLINES_ZINDEX, cfg);
+					putNumberCfg(pl, PROPERTITY_AXIS_PLOTLINES_VALUE, cfg);
+					putNumberCfg(pl, PROPERTITY_AXIS_PLOTLINES_WIDTH, cfg);
+					processPlotLabel(pl,cfg);
+					putNumberCfg(pl, PROPERTITY_AXIS_PLOTLINES_ZINDEX, cfg);
 					putEvents(pl, cfg);
 					array.put(cfg);
 				}
@@ -1385,34 +1614,34 @@ public class Chart extends Component {
 		}
 	}
 	
-	private void createPlotLabel(CompositeMap view, Map map){
+	private void processPlotLabel(CompositeMap view, Map map){
 		CompositeMap label = view.getChild(PROPERTITY_AXIS_PLOT_LABEL);
 		Map cfg = new HashMap();
 		if(label!=null){
 			putStringCfg(label, PROPERTITY_AXIS_PLOT_LABEL_ALIGN, cfg);
 			putStringCfg(label, PROPERTITY_AXIS_PLOT_LABEL_TEXT, cfg);
 			putStringCfg(label, PROPERTITY_AXIS_PLOT_LABEL_VERTICALALIGN, cfg);
-			putIntCfg(label, PROPERTITY_AXIS_PLOT_LABEL_RATATION, cfg);
+			putNumberCfg(label, PROPERTITY_AXIS_PLOT_LABEL_RATATION, cfg);
 			putStyleCfg(label, PROPERTITY_AXIS_PLOT_LABEL_STYLE, cfg);
 			putStringCfg(label, PROPERTITY_AXIS_PLOT_LABEL_TEXTALIGN, cfg);
-			putIntCfg(label, PROPERTITY_AXIS_PLOT_LABEL_X, cfg);
-			putIntCfg(label, PROPERTITY_AXIS_PLOT_LABEL_Y, cfg);
+			putNumberCfg(label, PROPERTITY_AXIS_PLOT_LABEL_X, cfg);
+			putNumberCfg(label, PROPERTITY_AXIS_PLOT_LABEL_Y, cfg);
 		}
 		if(!cfg.isEmpty())
 			map.put("label", new JSONObject(cfg));
 	}
-	private void createTitle(CompositeMap view, Map map){
+	private void processTitle(CompositeMap view, Map map){
 		CompositeMap title = view.getChild(PROPERTITY_AXIS_TITLE);
 		Map cfg = new HashMap();
 		if(title!=null){
 			putStringCfg(title, PROPERTITY_AXIS_TITLE_ALIGN, cfg);
-			putIntCfg(title, PROPERTITY_AXIS_TITLE_MARGIN, cfg);
-			putIntCfg(title, PROPERTITY_AXIS_TITLE_OFFSET, cfg);
+			putNumberCfg(title, PROPERTITY_AXIS_TITLE_MARGIN, cfg);
+			putNumberCfg(title, PROPERTITY_AXIS_TITLE_OFFSET, cfg);
 			putStyleCfg(title, PROPERTITY_AXIS_TITLE_STYLE, cfg);
-			putIntCfg(title, PROPERTITY_AXIS_TITLE_ROTATION, cfg);
+			putNumberCfg(title, PROPERTITY_AXIS_TITLE_ROTATION, cfg);
 			putStringCfg(title, PROPERTITY_AXIS_TITLE_TEXT, cfg);
-			putIntCfg(title, PROPERTITY_AXIS_TITLE_X, cfg);
-			putIntCfg(title, PROPERTITY_AXIS_TITLE_Y, cfg);
+			putNumberCfg(title, PROPERTITY_AXIS_TITLE_X, cfg);
+			putNumberCfg(title, PROPERTITY_AXIS_TITLE_Y, cfg);
 		}
 		if(!cfg.isEmpty())
 			map.put(PROPERTITY_AXIS_TITLE, new JSONObject(cfg));

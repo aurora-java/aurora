@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss:schema xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+    <ss:attributes/>
+    <ss:elements>
+        <ss:element name="a:portalPanel" document="PortalPanel组件">
+            <ss:attributes>
+                <ss:attribute name="blockWidth" default="200" document="组件的宽度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="blockHeight" default="200" document="组件的高度,单位是像素(px)" type="ss:int"/>
+                <ss:attribute name="cellSpacing" default="30" document="间距" type="ss:boolean"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:ComplexField"/>
+            </ss:extensions>
+            <ss:arrays>
+                <ss:array name="a:portals" minOccurs="1" type="a:portal"/>
+            </ss:arrays>
+        </ss:element>
+        <ss:element name="a:portal" document="PortalPanel组件的窗口">
+            <ss:attributes>
+                <ss:attribute name="id" document="组件的ID,在同一个screen中ID不能重复"/>
+                <ss:attribute name="prompt" document="tab的prompt" type="bm:Prompts" use="required"/>
+                <ss:attribute name="ref" document="portal的引用screen" type="a:URLReference"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:BaseViewComponent" type=""/>
+            </ss:elements>
+        </ss:element>
+    </ss:elements>
+    <ss:categories/>
+    <ss:editors/>
+    <ss:wizards/>
+</ss:schema>

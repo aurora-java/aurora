@@ -141,6 +141,7 @@
                 <ss:enumerations>
                     <ss:enumeration value="complex"/>
                     <ss:enumeration value="simple"/>
+                    <ss:enumeration value="tiny"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
