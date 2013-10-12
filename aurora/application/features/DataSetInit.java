@@ -108,9 +108,11 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 			}
 			
 			if(dsc.getLoadData() == true){
+				String id = dsc.getId();
+				id = uncertain.composite.TextParser.parse(id, model);
 				ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
 				mqc.setModel(baseModel);
-				mqc.setRootPath("/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
+				mqc.setRootPath("/model/"+ id == null ? baseModel : id);
 				mqc.setAutoCount(false);
 				mqc.setFetchAll(true);
 				screen.addInitProcedureAction(mqc.getObjectContext());
@@ -119,7 +121,7 @@ public class DataSetInit implements IViewBuilder, E_PrepareServiceConfig {
 				if(datas == null){
 					datas = ds.createChild(DataSetConfig.PROPERTITY_DATAS);
 				}
-				datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ dsc.getId() == null ? baseModel : dsc.getId());
+				datas.putString(DataSetConfig.PROPERTITY_DATASOURCE, "/model/"+ id == null ? baseModel : id);
 			}
 			if(cq && "".equals(queryUrl)){
 				ds.putString(DataSetConfig.PROPERTITY_QUERYURL, model.getObject("/request/@context_path").toString() + "/autocrud/"+baseModel+"/query");
