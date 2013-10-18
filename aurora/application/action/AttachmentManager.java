@@ -49,7 +49,6 @@ import aurora.datasource.DataSourceConfig;
 import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
-import aurora.service.ServiceThreadLocal;
 import aurora.service.http.HttpServiceInstance;
 
 public class AttachmentManager extends AbstractEntry{
@@ -113,6 +112,13 @@ public class AttachmentManager extends AbstractEntry{
 				preRunner=preRunner.getCaller();
 				preRunner.stop();
 			}
+		}else if("update".equalsIgnoreCase(actionType)){
+			doUpdate(context);	
+			ProcedureRunner preRunner=runner;
+			while(preRunner.getCaller()!=null){
+				preRunner=preRunner.getCaller();
+				preRunner.stop();
+			}
 		}else if("delete".equalsIgnoreCase(actionType)){
 			doDelete(context);
 		}else if("download".equalsIgnoreCase(actionType)){
@@ -150,17 +156,14 @@ public class AttachmentManager extends AbstractEntry{
 				HttpServletResponse response = serviceInstance.getResponse();
 				response.setHeader("cache-control", "must-revalidate");
 				response.setHeader("pragma", "public");	
-				response.setHeader("Content-Type", mimeType);//application/octet-stream
+				response.setHeader("Content-Type", mimeType);
 				response.setHeader("Content-disposition", "attachment;" + processFileName(serviceInstance.getRequest(),fileName));
-//				response.setHeader("Content-disposition", "attachment;filename=" + toUtf8String(fileName));
 				
 				 try{                	
                 	Class.forName("org.apache.catalina.startup.Bootstrap");
                 	if (fileSize > 0)
                 		response.setContentLength(fileSize);    
                 }catch(ClassNotFoundException e){}
-                
-//				response.setContentLength(fileSize);
 				if(path!=null){
 					File file = new File(path);
 					if(file.exists()){
@@ -236,6 +239,104 @@ public class AttachmentManager extends AbstractEntry{
 			}
 		}
 	}
+	
+	
+	
+	
+	private void doUpdate(CompositeMap context) throws Exception{
+		ServiceContext service = ServiceContext.createServiceContext(context);
+		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
+		CompositeMap params = service.getParameter();
+		Object aid = (Object)params.getObject("@attachment_id");
+		
+		FileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload up = new ServletFileUpload(factory);
+		List items = up.parseRequest(serviceInstance.getRequest());
+		FileItem fileItem = null;
+		Iterator i = items.iterator();
+		while (i.hasNext()) {
+			FileItem fi = (FileItem) i.next();
+			if (!fi.isFormField()) {
+				fileItem = fi;
+			}
+		}
+		
+		if(aid!=null && !"".equals(aid)){
+			Connection conn = getContextConnection(context);
+			Statement st = conn.createStatement();
+			ResultSet rs = null;String path = null;
+			try {
+				rs = st.executeQuery("select file_path from fnd_atm_attachment t where t.attachment_id = " + aid);
+				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
+				path = rs.getString(1);
+			} finally{
+				DBUtil.closeResultSet(rs);
+				DBUtil.closeStatement(st);
+			}
+			if(path!=null){
+				File delFile = new File(path);
+				if(delFile.exists()){
+					delFile.delete();
+				}
+				if(fileItem != null){
+					long size = 0;int b;
+					FileOutputStream fos = null;
+					InputStream ins = null;
+					Statement stmt = null;
+					try {
+			            fos = new FileOutputStream(delFile);
+			            ins = fileItem.getInputStream();
+			            while(( b = ins.read())>=0){
+			                fos.write(b);
+			                size++;
+			            }
+			            stmt = conn.createStatement();
+			            stmt.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
+					}finally {
+			            if(ins!=null)ins.close();
+			            if(fos!=null)fos.close();
+			           DBUtil.closeStatement(stmt);
+					}
+				}
+			}else {
+				DataSourceConfig dataSourceConfig=(DataSourceConfig)this.registry.getInstanceOfType(DataSourceConfig.class);
+				Connection nativeConn=dataSourceConfig.getNativeJdbcExtractor(conn);
+				long size = 0;
+				InputStream instream = fileItem.getInputStream();
+				OutputStream outstream = null;
+				try {
+					st = nativeConn.createStatement();
+					st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
+					rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
+					if (!rs.next())
+						throw new IllegalArgumentException("attachment_id not set");
+					BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
+					rs.close();
+					if (blob == null) {
+						throw new IllegalArgumentException("Warning: can't update fnd_atm_attachment.content for recrd " + aid);
+					}
+					outstream = blob.getBinaryOutputStream(0);
+					int chunk = blob.getChunkSize();
+					byte[] buff = new byte[chunk];
+					int le;
+					while ((le = instream.read(buff)) != -1) {
+						outstream.write(buff, 0, le);
+						size += le;
+					}
+		            st.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
+				} finally {
+					if(outstream!=null)outstream.close();
+					if(instream!=null)instream.close();
+					DBUtil.closeResultSet(rs);
+					DBUtil.closeStatement(st);
+				}
+			}
+		}
+	}
+	
+	
+	
+	
 	
 	private void doUpload(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);

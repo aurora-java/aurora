@@ -146,7 +146,7 @@ public class GridColumnConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_RESIZABLE, resiable);
 	}
 	public boolean isAutoAdjust(){
-		return getBoolean(PROPERTITY_AUTO_ADJUST, false);
+		return getBoolean(PROPERTITY_AUTO_ADJUST, true);
 	}
 	public void setAutoAdjust(boolean autoAdjust){
 		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
