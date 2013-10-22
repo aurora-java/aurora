@@ -1,6 +1,3 @@
-/*
- * Created on 2007-11-4
- */
 package aurora.service.ws;
 
 import java.io.ByteArrayOutputStream;
