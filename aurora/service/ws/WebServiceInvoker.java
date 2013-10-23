@@ -132,7 +132,7 @@ public class WebServiceInvoker extends AbstractEntry {
 		}
 	}
 	private String removeCDATA(String source){
-		source = source.replaceAll("<![CDATA[","");  
+		source = source.replaceAll("<!\\[CDATA\\[","");  
 		source =  source.replaceAll("]]>","");   
 		return source;
 				
