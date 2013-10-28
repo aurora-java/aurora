@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -515,29 +516,32 @@ public class Chart extends Component {
 	
 	private static final String PROPERTITY_COLORS = "colors";
 	
+	private CompositeMap model;
+	
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
 		String theme = view.getString(PROPERTITY_THEME.toLowerCase());
 		if(theme==null)theme = "grid";
 		addJavaScript(session, context, "chart/Animate-min.js");
 		addJavaScript(session, context, "chart/Chart-min.js");
-		if(needMore(view)){
+		if(needMore(view,model)){
 			addJavaScript(session, context, "chart/Chart-more-min.js");
 		}
 		addJavaScript(session, context, "chart/themes/"+theme+".js");
 		addJavaScript(session, context, "chart/Exporting-min.js");
 	}
-	private boolean needMore(CompositeMap view){
+	private boolean needMore(CompositeMap view,CompositeMap model){
 		Iterator childs = view.getChildIterator();
 		if(null!=childs){
 			while(childs.hasNext()){
 				CompositeMap child = (CompositeMap) childs.next();
 				if("chart".equals(child.getName())){
-					if(child.getBoolean(PROPERTITY_CHART_POLAR,false)||"gauge".equals(child.getString(PROPERTITY_CHART_TYPE)))
+					if(child.getBoolean(PROPERTITY_CHART_POLAR,false)||"gauge".equals(TextParser.parse(child.getString(PROPERTITY_CHART_TYPE),model)))
 						return true;
 				}else{
-					if(needMore(child))
+					if(needMore(child,model))
 						return true;
 				}
 			}
@@ -550,7 +554,7 @@ public class Chart extends Component {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();	
 		CompositeMap view = context.getView();
-		CompositeMap model = context.getModel();
+		model = context.getModel();
 		
 		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
 		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
@@ -573,6 +577,13 @@ public class Chart extends Component {
 	
 	private void putStringCfg(CompositeMap view,String key, Map map){
 		String value = view.getString(key.toLowerCase());
+		if("null".equals(value))map.put(key, null);
+		else if(null != value) map.put(key, value);		
+	}
+	
+	private void putStringCfg(CompositeMap view,String key, Map map,CompositeMap model){
+		String value = view.getString(key.toLowerCase());
+		value = TextParser.parse(value, model);
 		if("null".equals(value))map.put(key, null);
 		else if(null != value) map.put(key, value);		
 	}
@@ -723,7 +734,7 @@ public class Chart extends Component {
 	
 	
 	private void createChartOption(CompositeMap parent,Map cfg){
-		putStringCfg(parent,PROPERTITY_CHART_TYPE,cfg);
+		putStringCfg(parent,PROPERTITY_CHART_TYPE,cfg,model);
 		putBooleanCfg(parent,PROPERTITY_CHART_POLAR,cfg);
 		putBooleanCfg(parent,PROPERTITY_CHART_ALIGNTICKS,cfg);
 		putBooleanCfg(parent,PROPERTITY_CHART_ANIMATION,cfg);

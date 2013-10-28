@@ -274,9 +274,12 @@ public class DataSet extends Component {
 		}
 		if(fieldList.length()!=0)addConfig(DataSetConfig.PROPERTITY_FIELDS, fieldList);
 		if(dataList.length()!=0)addConfig(DataSetConfig.PROPERTITY_DATAS, dataList);
-		if(!"".equals(dsc.getQueryDataSet()))addConfig(DataSetConfig.PROPERTITY_QUERYDATASET, dsc.getQueryDataSet());
+		if(!"".equals(dsc.getQueryDataSet())){
+			String queryDataset = uncertain.composite.TextParser.parse(dsc.getQueryDataSet(), model);
+			addConfig(DataSetConfig.PROPERTITY_QUERYDATASET, queryDataset);
+		}
 		if(!"".equals(dsc.getQueryUrl(model))){
-			String queryUrl = uncertain.composite.TextParser.parse(dsc.getQueryUrl(model), model);
+			String queryUrl = uncertain.composite.TextParser.parse(dsc.getQueryUrl(), model);
 			addConfig(DataSetConfig.PROPERTITY_QUERYURL, queryUrl);
 		}
 		if(!"".equals(dsc.getSubmitUrl())) {
