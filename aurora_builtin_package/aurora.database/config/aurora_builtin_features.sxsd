@@ -23,7 +23,7 @@
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="f:multi-language-display" document="多语言特性">
+        <ss:element name="f:multi-language-display" document="多语言特性查询，不能与multi-language-storage同时使用">
             <ss:extensions>
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
@@ -55,7 +55,7 @@
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="f:multi-language-storage" document="多语言存储">
+        <ss:element name="f:multi-language-storage" document="多语言存储，不能与multi-language-display同时使用">
             <ss:extensions>
                 <ss:extension base="bm:feature"/>
             </ss:extensions>
