@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -71,6 +72,7 @@ public class WebServiceInvoker extends AbstractEntry {
 		CompositeMap soapBody = createSOAPBody();
 		soapBody.addChild((CompositeMap) inputObject);
 		String content = XMLOutputter.defaultInstance().toXML(soapBody.getRoot(), true);
+//		content = new String(content.getBytes(),"UTF-8");
 		LoggingContext.getLogger(context, this.getClass().getCanonicalName()).config("request:\r\n" + content);
 		if(isNoCDATA()){
 			content = removeCDATA(content);
@@ -92,11 +94,11 @@ public class WebServiceInvoker extends AbstractEntry {
 			httpUrlConnection.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
 			httpUrlConnection.connect();
 			OutputStream os = httpUrlConnection.getOutputStream();
-			out = new PrintWriter(os);
-			out.println("<?xml version='1.0' encoding='UTF-8'?>");
-			out.println(new String(content.getBytes("UTF-8")));
-			out.flush();
-			out.close();
+			OutputStreamWriter writer = new OutputStreamWriter(os,"UTF-8");
+			writer.write("<?xml version='1.0' encoding='UTF-8'?>");
+			writer.write(content);
+			writer.flush();
+			writer.close();
 			String soapResponse = null;
 			CompositeMap soap = null;
 			CompositeLoader cl = new CompositeLoader();
