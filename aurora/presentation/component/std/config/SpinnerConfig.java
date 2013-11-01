@@ -8,13 +8,11 @@ import uncertain.composite.CompositeMap;
  *          njq.niu@gmail.com $
  * @author <a href="mailto:njq.niu@hand-china.com">vincent</a>
  */
-public class SpinnerConfig extends InputFieldConfig {
+public class SpinnerConfig extends NumberFieldConfig {
 
 	public static final String VERSION = "$Revision$";
 	
 	public static final String TAG_NAME = "spinner";
-	public static final String PROPERTITY_MIN = "min";
-	public static final String PROPERTITY_MAX = "max";
 	public static final String PROPERTITY_STEP = "step";
 
 	public static SpinnerConfig getInstance() {
@@ -29,27 +27,11 @@ public class SpinnerConfig extends InputFieldConfig {
 		return model;
 	}
 
-	public String getMin() {
-		return getString(PROPERTITY_MIN);
-	}
-
-	public void setMin(String min) {
-		putString(PROPERTITY_MIN, min);
-	}
-
 	public String getStep() {
 		return getString(PROPERTITY_STEP, "1");
 	}
 
 	public void setStep(String step) {
 		putString(PROPERTITY_STEP, step);
-	}
-
-	public String getMax() {
-		return getString(PROPERTITY_MAX);
-	}
-
-	public void setMax(String max) {
-		putString(PROPERTITY_MAX, max);
 	}
 }

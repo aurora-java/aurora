@@ -17,6 +17,8 @@ public class NumberFieldConfig extends InputFieldConfig {
 	public static final String PROPERTITY_ALLOWNEGATIVE = "allownegative";
 	public static final String PROPERTITY_ALLOWFORMAT = "allowformat";
 	public static final String PROPERTITY_ALLOWPAD = "allowpad";
+	public static final String PROPERTITY_MIN = "min";
+	public static final String PROPERTITY_MAX = "max";
 	
 	public static NumberFieldConfig getInstance(){
 		NumberFieldConfig model = new NumberFieldConfig();
@@ -66,5 +68,21 @@ public class NumberFieldConfig extends InputFieldConfig {
 	}
 	public void setDecimalPrecision(int precision){
 		putInt(PROPERTITY_DECIMALPRECISION,precision);
+	}
+	
+	public String getMin() {
+		return getString(PROPERTITY_MIN);
+	}
+
+	public void setMin(String min) {
+		putString(PROPERTITY_MIN, min);
+	}
+
+	public String getMax() {
+		return getString(PROPERTITY_MAX);
+	}
+
+	public void setMax(String max) {
+		putString(PROPERTITY_MAX, max);
 	}
 }

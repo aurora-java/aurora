@@ -13,7 +13,7 @@ import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
 import aurora.presentation.component.std.config.SpinnerConfig;
 
-public class Spinner extends TextField {
+public class Spinner extends NumberField {
 	
 	public Spinner(IObjectRegistry registry) {
 		super(registry);
@@ -30,10 +30,6 @@ public class Spinner extends TextField {
 
 		SpinnerConfig sc = SpinnerConfig.getInstance(context.getView());
 
-		if (null != sc.getMin())
-			addConfig(SpinnerConfig.PROPERTITY_MIN, TextParser.parse(sc.getMin(), model));
-		if (null != sc.getMax())
-			addConfig(SpinnerConfig.PROPERTITY_MAX,  TextParser.parse(sc.getMax(), model));
 		addConfig(SpinnerConfig.PROPERTITY_STEP, TextParser.parse(sc.getStep(),model));
 
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);

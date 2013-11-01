@@ -46,6 +46,8 @@
                 <ss:attribute name="decimalPrecision" document="小数位精度" type="ss:int"/>
                 <ss:attribute name="allowNegative" document="是否允许为负数" type="ss:boolean"/>
                 <ss:attribute name="allowFormat" document="是否按照千分位显示" type="ss:boolean"/>
+            	<ss:attribute name="min" document="最小值" type="ss:int"/>
+                <ss:attribute name="max" document="最大值" type="ss:int"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:spinner" document="微调范围输入框">

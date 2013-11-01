@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.NumberFieldConfig;
+import aurora.presentation.component.std.config.SpinnerConfig;
 
 @SuppressWarnings("unchecked")
 public class NumberField extends TextField {	
@@ -31,6 +33,10 @@ public class NumberField extends TextField {
 		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
 		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, new Boolean(false));
 		if(!nfc.isAllowPad()) addConfig(NumberFieldConfig.PROPERTITY_ALLOWPAD, new Boolean(false));
+		if (null != nfc.getMin())
+			addConfig(NumberFieldConfig.PROPERTITY_MIN, TextParser.parse(nfc.getMin(), model));
+		if (null != nfc.getMax())
+			addConfig(NumberFieldConfig.PROPERTITY_MAX,  TextParser.parse(nfc.getMax(), model));
 		
 		addConfig(NumberFieldConfig.PROPERTITY_DECIMALPRECISION, new Integer(nfc.getDecimalPrecision(model)));
 		
