@@ -42,6 +42,8 @@ public class ComboBox extends TextField {
 //		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
 //		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());
 		addConfig(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(cbc.isFetchRecord()));
+		boolean isTranChara = cbc.isTransformCharacter();
+		if(!isTranChara)addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
 		
 		map.put(CONFIG, getConfigString());
 	}

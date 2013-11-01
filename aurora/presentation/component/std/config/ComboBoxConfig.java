@@ -36,5 +36,7 @@ public class ComboBoxConfig extends InputFieldConfig {
 	public void setFetchRecord(boolean fetchrecord){
 		putBoolean(PROPERTITY_FETCH_RECORD, fetchrecord);
 	}
-	
+	public boolean isTransformCharacter(){
+        return getBoolean(PROPERTITY_CHARA_TRANSFORM, false);
+    }
 }
