@@ -23,6 +23,7 @@ public class Portal extends Component {
 
 	private static final String DEFAULT_CLASS = "layout-portal";
 	private static final String REF = "ref";
+	private static final String CLOSEABLE = "closeable";
 	private int cellSpacing;
 	private int blockHeight;
 	private int blockWidth;
@@ -88,6 +89,12 @@ public class Portal extends Component {
 		String prompt = uncertain.composite.TextParser.parse(session
 				.getLocalizedPrompt(portal
 						.getString(ComponentConfig.PROPERTITY_PROMPT)), model);
+		boolean closeable = false;
+		String closeableStr = portal.getString(CLOSEABLE);
+		if(null!=closeableStr){
+			closeable = Boolean.valueOf(uncertain.composite.TextParser.parse(closeableStr,model));
+			
+		}
 		sb.append("<table class='portal-item-wrap' style='width:"
 				+ blockWidth
 				+ "px;height:"
@@ -108,10 +115,12 @@ public class Portal extends Component {
 			sb.append(prompt);
 		sb.append("</div>");
 		sb.append("</td>");
-		sb.append("<td unselectable='on' class='portal-item-caption-button' nowrap>");
-		sb.append("<div class='portal-item-close' unselectable='on'></div>");
-		sb.append("</td>");
-		sb.append("<td><div style='width:5px;'/></td>");
+		if(closeable){
+			sb.append("<td unselectable='on' class='portal-item-caption-button' nowrap>");
+			sb.append("<div class='portal-item-close' unselectable='on'></div>");
+			sb.append("</td>");
+			sb.append("<td><div style='width:5px;'/></td>");
+		}
 		sb.append("</tr>");
 		sb.append("</table>");
 		sb.append("</td>");
