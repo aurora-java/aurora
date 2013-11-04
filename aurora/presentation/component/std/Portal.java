@@ -43,11 +43,13 @@ public class Portal extends Component {
 			throws IOException {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		PortalConfig pc = PortalConfig.getInstance(view);
 		cellSpacing = pc.getCellSpacing();
 		blockHeight = pc.getBlockHeight();
 		blockWidth = pc.getBlockWidth();
+		addConfig(PortalConfig.PROPERTITY_MOVABLE, pc.isMovable(model));
 		map.put(PortalConfig.PROPERTITY_CELLSPACING, cellSpacing);
 		map.put(PortalConfig.PROPERTITY_PORTALS,
 				createPortals(session, context));
@@ -93,7 +95,7 @@ public class Portal extends Component {
 		String closeableStr = portal.getString(CLOSEABLE);
 		if(null!=closeableStr){
 			closeable = Boolean.valueOf(uncertain.composite.TextParser.parse(closeableStr,model));
-			
+			portal.put(CLOSEABLE, closeable);
 		}
 		sb.append("<table class='portal-item-wrap' style='width:"
 				+ blockWidth

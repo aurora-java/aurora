@@ -13,6 +13,7 @@ public class PortalConfig extends ComponentConfig {
 	public static final String PROPERTITY_BLOCK_HEIGHT = "blockheight";
 	public static final String PROPERTITY_BLOCK_WIDTH = "blockwidth";
 	public static final String PROPERTITY_CELLSPACING = "cellspacing";
+	public static final String PROPERTITY_MOVABLE = "movable";
 
 	public static PortalConfig getInstance() {
 		PortalConfig model = new PortalConfig();
@@ -52,5 +53,17 @@ public class PortalConfig extends ComponentConfig {
 
 	public void setCellSpacing(int cellspacing) {
 		putInt(PROPERTITY_CELLSPACING, cellspacing);
+	}
+	
+	public boolean isMovable(CompositeMap model) {
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_MOVABLE), model);
+		if(null == str||"".equals(str)){
+			return true;
+		}
+		return Boolean.valueOf(str);
+	}
+	
+	public void setMovable(boolean movable) {
+		putBoolean(PROPERTITY_MOVABLE, movable);
 	}
 }
