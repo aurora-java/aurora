@@ -831,7 +831,7 @@ public class Grid extends Component {
 		sb.append("<TABLE cellSpacing='0' atype='grid.uht' cellPadding='0' border='0' style='width:"+unlockWidth+"px'><TBODY>");//margin-right:20px;padding-right:20px;
 		sb.append("<TR class='grid-hl'>");
 		sb.append(th.toString());
-		sb.append("<TH WIDTH='20'> </TH>");
+		sb.append("<TH WIDTH='34'> </TH>");
 		sb.append("</TR>");
 		
 		StringBuffer hsb = new StringBuffer();
