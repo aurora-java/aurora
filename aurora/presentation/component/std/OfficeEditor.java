@@ -41,6 +41,9 @@ public class OfficeEditor extends Component {
 		String sourcetype = view.getString("sourcetype");
 		if(sourcetype!=null) addConfig("sourcetype",uncertain.composite.TextParser.parse(sourcetype, model));
 		
+		
+		String context_path = model.getObject("/request/@context_path").toString();
+		map.put("context_path", context_path);
 		map.put(CONFIG, getConfigString());
 	}
 	
