@@ -374,7 +374,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR = "backgroundColor";
 	private static final String PROPERTITY_PANE_BACKGROUND_BORDERWIDTH = "borderWidth";
 	private static final String PROPERTITY_PANE_BACKGROUND_OUTERRADIUS = "outerRadius";
-	private static final String PROPERTITY_PANE_BACKGROUND_INTERRADIUS = "interRadius";
+	private static final String PROPERTITY_PANE_BACKGROUND_INNERRADIUS = "innerRadius";
 	private static final String PROPERTITY_PANE_CENTER = "center";
 	private static final String PROPERTITY_PANE_ENDANGLE = "endAngle";
 	private static final String PROPERTITY_PANE_STARTANGLE = "startAngle";
@@ -556,8 +556,8 @@ public class Chart extends Component {
 		CompositeMap view = context.getView();
 		model = context.getModel();
 		
-		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+//		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+//		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		
 		String value = view.getString(PROPERTITY_SERIES_NAME.toLowerCase());
 		if(value==null)value = "name";
@@ -616,6 +616,13 @@ public class Chart extends Component {
 		if(null != value) map.put(key, new JSONFunction(value));		
 	}
 	
+	private void putGradientCfg(CompositeMap view,String key, Map map){
+		String value = view.getString(key.toLowerCase());
+		if(null != value){
+			String[] values = value.split(",");
+			map.put(key, new JSONFunction("{x1:"+values[0]+",y1:"+values[1]+",x2:"+values[2]+",y2:"+values[3]+"}"));
+		}
+	}
 	private void putArrayCfg(CompositeMap view,String key, Map map){
 		String value = view.getString(key.toLowerCase());
 		if(null != value){
@@ -672,7 +679,7 @@ public class Chart extends Component {
 		Map cfg = new HashMap();	
 		CompositeMap view = parent.getChild(key);
 		if(null != view){
-			putArrayCfg(view, "linearGradient", cfg);
+			putGradientCfg(view, "linearGradient", cfg);
 			putArrayCfg(view, "stops", cfg);
 			if(!cfg.isEmpty())
 				map.put(key, new JSONObject(cfg));
@@ -899,7 +906,7 @@ public class Chart extends Component {
 					putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
 					putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
 					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
-					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INTERRADIUS, cfg);
+					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INNERRADIUS, cfg);
 					array.put(cfg);
 				}
 				if(array.length() > 0)
@@ -1060,7 +1067,7 @@ public class Chart extends Component {
 						putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
 						putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
 						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
-						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INTERRADIUS, cfg);
+						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INNERRADIUS, cfg);
 						array.put(cfg);
 					}
 				}
