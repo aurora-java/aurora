@@ -330,6 +330,7 @@ public class DataSet extends Component {
 		String pf = uncertain.composite.TextParser.parse(dsc.getProcessFunction(),model);
 		if(!"".equals(pf)){
 			addConfig(DataSetConfig.PROPERTITY_PROCESS_FUNCTION, pf);
+			
 		}
 		map.put(CONFIG, getConfigString());
 	}

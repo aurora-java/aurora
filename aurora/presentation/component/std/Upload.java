@@ -86,6 +86,7 @@ public class Upload extends Component {
 		String context_path = model.getObject("/request/@context_path").toString();
 		map.put("context_path", context_path);
 		addConfig(UploadConfig.PROPERTITY_FILE_SIZE, new Integer(uc.getFileSize()));
+		addConfig(UploadConfig.PROPERTITY_TOTAL_COUNT, new Integer(uc.getTotalCount()));
 		addConfig(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		addConfig(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
 		addConfig(UploadConfig.PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uc.getUploadURL(context_path + "/atm_upload.svc"), model));
@@ -178,6 +179,7 @@ public class Upload extends Component {
 		
 		map.put(UploadConfig.PROPERTITY_BUTTON_WIDTH, new Integer(uc.getButtonWidth()));
 		map.put(UploadConfig.PROPERTITY_FILE_SIZE, new Integer(uc.getFileSize()));
+		map.put(UploadConfig.PROPERTITY_TOTAL_COUNT, new Integer(uc.getTotalCount()));
 		map.put(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		map.put(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
 		map.put(UploadConfig.PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uc.getUploadURL(context_path + "/atm_upload.svc"), model));

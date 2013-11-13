@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:procedure xmlns:p="uncertain.proc">
+<p:procedure xmlns:p="uncertain.proc" participants="aurora.service.exception.ExceptionHandler">
     <p:switch test="@success">
         <p:case Value="true">        	
             <p:action Name="InitService"/>
             <p:action Name="ParseParameter"/>
             <p:action Name="CreateModel"/>
-            <p:action Name="CreateView"/>
+            <p:action Name="CreateView"/> 
             <p:switch Test="@output">
                 <p:case Value="true">
                     <p:action Name="BuildOutputContent"/>
@@ -14,6 +14,12 @@
                     <p:action Name="DoDispatch"/>
                 </p:case>
             </p:switch>
+            <p:exception-handles>
+                <p:catch Exception="*">
+                    <p:action name="HandleException" />  
+                    <p:action name="CreateErrorResponse" />
+                </p:catch>
+            </p:exception-handles>
         </p:case>
         <p:case>
             <p:action Name="DoDispatch"/>

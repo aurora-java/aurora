@@ -13,6 +13,7 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_SOURCE_TYPE = "sourcetype";
 	public static final String PROPERTITY_PK_VALUE = "pkvalue";
 	public static final String PROPERTITY_TOTAL_FILE_SIZE = "totalfilesize";
+	public static final String PROPERTITY_TOTAL_COUNT = "totalcount";
 	public static final String PROPERTITY_FILE_SIZE = "filesize";
 	public static final String PROPERTITY_FILE_TYPE = "filetype";
 	public static final String PROPERTITY_BUTTON_WIDTH = "buttonwidth";
@@ -178,6 +179,14 @@ public class UploadConfig extends ComponentConfig {
 	
 	public void setTotalFileSize(int tfs){
 		putInt(PROPERTITY_TOTAL_FILE_SIZE, tfs);
+	}
+	
+	public int getTotalCount(){
+		return getInt(PROPERTITY_TOTAL_COUNT,0);
+	}
+	
+	public void setTotalCount(int count){
+		putInt(PROPERTITY_TOTAL_COUNT, count);
 	}
 	
 	
