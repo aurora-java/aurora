@@ -6,6 +6,7 @@ import java.util.Map;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -31,7 +32,7 @@ public class Tree extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "tree/Tree-min.css");
-		addJavaScript(session, context, "tree/Tree-min.js");
+		addJavaScript(session, context, "tree/Tree.js");
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
@@ -51,9 +52,11 @@ public class Tree extends Component {
 		}
 		/** Height属性**/
 		String height = tc.getHeightStr();
+		int h = 0;
 		if(!"".endsWith(height)) {
 			size += "height:"+height+"px;";
 			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);
+			h = Integer.parseInt(height);
 		}
 		
 		map.put("size", size);
@@ -69,9 +72,32 @@ public class Tree extends Component {
 		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField(model));
 		addConfig(TreeConfig.PROPERTITY_FIELD_ICON, tc.getIconField());
+		String searchField = tc.getSearchField(model);
+		if(null!=searchField && !"".equals(searchField)){
+			addConfig(TreeConfig.PROPERTITY_FIELD_SEARCH,searchField);
+			createSearchField(session,context);
+			h-=22;
+		}
+		if(h>0){
+			map.put("bodyheight", new Integer(h));
+		}
 		map.put(CONFIG, getConfigString());
 	}
 	
-	
+	private void createSearchField(BuildSession session, ViewContext context) throws IOException{
+		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
+		Map map = context.getMap();
+		Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+		CompositeMap textField = new CompositeMap("textField");
+		textField.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+		textField.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_search_field");
+		textField.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()-2));
+		try {
+			map.put("searchField", session.buildViewAsString(model, textField));
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
 	
 }

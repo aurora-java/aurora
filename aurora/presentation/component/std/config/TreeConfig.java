@@ -16,6 +16,7 @@ public class TreeConfig extends ComponentConfig {
 	public static final String PROPERTITY_FIELD_EXPAND = "expandfield";
 	public static final String PROPERTITY_FIELD_CHECKED = "checkfield";
 	public static final String PROPERTITY_FIELD_SEQUENCE = "sequencefield";
+	public static final String PROPERTITY_FIELD_SEARCH = "searchfield";
 	public static final String PROPERTITY_FIELD_ICON = "iconfield";
 	
 	private static final String DEFAULT_ID_FIELD = "id";
@@ -101,7 +102,13 @@ public class TreeConfig extends ComponentConfig {
     public void setIconField(String pf){
         putString(PROPERTITY_FIELD_ICON, pf);
     }
-    
+    public String getSearchField(CompositeMap model){
+    	String str = getString(PROPERTITY_FIELD_SEARCH);
+    	return uncertain.composite.TextParser.parse(str, model);
+    }
+    public void setSearchField(String sf){
+        putString(PROPERTITY_FIELD_SEARCH, sf);
+    }
     public boolean isShowCheckBox(){
     	return getBoolean(PROPERTITY_SHOWCHECKBOX, false);
     }
