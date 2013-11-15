@@ -32,7 +32,7 @@ public class Tree extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		super.onPreparePageContent(session, context);
 		addStyleSheet(session, context, "tree/Tree-min.css");
-		addJavaScript(session, context, "tree/Tree.js");
+		addJavaScript(session, context, "tree/Tree-min.js");
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
