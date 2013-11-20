@@ -26,7 +26,7 @@ public class Version {
     }
     
     public static int getBuild(){
-        return 1;
+        return 2;
     }
     
     public static void main(String[] args){
