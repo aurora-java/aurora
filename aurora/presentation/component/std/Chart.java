@@ -1155,7 +1155,7 @@ public class Chart extends Component {
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_SHOWINLEGEND, cfg);
 		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_SIZE, cfg);
 		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_SLICEDOFFSET, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
+		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STACKING, cfg);
 		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_STARTANGLE, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STEMCOLOR, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_STEMDASHSTYLE, cfg);
