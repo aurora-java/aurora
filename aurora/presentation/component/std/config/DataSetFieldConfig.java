@@ -61,6 +61,13 @@ public class DataSetFieldConfig extends ComponentConfig  {
     public boolean getRequired(){
     	return getBoolean(PROPERTITY_REQUIRED, false);
     }
+    public boolean getRequired(CompositeMap model){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_REQUIRED), model);
+		if(null == str||"".equals(str)){
+			return false;
+		}
+		return Boolean.valueOf(str).booleanValue();
+    }
     public void setRequired(boolean required){
     	putBoolean(PROPERTITY_REQUIRED, required);
     }
@@ -70,15 +77,28 @@ public class DataSetFieldConfig extends ComponentConfig  {
     public void setRequiredMessage(String requiredMessage){
     	putString(PROPERTITY_REQUIRED_MESSAGE, requiredMessage);
     }
-    
     public boolean getReadOnly(){
-    	return getBoolean(PROPERTITY_READONLY, false);
+		return getBoolean(PROPERTITY_READONLY, false);
+    }
+    public boolean getReadOnly(CompositeMap model){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_READONLY), model);
+		if(null == str||"".equals(str)){
+			return false;
+		}
+		return Boolean.valueOf(str).booleanValue();
     }
     public void setReadOnly(boolean readonly){
     	putBoolean(PROPERTITY_READONLY, readonly);
     }
     public boolean getEditable(){
     	return getBoolean(PROPERTITY_EDITABLE, true);
+    }
+    public boolean getEditable(CompositeMap model){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITABLE), model);
+		if(null == str||"".equals(str)){
+			return true;
+		}
+		return Boolean.valueOf(str).booleanValue();
     }
     public void setEditable(boolean editable){
     	putBoolean(PROPERTITY_EDITABLE, editable);
