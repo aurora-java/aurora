@@ -102,11 +102,12 @@ public class DataSet extends Component {
 				DataSetFieldConfig sdfc = DataSetFieldConfig.getInstance(field);
 
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_REQUIRED))
-					field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired());
-				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_READONLY))
-					field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly());
+					field.putBoolean(DataSetFieldConfig.PROPERTITY_REQUIRED, sdfc.getRequired(model));
+				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_READONLY)){
+					field.putBoolean(DataSetFieldConfig.PROPERTITY_READONLY, sdfc.getReadOnly(model));
+				}
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_EDITABLE))
-					field.putBoolean(DataSetFieldConfig.PROPERTITY_EDITABLE, sdfc.getEditable());
+					field.putBoolean(DataSetFieldConfig.PROPERTITY_EDITABLE, sdfc.getEditable(model));
 //				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_TOOLTIP))
 //					field.putString(DataSetFieldConfig.PROPERTITY_TOOLTIP, sdfc.getTooltip());
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_AUTO_COMPLETE))
