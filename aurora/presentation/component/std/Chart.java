@@ -675,11 +675,24 @@ public class Chart extends Component {
 		}
 	}
 	
-	private void putColorCfg(CompositeMap parent,String key, Map map){
+	private void putGradientColorCfg(CompositeMap parent,String key, Map map){
 		Map cfg = new HashMap();	
 		CompositeMap view = parent.getChild(key);
 		if(null != view){
 			putGradientCfg(view, "linearGradient", cfg);
+			putArrayCfg(view, "stops", cfg);
+			if(!cfg.isEmpty())
+				map.put(key, new JSONObject(cfg));
+		}else{
+			putStringCfg(parent, key, map);
+		}
+	}
+	
+	private void putColorCfg(CompositeMap parent,String key, Map map){
+		Map cfg = new HashMap();	
+		CompositeMap view = parent.getChild(key);
+		if(null != view){
+			putArrayCfg(view, "linearGradient", cfg);
 			putArrayCfg(view, "stops", cfg);
 			if(!cfg.isEmpty())
 				map.put(key, new JSONObject(cfg));
@@ -903,7 +916,7 @@ public class Chart extends Component {
 				while(it.hasNext()){
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
-					putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
+					putGradientColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
 					putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
 					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
 					putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INNERRADIUS, cfg);
@@ -1064,7 +1077,7 @@ public class Chart extends Component {
 					Map cfg = new HashMap();
 					CompositeMap pb = (CompositeMap)it.next();
 					if(PROPERTITY_PANE_BACKGROUND.equals(pb.getName())){
-						putColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
+						putGradientColorCfg(pb, PROPERTITY_PANE_BACKGROUND_BACKGROUNDCOLOR, cfg);
 						putNumberCfg(pb, PROPERTITY_PANE_BACKGROUND_BORDERWIDTH, cfg);
 						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_OUTERRADIUS, cfg);
 						putStringCfg(pb, PROPERTITY_PANE_BACKGROUND_INNERRADIUS, cfg);
