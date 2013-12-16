@@ -113,7 +113,7 @@ public class DataSet extends Component {
 				if(null!=field.getString(DataSetFieldConfig.PROPERTITY_AUTO_COMPLETE))
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_AUTO_COMPLETE, sdfc.getAutoComplete());
 				boolean fuzzyFetch= sdfc.getFuzzyFetch()==null?view_config.getDefaultFuzzyFetch():sdfc.getFuzzyFetch();
-				if(fuzzyFetch)
+				if(fuzzyFetch || sdfc.getFuzzyFetch() != null)
 					field.putBoolean(DataSetFieldConfig.PROPERTITY_FUZZY_FETCH, fuzzyFetch);
 				if(sdfc.getDefaultValue()!=null)field.putString(DataSetFieldConfig.PROPERTITY_DEFAULTVALUE, session.parseString(sdfc.getDefaultValue(), model));
 				

@@ -121,8 +121,12 @@ public class GridConfig extends ComponentConfig {
 	}
 	
 	
-	public boolean hasNavBar(){
-		return getBoolean(PROPERTITY_NAVBAR, false);
+	public boolean hasNavBar(CompositeMap model){
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_NAVBAR), model);
+		if(null == str||"".equals(str)){
+			return false;
+		}
+		return Boolean.valueOf(str).booleanValue();
 	}
 	public void setNavBar(boolean nb){
 		putBoolean(PROPERTITY_NAVBAR, nb);
