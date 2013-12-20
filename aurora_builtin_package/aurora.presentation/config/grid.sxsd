@@ -24,7 +24,7 @@
                 <ss:element maxOccurs="1" minOccurs="0" ref="a:toolBar"/>
             </ss:elements>
             <ss:extensions>
-                <ss:extension base="a:BaseViewComponent"/>
+                <ss:extension base="a:Component"/>
                 <ss:extension base="a:ComplexField"/>
                 <ss:extension base="a:ListField"/>
             </ss:extensions>
