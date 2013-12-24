@@ -289,7 +289,7 @@ public class DataSet extends Component {
 		}
 		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, uncertain.composite.TextParser.parse(dsc.getBindTarget(), model));
 		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, uncertain.composite.TextParser.parse(dsc.getBindName(), model));
-		if(dsc.isFetchAll())addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll()));
+		if(dsc.isFetchAll(model))addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll(model)));
 		String autoQuery = dsc.getString(DataSetConfig.PROPERTITY_AUTO_QUERY,"false");
 		Boolean isAutoQuery = Boolean.FALSE;
 		if(!"false".equals(autoQuery)){
@@ -299,7 +299,7 @@ public class DataSet extends Component {
 			}
 		}
 		if(isAutoQuery.booleanValue())addConfig(DataSetConfig.PROPERTITY_AUTO_QUERY, isAutoQuery);
-		if(dsc.isAutoPageSize())addConfig(DataSetConfig.PROPERTITY_AUTO_PAGE_SIZE, new Boolean(dsc.isAutoPageSize()));
+		if(dsc.isAutoPageSize(model))addConfig(DataSetConfig.PROPERTITY_AUTO_PAGE_SIZE, new Boolean(dsc.isAutoPageSize(model)));
 		addConfig(DataSetConfig.PROPERTITY_PAGEID, session.getSessionContext().getString("pageid", ""));
 		addConfig(DataSetConfig.PROPERTITY_TOTALCOUNT_FIELD, dsc.getTotalCountField());
 		addConfig(DataSetConfig.PROPERTITY_MODIFIED_CHECK, dsc.isModifiedCheck(mDefaultModifiedCheck));

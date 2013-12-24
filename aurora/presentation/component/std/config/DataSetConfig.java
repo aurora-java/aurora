@@ -146,8 +146,9 @@ public class DataSetConfig extends ComponentConfig {
 	public void setFetchAll(boolean fetchAll){
 		putBoolean(PROPERTITY_FETCHALL, fetchAll);
 	}
-	public boolean isFetchAll(){
-		return getBoolean(PROPERTITY_FETCHALL, false);
+	public boolean isFetchAll(CompositeMap model){
+		String fetchAllStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_FETCHALL,"false"),model);
+		return "true".equals(fetchAllStr);
 	}
 	
 	public int getMaxPageSize(){
@@ -217,8 +218,9 @@ public class DataSetConfig extends ComponentConfig {
     public void setAutoPageSize(boolean autoPageSize){
 		putBoolean(PROPERTITY_AUTO_PAGE_SIZE, autoPageSize);
 	}
-	public boolean isAutoPageSize(){
-		return getBoolean(PROPERTITY_AUTO_PAGE_SIZE, false);
+	public boolean isAutoPageSize(CompositeMap model){
+		String autoPageSize = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_PAGE_SIZE,"false"),model);
+		return "true".equals(autoPageSize);
 	}    
     public void setCanQuery(boolean canquery){
 		putBoolean(PROPERTITY_CAN_QUERY, canquery);
