@@ -20,6 +20,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
+import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.NavBarConfig;
@@ -122,6 +123,8 @@ public class Grid extends Component {
 		addConfig(GridConfig.PROPERTITY_SUBMASK, gc.getSubMask() == null ? view_config.getDefaultGridSubmask() : gc.getSubMask());
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
+		Boolean editorborder= gc.hasEditorBorder(model)==null?view_config.getDefaultEditorBorder():gc.hasEditorBorder(model);
+		if(!editorborder.booleanValue())addConfig(GridConfig.PROPERTITY_EDITOR_BORDER, editorborder);
 		
 		processRowNumber(map,view);
 		processSelectable(map,view);

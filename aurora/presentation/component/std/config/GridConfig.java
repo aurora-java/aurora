@@ -22,6 +22,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_ROWNUMBER = "showrownumber";
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	public static final String PROPERTITY_SUBMASK = "submask";
+	public static final String PROPERTITY_EDITOR_BORDER = "editorborder";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -130,6 +131,16 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setNavBar(boolean nb){
 		putBoolean(PROPERTITY_NAVBAR, nb);
+	}
+	public Boolean hasEditorBorder(CompositeMap model){
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITOR_BORDER), model);
+		if(null == str||"".equals(str)){
+			return null;
+		}
+		return Boolean.valueOf(str);
+	}
+	public void setEditorBorder(boolean nb){
+		putBoolean(PROPERTITY_EDITOR_BORDER, nb);
 	}
 	public CompositeMap getColumns(){
 		CompositeMap context = getObjectContext();

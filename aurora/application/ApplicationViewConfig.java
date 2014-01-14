@@ -27,6 +27,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_GRID_SUBMASK = "defaultgridsubmask";
 	public static final String KEY_DEFAULT_FUZZY_FETCH = "defaultfuzzyfetch";
 	public static final String KEY_DEFAULT_CLIENT_RESIZE = "defaultclientresize";
+	public static final String KEY_DEFAULT_EDITOR_BORDER = "defaulteditorborder";
 	
 	private static final String DEFAULT_THEME = "default";
 
@@ -143,6 +144,13 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public void setDefaultAutoAppend(boolean autoAppend) {
 		putBoolean(KEY_DEFAULT_AUTO_APPEND, autoAppend);
+	}
+	public boolean getDefaultEditorBorder() {
+		return getBoolean(KEY_DEFAULT_EDITOR_BORDER,true);
+	}
+	
+	public void setDefaultEditorBorder(boolean editorborder) {
+		putBoolean(KEY_DEFAULT_EDITOR_BORDER, editorborder);
 	}
 
 	public int getDefaultPageSize() {
