@@ -21,6 +21,7 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_DELETE_URL = "deleteurl";
 	public static final String PROPERTITY_DOWNLOAD_URL = "downloadurl";
 	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
+	public static final String PROPERTITY_DELETE_CONTROL = "deletecontrol";
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
 	public static final String PROPERTITY_SORT_SQL = "sortsql";
@@ -137,6 +138,14 @@ public class UploadConfig extends ComponentConfig {
 	
 	public void setShowDelete(boolean showDelete){
 		putBoolean(PROPERTITY_SHOW_DELETE, showDelete);
+	}
+	
+	public boolean getDeleteControl(){
+		return getBoolean(PROPERTITY_DELETE_CONTROL,false);
+	}
+	
+	public void setIsDeleteField(boolean dc){
+		putBoolean(PROPERTITY_DELETE_CONTROL, dc);
 	}
 	
 	public boolean isRequireSession(){

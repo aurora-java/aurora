@@ -89,6 +89,8 @@ public class Upload extends Component {
 		addConfig(UploadConfig.PROPERTITY_TOTAL_COUNT, new Integer(uc.getTotalCount()));
 		addConfig(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		addConfig(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
+		addConfig(UploadConfig.PROPERTITY_DELETE_CONTROL, uc.getDeleteControl());
+		
 		addConfig(UploadConfig.PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uc.getUploadURL(context_path + "/atm_upload.svc"), model));
 		addConfig(UploadConfig.PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(uc.getDeleteURL(context_path + "/atm_delete.svc"), model));
 		addConfig(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
@@ -104,6 +106,7 @@ public class Upload extends Component {
 			config.put(ComponentConfig.PROPERTITY_ID, uid);
 			config.put(ComponentConfig.PROPERTITY_BINDTARGET, uc.getId() + "_ds");
 			config.put(UploadConfig.PROPERTITY_SHOW_DELETE, uc.isShowDelete());
+			config.put(UploadConfig.PROPERTITY_DELETE_CONTROL, uc.getDeleteControl());
 			config.put(UploadConfig.PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(uc.getDeleteURL(context_path + "/atm_delete.svc"), model));
 			config.put(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
 			
@@ -133,7 +136,9 @@ public class Upload extends Component {
 		
 		if(!uc.isShowDelete()) {
 			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmNotDeleteRenderer");
-		}else {
+		} else if(uc.getDeleteControl()){
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmDeleteControlRenderer");
+		} else {
 			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");
 		}
 		
