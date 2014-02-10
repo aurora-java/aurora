@@ -49,7 +49,7 @@ public class ScreenTitle implements IViewBuilder {
 		sb.append("<span class='");
 		sb.append(DEFAULT_CLASS);
 		sb.append("'>");
-		sb.append(title);
+		sb.append(session.getLocalizedPrompt(title));
 		sb.append("</span>");
 		session.getWriter().write(sb.toString());
 		
