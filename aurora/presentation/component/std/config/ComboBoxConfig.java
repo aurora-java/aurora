@@ -11,6 +11,7 @@ public class ComboBoxConfig extends InputFieldConfig {
 	public static final String PROPERTITY_POPWIDTH = "popwidth";
 	public static final String PROPERTITY_RENDERER = "displayrenderer";
 	public static final String PROPERTITY_FETCH_RECORD = "fetchrecord";
+	public static final String PROPERTITY_BLANK_OPTION = "blankoption";
 	
 	public static ComboBoxConfig getInstance(){
 		ComboBoxConfig model = new ComboBoxConfig();
@@ -35,6 +36,12 @@ public class ComboBoxConfig extends InputFieldConfig {
 	}
 	public void setFetchRecord(boolean fetchrecord){
 		putBoolean(PROPERTITY_FETCH_RECORD, fetchrecord);
+	}
+	public boolean isBlankOption(){
+		return getBoolean(PROPERTITY_BLANK_OPTION,false);
+	}
+	public void setBlankOption(boolean blankopton){
+		putBoolean(PROPERTITY_FETCH_RECORD, blankopton);
 	}
 	public boolean isTransformCharacter(){
         return getBoolean(PROPERTITY_CHARA_TRANSFORM, false);

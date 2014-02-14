@@ -35,6 +35,7 @@
                 <ss:attribute name="valueField" document="ComboBox的valueField"/>
                 <ss:attribute name="displayField" document="ComboBox的displayfield"/>
                 <ss:attribute name="options" document="ComboBox的数据源"/>
+                <ss:attribute name="blankOption" document="空选项" default="false" type="ss:boolean"/>
             </ss:attributes>
         </ss:element>
         <ss:element name="a:numberField" document="数字输入框">

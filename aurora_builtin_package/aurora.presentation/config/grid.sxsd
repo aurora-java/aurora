@@ -15,6 +15,7 @@
                 <ss:attribute name="canPaste" default="false" document="是否允許使用粘贴功能来增加整行，该功能只有在IE下才有效。" type="ss:boolean"/>
                 <ss:attribute name="rowRenderer" document="通过回调函数返回的样式表渲染指定行\n回调函数function(record,rowIndex){return css}\n返回值css值可以是class或者style字符串,也可以是class和style字符串数组"/>
                 <ss:attribute name="submask" document="控制grid在dataset提交时是否被遮盖" type="ss:boolean"/>
+                <ss:attribute name="editorBorder" document="输入框是否有边框" default="true" type="ss:boolean"/>
             </ss:attributes>
             <ss:arrays>
                 <ss:array name="a:columns" document="列配置" indexField="name" type="a:column"/>
