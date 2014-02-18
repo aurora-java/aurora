@@ -514,6 +514,26 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_ZINDEX = "zIndex";
 	private static final String PROPERTITY_PLOTOPTIONS_ZTHRESHOLD = "zThreshold";
 	
+	private static final String PROPERTITY_SERIESLIST = "seriesList";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM = "seriesItem";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATAS = "seriesDatas";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA = "seriesData";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_COLOR = "color";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DRILLDOWN = "drilldown";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_LEGENDINDEX = "legendIndex";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_NAME = "name";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED = "sliced";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X = "x";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y = "y";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_INDEX = "index";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_LEGENDINDEX = "legendIndex";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_NAME = "name";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_STACK = "stack";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_TYPE = "type";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_XAXIS = "xAxis";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_YAXIS = "yAxis";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_ZINDEX = "zIndex";
+	
 	private static final String PROPERTITY_COLORS = "colors";
 	
 	private CompositeMap model;
@@ -556,8 +576,11 @@ public class Chart extends Component {
 		CompositeMap view = context.getView();
 		model = context.getModel();
 		
-//		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
-//		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+		String bindTarget = view.getString(ComponentConfig.PROPERTITY_BINDTARGET);
+		if (null!=bindTarget && !"".equals(bindTarget)) {
+			bindTarget = uncertain.composite.TextParser.parse(bindTarget, model);
+			map.put(BINDING, new String("$('" + id + "').bind('" + bindTarget + "');\n"));
+		}
 		
 		String value = view.getString(PROPERTITY_SERIES_NAME.toLowerCase());
 		if(value==null)value = "name";
@@ -565,7 +588,7 @@ public class Chart extends Component {
 		map.put("contextPath", model.getObject("/request/@context_path").toString());
 		
 		
-		processChartConfig(context);
+		processChartConfig(context,bindTarget);
 		
 		JSONObject config = getConfig();
 		
@@ -725,7 +748,7 @@ public class Chart extends Component {
 		}
 	}
 	
-	private void processChartConfig(ViewContext context){
+	private void processChartConfig(ViewContext context,String bindTarget){
 		CompositeMap view = context.getView();
 		Map chart = new HashMap();
 		Map map = context.getMap();	
@@ -745,6 +768,7 @@ public class Chart extends Component {
 		processNavigation(view);
 		processPane(view);
 		processPlotOptions(view);
+		processSeries(view,bindTarget);
 		processSubTitle(view);
 		processTitle(view);
 		processTooltip(view);
@@ -884,7 +908,7 @@ public class Chart extends Component {
 			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_ALIGN,cfg);
 			putBooleanCfg(view,PROPERTITY_BUTTON_OPTIONS_ENABLED,cfg);
 			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_HEIGHT,cfg);
-			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOL,cfg);
+			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOL,cfg,model);
 			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLFILL,cfg);
 			putNumberCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLSIZE,cfg);
 			putStringCfg(view,PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKE,cfg);
@@ -1110,6 +1134,89 @@ public class Chart extends Component {
 				addConfig(PROPERTITY_PLOTOPTIONS, new JSONObject(cfg));
 		}
 	}
+	private void processSeries(CompositeMap parent,String bindTarget) {
+		CompositeMap view = parent.getChild(PROPERTITY_SERIESLIST);
+		if(null != view) {
+			List children = view.getChilds();
+			if(children!=null){
+				JSONArray array = new JSONArray();
+				Iterator it = children.iterator();
+				while(it.hasNext()){
+					Map cfg = new HashMap();
+					CompositeMap pb = (CompositeMap)it.next();
+					if(PROPERTITY_SERIESLIST_SERIESITEM.equals(pb.getName())){
+						createSeriesData(pb,cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_INDEX, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_LEGENDINDEX, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_NAME, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_STACK, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_TYPE, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_XAXIS, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_YAXIS, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_ZINDEX, cfg);
+						array.put(cfg);
+					}
+				}
+				if(array.length() > 0)
+					addConfig(null==bindTarget||"".equals(bindTarget)?"series":PROPERTITY_SERIESLIST, array);
+			}
+		}
+	}
+	private void createSeriesData(CompositeMap parent, Map map){
+		CompositeMap view = parent.getChild(PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATAS);
+		List children = view.getChilds();
+		if(children!=null){
+			JSONArray array = new JSONArray();
+			Iterator it = children.iterator();
+			while(it.hasNext()){
+				Map cfg = new HashMap();
+				CompositeMap pb = (CompositeMap)it.next();
+				if(PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA.equals(pb.getName())){
+					putColorCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_COLOR, cfg);
+					createPlotOptionDataLabels(pb, cfg);
+					putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DRILLDOWN, cfg);
+					putEvents(pb, cfg);
+					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_LEGENDINDEX, cfg);
+					createPlotOptionMarker(pb, cfg, true);
+					putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_NAME, cfg);
+					putBooleanCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED, cfg);
+					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X, cfg);
+					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y, cfg);
+					String text = pb.getText();
+					if(cfg.isEmpty()){
+						if(null==text || "".equals(text)){
+							array.put(text);
+						}else{
+							try{
+								array.put(new Integer(text));
+							}catch (NumberFormatException e) {
+								String[] strs = text.split(",");
+								if(strs.length>1){
+									StringBuffer sb = new StringBuffer("[");
+									for(int i=0;i<strs.length;i++){
+										try{
+											sb.append(new Integer(strs[i]));
+										}catch (NumberFormatException ee) {
+											sb.append("\""+strs[i]+"\"");
+										}
+										if(i!=strs.length-1)sb.append(",");
+									}
+									sb.append("]");
+									array.put(new JSONFunction(sb.toString()));
+								}else{
+									array.put(text);
+								}
+							}
+						}
+					}else{
+						array.put(cfg);
+					}
+				}
+			}
+			if(array.length() > 0)
+				map.put("data", array);
+		}
+	}
 	private JSONObject createPlotOption(CompositeMap view){
 		Map cfg = new HashMap();
 		
@@ -1246,7 +1353,7 @@ public class Chart extends Component {
 			if(includeStates){
 				createPlotOptionStates(view,cfg,true);
 			}
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg,model);
 			if(!cfg.isEmpty())
 				map.put(PROPERTITY_PLOTOPTIONS_MARKER, new JSONObject(cfg));
 		}
