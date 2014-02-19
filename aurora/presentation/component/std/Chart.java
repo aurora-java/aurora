@@ -1154,6 +1154,7 @@ public class Chart extends Component {
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_XAXIS, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_YAXIS, cfg);
 						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_ZINDEX, cfg);
+						createPlotOption(pb,cfg);
 						array.put(cfg);
 					}
 				}
@@ -1164,62 +1165,67 @@ public class Chart extends Component {
 	}
 	private void createSeriesData(CompositeMap parent, Map map){
 		CompositeMap view = parent.getChild(PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATAS);
-		List children = view.getChilds();
-		if(children!=null){
-			JSONArray array = new JSONArray();
-			Iterator it = children.iterator();
-			while(it.hasNext()){
-				Map cfg = new HashMap();
-				CompositeMap pb = (CompositeMap)it.next();
-				if(PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA.equals(pb.getName())){
-					putColorCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_COLOR, cfg);
-					createPlotOptionDataLabels(pb, cfg);
-					putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DRILLDOWN, cfg);
-					putEvents(pb, cfg);
-					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_LEGENDINDEX, cfg);
-					createPlotOptionMarker(pb, cfg, true);
-					putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_NAME, cfg);
-					putBooleanCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED, cfg);
-					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X, cfg);
-					putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y, cfg);
-					String text = pb.getText();
-					if(cfg.isEmpty()){
-						if(null==text || "".equals(text)){
-							array.put(text);
-						}else{
-							try{
-								array.put(new Integer(text));
-							}catch (NumberFormatException e) {
-								String[] strs = text.split(",");
-								if(strs.length>1){
-									StringBuffer sb = new StringBuffer("[");
-									for(int i=0;i<strs.length;i++){
-										try{
-											sb.append(new Integer(strs[i]));
-										}catch (NumberFormatException ee) {
-											sb.append("\""+strs[i]+"\"");
+		if(null!=view){
+			List children = view.getChilds();
+			if(children!=null){
+				JSONArray array = new JSONArray();
+				Iterator it = children.iterator();
+				while(it.hasNext()){
+					Map cfg = new HashMap();
+					CompositeMap pb = (CompositeMap)it.next();
+					if(PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA.equals(pb.getName())){
+						putColorCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_COLOR, cfg);
+						createPlotOptionDataLabels(pb, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DRILLDOWN, cfg);
+						putEvents(pb, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_LEGENDINDEX, cfg);
+						createPlotOptionMarker(pb, cfg, true);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_NAME, cfg);
+						putBooleanCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X, cfg);
+						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y, cfg);
+						String text = pb.getText();
+						if(cfg.isEmpty()){
+							if(null==text || "".equals(text)){
+								array.put(text);
+							}else{
+								try{
+									array.put(new Integer(text));
+								}catch (NumberFormatException e) {
+									String[] strs = text.split(",");
+									if(strs.length>1){
+										StringBuffer sb = new StringBuffer("[");
+										for(int i=0;i<strs.length;i++){
+											try{
+												sb.append(new Integer(strs[i]));
+											}catch (NumberFormatException ee) {
+												sb.append("\""+strs[i]+"\"");
+											}
+											if(i!=strs.length-1)sb.append(",");
 										}
-										if(i!=strs.length-1)sb.append(",");
+										sb.append("]");
+										array.put(new JSONFunction(sb.toString()));
+									}else{
+										array.put(text);
 									}
-									sb.append("]");
-									array.put(new JSONFunction(sb.toString()));
-								}else{
-									array.put(text);
 								}
 							}
+						}else{
+							array.put(cfg);
 						}
-					}else{
-						array.put(cfg);
 					}
 				}
+				if(array.length() > 0)
+					map.put("data", array);
 			}
-			if(array.length() > 0)
-				map.put("data", array);
 		}
 	}
+	
 	private JSONObject createPlotOption(CompositeMap view){
 		Map cfg = new HashMap();
-		
+		return createPlotOption(view,cfg);
+	}
+	private JSONObject createPlotOption(CompositeMap view,Map cfg){
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ALLOWPOINTSELECT, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ANIMATION, cfg);
 		putStringCfg(view, PROPERTITY_PLOTOPTIONS_BORDERCOLOR, cfg);
