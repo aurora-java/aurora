@@ -58,6 +58,7 @@
                 <ss:element ref="a:credits"/>
                 <ss:element ref="a:chartLabels"/>
                 <ss:element ref="a:legend"/>
+                <ss:element ref="a:navigation"/>
                 <ss:element ref="a:pane"/>
                 <ss:element ref="a:plotOptions"/>
                 <ss:element ref="a:resetZoomButton"/>
@@ -139,8 +140,8 @@
                 <ss:attribute name="symbolY" default="10.5" document="图标y轴坐标" type="ss:int"/>
                 <ss:attribute name="text" document="文本" type="ss:String"/>
                 <ss:attribute name="theme" document="皮肤" type="ss:String"/>
-                <ss:attribute name="width" default="24" document="宽度" type="ss:int"/>
                 <ss:attribute name="verticalAlign" default="top" document="垂直对齐" type="a:vAlignType"/>
+                <ss:attribute name="width" default="24" document="宽度" type="ss:int"/>
                 <ss:attribute name="y" default="0" document="y轴坐标" type="ss:int"/>
             </ss:attributes>
         </ss:element>
@@ -233,6 +234,16 @@
                 <ss:attribute name="style" document="文字样式" type="ss:String"/>
                 <ss:attribute name="text" document="文本" type="ss:String"/>
             </ss:attributes>
+        </ss:element>
+        <ss:element name="a:navigation">
+            <ss:attributes>
+                <ss:attribute name="menuItemHoverStyle" document="菜单项鼠标掠过样式" type="ss:String"/>
+                <ss:attribute name="menuItemStyle" document="菜单项样式" type="ss:String"/>
+                <ss:attribute name="menuStyle" document="菜单样式" type="ss:String"/>
+            </ss:attributes>
+            <ss:elements>
+                <ss:element ref="a:buttonOptions"/>
+            </ss:elements>
         </ss:element>
         <ss:element name="a:pane">
             <ss:attributes>

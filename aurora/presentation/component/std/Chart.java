@@ -619,12 +619,16 @@ public class Chart extends Component {
 				map.put(key, valuestr);
 				return;
 			}
-			if(valuestr.indexOf(".") != -1){
-				Double value = view.getDouble(key.toLowerCase());
-				if(null != value) map.put(key, value);
-			}else{
-				Long value = view.getLong(key.toLowerCase());
-				if(null != value) map.put(key, value);
+			try{
+				if(valuestr.indexOf(".") != -1){
+					Double value = view.getDouble(key.toLowerCase());
+					if(null != value) map.put(key, value);
+				}else{
+					Long value = view.getLong(key.toLowerCase());
+					if(null != value) map.put(key, value);
+				}
+			}catch (NumberFormatException e) {
+				map.put(key, new JSONFunction(valuestr));
 			}
 		}
 	}
