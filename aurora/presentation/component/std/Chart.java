@@ -1153,7 +1153,7 @@ public class Chart extends Component {
 						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_INDEX, cfg);
 						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_LEGENDINDEX, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_NAME, cfg);
-						putNumberCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_STACK, cfg);
+						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_STACK, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_TYPE, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_XAXIS, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_YAXIS, cfg);
