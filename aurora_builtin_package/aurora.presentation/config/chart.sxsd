@@ -435,7 +435,7 @@
                 <ss:extension base="a:arearange"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="a:bar" document="栅型图">
+        <ss:element name="a:bar" document="长条图">
             <ss:attributes>
                 <ss:attribute name="borderColor" default="#FFFFFF" document="边框颜色" type="ss:String"/>
                 <ss:attribute name="cropThreshold" default="50" document="修剪的阈值" type="ss:int"/>
@@ -703,6 +703,7 @@
                 <ss:attribute name="index" document="在Chart中的序号" type="ss:int"/>
                 <ss:attribute name="legendIndex" document="在legend中的序号" type="ss:int"/>
                 <ss:attribute name="name" document="名称，相当于prompt" type="ss:String"/>
+                <ss:attribute name="negative" document="是否将值转换成负值" type="ss:boolean"/>
                 <ss:attribute name="stack" document="堆叠分组编号" type="ss:int"/>
                 <ss:attribute name="type" document="类型" type="ss:String"/>
                 <ss:attribute name="xAxis" document="x轴的序号" type="ss:int"/>
