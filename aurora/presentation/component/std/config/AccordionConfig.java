@@ -15,13 +15,13 @@ public class AccordionConfig extends ComponentConfig {
 
 	public static AccordionConfig getInstance() {
 		AccordionConfig model = new AccordionConfig();
-		model.initialize(GridConfig.createContext(null, TAG_NAME));
+		model.initialize(AccordionConfig.createContext(null, TAG_NAME));
 		return model;
 	}
 
 	public static AccordionConfig getInstance(CompositeMap context) {
 		AccordionConfig model = new AccordionConfig();
-		model.initialize(GridConfig.createContext(context, TAG_NAME));
+		model.initialize(AccordionConfig.createContext(context, TAG_NAME));
 		return model;
 	}
 

@@ -32,6 +32,7 @@ public class ComponentConfig extends DynamicObject {
 		context.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		if (map != null) {
 			context.copy(map);
+			context.setParent(map.getParent());
 		}
 		return context;
 	}
