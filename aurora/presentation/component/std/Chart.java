@@ -624,7 +624,7 @@ public class Chart extends Component {
 		if (null != value) {
 			if ("null".equals(value))
 				map.put(key, null);
-			else if (value.indexOf(".") != -1)
+			else if (value.matches("Aurora\\..*|\\$A\\..*|window[\\.\\[].*"))
 				map.put(key, new JSONFunction(value));
 			else
 				map.put(key, value);
@@ -638,7 +638,7 @@ public class Chart extends Component {
 			value = TextParser.parse(value, model);
 			if ("null".equals(value))
 				map.put(key, null);
-			else if (value.indexOf(".") != -1)
+			else if (value.matches("Aurora\\..*|\\$A\\..*|window[\\.\\[].*"))
 				map.put(key, new JSONFunction(value));
 			else
 				map.put(key, value);
