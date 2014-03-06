@@ -59,8 +59,8 @@ public class SourceCodeUtil {
 		File webHomeFile = configDirectory.getParentFile();
 		return webHomeFile;
 	}
-	public static ConfigurationFileException createAttributeMissingException(String keyAttrib,String kyeValue,String missingAttrib,ILocatable iLocatable){
-		return new ConfigurationFileException(SourceCodeUtil.ATTRIBUTE_MISSING_CODE,new String[]{keyAttrib,kyeValue,missingAttrib},iLocatable);
+	public static ConfigurationFileException createAttributeMissingException(String keyAttrib,String keyValue,String missingAttrib,ILocatable iLocatable){
+		return new ConfigurationFileException(SourceCodeUtil.ATTRIBUTE_MISSING_CODE,new String[]{keyAttrib,keyValue,missingAttrib},iLocatable);
 	}
 	public static ConfigurationFileException createNodeMissingException(String attrib,String value,ILocatable iLocatable){
 		return new ConfigurationFileException(SourceCodeUtil.NODE_MISSING,new String[]{attrib,value},iLocatable);
