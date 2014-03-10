@@ -166,8 +166,9 @@ public abstract class AbstractQueryAction  extends AbstractDeferredEntry {
             // write data to cache
             if(is_cache){
                 CompositeMap d = (CompositeMap)consumer.getResult();
-                d.setParent(null);
-                cache_for_data.setValue(cache_key, d);
+                CompositeMap copied_data = (CompositeMap)d.clone();
+                copied_data.setParent(null);
+                cache_for_data.setValue(cache_key, copied_data);
             }
             /*
             if( transform_list != null && consumer instanceof  IRootMapAcceptable){ 
