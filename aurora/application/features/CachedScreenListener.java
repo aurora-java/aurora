@@ -121,7 +121,8 @@ public class CachedScreenListener implements E_DetectProcedure {
             setCacheKey(svc.getContextMap(), key);
             Object content = mCache.getValue(key);
             if (content != null) {
-                result.content = content;
+//            	result.content = content;
+                result.content = TextParser.parse((String)content, svc.getContextMap());
                 result.hit = true;
             }
         }

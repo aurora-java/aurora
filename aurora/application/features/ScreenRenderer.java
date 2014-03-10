@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import uncertain.cache.ICache;
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.event.Configuration;
 import uncertain.event.EventModel;
 import uncertain.event.RuntimeContext;
@@ -213,12 +214,14 @@ public class ScreenRenderer implements IFeature {
             // write cache if necessary
             if(mIsCache && mCacheProvider!=null){
                 String output = baos.toString();
+                output = output.replace("$c{", "${");
                 ICache cache = mCacheProvider.getCacheForResponse();
                 //String key = CachedScreenListener.getFullKey(mCacheProvider, mService, mScreenCacheKey);
                 String key = CachedScreenListener.getCacheKey(context);
                 if(key!=null)
                     cache.setValue(key, output);
                 PrintWriter response_writer = response.getWriter();
+                output = TextParser.parse(output, context);
                 response_writer.write(output);
                 response_writer.flush();
             }
@@ -230,7 +233,6 @@ public class ScreenRenderer implements IFeature {
             session.getWriter().flush();
         }
 
-        
         return EventModel.HANDLE_NO_SAME_SEQUENCE;
     }
 
