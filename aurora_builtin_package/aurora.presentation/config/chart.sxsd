@@ -567,7 +567,7 @@
                 <ss:extension base="a:PlotOptionsAttribute7"/>
             </ss:extensions>
         </ss:element>
-        <ss:element name="a:scatter" document="离散图">
+        <ss:element name="a:scatter" document="散点图">
             <ss:attributes>
                 <ss:attribute name="dashStyle" document="线的样式" type="a:dashStyleType"/>
                 <ss:attribute name="lineWidth" default="0" document="线宽" type="ss:int"/>
@@ -619,7 +619,11 @@
                 <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
                 <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
                 <ss:attribute name="color" docement="颜色" type="ss:String"/>
+                <ss:attribute name="connectorColor" docement="连线的颜色（饼图专有属性）" type="ss:String"/>
+                <ss:attribute name="connectorPadding" docement="连线的边距（饼图专有属性）" type="ss:String"/>
+                <ss:attribute name="connectorWidth" docement="连线的宽度（饼图专有属性）" type="ss:String"/>
                 <ss:attribute name="crop" docement="修剪超出plot区域的datalabel" type="ss:boolean"/>
+                <ss:attribute name="distance" docement="距离（饼图专有属性）" type="ss:int"/>
                 <ss:attribute name="inside" docement="是否在图形内部" type="ss:boolean"/>
                 <ss:attribute name="padding" document="内边距" type="ss:int"/>
                 <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>

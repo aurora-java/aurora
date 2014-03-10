@@ -404,9 +404,11 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORPADDING = "connectorPadding";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORWIDTH = "connectorWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CROP = "crop";
-	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE = "inside";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_DISTANCE = "distance";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED = "enabled";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_FORMAT = "format";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER = "formatter";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE = "inside";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING = "padding";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_SHADOW = "shadow";
@@ -691,12 +693,13 @@ public class Chart extends Component {
 		String value = view.getString(key.toLowerCase());
 		if (null != value) {
 			String[] values = value.split(",");
-			if("linearGradient".equals(key)){
-				map.put(key,
-					new JSONFunction("{x1:" + values[0] + ",y1:" + values[1] + ",x2:" + values[2] + ",y2:" + values[3] + "}"));
-			}else if("radialGradient".equals(key)){
-				map.put(key,
-						new JSONFunction("{cx:" + values[0] + ",cy:" + values[1] + ",r:" + values[2] + "}"));
+			if ("linearGradient".equals(key)) {
+				map.put(key, new JSONFunction("{x1:" + values[0] + ",y1:"
+						+ values[1] + ",x2:" + values[2] + ",y2:" + values[3]
+						+ "}"));
+			} else if ("radialGradient".equals(key)) {
+				map.put(key, new JSONFunction("{cx:" + values[0] + ",cy:"
+						+ values[1] + ",r:" + values[2] + "}"));
 			}
 		}
 	}
@@ -1299,7 +1302,8 @@ public class Chart extends Component {
 						putNumberCfg(pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y,
 								cfg);
-						putNumberCfg(pb,
+						putNumberCfg(
+								pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DATAINDEX,
 								cfg);
 						String text = pb.getText();
@@ -1365,7 +1369,7 @@ public class Chart extends Component {
 		createPlotOptionDataLabels(view, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DISPLAYNEGATIVE, cfg);
 		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENABLEMOUSETRACKING, cfg);
-		putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_ENDANGLE, cfg);
+		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_ENDANGLE, cfg);
 		putEvents(view, cfg);
 		putColorCfg(view, PROPERTITY_PLOTOPTIONS_FILLCOLOR, cfg);
 		putNumberCfg(view, PROPERTITY_PLOTOPTIONS_FILLOPACITY, cfg);
@@ -1448,7 +1452,9 @@ public class Chart extends Component {
 					cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_CROP, cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE, cfg);
+			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_DISTANCE, cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED, cfg);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMAT, cfg);
 			putFunctionCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_FORMATTER,
 					cfg);
 			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING, cfg);
