@@ -395,11 +395,14 @@ public class Chart extends Component {
 
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS = "dataLabels";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN = "align";
-	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR = "color";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR = "backgroundColor";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_COLOR = "borderColor";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_RADIUS = "borderRadius";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_WIDTH = "borderWidth";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR = "color";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORCOLOR = "connectorColor";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORPADDING = "connectorPadding";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORWIDTH = "connectorWidth";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_CROP = "crop";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_INSIDE = "inside";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ENABLED = "enabled";
@@ -517,8 +520,10 @@ public class Chart extends Component {
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_LEGENDINDEX = "legendIndex";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_NAME = "name";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED = "sliced";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SELECTED = "selected";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X = "x";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y = "y";
+	private static final String PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DATAINDEX = "dataIndex";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_INDEX = "index";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_LEGENDINDEX = "legendIndex";
 	private static final String PROPERTITY_SERIESLIST_SERIESITEM_NAME = "name";
@@ -546,7 +551,7 @@ public class Chart extends Component {
 		if (needMore(view, model)) {
 			addJavaScript(session, context, "chart/Chart-more-min.js");
 		}
-		if(!"default".equals(theme)){
+		if (!"default".equals(theme)) {
 			addJavaScript(session, context, "chart/themes/" + theme + ".js");
 		}
 		addJavaScript(session, context, "chart/Exporting-min.js");
@@ -555,14 +560,16 @@ public class Chart extends Component {
 	private static String[] CHART_MORE_TYPE = new String[] { "gauge",
 			"arearange", "columnrange", "areasplinerange", "boxplot",
 			"errorbar", "waterfall", "bubble" };
-	private boolean containsMore(String type){
-		for(int i = 0;i<CHART_MORE_TYPE.length;i++){
-			if(CHART_MORE_TYPE[i].equals(type)){
+
+	private boolean containsMore(String type) {
+		for (int i = 0; i < CHART_MORE_TYPE.length; i++) {
+			if (CHART_MORE_TYPE[i].equals(type)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
 	private boolean needMore(CompositeMap view, CompositeMap model) {
 		Iterator childs = view.getChildIterator();
 		if (null != childs) {
@@ -684,9 +691,13 @@ public class Chart extends Component {
 		String value = view.getString(key.toLowerCase());
 		if (null != value) {
 			String[] values = value.split(",");
-			map.put(key,
-					new JSONFunction("{x1:" + values[0] + ",y1:" + values[1]
-							+ ",x2:" + values[2] + ",y2:" + values[3] + "}"));
+			if("linearGradient".equals(key)){
+				map.put(key,
+					new JSONFunction("{x1:" + values[0] + ",y1:" + values[1] + ",x2:" + values[2] + ",y2:" + values[3] + "}"));
+			}else if("radialGradient".equals(key)){
+				map.put(key,
+						new JSONFunction("{cx:" + values[0] + ",cy:" + values[1] + ",r:" + values[2] + "}"));
+			}
 		}
 	}
 
@@ -750,6 +761,7 @@ public class Chart extends Component {
 		CompositeMap view = parent.getChild(key);
 		if (null != view) {
 			putGradientCfg(view, "linearGradient", cfg);
+			putGradientCfg(view, "radialGradient", cfg);
 			putArrayCfg(view, "stops", cfg);
 			if (!cfg.isEmpty())
 				map.put(key, new JSONObject(cfg));
@@ -1217,8 +1229,8 @@ public class Chart extends Component {
 								cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_NAME,
 								cfg);
-						putBooleanCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_NEGATIVE,
-								cfg);
+						putBooleanCfg(pb,
+								PROPERTITY_SERIESLIST_SERIESITEM_NEGATIVE, cfg);
 						putStringCfg(pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_STACK, cfg);
 						putStringCfg(pb, PROPERTITY_SERIESLIST_SERIESITEM_TYPE,
@@ -1277,11 +1289,18 @@ public class Chart extends Component {
 								pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SLICED,
 								cfg);
+						putBooleanCfg(
+								pb,
+								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_SELECTED,
+								cfg);
 						putNumberCfg(pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_X,
 								cfg);
 						putNumberCfg(pb,
 								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_Y,
+								cfg);
+						putNumberCfg(pb,
+								PROPERTITY_SERIESLIST_SERIESITEM_SERIESDATA_DATAINDEX,
 								cfg);
 						String text = pb.getText();
 						if (cfg.isEmpty()) {
@@ -1413,6 +1432,12 @@ public class Chart extends Component {
 		if (view != null) {
 			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ALIGN, cfg);
 			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_COLOR, cfg);
+			putStringCfg(view,
+					PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORCOLOR, cfg);
+			putNumberCfg(view,
+					PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORPADDING, cfg);
+			putNumberCfg(view,
+					PROPERTITY_PLOTOPTIONS_DATALABELS_CONNECTORWIDTH, cfg);
 			putStringCfg(view,
 					PROPERTITY_PLOTOPTIONS_DATALABELS_BACKGROUND_COLOR, cfg);
 			putStringCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_BORDER_COLOR,
