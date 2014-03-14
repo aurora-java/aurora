@@ -87,7 +87,17 @@ public abstract class AbstractFacadeServlet extends HttpServlet {
 		return proc;
 	}
 
-	protected void service(HttpServletRequest request,
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		doService(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		doService(request, response);
+	}
+
+	protected void doService(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 	    
 	    // check if UncertainEngine is inited properly

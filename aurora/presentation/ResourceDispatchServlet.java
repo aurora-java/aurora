@@ -81,10 +81,22 @@ public class ResourceDispatchServlet extends HttpServlet implements
         }
     }
 
-    /**
+    @Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+    	doService(req, resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doService(req, resp);
+	}
+
+	/**
      * Dispatch resource request
      */
-    public void service(HttpServletRequest request, HttpServletResponse response)
+    public void doService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // checkInit();
         final String root_path = request.getServletPath();
