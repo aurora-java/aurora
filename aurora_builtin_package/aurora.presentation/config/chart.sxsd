@@ -52,6 +52,7 @@
             <ss:arrays>
                 <ss:array name="a:xAxis" document="X轴" indexField="name" type="a:xAxi"/>
                 <ss:array name="a:yAxis" document="Y轴" indexField="name" type="a:yAxi"/>
+                <ss:array name="a:zAxis" document="Z轴" indexField="name" type="a:zAxi"/>
                 <ss:array name="a:seriesList" docment="系列组的个性化属性定义或者在没有绑定数据的情况下充当硬数据" indexField="name" type="a:seriesItem"/>
             </ss:arrays>
             <ss:elements>
@@ -754,6 +755,11 @@
                 <ss:extension base="a:subtitle"/>
             </ss:extensions>
         </ss:element>
+        <ss:element name="a:zAxi" document="用于气泡图">
+            <ss:attributes>
+                <ss:attribute name="name" document="组件name,对应dataset中field的name" type="ss:String"/>
+            </ss:attributes>
+        </ss:element>
         <ss:element name="a:xAxi">
             <ss:attributes>
                 <ss:attribute name="allowDecimals" default="true" document="是否允许有小数位" type="ss:boolean"/>
@@ -782,7 +788,6 @@
                 <ss:attribute name="minorTickLength" default="2" document="次级刻度线的长度" type="ss:int"/>
                 <ss:attribute name="minorTickPosition" default="outside" document="次级刻度线的位置" type="a:tickPositionType"/>
                 <ss:attribute name="minorTickWidth" default="0" document="次级刻度线的宽度" type="ss:int"/>
-                <ss:attribute name="name" document="组件name,对应dataset中field的name" type="ss:String"/>
                 <ss:attribute name="offset" default="0" document="坐标轴到图形区域的距离" type="ss:int"/>
                 <ss:attribute name="opposite" default="false" document="坐标轴是否在图形区域的另一边" type="ss:boolean"/>
                 <ss:attribute name="reversed" default="false" document="坐标轴反向" type="ss:boolean"/>
@@ -812,6 +817,9 @@
                 <ss:array name="a:plotBands" document="网格区域配置" type="a:plotBand"/>
                 <ss:array name="a:plotLines" document="网格线配置" type="a:plotLine"/>
             </ss:arrays>
+            <ss:extensions>
+                <ss:extension base="a:zAxi"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:yAxi">
             <ss:attributes>

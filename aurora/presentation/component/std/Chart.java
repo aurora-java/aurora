@@ -235,6 +235,7 @@ public class Chart extends Component {
 
 	private static final String PROPERTITY_AXIS_X = "xAxis";
 	private static final String PROPERTITY_AXIS_Y = "yAxis";
+	private static final String PROPERTITY_AXIS_Z = "zAxis";
 	private static final String PROPERTITY_AXIS_ALLOWDECIMALS = "allowDecimals";
 	private static final String PROPERTITY_AXIS_ALTERNATEGRIDCOLOR = "alternateGridColor";
 	private static final String PROPERTITY_AXIS_CATEGORIES = "categories";
@@ -778,6 +779,7 @@ public class Chart extends Component {
 		CompositeMap view = parent.getChild(key);
 		if (null != view) {
 			putArrayCfg(view, "linearGradient", cfg);
+			putGradientCfg(view, "radialGradient", cfg);
 			putArrayCfg(view, "stops", cfg);
 			if (!cfg.isEmpty())
 				map.put(key, new JSONObject(cfg));
@@ -837,6 +839,7 @@ public class Chart extends Component {
 		processTooltip(view);
 		processXAxis(view);
 		processYAxis(view);
+		processZAxis(view);
 	}
 
 	private void createChartOption(CompositeMap parent, Map cfg) {
@@ -1704,6 +1707,9 @@ public class Chart extends Component {
 
 	private void processYAxis(CompositeMap parent) {
 		processAxis(parent, PROPERTITY_AXIS_Y);
+	}
+	private void processZAxis(CompositeMap parent) {
+		processAxis(parent, PROPERTITY_AXIS_Z);
 	}
 
 	private void processAxis(CompositeMap parent, String name) {
