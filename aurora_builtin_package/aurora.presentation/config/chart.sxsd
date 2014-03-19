@@ -825,6 +825,7 @@
             <ss:attributes>
                 <ss:attribute name="bindTarget" document="存放动态字段的Dataset" type="a:DataSetReference"/>
                 <ss:attribute name="endOnTick" default="true" document="坐标轴是否以刻度线为末端" type="ss:boolean"/>
+                <ss:attribute name="gridLineInterpolation" default="circle" document="网格线的形状circle或polygon（雷达图专有属性）" type="a:polarGridLineType"/>
                 <ss:attribute name="gridLineWidth" default="1" document="网格线的宽度" type="ss:int"/>
                 <ss:attribute name="lineWidth" default="0" document="坐标轴的宽度" type="ss:int"/>
                 <ss:attribute name="maxPadding" default="0.05" document="坐标轴显示的最大值离数据图形峰值的间距，如该值为0.05,则间距为峰值高度乘以0.05。当max属性被设置时，该属性无效。" type="ss:int"/>
@@ -1143,6 +1144,14 @@
                     <ss:enumeration value="linear"/>
                     <ss:enumeration value="logarithmic"/>
                     <ss:enumeration value="datetime"/>
+                </ss:enumerations>
+            </ss:restriction>
+        </ss:simpleType>
+        <ss:simpleType name="a:polarGridLineType">
+            <ss:restriction base="ss:String">
+                <ss:enumerations>
+                    <ss:enumeration value="circle"/>
+                    <ss:enumeration value="polygon"/>
                 </ss:enumerations>
             </ss:restriction>
         </ss:simpleType>
