@@ -284,6 +284,7 @@
                 <ss:element ref="a:gauge"/>
                 <ss:element ref="a:line"/>
                 <ss:element ref="a:pie"/>
+                <ss:element ref="a:pyramid"/>
                 <ss:element ref="a:scatter"/>
                 <ss:element ref="a:series"/>
                 <ss:element ref="a:spline"/>
@@ -520,18 +521,12 @@
         </ss:element>
         <ss:element name="a:funnel" document="漏斗图">
             <ss:attributes>
-                <ss:attribute name="height" document="高度" type="ss:int"/>
                 <ss:attribute name="neckHeight" default="25%" document="颈部高度" type="ss:String"/>
                 <ss:attribute name="neckWidth" document="颈部宽度" type="ss:String"/>
-                <ss:attribute name="width" default="90%" document="宽度" type="ss:String"/>
             </ss:attributes>
             <ss:extensions>
-                <ss:extension base="a:PlotOptionsAttribute"/>
-                <ss:extension base="a:PlotOptionsAttribute7"/>
+                <ss:extension base="a:pyramid"/>
             </ss:extensions>
-            <ss:elements>
-                <ss:element ref="a:dataLabels"/>
-            </ss:elements>
         </ss:element>
         <ss:element name="a:gauge" document="测量图">
             <ss:attributes>
@@ -567,6 +562,20 @@
                 <ss:extension base="a:PlotOptionsAttribute"/>
                 <ss:extension base="a:PlotOptionsAttribute7"/>
             </ss:extensions>
+        </ss:element>
+        <ss:element name="a:pyramid" document="金字塔图">
+            <ss:attributes>
+                <ss:attribute name="height" document="高度" type="ss:int"/>
+                <ss:attribute name="reversed" default="true" document="颠倒" type="ss:boolean"/>
+                <ss:attribute name="width" default="90%" document="宽度" type="ss:String"/>
+            </ss:attributes>
+            <ss:extensions>
+                <ss:extension base="a:PlotOptionsAttribute"/>
+                <ss:extension base="a:PlotOptionsAttribute7"/>
+            </ss:extensions>
+            <ss:elements>
+                <ss:element ref="a:dataLabels"/>
+            </ss:elements>
         </ss:element>
         <ss:element name="a:scatter" document="散点图">
             <ss:attributes>
@@ -620,14 +629,15 @@
                 <ss:attribute name="borderRadius" document="边框半径" type="ss:int"/>
                 <ss:attribute name="borderWidth" document="边框宽度" type="ss:int"/>
                 <ss:attribute name="color" docement="颜色" type="ss:String"/>
-                <ss:attribute name="connectorColor" docement="连线的颜色（饼图专有属性）" type="ss:String"/>
-                <ss:attribute name="connectorPadding" docement="连线的边距（饼图专有属性）" type="ss:String"/>
-                <ss:attribute name="connectorWidth" docement="连线的宽度（饼图专有属性）" type="ss:String"/>
+                <ss:attribute name="connectorColor" docement="连线的颜色（饼图和漏斗图专有属性）" type="ss:String"/>
+                <ss:attribute name="connectorPadding" docement="连线的边距（饼图和漏斗图专有属性）" type="ss:String"/>
+                <ss:attribute name="connectorWidth" docement="连线的宽度（饼图和漏斗图专有属性）" type="ss:String"/>
                 <ss:attribute name="crop" docement="修剪超出plot区域的datalabel" type="ss:boolean"/>
                 <ss:attribute name="distance" docement="距离（饼图专有属性）" type="ss:int"/>
                 <ss:attribute name="inside" docement="是否在图形内部" type="ss:boolean"/>
                 <ss:attribute name="padding" document="内边距" type="ss:int"/>
                 <ss:attribute name="shadow" document="是否有阴影" type="ss:boolean"/>
+                <ss:attribute name="softConnector" default="true" document="连接线是否柔和" type="ss:boolean"/>
                 <ss:attribute name="verticalAlign" document="垂直对齐方式" type="a:vAlignType"/>
             </ss:attributes>
             <ss:extensions>
@@ -1056,6 +1066,7 @@
                     <ss:enumeration value="gauge"/>
                     <ss:enumeration value="line"/>
                     <ss:enumeration value="pie"/>
+                    <ss:enumeration value="pyramid"/>
                     <ss:enumeration value="scatter"/>
                     <ss:enumeration value="spline"/>
                     <ss:enumeration value="waterfall"/>

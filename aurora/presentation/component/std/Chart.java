@@ -16,6 +16,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.EventConfig;
 
 public class Chart extends Component {
@@ -413,6 +414,7 @@ public class Chart extends Component {
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING = "padding";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION = "rotation";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_SHADOW = "shadow";
+	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_SOFTCONNECTOR = "softConnector";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE = "style";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_USEHTML = "useHTML";
 	private static final String PROPERTITY_PLOTOPTIONS_DATALABELS_X = "x";
@@ -562,7 +564,7 @@ public class Chart extends Component {
 
 	private static String[] CHART_MORE_TYPE = new String[] { "gauge",
 			"arearange", "columnrange", "areasplinerange", "boxplot",
-			"errorbar", "waterfall", "bubble" };
+			"errorbar", "waterfall", "bubble", "funnel", "pyramid" };
 
 	private boolean containsMore(String type) {
 		for (int i = 0; i < CHART_MORE_TYPE.length; i++) {
@@ -572,21 +574,27 @@ public class Chart extends Component {
 		}
 		return false;
 	}
-
+	
 	private boolean needMore(CompositeMap view, CompositeMap model) {
-		Iterator childs = view.getChildIterator();
-		if (null != childs) {
-			while (childs.hasNext()) {
-				CompositeMap child = (CompositeMap) childs.next();
-				if ("chart".equals(child.getName())) {
-					if (child.getBoolean(PROPERTITY_CHART_POLAR, false)
-							|| containsMore(TextParser.parse(
-									child.getString(PROPERTITY_CHART_TYPE),
-									model)))
+		if(null != view){
+			Iterator childs = view.getChildIterator();
+			if (null != childs) {
+				while (childs.hasNext()) {
+					CompositeMap child = (CompositeMap) childs.next();
+					if ("chart".equals(child.getName())||"seriesItem".equals(child.getName())||"field".equals(child.getName())) {
+						if (child.getBoolean(PROPERTITY_CHART_POLAR, false)
+								|| containsMore(TextParser.parse(
+										child.getString(PROPERTITY_CHART_TYPE),
+										model)))
+							return true;
+						else if ("chart".equals(child.getName()) && needMore(child.getChild(PROPERTITY_SERIESLIST), model))
+							return true;
+					}else if("dataSet".equals(child.getName()) && needMore(child.getChild(DataSetConfig.PROPERTITY_FIELDS), model)){
 						return true;
-				} else {
-					if (needMore(child, model))
-						return true;
+					}else {
+						if (needMore(child, model))
+							return true;
+					}
 				}
 			}
 		}
@@ -1463,6 +1471,7 @@ public class Chart extends Component {
 			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_PADDING, cfg);
 			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_ROTATION, cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_SHADOW, cfg);
+			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_SOFTCONNECTOR, cfg);
 			putStyleCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_STYLE, cfg);
 			putBooleanCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_USEHTML, cfg);
 			putNumberCfg(view, PROPERTITY_PLOTOPTIONS_DATALABELS_X, cfg);
