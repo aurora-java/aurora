@@ -23,7 +23,13 @@ public class LocalizedMessageTagContent implements ITagContent {
     ILocalizedMessageProvider       messageProvider;
 
     public String getContent(CompositeMap context) {
-        return messageProvider.getMessage(code);
+    	if (messageProvider != null) {
+		      String p = messageProvider.getMessage(code);
+		      return p == null ? code : p;
+		  } else {
+		      return code;
+		  }
+//        return messageProvider.getMessage(code);
     }
 
     public String getCode() {
