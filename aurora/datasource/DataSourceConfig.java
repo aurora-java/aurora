@@ -34,7 +34,7 @@ public class DataSourceConfig implements ILifeCycle {
 	INamedDataSourceProvider dsProvider;
 	boolean useTransactionManager = false;
 	IObjectRegistry mObjectRegistry;
-	String className;
+	String className="aurora.plugin.c3p0.DataSourceFactory";
 	ILogger mLogger;
 	OCManager mOCManager;
 	boolean flag = false;
@@ -89,8 +89,6 @@ public class DataSourceConfig implements ILifeCycle {
 					registryDataSource(ds, dbConfig, dsProvider);
 				}
 			} else {
-				if (className == null)
-					className = "aurora.plugin.c3p0.DataSourceFactory";
 				IDataSourceFactory dbFactory = (IDataSourceFactory) Class
 						.forName(className).newInstance();
 				ts = new TransactionService(false);
