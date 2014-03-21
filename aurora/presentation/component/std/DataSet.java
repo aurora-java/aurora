@@ -48,6 +48,11 @@ public class DataSet extends Component {
         this.lookupProvider = lookupProvider;
     }
 	
+	public DataSet(IObjectRegistry registry,IModelFactory factory) {
+		super(registry);
+        this.mFactory = factory;
+    }
+	
 //	public DataSet(IObjectRegistry registry,IModelFactory factory){
 //        this.mRegistry = registry;
 //        this.mFactory = factory;
