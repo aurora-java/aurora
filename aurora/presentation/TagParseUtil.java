@@ -7,7 +7,6 @@ package aurora.presentation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 
 import uncertain.composite.CompositeMap;
 import uncertain.util.template.CompositeMapTagCreator;
@@ -29,8 +28,8 @@ public class TagParseUtil {
             return null;
         if(text.indexOf('$')<0)
             return text;
-        StringReader reader = new StringReader(text);
-        TextTemplate tplt = parser.buildTemplate(reader, reg);
+//      StringReader reader = new StringReader(text);
+        TextTemplate tplt = parser.buildTemplate(text, reg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(baos);
         tplt.createOutput(writer, model);
