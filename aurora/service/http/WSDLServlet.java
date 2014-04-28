@@ -148,7 +148,7 @@ public class WSDLServlet extends HttpServlet {
 		String model = soapConfiguration.getModel();
 		if (model == null)
 			return null;
-		String url = request.getRequestURL().toString();
+		String url = getFullURL(request);
 		appLogger.config("request Url:" + url);
 		String accessUrl = "";
 		boolean isBMRequest = isBMRequest(request);
@@ -162,6 +162,15 @@ public class WSDLServlet extends HttpServlet {
 		parameter.put("url", accessUrl);
 		parameter.put("enabled_flag","Y");
 		return queryBM(model, parameter);
+	}
+	private static String getFullURL(HttpServletRequest request) {
+	    StringBuffer requestURL = request.getRequestURL();
+	    String queryString = request.getQueryString();
+	    if (queryString == null) {
+	        return requestURL.toString();
+	    } else {
+	        return requestURL.append('?').append(queryString).toString();
+	    }
 	}
 
 	private CompositeMap queryBM(String bm_name, CompositeMap parameter) throws Exception {
