@@ -84,7 +84,7 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
 	    			if(pk.indexOf("${") == -1) {
 	    				pk = "'" + pk + "'";
 	    			}
-	    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by fa." + uc.getSortSql());
+	    			mqc.putString(ServiceOption.KEY_DEFAULT_WHERE_CLAUSE, "fam.table_name = " + st + " and fam.table_pk_value = " + pk + " order by " + uc.getSortSql());
         		}
     			screen.addInitProcedureAction(mqc.getObjectContext());
         		
@@ -96,6 +96,7 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         		ds.putBoolean(DataSetConfig.PROPERTITY_CAN_QUERY, true);
         		ds.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
         		ds.putString(DataSetConfig.PROPERTITY_MODEL, DEFAULT_ATM_BM);
+        		ds.putString(DataSetConfig.PROPERTITY_SORT_TYPE, "local");
         		ds.put(ComponentConfig.PROPERTITY_ID, id+"_ds");
         		CompositeMap datas = ds.getChild(DataSetConfig.PROPERTITY_DATAS);
     			if(datas == null){
