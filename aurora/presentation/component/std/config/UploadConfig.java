@@ -23,12 +23,13 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_DELETE = "showdelete";
 	public static final String PROPERTITY_DELETE_CONTROL = "deletecontrol";
 	public static final String PROPERTITY_SHOW_UPLOAD = "showupload";
+	public static final String PROPERTITY_REORDER = "reorder";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
 	public static final String PROPERTITY_SORT_SQL = "sortsql";
 	public static final String PROPERTITY_REQUIRE_SESSION = "requiresession";
 
 	public static final String DEFAULT_TYPE = "default";
-	public static final String DEFAULT_SORT_SQL = "creation_date desc";
+	public static final String DEFAULT_SORT_SQL = "fa.creation_date desc";
 	
 	public static UploadConfig getInstance() {
 		UploadConfig model = new UploadConfig();
@@ -198,5 +199,12 @@ public class UploadConfig extends ComponentConfig {
 		putInt(PROPERTITY_TOTAL_COUNT, count);
 	}
 	
+	public boolean isReorder(){
+		return getBoolean(PROPERTITY_REORDER, false);
+	}
+	
+	public void setReorder(boolean showUpload){
+		putBoolean(PROPERTITY_REORDER, showUpload);
+	}
 	
 }
