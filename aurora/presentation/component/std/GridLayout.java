@@ -342,7 +342,7 @@ public class GridLayout extends Component implements IViewBuilder{
 //		}
 //		Writer out = session.getWriter();
 //		out.write("<script>");
-//		StringBuffer sb = new StringBuffer();
+//		StringBuilder sb = new StringBuilder();
 //		sb.append("new Aurora.Box({id:'").append(id).append("',");
 //		sb.append("cmps:[");
 //		Iterator it = cmps.iterator();

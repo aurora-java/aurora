@@ -61,7 +61,7 @@ public class FieldSet extends Box {
 		className += " " + cls;
 		
 		out.write("<FIELDSET class='item-fieldset' id='"+id+"'");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(!"".equals(style)) {
 			sb.append(style);
 		}

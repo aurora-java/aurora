@@ -35,7 +35,7 @@ public class DatePicker extends TextField {
 		int viewSize = dpc.getViewSize();
 		if (viewSize > 4)
 			viewSize = 4;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < viewSize; i++) {
 			sb.append("<TD valign='top' id='" + id + "_df" + i + "'></TD>");
 		}

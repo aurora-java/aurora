@@ -388,7 +388,7 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		CompositeMap editors = view.getChild(GridConfig.PROPERTITY_EDITORS);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(editors != null && editors.getChilds() != null) {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
@@ -432,7 +432,7 @@ public class Grid extends Component {
 		CompositeMap toolbar = view.getChild(GridConfig.PROPERTITY_TOOLBAR);
 		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		boolean hasToolBar = false;
 		if(toolbar != null && toolbar.getChilds() != null) {
 			hasToolBar = true;
@@ -549,7 +549,7 @@ public class Grid extends Component {
 	private void creatFooterBar(BuildSession session, ViewContext context) throws IOException{
 		Map map = context.getMap();
 		int lockWidth = ((Integer)map.get(LOCK_WIDTH)).intValue();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("<tr><td><div class='grid-footerbar' atype='grid.fb"+"' style='width:"+map.get(ComponentConfig.PROPERTITY_WIDTH)+"px'>");			
 		if(lockWidth!=0){
 			sb.append("<div atype='grid.lf' style='float:left;width:"+(lockWidth-1)+"px'>");//class='grid-la' 
@@ -577,9 +577,9 @@ public class Grid extends Component {
 	@SuppressWarnings("unchecked")
 	private String createFooterBarTable(Iterator it,boolean hasSpan){
 		int i = 0,w = 0;
-		StringBuffer sb = new StringBuffer();
-		StringBuffer tb = new StringBuffer();
-		StringBuffer th = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
+		StringBuilder tb = new StringBuilder();
+		StringBuilder th = new StringBuilder();
 		th.append("<tr class='grid-hl'>");
 		while(it.hasNext()){
 			CompositeMap column = (CompositeMap)it.next();
@@ -611,7 +611,7 @@ public class Grid extends Component {
 		
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		boolean hasNav = gc.hasNavBar(model);
@@ -730,8 +730,8 @@ public class Grid extends Component {
 	
 	@SuppressWarnings("unchecked")
 	private String generateLockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
-		StringBuffer sb = new StringBuffer();
-		StringBuffer th = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
+		StringBuilder th = new StringBuilder();
 		boolean hasLockColumn = false;
 		Integer rows = (Integer)pro.get(ROW_SPAN);
 		Iterator it = columns.iterator();
@@ -757,7 +757,7 @@ public class Grid extends Component {
 			sb.append("<DIV class='grid-la' atype='grid.lc' style='width:"+(lockWidth-1)+"px;'>");
 			sb.append("<DIV class='grid-lh' atype='grid.lh' unselectable='on' onselectstart='return false;' style='height:"+rows.intValue()*((Integer)pro.get(ROW_HEIGHT)).intValue()+"px;'>");
 			
-			StringBuffer hsb = new StringBuffer();
+			StringBuilder hsb = new StringBuilder();
 			for(int i=1;i<=rows.intValue();i++){
 				List list = (List)pro.get("l"+i);
 				hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");
@@ -811,8 +811,8 @@ public class Grid extends Component {
 	
 	@SuppressWarnings("unchecked")
 	private String generateUnlockArea(Map map, List columns, Map pro,BuildSession session, String dataSet, CompositeMap model){
-		StringBuffer sb = new StringBuffer();
-		StringBuffer th = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
+		StringBuilder th = new StringBuilder();
 		
 		Integer rows = (Integer)pro.get(ROW_SPAN);
 		Iterator it = columns.iterator();
@@ -837,7 +837,7 @@ public class Grid extends Component {
 		sb.append("<TH WIDTH='34'> </TH>");
 		sb.append("</TR>");
 		
-		StringBuffer hsb = new StringBuffer();
+		StringBuilder hsb = new StringBuilder();
 		for(int i=1;i<=rows.intValue();i++){
 			List list = (List)pro.get("l"+i);
 			hsb.append("<TR height="+pro.get(ROW_HEIGHT)+">");

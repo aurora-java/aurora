@@ -57,7 +57,7 @@ public class FreeMarkerTemplate implements IViewBuilder {
 			str = out.toString();
 			
 			if(isParse){
-				StringBuffer sb = new StringBuffer();			
+				StringBuilder sb = new StringBuilder();			
 				Map nsm = view.getRoot().getNamespaceMapping();
 				if(nsm==null) nsm = new HashMap();
 				String prefix = (String)nsm.get(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);

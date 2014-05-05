@@ -39,7 +39,7 @@ public class Box extends GridLayout {
 		
 		String labelSeparator = bc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():bc.getLabelSeparator();
 		
-		StringBuffer str = new StringBuffer();
+		StringBuilder str = new StringBuilder();
 		if(!"".equals(label)) {
 			str.append("<th class='"+DEFAULT_TH_CLASS+"' ");
 			if(rowspan>1){

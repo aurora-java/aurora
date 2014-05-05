@@ -106,6 +106,7 @@ public class Upload extends Component {
 			config.put(ComponentConfig.PROPERTITY_ID, uid);
 			config.put(ComponentConfig.PROPERTITY_BINDTARGET, uc.getId() + "_ds");
 			config.put(UploadConfig.PROPERTITY_SHOW_DELETE, uc.isShowDelete());
+			config.put(UploadConfig.PROPERTITY_REORDER, uc.isReorder());
 			config.put(UploadConfig.PROPERTITY_DELETE_CONTROL, uc.getDeleteControl());
 			config.put(UploadConfig.PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(uc.getDeleteURL(context_path + "/atm_delete.svc"), model));
 			config.put(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
@@ -135,11 +136,11 @@ public class Upload extends Component {
 		tb_column.put(TableColumnConfig.PROPERTITY_NAME, "file_name");
 		
 		if(!uc.isShowDelete()) {
-			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmNotDeleteRenderer");
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, uc.isReorder() ? "atmNotDeleteReorderRenderer" : "atmNotDeleteRenderer");
 		} else if(uc.getDeleteControl()){
-			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmDeleteControlRenderer");
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, uc.isReorder() ? "atmDeleteControlReorderRenderer" : "atmDeleteControlRenderer");
 		} else {
-			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, "atmRenderer");
+			tb_column.put(TableColumnConfig.PROPERTITY_RENDERER, uc.isReorder() ? "atmReorderRenderer" : "atmRenderer");
 		}
 		
 		tb_columns.addChild(tb_column);

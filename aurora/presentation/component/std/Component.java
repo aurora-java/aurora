@@ -45,9 +45,9 @@ public class Component {
 	public static final String THEME_MAC = "mac";
 
 	protected String id;
-	// protected StringBuffer esb = new StringBuffer();
+	// protected StringBuilder esb = new StringBuilder();
 	private JSONObject listeners = new JSONObject();
-	private StringBuffer bsb = new StringBuffer();
+	private StringBuilder bsb = new StringBuilder();
 	private JSONObject config = new JSONObject();
 	protected ApplicationConfig mApplicationConfig;	
 	
@@ -59,7 +59,7 @@ public class Component {
 
 		addStyleSheet(session, context, "base/Aurora-all-min.css");
 		addJavaScript(session, context, "base/ext-core-min.js");
-		addJavaScript(session, context, "base/Aurora-all-min.js");
+		addJavaScript(session, context, "base/Aurora-all.js");
 		addJavaScript(session, context, "locale/aurora-lang-" + session.getLanguage() + ".js");
 
 	}

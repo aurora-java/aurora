@@ -45,7 +45,7 @@ public class ScreenTitle implements IViewBuilder {
 			if(resMap!=null) title = resMap.getString(SCREEN_TITLE);
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("<span class='");
 		sb.append(DEFAULT_CLASS);
 		sb.append("'>");

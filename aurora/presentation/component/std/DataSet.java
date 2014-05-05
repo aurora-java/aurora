@@ -196,7 +196,7 @@ public class DataSet extends Component {
 			}
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String attachTab = dsc.getValidListener();
 		if(attachTab != null){
 			String[] ts = attachTab.split(",");
