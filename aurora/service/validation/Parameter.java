@@ -56,6 +56,13 @@ public class Parameter implements IParameter {
     /**
      * @param path the accessPath to set
      */
+    public void setInputPath(String path) {
+        this.inputPath = path;
+    }
+    
+    /**
+     * @param path the accessPath to set
+     */
     public void setParameterPath(String path) {
         this.inputPath = path;
     }
