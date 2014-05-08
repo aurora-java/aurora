@@ -51,6 +51,8 @@ public class XMLSampleToWSDL {
 	public static CompositeMap convertXMLSampleToWSDL(String webserviceUrl, String soapAction, CompositeMap request, CompositeMap response)
 			throws Exception {
 		String target_namespace = request.getNamespaceURI();
+		if(target_namespace == null || "".equals(target_namespace))
+			throw new IllegalArgumentException("Please set the namespace of request! Example namespace: 'xmlns=\"http://www.aurora-framework.org/schema\"' ");
 		CompositeMap wsdlRoot = WSDLUtil.getWSDLTemplate(webserviceUrl, WSDLUtil.NODE_NAME_PREFIX, soapAction, target_namespace);
 		if (request != null) {
 			WSDLUtil.createOrientNode(soapAction, request, WSDLUtil.TARGET_PREFIX, wsdlRoot, true);
