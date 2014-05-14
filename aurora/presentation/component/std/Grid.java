@@ -311,6 +311,8 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false))
 						boolean hidden = column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 						if(hidden) column.putBoolean(GridColumnConfig.PROPERTITY_VISIABLE, false);
+						boolean group = column.getBoolean(GridColumnConfig.PROPERTITY_GROUP, false);
+						if(group) column.putBoolean(GridColumnConfig.PROPERTITY_GROUP, group);
 						String showTitle = uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_SHOW_TITLE),model);
 						if(null!=showTitle){
 							column.putBoolean(GridColumnConfig.PROPERTITY_SHOW_TITLE, Boolean.parseBoolean(showTitle));
