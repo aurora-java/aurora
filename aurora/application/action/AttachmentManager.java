@@ -14,9 +14,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,18 +136,19 @@ public class AttachmentManager extends AbstractEntry{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		CompositeMap params = service.getParameter();
-		Object aid = (Object)params.getObject("@attachment_id");
+		Object aid = params.getObject("@attachment_id");
 		if(aid!=null){
 			Connection conn = getContextConnection(context);
-			
-			Statement st = conn.createStatement();
+			PreparedStatement pst = null;
 			ResultSet rs = null;
 			InputStream is = null;
 			OutputStream os = null;
 			ReadableByteChannel rbc = null;
 	        WritableByteChannel wbc = null;
 			try {
-				rs = st.executeQuery("select file_name,file_size,mime_type, file_path, content from fnd_atm_attachment t where t.attachment_id = " + aid);
+				pst = conn.prepareStatement("select file_name,file_size,mime_type, file_path, content from fnd_atm_attachment t where t.attachment_id = ?");
+				pst.setObject(1,aid);
+				rs = pst.executeQuery(); 
 				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
 				String path = rs.getString(4);
 				String fileName = rs.getString(1);
@@ -201,7 +202,7 @@ public class AttachmentManager extends AbstractEntry{
 				response.setHeader("Connection", "close");
 			} finally{
 				DBUtil.closeResultSet(rs);
-				DBUtil.closeStatement(st);
+				DBUtil.closeStatement(pst);
 				try{if(is!=null) is.close();
                 }catch(Exception ex){}
                 try{if(os!=null) os.close();
@@ -219,10 +220,12 @@ public class AttachmentManager extends AbstractEntry{
 		if(aid ==null) aid = (Object)params.getObject("/parameter/record/@attachment_id");
 		if(aid!=null && !"".equals(aid)){
 			Connection conn = getContextConnection(context);
-			Statement st = conn.createStatement();
+			PreparedStatement pst = null;
 			ResultSet rs = null;
 			try {
-				rs = st.executeQuery("select file_path from fnd_atm_attachment t where t.attachment_id = " + aid);
+				pst = conn.prepareStatement("select file_path from fnd_atm_attachment t where t.attachment_id = ?");
+				pst.setObject(1,aid);
+				rs = pst.executeQuery(); 
 				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
 				String path = rs.getString(1);
 				if(path!=null){
@@ -231,11 +234,17 @@ public class AttachmentManager extends AbstractEntry{
 						file.delete();
 					}
 				}
-				st.execute("delete from fnd_atm_attachment at where at.attachment_id = " + aid);
-				st.execute("delete from fnd_atm_attachment_multi atm where atm.attachment_id = " + aid);
+				pst = conn.prepareStatement("delete from fnd_atm_attachment at where at.attachment_id = ?");
+				pst.setObject(1,aid);
+				pst.execute();
+				pst = conn.prepareStatement("delete from fnd_atm_attachment_multi atm where atm.attachment_id = ?");
+				pst.setObject(1,aid);
+				pst.execute();
+//				st.execute("delete from fnd_atm_attachment at where at.attachment_id = " + aid);
+//				st.execute("delete from fnd_atm_attachment_multi atm where atm.attachment_id = " + aid);
 			} finally{
 				DBUtil.closeResultSet(rs);
-				DBUtil.closeStatement(st);
+				DBUtil.closeStatement(pst);
 			}
 		}
 	}
@@ -263,15 +272,17 @@ public class AttachmentManager extends AbstractEntry{
 		
 		if(aid!=null && !"".equals(aid)){
 			Connection conn = getContextConnection(context);
-			Statement st = conn.createStatement();
+			PreparedStatement pst = null;
 			ResultSet rs = null;String path = null;
 			try {
-				rs = st.executeQuery("select file_path from fnd_atm_attachment t where t.attachment_id = " + aid);
+				pst = conn.prepareStatement("select file_path from fnd_atm_attachment t where t.attachment_id = ?");
+				pst.setObject(1,aid);
+				rs = pst.executeQuery();
 				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
 				path = rs.getString(1);
 			} finally{
 				DBUtil.closeResultSet(rs);
-				DBUtil.closeStatement(st);
+				DBUtil.closeStatement(pst);
 			}
 			if(path!=null){
 				File delFile = new File(path);
@@ -282,7 +293,6 @@ public class AttachmentManager extends AbstractEntry{
 					long size = 0;int b;
 					FileOutputStream fos = null;
 					InputStream ins = null;
-					Statement stmt = null;
 					try {
 			            fos = new FileOutputStream(delFile);
 			            ins = fileItem.getInputStream();
@@ -290,12 +300,14 @@ public class AttachmentManager extends AbstractEntry{
 			                fos.write(b);
 			                size++;
 			            }
-			            stmt = conn.createStatement();
-			            stmt.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
+			            pst = conn.prepareStatement("update fnd_atm_attachment a set a.file_size = ? where a.attachment_id = ?");
+						pst.setObject(1,size);
+						pst.setObject(2,aid);
+						pst.executeUpdate();
 					}finally {
 			            if(ins!=null)ins.close();
 			            if(fos!=null)fos.close();
-			           DBUtil.closeStatement(stmt);
+			           DBUtil.closeStatement(pst);
 					}
 				}
 			}else {
@@ -305,9 +317,16 @@ public class AttachmentManager extends AbstractEntry{
 				InputStream instream = fileItem.getInputStream();
 				OutputStream outstream = null;
 				try {
-					st = nativeConn.createStatement();
-					st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
-					rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
+					pst = nativeConn.prepareStatement("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id= ?");
+					pst.setObject(1,aid);
+					pst.executeUpdate();
+					pst = nativeConn.prepareStatement("select content from fnd_atm_attachment t where t.attachment_id = ? for update");
+					pst.setObject(1,aid);
+					rs = pst.executeQuery();
+					
+//					st = nativeConn.createStatement();
+//					st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
+//					rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
 					if (!rs.next())
 						throw new IllegalArgumentException("attachment_id not set");
 					BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
@@ -323,12 +342,17 @@ public class AttachmentManager extends AbstractEntry{
 						outstream.write(buff, 0, le);
 						size += le;
 					}
-		            st.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
+					pst = nativeConn.prepareStatement("update fnd_atm_attachment a set a.file_size = ? where a.attachment_id = ?");
+					pst.setObject(1,size);
+					pst.setObject(2,aid);
+					pst.executeUpdate();
+					
+//		            st.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
 				} finally {
 					if(outstream!=null)outstream.close();
 					if(instream!=null)instream.close();
 					DBUtil.closeResultSet(rs);
-					DBUtil.closeStatement(st);
+					DBUtil.closeStatement(pst);
 				}
 			}
 		}
@@ -433,7 +457,7 @@ public class AttachmentManager extends AbstractEntry{
     	if(path.charAt(path.length()-1)!='/') path += "/";
     	if("true".equalsIgnoreCase(getUseSubFolder())) path += datePath;
     	FileUtils.forceMkdir(new File(path));
-        Statement stmt = null;
+    	PreparedStatement pst = null;
         try{
             long size = 0;
             int b;
@@ -447,11 +471,12 @@ public class AttachmentManager extends AbstractEntry{
             }
             fos.close();
             // Update attachment record
-            stmt = conn.createStatement();
-            stmt.executeUpdate("update fnd_atm_attachment a set a.file_path = '"+file.getPath()+"' where a.attachment_id = "+aid);
-//            conn.commit();
+            pst = conn.prepareStatement("update fnd_atm_attachment a set a.file_path = ? where a.attachment_id = ?");
+            pst.setObject(1,file.getPath());
+			pst.setObject(2,aid);
+			pst.executeUpdate();
         }finally{
-            DBUtil.closeStatement(stmt);
+            DBUtil.closeStatement(pst);
         }
 	}
 
@@ -462,15 +487,23 @@ public class AttachmentManager extends AbstractEntry{
 		DataSourceConfig dataSourceConfig=(DataSourceConfig)this.registry.getInstanceOfType(DataSourceConfig.class);
 		Connection nativeConn=dataSourceConfig.getNativeJdbcExtractor(conn);
 		long size = 0;
-		Statement st = null;
+		PreparedStatement pst = null;
+//		Statement st = null;
 		ResultSet rs = null;
 		OutputStream outstream = null;
 		try {
-			st = nativeConn.createStatement();
-			st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
-//			st.execute("commit");
+			pst = nativeConn.prepareStatement("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=?");
+			pst.setObject(1, aid);
+			pst.executeUpdate();			
+			
+//			st = nativeConn.createStatement();
+//			st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
+			
+			pst = nativeConn.prepareStatement("select content from fnd_atm_attachment t where t.attachment_id = ? for update");
+			pst.setObject(1, aid);
+			rs = pst.executeQuery();
 
-			rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
+//			rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
 			if (!rs.next())
 				throw new IllegalArgumentException("attachment_id not set");
 			
@@ -492,13 +525,13 @@ public class AttachmentManager extends AbstractEntry{
 			}
 			outstream.close();
 //			st.execute("commit");
-			st.close();
+//			st.close();
 			instream.close();
 //			conn.commit();
 			return size;
 		} finally {
 			DBUtil.closeResultSet(rs);
-			DBUtil.closeStatement(st);
+			DBUtil.closeStatement(pst);
 		}
 	}
 
