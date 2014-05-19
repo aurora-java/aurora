@@ -29,6 +29,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	public static final String PROPERTITY_MAX_ADJUST_WIDTH = "maxadjustwidth";
 	public static final String PROPERTITY_SHOW_TITLE = "showtitle";
+	public static final String PROPERTITY_GROUP = "group";
 	
 	
 	private static final String DEFAULT_ALIGN = "left";
@@ -78,6 +79,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setHidden(boolean hidden){
 		putBoolean(PROPERTITY_HIDDEN, hidden);
+	}
+	
+	public boolean isGroup(){
+		return getBoolean(PROPERTITY_GROUP, false);
+	}
+	public void setGroup(boolean hidden){
+		putBoolean(PROPERTITY_GROUP, hidden);
 	}
 	
 	public String getAlign(){
