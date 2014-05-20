@@ -323,7 +323,7 @@ public class Grid extends Component {
 					//if(column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false))
 						column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, column.getBoolean(GridColumnConfig.PROPERTITY_SORTABLE, false));
 					//if(!column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
-						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, hidden?false:column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getString(COLUMN_TYPE)==null?true:false));
+						column.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, column.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT,!hidden && column.getString(COLUMN_TYPE)==null?true:false));
 					
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
