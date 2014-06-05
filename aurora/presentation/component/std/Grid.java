@@ -151,9 +151,9 @@ public class Grid extends Component {
 	@SuppressWarnings("unchecked")
 	private void processSelectable(Map map,CompositeMap view){
 		GridConfig gc = GridConfig.getInstance(view);
-		Boolean selectable = new Boolean(false);
-		Boolean showCheckAll = new Boolean(true);
-		String selectionmodel = "multiple";
+		Boolean selectable = view.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE,false);
+		Boolean showCheckAll = view.getBoolean(DataSetConfig.PROPERTITY_SHOW_CHECKALL,true);
+		String selectionmodel = view.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL,"multiple");
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
 		if(list!=null){
