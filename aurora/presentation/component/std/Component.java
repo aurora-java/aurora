@@ -59,7 +59,7 @@ public class Component {
 
 		addStyleSheet(session, context, "base/Aurora-all-min.css");
 		addJavaScript(session, context, "base/ext-core-min.js");
-		addJavaScript(session, context, "base/Aurora-all.js");
+		addJavaScript(session, context, "base/Aurora-all-min.js");
 		addJavaScript(session, context, "locale/aurora-lang-" + session.getLanguage() + ".js");
 
 	}
