@@ -35,9 +35,9 @@ public class HTMLInclude implements IViewBuilder {
 	private String headPattern = "<head>(.*)</head>";
 	private String htmlPattern = ".*<html[^>]*>(.*)</html>.*";
 	private String bodyPattern = "(.*)<body[^>]*>(.*)</body>(.*)";
-	private String scriptPattern = "<script[^>]*src=([\"\'])([^\'\"]*)\\1[^>]*(/|.*/script)>";
-	private String linkPattern = "<link[^>]*href=([\"\'])([^\'\"]*)\\1[^>]*/?>";
-	private String imgPattern = "<img[^>]*src=([\"\'])([^\'\"]*)\\1[^>]*(/*)>";
+	private String scriptPattern = "<script[^>]*src=([\"\'])(?!http[s]?://|/)([^\'\"]*)\\1[^>]*(/|.*/script)>";
+	private String linkPattern = "<link[^>]*href=([\"\'])(?!http[s]?://|/)([^\'\"]*)\\1[^>]*/?>";
+	private String imgPattern = "<img[^>]*src=([\"\'])(?!http[s]?://|/)([^\'\"]*)\\1[^>]*(/*)>";
 	private ClassLoader mClassLoader = Thread.currentThread()
 			.getContextClassLoader();
 
@@ -195,7 +195,7 @@ public class HTMLInclude implements IViewBuilder {
 		return Pattern.compile(regex, Pattern.DOTALL).matcher(input)
 				.replaceAll(replacement);
 	}
-
+	
 	public String[] getBuildSteps(ViewContext context) {
 		return null;
 	}
