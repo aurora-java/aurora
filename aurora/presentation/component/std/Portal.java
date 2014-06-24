@@ -21,6 +21,8 @@ public class Portal extends Component {
 		super(registry);
 	}
 
+	public static final String VERSION = "$Revision$";
+	
 	private static final String DEFAULT_CLASS = "layout-portal";
 	private static final String REF = "ref";
 	private static final String CLOSEABLE = "closeable";

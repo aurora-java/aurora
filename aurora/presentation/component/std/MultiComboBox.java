@@ -11,7 +11,7 @@ import aurora.presentation.component.std.config.ComboBoxConfig;
 /**
  * ComboBox组件.
  * 
- * @version $Id: ComboBox.java 8106 2014-02-14 04:34:07Z hugh.hz.wu@gmail.com $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  */
 @SuppressWarnings("unchecked")

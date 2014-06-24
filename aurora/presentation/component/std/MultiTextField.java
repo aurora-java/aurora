@@ -13,7 +13,7 @@ import aurora.presentation.component.std.config.TextFieldConfig;
 /**
  * 文本输入框
  * 
- * @version $Id: TextField.java 6975 2012-12-28 02:21:30Z njq.niu@gmail.com $
+ * @version $Id$
  * @author <a href="mailto:znjqolf@126.com">vincent</a>
  * 
  */
@@ -23,7 +23,7 @@ public class MultiTextField extends TextField {
 		super(registry);
 	}
 
-	public static final String VERSION = "$Revision: 6975 $";
+	public static final String VERSION = "$Revision$";
 	public static String INPUT_TYPE = "inputtype";
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
