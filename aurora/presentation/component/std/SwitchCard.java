@@ -34,7 +34,7 @@ public class SwitchCard extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addJavaScript(session, context, "switchcard/SwitchCard.js");
+		addJavaScript(session, context, "switchcard/SwitchCard-min.js");
 	}
 
 	public void onCreateViewContent(BuildSession session, ViewContext context)
