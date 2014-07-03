@@ -13,6 +13,7 @@ public class TableColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_ALIGN = "align";
 	public static final String PROPERTITY_HIDDEN = "hidden";
+	public static final String PROPERTITY_SORTABLE = "sortable";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_FOOTER_RENDERER = "footerrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
@@ -50,6 +51,13 @@ public class TableColumnConfig extends ComponentConfig {
 
 	public void setHidden(boolean hidden) {
 		putBoolean(PROPERTITY_HIDDEN, hidden);
+	}
+	public boolean isSortable() {
+		return getBoolean(PROPERTITY_SORTABLE, false);
+	}
+	
+	public void setSortable(boolean hidden) {
+		putBoolean(PROPERTITY_SORTABLE, hidden);
 	}
 
 	public String getAlign() {
