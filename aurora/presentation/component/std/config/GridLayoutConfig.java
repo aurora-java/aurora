@@ -2,7 +2,7 @@ package aurora.presentation.component.std.config;
 
 import uncertain.composite.CompositeMap;
 
-public class GridLayouConfig extends ComponentConfig {
+public class GridLayoutConfig extends ComponentConfig {
 	
 	public static final String VERSION = "$Revision$";
 	public static final String PROPERTITY_CELLPADDING = "cellpadding";

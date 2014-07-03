@@ -14,7 +14,7 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
-import aurora.presentation.component.std.config.GridLayouConfig;
+import aurora.presentation.component.std.config.GridLayoutConfig;
 
 /**
  * GridLayout.
@@ -56,24 +56,24 @@ public class GridLayout extends Component implements IViewBuilder{
 	}
 	
 	protected int getRows(CompositeMap view,CompositeMap model){
-		GridLayouConfig glc = new GridLayouConfig();
+		GridLayoutConfig glc = new GridLayoutConfig();
 		glc.initialize(view);
 		return glc.getRow(model, UNLIMITED);
 	}
 	
 	protected int getColumns(CompositeMap view,CompositeMap model){
-		GridLayouConfig glc = new GridLayouConfig();
+		GridLayoutConfig glc = new GridLayoutConfig();
 		glc.initialize(view);
 		return glc.getColumn(model, UNLIMITED);
 	}
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		if(isHidden(field, model)) return;
-		GridLayouConfig glc = new GridLayouConfig();
+		GridLayoutConfig glc = new GridLayoutConfig();
 		glc.initialize(view);
 		Writer out = session.getWriter();
 		int padding = glc.getPadding(model,3);
-		int colspan = field.getInt(GridLayouConfig.PROPERTITY_COLSPAN,1);
-		int rowspan = field.getInt(GridLayouConfig.PROPERTITY_ROWSPAN,1);
+		int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN,1);
+		int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN,1);
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
 		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
@@ -145,8 +145,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		while(it.hasNext()){
 			out.write("<tr>");
 			CompositeMap field = (CompositeMap)it.next();
-			field.putInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
-			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
+			field.putInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+			field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);	
 			out.write("</tr>");
 		}
@@ -158,8 +158,8 @@ public class GridLayout extends Component implements IViewBuilder{
 		out.write("<tr>");
 		while(it.hasNext()){
 			CompositeMap field = (CompositeMap)it.next();
-			field.putInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
-			field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
+			field.putInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+			field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 			buildCell(session,model,view,field);		
 		}
 		out.write("</tr>");
@@ -169,7 +169,7 @@ public class GridLayout extends Component implements IViewBuilder{
 	
 	protected void buildTop(BuildSession session, CompositeMap model,CompositeMap view, Map map, int rows, int columns,String id) throws Exception{
 		beforeBuildTop(session,model,view,id);
-		GridLayouConfig glc = new GridLayouConfig();
+		GridLayoutConfig glc = new GridLayoutConfig();
 		glc.initialize(view);
 		Writer out = session.getWriter();
 		int cellspacing = glc.getCellSpacing(model);
@@ -280,13 +280,13 @@ public class GridLayout extends Component implements IViewBuilder{
 									k--;
 									cl--;
 								}else{
-									int colspan = field.getInt(GridLayouConfig.PROPERTITY_COLSPAN, 1);
-									int rowspan = field.getInt(GridLayouConfig.PROPERTITY_ROWSPAN, 1);
+									int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
+									int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
 									if(rowspan > 1 || colspan > 1){
 										if(colspan > 1){
 											if(k + colspan > columns){
 												colspan = columns - k;
-												field.putInt(GridLayouConfig.PROPERTITY_COLSPAN, colspan);
+												field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, colspan);
 											}
 										}
 										for(int cn=0;cn<colspan;cn++){

@@ -23,7 +23,7 @@ import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.EventConfig;
-import aurora.presentation.component.std.config.GridLayouConfig;
+import aurora.presentation.component.std.config.GridLayoutConfig;
 import aurora.presentation.component.std.config.QueryFormConfig;
 import aurora.presentation.component.std.config.TextFieldConfig;
 import aurora.presentation.component.std.config.ToolBarButtonConfig;
@@ -202,7 +202,7 @@ public class QueryForm extends Component implements IViewBuilder {
 				formToolBar.addChild(btn);
 			}
 		}
-		formToolBar.putBoolean(GridLayouConfig.PROPERTITY_WRAPPER_ADJUST, true);
+		formToolBar.putBoolean(GridLayoutConfig.PROPERTITY_WRAPPER_ADJUST, true);
 		formToolBar.putString("style", "width:100%;"+style);
 	}
 

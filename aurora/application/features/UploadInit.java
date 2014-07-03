@@ -42,6 +42,8 @@ import aurora.events.E_PrepareServiceConfig;
 public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
 	
 	private static final String DEFAULT_ATM_BM = "fnd.fnd_atm_attachment";
+	
+	private static final String DEFAULT_INIT_BM = "init_bm";
 
     IModelFactory mFactory;
 		
@@ -71,7 +73,8 @@ public class UploadInit implements IViewBuilder, E_PrepareServiceConfig {
         		}
         		
         		ModelQueryConfig mqc = ActionConfigManager.createModelQuery();
-	    		mqc.setModel(DEFAULT_ATM_BM);
+        		String initBm = view.getString(DEFAULT_INIT_BM);
+	    		mqc.setModel(initBm==null ? DEFAULT_ATM_BM : initBm);
     			if(uc.isShowList()) {
 	    			mqc.setRootPath("/model/"+id);
 	    			mqc.setAutoCount(false);

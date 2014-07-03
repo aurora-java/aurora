@@ -9,7 +9,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FormConfig;
-import aurora.presentation.component.std.config.GridLayouConfig;
+import aurora.presentation.component.std.config.GridLayoutConfig;
 
 public class Form extends Box {
 	
@@ -95,8 +95,8 @@ public class Form extends Box {
 		
 		beforeBuildTop(session,model,view,id);
 		Writer out = session.getWriter();
-		int cellspacing = view.getInt(GridLayouConfig.PROPERTITY_CELLSPACING, 0);
-		int cellpadding = view.getInt(GridLayouConfig.PROPERTITY_CELLPADDING, 0);
+		int cellspacing = view.getInt(GridLayoutConfig.PROPERTITY_CELLSPACING, 0);
+		int cellpadding = view.getInt(GridLayoutConfig.PROPERTITY_CELLPADDING, 0);
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);		
 		
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");

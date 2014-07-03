@@ -2,7 +2,7 @@ package aurora.presentation.component.std.config;
 
 import uncertain.composite.CompositeMap;
 
-public class BoxConfig extends GridLayouConfig {
+public class BoxConfig extends GridLayoutConfig {
 	
 	public static final String VERSION = "$Revision$";
 	
