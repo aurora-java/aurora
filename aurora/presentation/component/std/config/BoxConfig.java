@@ -12,12 +12,12 @@ public class BoxConfig extends GridLayoutConfig {
 	
 	private int DEFAULT_LABEL_WIDTH = 75;
 	
-	public int getLabelWidth(CompositeMap model){
+	public Integer getLabelWidth(CompositeMap model){
 		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_LABEL_WIDTH), model);
 		if(null == str||"".equals(str)){
-			return DEFAULT_LABEL_WIDTH;
+			return new Integer(DEFAULT_LABEL_WIDTH);
 		}
-		return Integer.valueOf(str).intValue();
+		return Integer.valueOf(str);
 	}
 	
 	public void setLabelWidth(int w){

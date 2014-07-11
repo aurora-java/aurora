@@ -23,6 +23,13 @@ public class Form extends Box {
 		super(registry);
 	}
 	
+	protected String getHeadClass(){
+		return DEFAULT_HEAD_CLASS;
+	}
+	protected String getBodyClass(){
+		return DEFAULT_BODY_CLASS;
+	}
+	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
 		String theme = session.getTheme();
 		if(THEME_MAC.equals(theme)){
@@ -32,7 +39,7 @@ public class Form extends Box {
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
 		title = uncertain.composite.TextParser.parse(session.getLocalizedPrompt(title),model);
 		if(!"".equals(title)) {
-			out.write("<thead><tr><th class='"+DEFAULT_HEAD_CLASS+"' colspan="+columns*2+">");
+			out.write("<thead><tr><th class='"+getHeadClass()+"' colspan="+columns*2+">");
 			out.write(title);
 			out.write("</th></tr></thead>");
 		}
@@ -41,7 +48,7 @@ public class Form extends Box {
 	
 	protected void afterBuildTop(BuildSession session, CompositeMap model,CompositeMap view,int columns) throws Exception{
 		Writer out = session.getWriter();
-		out.write("<tbody class='"+DEFAULT_BODY_CLASS+"'>");
+		out.write("<tbody class='"+getBodyClass()+"'>");
 		
 		String showmargin = view.getString(FormConfig.PROPERTITY_SHOWMARGIN, "true");
 		boolean showBorder = view.getBoolean(BoxConfig.PROPERTITY_SHOWBORDER, false);
