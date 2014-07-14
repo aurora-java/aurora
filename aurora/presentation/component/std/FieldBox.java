@@ -44,6 +44,7 @@ public class FieldBox extends Form {
 		String cls = view.getString(ComponentConfig.PROPERTITY_CLASSNAME, "");
 		String className = DEFAULT_TABLE_CLASS + " layout-fieldbox";
 		String title = view.getString(FormConfig.PROPERTITY_TITLE, "");
+		title = session.getLocalizedPrompt(uncertain.composite.TextParser.parse(title,model));
 		if(!"".equals(title)) className += " " + TITLE_CLASS;
 		className += " " + cls;
 		return className;
