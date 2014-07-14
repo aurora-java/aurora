@@ -28,6 +28,8 @@ public class CheckBox extends Component {
 		String label = session.getLocalizedPrompt(cbc.getLabel());
 		map.put(CheckBoxConfig.PROPERTITY_LABEL, label);
 		map.put(CheckBoxConfig.PROPERTITY_TAB_INDEX, cbc.getTabIndex());
+		int height = cbc.getHeight();
+		map.put("margin-top", new Integer(Math.round((height-13)/2)));
 		map.put(CONFIG, getConfigString());
 	}
 }

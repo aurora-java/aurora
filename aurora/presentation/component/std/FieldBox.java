@@ -52,7 +52,9 @@ public class FieldBox extends Form {
 	public void buildView(BuildSession session, ViewContext view_context)
 			throws IOException, ViewCreationException {
 		CompositeMap view = view_context.getView();
+		CompositeMap model = view_context.getModel();
 		FieldBoxConfig fbc = FieldBoxConfig.getInstance(view);
+		Integer fieldHeight = fbc.getFieldHeight(model);
 		fieldBoxColumns = view.getChild(FieldBoxConfig.PROPERTITY_FIELDBOX_COLUMNS);
 		if (null != fieldBoxColumns) {
 			view.removeChild(fieldBoxColumns);
@@ -69,12 +71,21 @@ public class FieldBox extends Form {
 				while (it.hasNext()) {
 					CompositeMap column = (CompositeMap) it.next();
 					Iterator fieldList = column.getChildIterator();
+					Integer columnFieldHeight = FieldBoxColumnConfig.getInstance(column).getFieldHeight(model);
+					if(null == columnFieldHeight){
+						columnFieldHeight = fieldHeight;
+					}
 					while (fieldList.hasNext()) {
 						CompositeMap field = (CompositeMap) fieldList.next();
 						int colspan = field.getInt(
 								GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 						int rowspan = field.getInt(
 								GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+						String height = field.getString(FieldBoxConfig.PROPERTITY_HEIGHT);
+						if(null!= columnFieldHeight && null == height){
+							field.putInt(FieldBoxConfig.PROPERTITY_HEIGHT, columnFieldHeight.intValue());
+							field.putInt(FieldBoxConfig.PROPERTITY_FIELD_HEIGHT, columnFieldHeight.intValue());
+						}
 						list[i].add(field);
 						for (int j = 0; j < rowspan; j++) {
 							for (int k = 0; k < colspan; k++) {
