@@ -72,10 +72,16 @@ public class BMWSDLGenerator {
 	}
 
 	public CompositeMap run() {
-		CompositeMap wsdlRoot = WSDLUtil.getWSDLTemplate(location, WSDLUtil.NODE_NAME_PREFIX, soapAction, WSDLUtil.TARGET_NAMESPACE);
+		String nodeNamePrefix = getNodeNamePrefix(location);
+		CompositeMap wsdlRoot = WSDLUtil.getWSDLTemplate(location, nodeNamePrefix, soapAction, WSDLUtil.TARGET_NAMESPACE);
 		createRequest(wsdlRoot);
 		createResponse(wsdlRoot);
 		return wsdlRoot;
+	}
+	private static String getNodeNamePrefix(String location){
+		String[] parts = location.split("/");
+		int length = parts.length;
+		return parts[length-2]+"."+parts[length-1]+"_"+WSDL_TYPES.binding;
 	}
 
 	public void createRequest(CompositeMap wsdlRoot) {
