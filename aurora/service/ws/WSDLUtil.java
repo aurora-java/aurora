@@ -16,7 +16,7 @@ public class WSDLUtil {
 	public static final Namespace soap = new Namespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
 	public static final Namespace wsdl = new Namespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
 	public static final String TARGET_NAMESPACE = "http://www.aurora-framework.org/schema";
-	public static final String NODE_NAME_PREFIX = "auto";
+	public static final String NODE_NAME_PREFIX = "autoName";
 	public static final String TARGET_PREFIX = "tns";
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -52,6 +52,9 @@ public class WSDLUtil {
 					if (!elementTypeList.contains(childElementType)) {
 						elementTypeList.add(childElementType);
 						sequence.addChild(childElementType);
+					}else{
+						CompositeMap existsElementType = sequence.getChild(childElementType);
+						existsElementType.put("maxOccurs", "unbounded");
 					}
 	
 				}
