@@ -45,7 +45,7 @@ public class DefaultMessageHandler extends AbstractLocatableObject implements IM
 	@SuppressWarnings("unchecked")
 	public void onMessage(IMessage message) {
 		ILogger logger = LoggingContext.getLogger(this.getClass().getPackage().getName(), registry);
-		logger.log(Level.INFO, "accepted a new message!");
+		logger.log(Level.CONFIG, "accepted a new message!");
 		if (message == null) {
 			logger.log(Level.WARNING, "message is null");
 			return;
