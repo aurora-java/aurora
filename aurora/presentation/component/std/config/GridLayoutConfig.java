@@ -15,6 +15,8 @@ public class GridLayoutConfig extends ComponentConfig {
 	public static final String PROPERTITY_ROWSPAN = "rowspan";
 	public static final String PROPERTITY_COLSPAN = "colspan";
 	
+	public static final int DEFAULT_PADDING = 3;
+	
 	public int getCellPadding(CompositeMap model){
 		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_CELLPADDING), model);
 		if(null == str||"".equals(str)){

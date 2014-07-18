@@ -3,11 +3,12 @@ package aurora.presentation.component.std;
 import java.util.Iterator;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.component.std.config.ComponentConfig;
+import aurora.presentation.component.std.config.FieldBoxConfig;
 import aurora.presentation.component.std.config.FieldGroupConfig;
-import aurora.presentation.component.std.config.GridLayoutConfig;
 
 public class FieldGroup extends HBox {
 
@@ -19,15 +20,20 @@ public class FieldGroup extends HBox {
 
 	protected void beforeBuildCell(BuildSession session, CompositeMap model,
 			CompositeMap view, CompositeMap field) throws Exception {
-		int padding = view.getInt(GridLayoutConfig.PROPERTITY_PADDING, 3);
-		view.putInt(GridLayoutConfig.PROPERTITY_PADDING, 0);
-		Iterator it = view.getChildIterator();
 		FieldGroupConfig fgc = FieldGroupConfig.getInstance(view);
+		int padding = fgc.getPadding(model, FieldGroupConfig.DEFAULT_PADDING);
+		view.putInt(FieldGroupConfig.PROPERTITY_PADDING, 0);
+		Iterator it = view.getChildIterator();
 		Integer fieldHeight = fgc.getFieldHeight(model);
+		String fontStyle = fgc.getFontStyle(model);
 		while (it.hasNext()) {
 			CompositeMap child = (CompositeMap) it.next();
 			if(null == child.getString(FieldGroupConfig.PROPERTITY_HEIGHT) && null != fieldHeight){
 				child.putInt(FieldGroupConfig.PROPERTITY_HEIGHT, fieldHeight.intValue());
+			}
+			String fieldFontStyle = TextParser.parse(child.getString(FieldBoxConfig.PROPERTITY_FONT_STYLE),model);
+			if(null != fontStyle && null == fieldFontStyle){
+				child.putString(FieldBoxConfig.PROPERTITY_FONT_STYLE, fontStyle);
 			}
 			child.putString(
 					ComponentConfig.PROPERTITY_STYLE,

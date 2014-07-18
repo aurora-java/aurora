@@ -7,11 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
-import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.FieldBoxColumnConfig;
 import aurora.presentation.component.std.config.FieldBoxConfig;
@@ -56,7 +56,12 @@ public class FieldBox extends Form {
 		CompositeMap model = view_context.getModel();
 		FieldBoxConfig fbc = FieldBoxConfig.getInstance(view);
 		Integer fieldHeight = fbc.getFieldHeight(model);
+		String fontStyle = fbc.getFontStyle(model);
+		int padding = fbc.getPadding(model, FieldBoxConfig.DEFAULT_PADDING);
 		fieldBoxColumns = view.getChild(FieldBoxConfig.PROPERTITY_FIELDBOX_COLUMNS);
+		if(null != fontStyle){
+			view.putString(FieldBoxConfig.PROPERTITY_STYLE, fontStyle+";"+fbc.getStyle());
+		}
 		if (null != fieldBoxColumns) {
 			view.removeChild(fieldBoxColumns);
 			List childs = fieldBoxColumns.getChilds();
@@ -83,6 +88,13 @@ public class FieldBox extends Form {
 						int rowspan = field.getInt(
 								GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
 						String height = field.getString(FieldBoxConfig.PROPERTITY_HEIGHT);
+						if("fieldGroup".equals(field.getName())){
+							field.putInt(FieldBoxConfig.PROPERTITY_PADDING, padding);
+						}
+						String fieldFontStyle = TextParser.parse(field.getString(FieldBoxConfig.PROPERTITY_FONT_STYLE),model);
+						if(null != fontStyle && null == fieldFontStyle){
+							field.putString(FieldBoxConfig.PROPERTITY_FONT_STYLE, fontStyle);
+						}
 						if(null!= columnFieldHeight && null == height){
 							field.putInt(FieldBoxConfig.PROPERTITY_HEIGHT, columnFieldHeight.intValue());
 							field.putInt(FieldBoxConfig.PROPERTITY_FIELD_HEIGHT, columnFieldHeight.intValue());

@@ -39,6 +39,7 @@ public class InputField extends Field {
 	public void onCreateViewContent(BuildSession session, ViewContext context)throws IOException{
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
+		CompositeMap model = context.getModel();
 		InputFieldConfig ifc = new InputFieldConfig();
 		ifc.initialize(view);
 		Map map = context.getMap();
@@ -70,6 +71,11 @@ public class InputField extends Field {
 		if(!"".equals(emptyText) && "".equals(value)) {
 			map.put(ComponentConfig.PROPERTITY_VALUE, emptyText);
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
+		}
+		
+		String fontStyle = ifc.getFontStyle(model);
+		if(null!=fontStyle){
+			map.put(InputFieldConfig.PROPERTITY_FONT_STYLE, fontStyle);
 		}
 		addConfig(InputFieldConfig.PROPERTITY_EDITABLE, ifc.isEditable());
 	}

@@ -12,6 +12,7 @@ public class FieldBoxConfig extends FormConfig {
 	public static final String PROPERTITY_FIELDBOX_COLUMNS = "fieldBoxColumns";
 	public static final String PROPERTITY_FIELD_WIDTH = "fieldwidth";
 	public static final String PROPERTITY_FIELD_HEIGHT = "fieldheight";
+	public static final String PROPERTITY_FONT_STYLE = "fontstyle";
 
 	public static FieldBoxConfig getInstance() {
 		FieldBoxConfig model = new FieldBoxConfig();
@@ -59,4 +60,11 @@ public class FieldBoxConfig extends FormConfig {
 		putInt(PROPERTITY_FIELD_HEIGHT, fieldHeight);
 	}
 
+	public String getFontStyle(CompositeMap model) {
+		return uncertain.composite.TextParser.parse(getString(PROPERTITY_FONT_STYLE), model);
+	}
+	
+	public void setFontStyle(String fontStyle) {
+		putString(PROPERTITY_FONT_STYLE, fontStyle);
+	}
 }
