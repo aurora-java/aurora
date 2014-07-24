@@ -67,7 +67,7 @@ public class InputField extends Field {
 		String value = (String)map.get(ComponentConfig.PROPERTITY_VALUE);
 		
 		/** 文本提示 **/
-		String emptyText = ifc.getEmptyText();
+		String emptyText = ifc.getEmptyText(session,model);
 		if(!"".equals(emptyText) && "".equals(value)) {
 			map.put(ComponentConfig.PROPERTITY_VALUE, emptyText);
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);

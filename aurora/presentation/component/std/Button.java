@@ -56,6 +56,10 @@ public class Button extends Field {
 				wrapClass += " item-btn-icon";
 			}
 		}
+		String className = bc.getClassName();
+		if (className == null||"".equals(className)) {
+			wrapClass += " infor-btn";
+		}
 		return wrapClass;
 	}
 	

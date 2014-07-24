@@ -1,5 +1,6 @@
 package aurora.presentation.component.std.config;
 
+import aurora.presentation.BuildSession;
 import uncertain.composite.CompositeMap;
 
 public class InputFieldConfig extends FieldConfig {
@@ -19,6 +20,10 @@ public class InputFieldConfig extends FieldConfig {
 	
 	public String getEmptyText() {
 		return getString(PROPERTITY_EMPTYTEXT,"");
+	}
+	
+	public String getEmptyText(BuildSession session,CompositeMap model) {
+		return session.getLocalizedPrompt(uncertain.composite.TextParser.parse(getString(PROPERTITY_EMPTYTEXT,""),model));
 	}
 
 	public void setEmptyText(String text) {
