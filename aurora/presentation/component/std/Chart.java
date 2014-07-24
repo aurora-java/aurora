@@ -637,23 +637,21 @@ public class Chart extends Component {
 		map.put(CONFIG, getConfigString());
 	}
 
-	private void putStringCfg(CompositeMap view, String key, Map map) {
-		String value = view.getString(key.toLowerCase());
-		if (null != value) {
-			if ("null".equals(value))
-				map.put(key, null);
-			else if (value.matches("Aurora\\..*|\\$A\\..*|window[\\.\\[].*"))
-				map.put(key, new JSONFunction(value));
-			else
-				map.put(key, value);
-		}
-	}
+//	private void putStringCfg(CompositeMap view, String key, Map map) {
+//		String value = view.getString(key.toLowerCase());
+//		if (null != value) {
+//			if ("null".equals(value))
+//				map.put(key, null);
+//			else if (value.matches("Aurora\\..*|\\$A\\..*|window[\\.\\[].*"))
+//				map.put(key, new JSONFunction(value));
+//			else
+//				map.put(key, value);
+//		}
+//	}
 
-	private void putStringCfg(CompositeMap view, String key, Map map,
-			CompositeMap model) {
-		String value = view.getString(key.toLowerCase());
+	private void putStringCfg(CompositeMap view, String key, Map map) {
+		String value = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != value) {
-			value = TextParser.parse(value, model);
 			if ("null".equals(value))
 				map.put(key, null);
 			else if (value.matches("Aurora\\..*|\\$A\\..*|window[\\.\\[].*"))
@@ -664,7 +662,7 @@ public class Chart extends Component {
 	}
 
 	private void putNumberCfg(CompositeMap view, String key, Map map) {
-		String valuestr = view.getString(key.toLowerCase());
+		String valuestr = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != valuestr) {
 			if ("auto".equals(valuestr) || valuestr.indexOf("%") != -1) {
 				map.put(key, valuestr);
@@ -687,19 +685,19 @@ public class Chart extends Component {
 	}
 
 	private void putBooleanCfg(CompositeMap view, String key, Map map) {
-		Boolean value = view.getBoolean(key.toLowerCase());
-		if (null != value)
-			map.put(key, value);
+		String valuestr = TextParser.parse(view.getString(key.toLowerCase()),model);
+		if (null != valuestr)
+			map.put(key, Boolean.valueOf(valuestr));
 	}
 
 	private void putFunctionCfg(CompositeMap view, String key, Map map) {
-		String value = view.getString(key.toLowerCase());
+		String value = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != value)
 			map.put(key, new JSONFunction(value));
 	}
 
 	private void putGradientCfg(CompositeMap view, String key, Map map) {
-		String value = view.getString(key.toLowerCase());
+		String value = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != value) {
 			String[] values = value.split(",");
 			if ("linearGradient".equals(key)) {
@@ -714,14 +712,14 @@ public class Chart extends Component {
 	}
 
 	private void putArrayCfg(CompositeMap view, String key, Map map) {
-		String value = view.getString(key.toLowerCase());
+		String value = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != value) {
 			map.put(key, new JSONFunction("[" + value + "]"));
 		}
 	}
 
 	private void putStyleCfg(CompositeMap view, String key, Map map) {
-		String value = view.getString(key.toLowerCase());
+		String value = TextParser.parse(view.getString(key.toLowerCase()),model);
 		if (null != value) {
 			JSONObject smap = new JSONObject();
 			String[] sts = value.split(";");
@@ -851,7 +849,7 @@ public class Chart extends Component {
 	}
 
 	private void createChartOption(CompositeMap parent, Map cfg) {
-		putStringCfg(parent, PROPERTITY_CHART_TYPE, cfg, model);
+		putStringCfg(parent, PROPERTITY_CHART_TYPE, cfg);
 		putBooleanCfg(parent, PROPERTITY_CHART_POLAR, cfg);
 		putBooleanCfg(parent, PROPERTITY_CHART_ALIGNTICKS, cfg);
 		putBooleanCfg(parent, PROPERTITY_CHART_ANIMATION, cfg);
@@ -985,7 +983,7 @@ public class Chart extends Component {
 			putStringCfg(view, PROPERTITY_BUTTON_OPTIONS_ALIGN, cfg);
 			putBooleanCfg(view, PROPERTITY_BUTTON_OPTIONS_ENABLED, cfg);
 			putNumberCfg(view, PROPERTITY_BUTTON_OPTIONS_HEIGHT, cfg);
-			putStringCfg(view, PROPERTITY_BUTTON_OPTIONS_SYMBOL, cfg, model);
+			putStringCfg(view, PROPERTITY_BUTTON_OPTIONS_SYMBOL, cfg);
 			putStringCfg(view, PROPERTITY_BUTTON_OPTIONS_SYMBOLFILL, cfg);
 			putNumberCfg(view, PROPERTITY_BUTTON_OPTIONS_SYMBOLSIZE, cfg);
 			putStringCfg(view, PROPERTITY_BUTTON_OPTIONS_SYMBOLSTROKE, cfg);
@@ -1512,7 +1510,7 @@ public class Chart extends Component {
 			if (includeStates) {
 				createPlotOptionStates(view, cfg, true);
 			}
-			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg, model);
+			putStringCfg(view, PROPERTITY_PLOTOPTIONS_MARKER_SYMBOL, cfg);
 			if (!cfg.isEmpty())
 				map.put(PROPERTITY_PLOTOPTIONS_MARKER, new JSONObject(cfg));
 		}

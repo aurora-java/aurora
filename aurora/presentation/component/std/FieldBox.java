@@ -24,7 +24,7 @@ public class FieldBox extends Form {
 
 	private static final String DEFAULT_HEAD_CLASS = "fieldbox_head";
 	private static final String DEFAULT_BODY_CLASS = "fieldbox_body";
-
+	protected static final String TITLE_CLASS = "fieldbox_layout-title";
 	private CompositeMap fieldBoxColumns;
 
 	public FieldBox(IObjectRegistry registry) {
