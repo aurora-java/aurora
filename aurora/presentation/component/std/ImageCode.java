@@ -27,6 +27,7 @@ public class ImageCode extends Component {
 		CompositeMap view = context.getView();
 		ImageCodeConfig icc = ImageCodeConfig.getInstance(view);
 		if(icc.isEnable()){
+			addConfig(ImageCodeConfig.PROPERTITY_ENABLE, new Boolean(true));
 			map.put(ImageCodeConfig.PROPERTITY_SRC, PROPERTITY_SRC_VALUE);			
 		}else{
 			addConfig(ImageCodeConfig.PROPERTITY_ENABLE, new Boolean(false));
