@@ -9,6 +9,7 @@ public class ComponentConfig extends DynamicObject {
 	public static final String VERSION = "$Revision$";
 	public static final String TAG_NAME = "component";
 	public static final String PROPERTITY_ID = "id";
+	public static final String PROPERTITY_HOST_ID = "hostid";
 	public static final String PROPERTITY_NAME = "name";
 	public static final String PROPERTITY_PROMPT = "prompt";
 	public static final String PROPERTITY_PROMPT_STYLE = "promptstyle";
@@ -46,6 +47,13 @@ public class ComponentConfig extends DynamicObject {
 
 	public void setId(String id) {
 		putString(PROPERTITY_ID, id);
+	}
+	public String getHostId() {
+		return getString(PROPERTITY_HOST_ID);
+	}
+	
+	public void setHostId(String id) {
+		putString(PROPERTITY_HOST_ID, id);
 	}
 
 	public String getName() {

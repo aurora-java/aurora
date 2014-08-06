@@ -76,13 +76,16 @@ public class SwitchCard extends Component {
 		String ref = card.getString(REF, "");
 		String value = card.getString(VALUE, "");
 		boolean hidden = card.getBoolean(HIDDEN, true);
-		sb.append("<div class='switchcard-body' style='display:"+(hidden?"none":"")+"' case='"+value+"' url='"+ref+"'>");
+		sb.append("<div class='switchcard-body' style='display:"+(hidden?"none":"")+"' case='"+value+"' url='"+ref+"'");
 		if ("".equals(ref)) {
+			String hostid =  IDGenerator.getInstance().generate();
+			sb.append(" host_id='"+hostid+"'>");
 			List cardChilds = card.getChilds();
 			if (cardChilds != null) {
 				Iterator it = cardChilds.iterator();
 				while (it.hasNext()) {
 					CompositeMap cardChild = (CompositeMap) it.next();
+					cardChild.putString(SwitchCardConfig.PROPERTITY_HOST_ID, hostid);
 					try {
 						sb.append(session.buildViewAsString(model, cardChild));
 					} catch (Exception e) {
@@ -92,6 +95,8 @@ public class SwitchCard extends Component {
 			} else if (null != card.getText() && !"".equals(card.getText())) {
 				sb.append(card.getText());
 			}
+		}else{
+			sb.append(">");
 		}
 		card.putString(REF, uncertain.composite.TextParser.parse(ref, model));
 		sb.append("</div>");

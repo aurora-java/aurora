@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
+import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
 import aurora.presentation.component.std.config.BoxConfig;
+import aurora.presentation.component.std.config.GridBoxConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.GridLayoutConfig;
 
@@ -68,14 +70,15 @@ public class GridLayout extends Component implements IViewBuilder{
 	}
 	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		if(isHidden(field, model)) return;
+		beforeBuildCell(session, model, view, field);
 		GridLayoutConfig glc = new GridLayoutConfig();
 		glc.initialize(view);
 		Writer out = session.getWriter();
-		int padding = glc.getPadding(model,3);
+		int padding = glc.getPadding(model,GridLayoutConfig.DEFAULT_PADDING);
 		int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN,1);
 		int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN,1);
+		String hostId = glc.getHostId();
 		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
-		beforeBuildCell(session, model, view, field);
 		out.write("<td class='");
 		if(builder instanceof GridLayout){
 			out.write(DEFAULT_TD_CONTAINER);
@@ -99,7 +102,21 @@ public class GridLayout extends Component implements IViewBuilder{
 		}
 		if(colspan > 1)out.write("' colspan='"+(colspan*2-1));
 		if(rowspan > 1)out.write("' rowspan='"+rowspan);
-		out.write("' style='padding:"+padding+"px'>");
+		out.write("' style='padding:"+padding+"px");
+		if(GridBoxConfig.TAG_NAME.equals(field.getName())){
+			GridBoxConfig gbc = GridBoxConfig.getInstance(field);
+			String gridboxid = TextParser.parse(gbc.getId(),model);
+			if(null == gridboxid || "".equals(gridboxid)){
+				gridboxid = IDGenerator.getInstance().generate();
+			}
+			field.putString(ComponentConfig.PROPERTITY_ID, gridboxid);
+			field.putInt(GridBoxConfig.PROPERTITY_PADDING, padding);
+			out.write("' id='"+gridboxid);
+		}
+		out.write("'>");
+		if(null != hostId){
+			field.putString(GridLayoutConfig.PROPERTITY_HOST_ID, hostId);
+		}
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			
 //			addInvalidMsg(field, out);
@@ -282,11 +299,20 @@ public class GridLayout extends Component implements IViewBuilder{
 								}else{
 									int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 									int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+									GridBoxConfig gbc = null;
+									if(GridBoxConfig.TAG_NAME.equals(field.getName())){
+										gbc = GridBoxConfig.getInstance(field);
+										colspan = gbc.getColumn()+1;
+										field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, colspan);
+										field.putBoolean(GridBoxConfig.PROPERTITY_UNDERBOX, true);
+									}
 									if(rowspan > 1 || colspan > 1){
 										if(colspan > 1){
 											if(k + colspan > columns){
 												colspan = columns - k;
 												field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, colspan);
+												if(null!=gbc)
+													field.putInt(GridBoxConfig.PROPERTITY_COLUMN, colspan-1);
 											}
 										}
 										for(int cn=0;cn<colspan;cn++){

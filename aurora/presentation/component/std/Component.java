@@ -162,6 +162,10 @@ public class Component {
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 
+		String hostId = cc.getHostId();
+		if(null != hostId){
+			addConfig(ComponentConfig.PROPERTITY_HOST_ID, hostId);
+		}
 		String clazz = getDefaultClass(session, context);
 		String className = cc.getClassName();
 		if (className != null) {
