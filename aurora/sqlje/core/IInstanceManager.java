@@ -5,9 +5,11 @@
 package aurora.sqlje.core;
 
 public interface IInstanceManager {
-    
-    public ISqlCallEnabled createInstance( Class clazz );
-    
-    public ISqlCallEnabled createInstance( Class clazz, ISqlCallEnabled caller );
+
+	public <T extends ISqlCallEnabled> T createInstance(
+			Class<? extends ISqlCallEnabled> clazz);
+
+	public <T extends ISqlCallEnabled> T createInstance(
+			Class<? extends ISqlCallEnabled> clazz, ISqlCallEnabled caller);
 
 }

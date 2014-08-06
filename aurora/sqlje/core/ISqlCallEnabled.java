@@ -12,6 +12,6 @@ public interface ISqlCallEnabled {
     
     public ISqlCallStack _$getSqlCallStack();
     
-    public void _$setIqlCallStack( ISqlCallStack stack );
+    public void _$setSqlCallStack( ISqlCallStack stack );
 
 }
