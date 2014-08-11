@@ -9,6 +9,7 @@ import uncertain.composite.TextParser;
 import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ComponentConfig;
 
 public class Switch implements IViewBuilder {
 
@@ -27,7 +28,7 @@ public class Switch implements IViewBuilder {
 		Object obj = model.getObject(testField);
 		Iterator it = view.getChildIterator();
 		if (it == null) throw new aurora.presentation.ViewCreationException("selector:No case found");
-
+		String host_id = view.getString(ComponentConfig.PROPERTITY_HOST_ID);
 		Collection child_views = null;
 		while (it.hasNext()) {
 			CompositeMap child = (CompositeMap) it.next();
@@ -59,7 +60,14 @@ public class Switch implements IViewBuilder {
 
 		if (child_views != null)
 		try {
-			session.buildViews(model, child_views);
+	        Iterator it2 = child_views.iterator();
+	        while (it2.hasNext()) {
+	            CompositeMap child_view = (CompositeMap) it2.next();
+	            if(null != host_id){
+	            	child_view.putString(ComponentConfig.PROPERTITY_HOST_ID, host_id);
+	            }
+	            session.buildView(model, child_view);
+	        }
 		} catch (Exception e) {
 			throw new aurora.presentation.ViewCreationException(e);
 		}

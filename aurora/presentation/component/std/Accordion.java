@@ -109,9 +109,11 @@ public class Accordion extends Component {
 		if(null!=prompt)sb.append(prompt);
 		sb.append("</DIV><DIV class='item-accordion-body' hideFocus tabIndex='-1' style='");
 		if(bodyHeight!=null)sb.append("height:"+ bodyHeight + "px;");
-		sb.append((isSelected?"":"visibility:hidden")+"'>");
+		sb.append((isSelected?"":"visibility:hidden")+"'");
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
+			String hostid =  IDGenerator.getInstance().generate();
+			sb.append(" host_id='"+hostid+"'>");
 			List accordionChilds = accordion.getChilds();
 			if (accordionChilds != null) {
 				Iterator it = accordionChilds.iterator();
@@ -127,6 +129,8 @@ public class Accordion extends Component {
 			} else if (null!=accordion.getText() && !"".equals(accordion.getText())) {
 				sb.append(accordion.getText());
 			}
+		}else{
+			sb.append(">");
 		}
 		accordion.putString(REF, uncertain.composite.TextParser
 				.parse(ref, model));
