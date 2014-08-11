@@ -28,6 +28,7 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.IViewBuilder;
 import aurora.presentation.ViewContext;
 import aurora.presentation.ViewCreationException;
+import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.controller.ControllerProcedures;
@@ -145,6 +146,10 @@ public class ScreenInclude implements IViewBuilder{
             }
         }        
         // end
+        String host_id = view.getString(ComponentConfig.PROPERTITY_HOST_ID);
+        if(null!=host_id){
+        	pcm.put("_hostid", host_id);
+        }
         ServiceInstance old_inst = ServiceInstance.getInstance(root);
         CompositeMap old_parameter = old_inst.getContextMap().getChild("parameter");
         CompositeMap old_model = old_inst.getContextMap().getChild("model");

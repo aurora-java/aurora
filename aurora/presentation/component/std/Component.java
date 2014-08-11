@@ -144,6 +144,7 @@ public class Component {
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException {
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
+		CompositeMap root = model.getRoot();
 		Map map = context.getMap();
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
@@ -165,6 +166,11 @@ public class Component {
 		String hostId = cc.getHostId();
 		if(null != hostId){
 			addConfig(ComponentConfig.PROPERTITY_HOST_ID, hostId);
+		}else{
+			String rootHostId = (String) root.getObject("/parameter/@_hostid");
+			if(null != rootHostId){
+				addConfig(ComponentConfig.PROPERTITY_HOST_ID, rootHostId);
+			}
 		}
 		String clazz = getDefaultClass(session, context);
 		String className = cc.getClassName();
