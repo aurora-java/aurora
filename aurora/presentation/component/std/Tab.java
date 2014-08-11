@@ -81,13 +81,16 @@ public class Tab extends Component {
 					String ref = tc.getRef();
 					String bodyClass = tc.getBodyClass();
 					String bodyStyle = tc.getBodyStyle();
-					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'>");
+					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'");
 					if("".equals(ref)){
+						String hostid =  IDGenerator.getInstance().generate();
+						sb.append(" host_id='"+hostid+"'>");
 						List tabchilds = tab.getChilds();
 						if(tabchilds!=null){
 							Iterator tit = tabchilds.iterator();
 							while(tit.hasNext()){
 								CompositeMap tabchild = (CompositeMap)tit.next();
+								tabchild.putString(TabConfig.PROPERTITY_HOST_ID, hostid);
 								try {
 									sb.append(session.buildViewAsString(model, tabchild));
 								} catch (Exception e) {
@@ -95,6 +98,8 @@ public class Tab extends Component {
 								}			
 							}
 						}	
+					}else{
+						sb.append(">");
 					}
 					sb.append("</div>");
 					
