@@ -84,6 +84,9 @@ public class ComponentConfig extends DynamicObject {
 		return getString(PROPERTITY_STYLE,defaultValue);
 	}
 	
+	public String getStyle(CompositeMap model) {
+		return uncertain.composite.TextParser.parse(getString(PROPERTITY_STYLE), model);
+	}
 	public String getStyle() {
 		return getString(PROPERTITY_STYLE);
 	}

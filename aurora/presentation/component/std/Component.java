@@ -200,7 +200,7 @@ public class Component {
 		}
 		map.put(ComponentConfig.PROPERTITY_NAME, name);
 
-		String style = cc.getStyle();
+		String style = cc.getStyle(model);
 		map.put(ComponentConfig.PROPERTITY_STYLE, style == null ? "" : style);
 
 		/** 值 * */
