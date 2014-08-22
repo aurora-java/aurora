@@ -85,7 +85,7 @@ public class Upload extends Component {
 		addConfig(UploadConfig.PROPERTITY_PK_VALUE, uncertain.composite.TextParser.parse(uc.getPKValue(), model));
 		String context_path = model.getObject("/request/@context_path").toString();
 		map.put("context_path", context_path);
-		addConfig(UploadConfig.PROPERTITY_FILE_SIZE, new Integer(uc.getFileSize()));
+		addConfig(UploadConfig.PROPERTITY_FILE_SIZE, uc.getFileSize());
 		addConfig(UploadConfig.PROPERTITY_TOTAL_COUNT, new Integer(uc.getTotalCount()));
 		addConfig(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		addConfig(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
@@ -184,7 +184,7 @@ public class Upload extends Component {
 		map.put("context_path", context_path);
 		
 		map.put(UploadConfig.PROPERTITY_BUTTON_WIDTH, new Integer(uc.getButtonWidth()));
-		map.put(UploadConfig.PROPERTITY_FILE_SIZE, new Integer(uc.getFileSize()));
+		map.put(UploadConfig.PROPERTITY_FILE_SIZE, uc.getFileSize());
 		map.put(UploadConfig.PROPERTITY_TOTAL_COUNT, new Integer(uc.getTotalCount()));
 		map.put(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		map.put(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +52,7 @@ import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
 
+@SuppressWarnings("unchecked")
 public class AttachmentManager extends AbstractEntry{
 	
 	public static final String VERSION = "$Revision$";
@@ -70,8 +72,8 @@ public class AttachmentManager extends AbstractEntry{
 	
 	private static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
 	
-	private int maxSize = 0;
-	private String fileType = null;
+	private String fileType = "*.*";
+	private String fileSize = "";
 	private String saveType;
 	private String savePath;
 	private String actionType;
@@ -359,9 +361,6 @@ public class AttachmentManager extends AbstractEntry{
 	}
 	
 	
-	
-	
-	
 	private void doUpload(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
@@ -369,8 +368,8 @@ public class AttachmentManager extends AbstractEntry{
 		CompositeMap params = service.getParameter();
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload up = new ServletFileUpload(factory);
-		int ms = getFileSize();
-		if(ms > 0)up.setSizeMax(ms);
+//		int ms = getFileSize();
+//		if(ms > 0)up.setSizeMax(ms);
 		List items = null;
 		List files = new ArrayList();
 		Connection conn = null;
@@ -393,17 +392,24 @@ public class AttachmentManager extends AbstractEntry{
 						serviceInstance.getRequest().setAttribute("attachment_id", value);
 					}
 				} else {
-					String fts = getFileType();
-					if(fts != null) {
-						String name = fileItem.getName().toLowerCase();
-						String ft = name.substring(name.lastIndexOf(".")+1,name.length());
-						if(fts.indexOf(ft)!=-1){
-							files.add(fileItem);							
-						}else {
-							throw new Exception("文件类型不匹配!只允许 " + fts);	
+					List fts = Arrays.asList(getFileType().split(";"));
+					List fsz = Arrays.asList(getFileSize().split(";"));
+					String name = fileItem.getName().toLowerCase(); 
+					String ft = name.substring(name.lastIndexOf(".")+1,name.length());
+					int index = fts.indexOf("*."+ft);
+					if("*.*".equals(getFileType()) || index !=-1){
+						String fl = "";
+						if(fsz.size()!=fts.size()){
+							fl = (String)fsz.get(0);
+						}else if(index!=-1){
+							fl = (String)fsz.get(index);
 						}
+						if(!"".equals(fl) && fileItem.getSize() > 1024*Integer.valueOf(fl)){
+							throw new Exception("上传文件超出大小限制!");
+						}
+						files.add(fileItem);							
 					}else {
-						files.add(fileItem);			
+						throw new Exception("文件类型不匹配!只允许 " + fts);	
 					}
 				}
 			}
@@ -551,12 +557,12 @@ public class AttachmentManager extends AbstractEntry{
 		this.fileType = fileType;
 	}
 	
-	public int getFileSize() {
-		return maxSize;
+	public String getFileSize() {
+		return fileSize;
 	}
 
-	public void setFileSize(int fileSize) {
-		this.maxSize = fileSize;
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
 	}
 
 	public String getSavePath() {

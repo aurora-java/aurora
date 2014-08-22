@@ -26,8 +26,9 @@ public class UploadConfig extends ComponentConfig {
 	public static final String PROPERTITY_REORDER = "reorder";
 	public static final String PROPERTITY_SHOW_LIST = "showlist";
 	public static final String PROPERTITY_SORT_SQL = "sortsql";
-	public static final String PROPERTITY_REQUIRE_SESSION = "requiresession";
-
+	public static final String PROPERTITY_REQUIRE_SESSION = "requiresession";	
+	
+	
 	public static final String DEFAULT_TYPE = "default";
 	public static final String DEFAULT_SORT_SQL = "fa.creation_date desc";
 	
@@ -77,7 +78,7 @@ public class UploadConfig extends ComponentConfig {
 	}
 	
 	public String getFileType() {
-		return getString(PROPERTITY_FILE_TYPE,"*.*");
+		return getString(PROPERTITY_FILE_TYPE,"*.*").toLowerCase();
 	}
 	
 	public void setFileType(String fileType){
@@ -174,12 +175,12 @@ public class UploadConfig extends ComponentConfig {
 		putInt(PROPERTITY_BUTTON_WIDTH, buttonWidth);
 	}
 	
-	public int getFileSize(){
-		return getInt(PROPERTITY_FILE_SIZE, 0);
+	public String getFileSize(){
+		return getString(PROPERTITY_FILE_SIZE, "0");
 	}
 	
-	public void setFileSize(int fileSize){
-		putInt(PROPERTITY_FILE_SIZE, fileSize);
+	public void setFileSize(String fileSize){
+		putString(PROPERTITY_FILE_SIZE, fileSize);
 	}
 	
 	
