@@ -308,7 +308,7 @@ public class Table extends Component {
 		if (null != tcc.getPercentWidth())
 			pw = tcc.getPercentWidth() + "%";
 		if (null != column.getString(ComponentConfig.PROPERTITY_WIDTH))
-			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH) + "px";
+			pw = column.getString(ComponentConfig.PROPERTITY_WIDTH);
 
 		sb.append("<TD");
 		if(showHead)sb.append(" class='table-hc'");

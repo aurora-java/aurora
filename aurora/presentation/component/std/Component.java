@@ -43,6 +43,7 @@ public class Component {
 	
 	public static final String THEME_DEFAULT = "default";
 	public static final String THEME_MAC = "mac";
+	public static final String THEME_INFOR = "infor";
 
 	protected String id;
 	// protected StringBuilder esb = new StringBuilder();

@@ -55,6 +55,8 @@ public class ScreenTopToolbar extends Component implements IViewBuilder {
 						String marginTop = "3px;";
 						if(ToolBarButtonConfig.TAG_NAME.equalsIgnoreCase(cmp.getName())||GridButton.TAG_NAME.equalsIgnoreCase(cmp.getName())) {
 							marginTop = "15px;";						
+						}else if(THEME_INFOR.equals(session.getTheme())){
+							marginTop = "12px;";
 						}
 						cs = "float:left;margin-right:1px;margin-top:" + marginTop + cs;
 					} else if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(cmp.getNamespaceURI()) &&cmp.getName().equalsIgnoreCase("separator")){
