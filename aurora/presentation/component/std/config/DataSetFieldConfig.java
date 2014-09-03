@@ -22,6 +22,7 @@ public class DataSetFieldConfig extends ComponentConfig  {
     public static final String PROPERTITY_AUTO_COMPLETE_FIELD = "autocompletefield";    
 	public static final String PROPERTITY_VALUE_FIELD = "valuefield";
 	public static final String PROPERTITY_DISPLAY_FIELD = "displayfield";
+	public static final String PROPERTITY_TIP_FIELD = "tipfield";
 	public static final String PROPERTITY_OPTIONS = "options";
 	
 	public static final String PROPERTITY_TITLE = "title";
@@ -158,6 +159,14 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	public void setDisplayField(String field){
 		putString(PROPERTITY_DISPLAY_FIELD, field);
 	}
+	
+	public String getTipField(){
+		return getString(PROPERTITY_TIP_FIELD);		
+	}
+	public void setTipField(String field){
+		putString(PROPERTITY_TIP_FIELD, field);
+	}
+	
     
     public String getDefaultValue(){
     	return getString(PROPERTITY_DEFAULTVALUE);

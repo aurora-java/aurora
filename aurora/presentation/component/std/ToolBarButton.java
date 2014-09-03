@@ -28,6 +28,6 @@ public class ToolBarButton extends Button {
 	}
 	
 	protected int getDefaultHeight(){
-		return 22;
+		return 23;
 	}
 }

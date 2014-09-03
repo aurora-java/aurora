@@ -54,7 +54,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder {
 					if(isButton(cmp.getNamespaceURI(), cmp.getName())){
 						String marginTop = "3px;";
 						if(ToolBarButtonConfig.TAG_NAME.equalsIgnoreCase(cmp.getName())||GridButton.TAG_NAME.equalsIgnoreCase(cmp.getName())) {
-							marginTop = "15px;";						
+							marginTop = "10px;";						
 						}else if(THEME_INFOR.equals(session.getTheme())){
 							marginTop = "12px;";
 						}
