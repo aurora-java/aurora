@@ -46,8 +46,8 @@ public class TextArea extends InputField {
 //		}
 ////		addConfig(TextAreaConfig.PROPERTITY_READONLY, Boolean.valueOf(readOnly));
 ////		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, new Integer(tac.getTabIndex()));
-		map.put(TextAreaConfig.PROPERTITY_WIDTH, tac.getWidth() - 4);
-		map.put(TextAreaConfig.PROPERTITY_HEIGHT, tac.getHeight() - 4);
+		map.put(TextAreaConfig.PROPERTITY_WIDTH, (Integer)map.get(TextAreaConfig.PROPERTITY_WIDTH) - 4);
+		map.put(TextAreaConfig.PROPERTITY_HEIGHT, (Integer)map.get(TextAreaConfig.PROPERTITY_HEIGHT) - 4);
 		map.put(CONFIG, getConfigString());
 	}
 }
