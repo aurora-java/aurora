@@ -466,13 +466,14 @@ public class AttachmentManager extends AbstractEntry{
     	PreparedStatement pst = null;
         try{
             long size = 0;
-            int b;
+            int len;
+            byte[] b = new byte[1024 * 8];
             //Write file to disk
             FileOutputStream fos ;
             File file = new File(path,fileName);
             fos = new FileOutputStream(file);
-            while(( b = instream.read())>=0){
-                fos.write(b);
+            while(( len = instream.read(b))>=0){
+                fos.write(b, 0, len);
                 size++;
             }
             fos.close();
