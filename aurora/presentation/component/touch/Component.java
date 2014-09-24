@@ -31,8 +31,8 @@ public class Component implements IFeature {
 	private JSONObject config = new JSONObject();
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 		addJavaScript(session, context, "base/zepto.min.js");
-		addJavaScript(session, context, "base/touch-min.js");
-		addStyleSheet(session, context, "base/touch-all-min.css");
+		addJavaScript(session, context, "base/touch.js");
+		addStyleSheet(session, context, "base/touch-all.css");
 	}
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context) {
@@ -45,7 +45,7 @@ public class Component implements IFeature {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		
-		String id = view.getString(ComponentConfig.PROPERTITY_ID, "");
+		id = view.getString(ComponentConfig.PROPERTITY_ID, "");
 		if("".equals(id)){
 			id = IDGenerator.getInstance().generate();
 		}

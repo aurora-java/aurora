@@ -11,11 +11,11 @@ import aurora.presentation.ViewContext;
 @SuppressWarnings("unchecked")
 public class InputField extends Component {
 	
-	private static final String PROPERTITY_PROMPT = "prompt";
+	public static final String PROPERTITY_PROMPT = "prompt";
 	private static final String PROPERTITY_TYPE = "type";
 	private static final String PROPERTITY_PLACHOLDER = "placeholder";
-	private static final String PROPERTITY_REQUIRED = "required";
-	private static final String PROPERTITY_DISABLED = "disabled";
+	public static final String PROPERTITY_REQUIRED = "required";
+	public static final String PROPERTITY_DISABLED = "disabled";
 	private static final String PROPERTITY_VALUE = "value";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context) {

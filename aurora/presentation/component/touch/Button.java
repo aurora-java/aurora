@@ -18,7 +18,7 @@ public class Button extends Component {
 	public static final String PROPERTITY_TEXT = "text";
 	public static final String PROPERTITY_TYPE = "type";
 	public static final String PROPERTITY_DISABLED = "disabled";
-	private static final String DEFAULT_CLASS = "btn";
+	private static final String DEFAULT_CLASS = "touch-btn";
 	private static final String DEFAULT_TYPE = "button";
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
