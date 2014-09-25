@@ -79,7 +79,7 @@ public class SwitchCard extends Component {
 		sb.append("<div class='switchcard-body' style='display:"+(hidden?"none":"")+"' case='"+value+"' url='"+ref+"'");
 		if ("".equals(ref)) {
 			String hostid =  IDGenerator.getInstance().generate();
-			sb.append(" host_id='"+hostid+"'>");
+			sb.append(" id='"+hostid+"'>");
 			List cardChilds = card.getChilds();
 			if (cardChilds != null) {
 				Iterator it = cardChilds.iterator();

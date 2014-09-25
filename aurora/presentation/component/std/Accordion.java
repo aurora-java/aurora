@@ -113,7 +113,7 @@ public class Accordion extends Component {
 		String ref = accordion.getString(REF, "");
 		if ("".equals(ref)) {
 			String hostid =  IDGenerator.getInstance().generate();
-			sb.append(" host_id='"+hostid+"'>");
+			sb.append(" id='"+hostid+"'>");
 			List accordionChilds = accordion.getChilds();
 			if (accordionChilds != null) {
 				Iterator it = accordionChilds.iterator();

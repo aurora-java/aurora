@@ -84,7 +84,7 @@ public class Tab extends Component {
 					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'");
 					if("".equals(ref)){
 						String hostid =  IDGenerator.getInstance().generate();
-						sb.append(" host_id='"+hostid+"'>");
+						sb.append(" id='"+hostid+"'>");
 						List tabchilds = tab.getChilds();
 						if(tabchilds!=null){
 							Iterator tit = tabchilds.iterator();
