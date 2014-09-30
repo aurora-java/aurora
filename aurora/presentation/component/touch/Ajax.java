@@ -16,6 +16,8 @@ public class Ajax extends Component {
 	private static final String PROPERTITY_ID = "id";
 	private static final String PROPERTITY_TYPE = "type";
 	private static final String PROPERTITY_URL = "url";
+	private static final String PROPERTITY_MODEL = "model";
+	private static final String PROPERTITY_METHOD = "method";
 	private static final String PROPERTITY_TIMEOUT = "timeout";
 	private static final String PROPERTITY_ASYNC = "async";
 	private static final String PROPERTITY_DATATYPE = "dataType";
@@ -33,6 +35,8 @@ public class Ajax extends Component {
 			addConfig(PROPERTITY_TYPE, view.getString(PROPERTITY_TYPE));
 		if (null != view.getString(PROPERTITY_URL))
 			addConfig(PROPERTITY_URL, uncertain.composite.TextParser.parse(view.getString(PROPERTITY_URL),model));
+		else if(null != view.getString(PROPERTITY_MODEL))
+			addConfig(PROPERTITY_URL, model.getObject("/request/@context_path").toString() + "/autocrud/"+view.getString(PROPERTITY_MODEL)+"/"+view.getString(PROPERTITY_METHOD));
 		if (null != view.getInt(PROPERTITY_TIMEOUT))
 			addConfig(PROPERTITY_TIMEOUT, view.getInt(PROPERTITY_TIMEOUT));
 		if (null != view.getBoolean(PROPERTITY_ASYNC))
