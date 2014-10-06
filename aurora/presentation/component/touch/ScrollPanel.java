@@ -18,7 +18,7 @@ public class ScrollPanel extends Component {
 	public void onPreparePageContent(BuildSession session, ViewContext context)
 			throws IOException {
 		super.onPreparePageContent(session, context);
-		addJavaScript(session, context, "base/iscroll.js");
+		addJavaScript(session, context, "base/iscroll-min.js");
 	}
 
 	@Override
