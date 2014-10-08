@@ -5,7 +5,6 @@ import java.util.Map;
 
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
-import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ToogleButtonConfig;
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
