@@ -12,7 +12,7 @@ import uncertain.ocm.IObjectRegistry;
 
 public class ToogleButton extends Field {
 
-	public static final String VERSION = "$Revision";
+	public static final String VERSION = "$Revision$";
 	
 	private String CLASSNAME_WRAP = "iconfont item-tgl-btn ";
 	private static final String PLUS_TEXT = "&#xe6e3;";
