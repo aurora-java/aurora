@@ -186,13 +186,25 @@ public class Component {
 		Integer width = getComponentWidth(model, view, map);
 		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
 		addConfig(ComponentConfig.PROPERTITY_WIDTH, width);
-
+		Integer minWidth = cc.getMinWidth();
+		if (minWidth!=null) {
+			addConfig(ComponentConfig.PROPERTITY_MIN_WIDTH, minWidth);
+		}
+		
+		
 		/** Height属性 * */
 		Integer height = getComponentHeight(model, view, map);
 		if (height.intValue() != 0) {
 			map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);
 		}
+		Integer minHeight = cc.getMinHeight();
+		if (minHeight!=null) {
+			addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, minHeight);
+		}
+		
+		
+		
 
 		/** NAME属性 * */
 		String name = cc.getName();

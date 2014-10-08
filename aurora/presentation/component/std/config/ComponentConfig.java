@@ -17,6 +17,8 @@ public class ComponentConfig extends DynamicObject {
 	public static final String PROPERTITY_VALUE = "value";
 	public static final String PROPERTITY_WIDTH = "width";
 	public static final String PROPERTITY_HEIGHT = "height";
+	public static final String PROPERTITY_MIN_WIDTH = "minwidth";
+	public static final String PROPERTITY_MIN_HEIGHT = "minheight";
 	public static final String PROPERTITY_CLASSNAME = "classname";
 	public static final String PROPERTITY_BINDTARGET = "bindtarget";
 	public static final String PROPERTITY_HIDDEN = "hidden";
@@ -122,10 +124,26 @@ public class ComponentConfig extends DynamicObject {
 	public int getWidth() {
 		return getInt(PROPERTITY_WIDTH, 150);
 	}
+	
+	public Integer getMinWidth() {
+		return getInteger(PROPERTITY_MIN_WIDTH);
+	}
+	public void setMinWidth(Integer mw){
+		putInt(PROPERTITY_WIDTH, mw);
+	}
+	
+	public Integer getMinHeight() {
+		return getInteger(PROPERTITY_MIN_HEIGHT);
+	}
+	public void setMinWidHeight(Integer mh){
+		putInt(PROPERTITY_MIN_HEIGHT, mh);
+	}
 
 	public void setWidth(int width) {
 		putInt(PROPERTITY_WIDTH, width);
 	}
+	
+	
 	
 	public int getHeight(CompositeMap model,int defaultValue) {
 		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_HEIGHT), model);
