@@ -103,16 +103,19 @@ public class GridLayout extends Component implements IViewBuilder{
 		if(colspan > 1)out.write("' colspan='"+(colspan*2-1));
 		if(rowspan > 1)out.write("' rowspan='"+rowspan);
 		out.write("' style='padding:"+padding+"px");
-		if(GridBoxConfig.TAG_NAME.equals(field.getName())){
-			GridBoxConfig gbc = GridBoxConfig.getInstance(field);
-			String gridboxid = TextParser.parse(gbc.getId(),model);
-			if(null == gridboxid || "".equals(gridboxid)){
-				gridboxid = IDGenerator.getInstance().generate();
-			}
-			field.putString(ComponentConfig.PROPERTITY_ID, gridboxid);
-			field.putInt(GridBoxConfig.PROPERTITY_PADDING, padding);
-			out.write("' id='"+gridboxid);
-		}
+//		if(GridBoxConfig.TAG_NAME.equals(field.getName())){
+//			GridBoxConfig gbc = GridBoxConfig.getInstance(field);
+////			boolean isField = gbc.getIsField();
+////			if(isField){
+////				String gridboxid = TextParser.parse(gbc.getId(),model);
+////				if(null == gridboxid || "".equals(gridboxid)){
+////					gridboxid = IDGenerator.getInstance().generate();
+////				}
+////				field.putString(ComponentConfig.PROPERTITY_ID, gridboxid);
+////				field.putInt(GridBoxConfig.PROPERTITY_PADDING, padding);
+//////				out.write("' id='"+gridboxid);
+////			}
+//		}
 		out.write("'>");
 		if(null != hostId){
 			field.putString(GridLayoutConfig.PROPERTITY_HOST_ID, hostId);
@@ -299,20 +302,20 @@ public class GridLayout extends Component implements IViewBuilder{
 								}else{
 									int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 									int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
-									GridBoxConfig gbc = null;
+									boolean isField = false;
 									if(GridBoxConfig.TAG_NAME.equals(field.getName())){
-										gbc = GridBoxConfig.getInstance(field);
+										GridBoxConfig gbc = GridBoxConfig.getInstance(field);
+										isField = gbc.getIsField();
 										colspan = gbc.getColumn()+1;
 										field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, colspan);
-										field.putBoolean(GridBoxConfig.PROPERTITY_UNDERBOX, true);
 									}
 									if(rowspan > 1 || colspan > 1){
 										if(colspan > 1){
 											if(k + colspan > columns){
 												colspan = columns - k;
 												field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, colspan);
-												if(null!=gbc)
-													field.putInt(GridBoxConfig.PROPERTITY_COLUMN, colspan-1);
+												if(isField)
+													field.putInt(GridBoxConfig.PROPERTITY_COLUMN, colspan);
 											}
 										}
 										for(int cn=0;cn<colspan;cn++){

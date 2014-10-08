@@ -14,6 +14,7 @@ import aurora.application.ApplicationViewConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.GridBoxConfig;
+import aurora.presentation.component.std.config.GridLayoutConfig;
 
 @SuppressWarnings("unchecked")
 public class GridBox extends Component {
@@ -37,7 +38,13 @@ public class GridBox extends Component {
 	
 	
 	protected String getDefaultClass(BuildSession session, ViewContext context){
-		return DEFAULT_CLASS;
+		CompositeMap view = context.getView();
+		GridBoxConfig gbc = GridBoxConfig.getInstance(view);
+		String cls = DEFAULT_CLASS;
+		if(!gbc.getIsField()){
+			cls += " layout-title";
+		}
+		return cls;
 	}
 	
 	
@@ -50,9 +57,13 @@ public class GridBox extends Component {
 		GridBoxConfig gbc = GridBoxConfig.getInstance(view);
 		String labelSeparator = gbc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():gbc.getLabelSeparator();
 		processColumns(gbc.getColumns().getChilds());
-		boolean underBox = gbc.getUnderBox();
-		if(underBox)
-			addConfig(GridBoxConfig.PROPERTITY_UNDERBOX, Boolean.TRUE);
+		if(gbc.getIsField()){
+			addConfig(GridBoxConfig.PROPERTITY_IS_FIELD, Boolean.TRUE);
+		}else{
+			map.put("title_cls", "class='form_head'");
+			map.put(GridBoxConfig.PROPERTITY_TITLE, gbc.getTitle());
+			map.put(GridLayoutConfig.PROPERTITY_COLSPAN, "colspan='"+gbc.getColumn()*2+"'");
+		}
 		addConfig(GridBoxConfig.PROPERTITY_COLUMN,new Integer(gbc.getColumn()));
 		int padding = gbc.getPadding(model,3);
 		addConfig(GridBoxConfig.PROPERTITY_PADDING, new Integer(padding));

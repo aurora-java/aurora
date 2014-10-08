@@ -11,7 +11,8 @@ public class GridBoxConfig extends BoxConfig {
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITOR = "editor";
 	public static final String PROPERTITY_EDITORS = "editors";
-	public static final String PROPERTITY_UNDERBOX = "underbox";
+	public static final String PROPERTITY_TITLE = "title";
+	public static final String PROPERTITY_IS_FIELD = "isfield";
 
 	public static GridBoxConfig getInstance() {
 		GridBoxConfig model = new GridBoxConfig();
@@ -55,12 +56,19 @@ public class GridBoxConfig extends BoxConfig {
 		editors.addChild(editor.getObjectContext());
 	}
 
-	public boolean getUnderBox() {
-		return getBoolean(PROPERTITY_UNDERBOX, false);
+	public boolean getIsField() {
+		return getBoolean(PROPERTITY_IS_FIELD, false);
 	}
 
-	public void setUnderBox(boolean underBox) {
-		putBoolean(PROPERTITY_UNDERBOX, underBox);
+	public void setIsField(boolean underBox) {
+		putBoolean(PROPERTITY_IS_FIELD, underBox);
+	}
+	public String getTitle() {
+		return getString(PROPERTITY_TITLE);
+	}
+	
+	public void setTitle(String title) {
+		putString(PROPERTITY_TITLE, title);
 	}
 
 	public Integer getColumn() {
