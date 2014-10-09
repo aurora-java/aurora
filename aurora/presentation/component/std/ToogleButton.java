@@ -15,7 +15,7 @@ public class ToogleButton extends Field {
 	
 	private String CLASSNAME_WRAP = "iconfont item-tgl-btn ";
 	private static final String PLUS_TEXT = "&#xe6e3;";
-	private static final String MINUS_TEXT = "&#xe6c4";
+	private static final String MINUS_TEXT = "&#xe6c4;";
 	private static final String TOOGLE_TEXT = "toogleText";
 
 	public ToogleButton(IObjectRegistry registry) {
