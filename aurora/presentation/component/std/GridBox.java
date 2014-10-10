@@ -57,15 +57,15 @@ public class GridBox extends Component {
 		GridBoxConfig gbc = GridBoxConfig.getInstance(view);
 		String labelSeparator = gbc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():gbc.getLabelSeparator();
 		processColumns(gbc.getColumns().getChilds());
+		int padding = gbc.getPadding(model,3);
 		if(gbc.getIsField()){
 			addConfig(GridBoxConfig.PROPERTITY_IS_FIELD, Boolean.TRUE);
 		}else{
 			map.put("title_cls", "class='form_head'");
 			map.put(GridBoxConfig.PROPERTITY_TITLE, gbc.getTitle());
-			map.put(GridLayoutConfig.PROPERTITY_COLSPAN, "colspan='"+gbc.getColumn()*2+"'");
+			map.put(GridLayoutConfig.PROPERTITY_COLSPAN, "colspan='"+gbc.getColumn()*2+"' style='padding-right:"+padding+"px'");
 		}
 		addConfig(GridBoxConfig.PROPERTITY_COLUMN,new Integer(gbc.getColumn()));
-		int padding = gbc.getPadding(model,3);
 		addConfig(GridBoxConfig.PROPERTITY_PADDING, new Integer(padding));
 		addConfig(GridBoxConfig.PROPERTITY_TAB_INDEX, gbc.getTabIndex());
 		addConfig(GridBoxConfig.PROPERTITY_LABEL_SEPARATOR, labelSeparator);
