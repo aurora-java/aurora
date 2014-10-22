@@ -81,29 +81,31 @@ public class FieldBox extends Form {
 					if(null == columnFieldHeight){
 						columnFieldHeight = fieldHeight;
 					}
-					while (fieldList.hasNext()) {
-						CompositeMap field = (CompositeMap) fieldList.next();
-						int colspan = field.getInt(
-								GridLayoutConfig.PROPERTITY_COLSPAN, 1);
-						int rowspan = field.getInt(
-								GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
-						String height = field.getString(FieldBoxConfig.PROPERTITY_HEIGHT);
-						if("fieldGroup".equals(field.getName())){
-							field.putInt(FieldBoxConfig.PROPERTITY_PADDING, padding);
-						}
-						String fieldFontStyle = TextParser.parse(field.getString(FieldBoxConfig.PROPERTITY_FONT_STYLE),model);
-						if(null != fontStyle && null == fieldFontStyle){
-							field.putString(FieldBoxConfig.PROPERTITY_FONT_STYLE, fontStyle);
-						}
-						if(null!= columnFieldHeight && null == height){
-							field.putInt(FieldBoxConfig.PROPERTITY_HEIGHT, columnFieldHeight.intValue());
-							field.putInt(FieldBoxConfig.PROPERTITY_FIELD_HEIGHT, columnFieldHeight.intValue());
-						}
-						list[i].add(field);
-						for (int j = 0; j < rowspan; j++) {
-							for (int k = 0; k < colspan; k++) {
-								if (j != 0 || k != 0) {
-									list[i + k].add(null);
+					if(null != fieldList){
+						while (fieldList.hasNext()) {
+							CompositeMap field = (CompositeMap) fieldList.next();
+							int colspan = field.getInt(
+									GridLayoutConfig.PROPERTITY_COLSPAN, 1);
+							int rowspan = field.getInt(
+									GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+							String height = field.getString(FieldBoxConfig.PROPERTITY_HEIGHT);
+							if("fieldGroup".equals(field.getName())){
+								field.putInt(FieldBoxConfig.PROPERTITY_PADDING, padding);
+							}
+							String fieldFontStyle = TextParser.parse(field.getString(FieldBoxConfig.PROPERTITY_FONT_STYLE),model);
+							if(null != fontStyle && null == fieldFontStyle){
+								field.putString(FieldBoxConfig.PROPERTITY_FONT_STYLE, fontStyle);
+							}
+							if(null!= columnFieldHeight && null == height){
+								field.putInt(FieldBoxConfig.PROPERTITY_HEIGHT, columnFieldHeight.intValue());
+								field.putInt(FieldBoxConfig.PROPERTITY_FIELD_HEIGHT, columnFieldHeight.intValue());
+							}
+							list[i].add(field);
+							for (int j = 0; j < rowspan; j++) {
+								for (int k = 0; k < colspan; k++) {
+									if (j != 0 || k != 0) {
+										list[i + k].add(null);
+									}
 								}
 							}
 						}
@@ -118,14 +120,14 @@ public class FieldBox extends Form {
 						item = (CompositeMap) list[i].get(n);
 						isEmpty = false;
 					}
-					if (null != item) {
-						if (null == preChild) {
-							for (int m = 0; m < i; m++) {
-								if (n >= list[m].size()) {
-									view.addChild(new CompositeMap("span"));
-								}
+					if (null == preChild) {
+						for (int m = 0; m < i; m++) {
+							if (n >= list[m].size()) {
+								view.addChild(new CompositeMap("span"));
 							}
 						}
+					}
+					if (null != item) {
 						preChild = item;
 						view.addChild(item);
 					}
