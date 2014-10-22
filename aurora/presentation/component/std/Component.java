@@ -184,8 +184,15 @@ public class Component {
 
 		/** Width属性 * */
 		Integer width = getComponentWidth(model, view, map);
-		map.put(ComponentConfig.PROPERTITY_WIDTH, width);
-		addConfig(ComponentConfig.PROPERTITY_WIDTH, width);
+		if (width.intValue() != 0) {
+			Integer minWidth = cc.getMinWidth();
+			if (minWidth!=null) {
+				if(minWidth>width) width=minWidth; 
+				addConfig(ComponentConfig.PROPERTITY_MIN_WIDTH, minWidth);
+			}
+			map.put(ComponentConfig.PROPERTITY_WIDTH, width);
+			addConfig(ComponentConfig.PROPERTITY_WIDTH, width);			
+		}
 		Integer minWidth = cc.getMinWidth();
 		if (minWidth!=null) {
 			addConfig(ComponentConfig.PROPERTITY_MIN_WIDTH, minWidth);
@@ -195,13 +202,15 @@ public class Component {
 		/** Height属性 * */
 		Integer height = getComponentHeight(model, view, map);
 		if (height.intValue() != 0) {
+			Integer minHeight = cc.getMinHeight();
+			if (minHeight!=null) {
+				if(minHeight>height) height=minHeight; 
+				addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, minHeight);
+			}
 			map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);
 		}
-		Integer minHeight = cc.getMinHeight();
-		if (minHeight!=null) {
-			addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, minHeight);
-		}
+		
 		
 		
 		
