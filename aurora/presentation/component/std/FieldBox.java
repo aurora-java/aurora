@@ -150,6 +150,8 @@ public class FieldBox extends Form {
 		if (null != fieldBoxColumns) {
 			out.write("<tr height='0'>");
 			Iterator it = fieldBoxColumns.getChildIterator();
+			StringBuffer title_buff = new StringBuffer("<tr>");
+			boolean hasTitle = false;
 			while (it.hasNext()) {
 				CompositeMap column = (CompositeMap) it.next();
 				FieldBoxColumnConfig fbcc = FieldBoxColumnConfig
@@ -163,6 +165,14 @@ public class FieldBox extends Form {
 					out.write(" width='"+fieldWidth+"'");
 				}
 				out.write("></td>");
+				String title = fbcc.getTitle();
+				if(!"".equals(title)){
+					hasTitle = true;
+				}
+				title_buff.append("<th colspan='2' class='fieldbox_column_head'>"+title+"</th>");
+			}
+			if(hasTitle){
+				out.write(title_buff.append("</tr>").toString());
 			}
 			out.write("</tr>");
 		}
