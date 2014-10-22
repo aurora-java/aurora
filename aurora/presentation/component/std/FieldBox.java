@@ -67,7 +67,6 @@ public class FieldBox extends Form {
 			List childs = fieldBoxColumns.getChilds();
 			if (null != childs) {
 				int length = childs.size();
-				view.putInt(GridLayoutConfig.PROPERTITY_COLUMN, length);
 				LinkedList[] list = new LinkedList[length];
 				for (int i = 0; i < length; i++) {
 					list[i] = new LinkedList();
@@ -76,6 +75,7 @@ public class FieldBox extends Form {
 				int i = 0, n = 0;
 				while (it.hasNext()) {
 					CompositeMap column = (CompositeMap) it.next();
+					FieldBoxColumnConfig fbcc = FieldBoxColumnConfig.getInstance(column);
 					Iterator fieldList = column.getChildIterator();
 					Integer columnFieldHeight = FieldBoxColumnConfig.getInstance(column).getFieldHeight(model);
 					if(null == columnFieldHeight){
@@ -109,8 +109,12 @@ public class FieldBox extends Form {
 								}
 							}
 						}
+						i++;
+					}else if("".equals(fbcc.getTitle())){
+						length--;
+					}else{
+						i++;
 					}
-					i++;
 				}
 				boolean isEmpty = true;
 				CompositeMap preChild = null;
@@ -139,6 +143,8 @@ public class FieldBox extends Form {
 						preChild = null;
 					}
 				}
+
+				view.putInt(GridLayoutConfig.PROPERTITY_COLUMN, length);
 			}
 		}
 		super.buildView(session, view_context);
@@ -158,20 +164,22 @@ public class FieldBox extends Form {
 				CompositeMap column = (CompositeMap) it.next();
 				FieldBoxColumnConfig fbcc = FieldBoxColumnConfig
 						.getInstance(column);
-				Integer fieldWidth = fbcc.getFieldWidth(model) ==null? fbc
-						.getFieldWidth(model) : fbcc.getFieldWidth(model);
-				int labelWidth = fbcc.getLabelWidth(model) == null ? fbc
-						.getLabelWidth(model) : fbcc.getLabelWidth(model).intValue();
-				out.write("<th width='"+labelWidth+"'></th><td");
-				if(null != fieldWidth){
-					out.write(" width='"+fieldWidth+"'");
+				if(null !=column.getChildIterator() || !"".equals(fbcc.getTitle())){
+					Integer fieldWidth = fbcc.getFieldWidth(model) ==null? fbc
+							.getFieldWidth(model) : fbcc.getFieldWidth(model);
+					int labelWidth = fbcc.getLabelWidth(model) == null ? fbc
+							.getLabelWidth(model) : fbcc.getLabelWidth(model).intValue();
+					out.write("<th width='"+labelWidth+"'></th><td");
+					if(null != fieldWidth){
+						out.write(" width='"+fieldWidth+"'");
+					}
+					out.write("></td>");
+					String title = fbcc.getTitle();
+					if(!"".equals(title)){
+						hasTitle = true;
+					}
+					title_buff.append("<th colspan='2' class='fieldbox_column_head'>"+title+"</th>");
 				}
-				out.write("></td>");
-				String title = fbcc.getTitle();
-				if(!"".equals(title)){
-					hasTitle = true;
-				}
-				title_buff.append("<th colspan='2' class='fieldbox_column_head'>"+title+"</th>");
 			}
 			if(hasTitle){
 				out.write(title_buff.append("</tr>").toString());
