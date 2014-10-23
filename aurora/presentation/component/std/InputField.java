@@ -9,6 +9,9 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.InputFieldConfig;
+import aurora.service.ServiceInstance;
+import aurora.service.http.HttpServiceInstance;
+import aurora.service.http.UserAgentTools;
 
 @SuppressWarnings("unchecked")
 public class InputField extends Field {
@@ -71,6 +74,14 @@ public class InputField extends Field {
 		if(!"".equals(emptyText) && "".equals(value)) {
 			map.put(ComponentConfig.PROPERTITY_VALUE, emptyText);
 			addConfig(InputFieldConfig.PROPERTITY_EMPTYTEXT, emptyText);
+		}
+		
+		/**解决chrome,safari光标位置不居中问题**/
+		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
+		String[] browsers = UserAgentTools.getBrowser(serviceInstance.getRequest().getHeader("User-Agent"));
+		if(!"chrome".equals(browsers[1]) && "Safari".equals(browsers[1])){
+			Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
+			map.put("lineHeight", "line-height:"+ height+"px;");
 		}
 		
 		String fontStyle = ifc.getFontStyle(model);

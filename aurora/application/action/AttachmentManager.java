@@ -430,7 +430,7 @@ public class AttachmentManager extends AbstractEntry{
 	            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
 	            	writeBLOB(conn, in, attach_id);	            	
 	            }else if(SAVE_TYPE_FILE.equalsIgnoreCase(getSaveType())){
-	            	writeFile(conn, in, attach_id, file_name);
+	            	writeFile(context,conn, in, attach_id, file_name);
 	            }
 	            
 	            fileItem.delete();
@@ -453,13 +453,13 @@ public class AttachmentManager extends AbstractEntry{
 	}
 	
 	
-	private void writeFile(Connection conn,InputStream instream, String aid,String fileName) throws Exception {
+	private void writeFile(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception {
 		if("".equals(fileName)) return;
 		if("true".equals(getRandomName())) {
 			fileName = IDGenerator.getInstance().generate();
 		}
-    	String datePath = sdf.format(new Date());	
-    	String path = getSavePath().replaceAll("\\\\", "/");
+    	String datePath = sdf.format(new Date());
+    	String path = getSavePath(ServiceContext.createServiceContext(context).getModel()).replaceAll("\\\\", "/");
     	if(path.charAt(path.length()-1)!='/') path += "/";
     	if("true".equalsIgnoreCase(getUseSubFolder())) path += datePath;
     	FileUtils.forceMkdir(new File(path));
@@ -566,8 +566,13 @@ public class AttachmentManager extends AbstractEntry{
 		this.fileSize = fileSize;
 	}
 
+	public String getSavePath(CompositeMap model) {
+		String sp = getSavePath();
+		return sp == null ? "." : uncertain.composite.TextParser.parse(sp, model);
+	}
+	
 	public String getSavePath() {
-		return savePath == null ? "." : savePath;
+		return savePath;
 	}
 
 	public void setSavePath(String savePath) {
