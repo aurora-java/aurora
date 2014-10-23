@@ -84,10 +84,6 @@ public class FieldBox extends Form {
 					if(null != fieldList){
 						while (fieldList.hasNext()) {
 							CompositeMap field = (CompositeMap) fieldList.next();
-							int colspan = field.getInt(
-									GridLayoutConfig.PROPERTITY_COLSPAN, 1);
-							int rowspan = field.getInt(
-									GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
 							String height = field.getString(FieldBoxConfig.PROPERTITY_HEIGHT);
 							if("fieldGroup".equals(field.getName())){
 								field.putInt(FieldBoxConfig.PROPERTITY_PADDING, padding);
@@ -101,13 +97,6 @@ public class FieldBox extends Form {
 								field.putInt(FieldBoxConfig.PROPERTITY_FIELD_HEIGHT, columnFieldHeight.intValue());
 							}
 							list[i].add(field);
-							for (int j = 0; j < rowspan; j++) {
-								for (int k = 0; k < colspan; k++) {
-									if (j != 0 || k != 0) {
-										list[i + k].add(null);
-									}
-								}
-							}
 						}
 						i++;
 					}else if("".equals(fbcc.getTitle())){
@@ -116,31 +105,39 @@ public class FieldBox extends Form {
 						i++;
 					}
 				}
+				
 				boolean isEmpty = true;
-				CompositeMap preChild = null;
-				for (i = 0; i < length;) {
+				boolean emptyLine = true;
+				for (i = 0; i < length;isEmpty=true) {
 					CompositeMap item = null;
 					if (n < list[i].size()) {
 						item = (CompositeMap) list[i].get(n);
-						isEmpty = false;
-					}
-					if (null == preChild) {
-						for (int m = 0; m < i; m++) {
-							if (n >= list[m].size()) {
-								view.addChild(new CompositeMap("span"));
+						if(null !=item){
+							int colspan = item.getInt(
+									GridLayoutConfig.PROPERTITY_COLSPAN, 1);
+							int rowspan = item.getInt(
+									GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+							for (int j = 0; j < rowspan; j++) {
+								for (int k = 0; k < colspan; k++) {
+									if (j != 0 || k != 0) {
+										list[i + k].add(n+j,null);
+									}
+								}
 							}
 						}
+						isEmpty = false;
+						emptyLine = false;
 					}
-					if (null != item) {
-						preChild = item;
+					if(null != item){
 						view.addChild(item);
+					}else if(isEmpty){
+						view.addChild(new CompositeMap("span"));
 					}
 					i++;
-					if (!isEmpty && i == length) {
-						i = 0;
+					if(!emptyLine && i == length){
+						i=0;
 						n++;
-						isEmpty = true;
-						preChild = null;
+						emptyLine=true;
 					}
 				}
 
