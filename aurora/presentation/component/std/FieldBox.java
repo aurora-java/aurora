@@ -108,6 +108,7 @@ public class FieldBox extends Form {
 				
 				boolean isEmpty = true;
 				boolean emptyLine = true;
+				int totalspan = 0;
 				for (i = 0; i < length;isEmpty=true) {
 					CompositeMap item = null;
 					if (n < list[i].size()) {
@@ -117,10 +118,13 @@ public class FieldBox extends Form {
 									GridLayoutConfig.PROPERTITY_COLSPAN, 1);
 							int rowspan = item.getInt(
 									GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
+							totalspan += colspan*rowspan - 1;
 							for (int j = 0; j < rowspan; j++) {
 								for (int k = 0; k < colspan; k++) {
 									if (j != 0 || k != 0) {
-										list[i + k].add(n+j,null);
+										if(n+j <= list[i + k].size()){
+											list[i + k].add(n+j,null);
+										}
 									}
 								}
 							}
@@ -140,8 +144,14 @@ public class FieldBox extends Form {
 						emptyLine=true;
 					}
 				}
-
 				view.putInt(GridLayoutConfig.PROPERTITY_COLUMN, length);
+				List children = view.getChilds();
+				int len = children.size();
+				length += (totalspan + len)%length;
+				for(int m=1;m<=length;m++){
+					children.remove(len-m);
+				}
+				System.out.println(children.size());
 			}
 		}
 		super.buildView(session, view_context);
