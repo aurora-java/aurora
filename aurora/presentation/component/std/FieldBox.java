@@ -151,7 +151,6 @@ public class FieldBox extends Form {
 				for(int m=1;m<=length;m++){
 					children.remove(len-m);
 				}
-				System.out.println(children.size());
 			}
 		}
 		super.buildView(session, view_context);
