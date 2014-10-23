@@ -183,8 +183,10 @@ public class FieldBox extends Form {
 					String title = fbcc.getTitle();
 					if(!"".equals(title)){
 						hasTitle = true;
+						title_buff.append("<th colspan='2' class='fieldbox_column_head'><div>"+title+"</div></th>");
+					}else{
+						title_buff.append("<th colspan='2' class='fieldbox_column_head'>"+title+"</th>");
 					}
-					title_buff.append("<th colspan='2' class='fieldbox_column_head'>"+title+"</th>");
 				}
 			}
 			if(hasTitle){
