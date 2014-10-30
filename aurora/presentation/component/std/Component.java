@@ -13,6 +13,7 @@ import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
 import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
+import aurora.application.AuroraApplication;
 import aurora.application.IApplicationConfig;
 import aurora.application.config.ScreenConfig;
 import aurora.application.features.cstm.CustomSourceCode;
@@ -421,6 +422,19 @@ public class Component {
 			}
 		}
 		return count;
+	}
+	
+	protected void transferHostId(CompositeMap view , String hostid){
+		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(view.getNamespaceURI())){
+			view.putString(ComponentConfig.PROPERTITY_HOST_ID, hostid);
+		}else{
+			Iterator it = view.getChildIterator();
+			if(null!=it){
+				while(it.hasNext()){
+					transferHostId((CompositeMap) it.next(),hostid);
+				}
+			}
+		}
 	}
 }
 

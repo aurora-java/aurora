@@ -118,7 +118,7 @@ public class GridLayout extends Component implements IViewBuilder{
 //		}
 		out.write("'>");
 		if(null != hostId){
-			field.putString(GridLayoutConfig.PROPERTITY_HOST_ID, hostId);
+			transferHostId(field,hostId);
 		}
 		session.buildView(model, field);
 		if(builder instanceof GridLayout){}else{			

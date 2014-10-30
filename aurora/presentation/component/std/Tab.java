@@ -90,7 +90,7 @@ public class Tab extends Component {
 							Iterator tit = tabchilds.iterator();
 							while(tit.hasNext()){
 								CompositeMap tabchild = (CompositeMap)tit.next();
-								tabchild.putString(TabConfig.PROPERTITY_HOST_ID, hostid);
+								transferHostId(tabchild,hostid);
 								try {
 									sb.append(session.buildViewAsString(model, tabchild));
 								} catch (Exception e) {

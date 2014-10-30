@@ -119,6 +119,7 @@ public class Accordion extends Component {
 				Iterator it = accordionChilds.iterator();
 				while (it.hasNext()) {
 					CompositeMap accordionChild = (CompositeMap) it.next();
+					transferHostId(accordionChild,hostid);
 					try {
 						sb.append(session.buildViewAsString(model,
 								accordionChild));

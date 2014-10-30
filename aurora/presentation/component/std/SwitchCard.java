@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.SwitchCardConfig;
@@ -85,7 +86,7 @@ public class SwitchCard extends Component {
 				Iterator it = cardChilds.iterator();
 				while (it.hasNext()) {
 					CompositeMap cardChild = (CompositeMap) it.next();
-					cardChild.putString(SwitchCardConfig.PROPERTITY_HOST_ID, hostid);
+					transferHostId(cardChild,hostid);
 					try {
 						sb.append(session.buildViewAsString(model, cardChild));
 					} catch (Exception e) {
@@ -102,4 +103,5 @@ public class SwitchCard extends Component {
 		sb.append("</div>");
 		return sb;
 	}
+	
 }
