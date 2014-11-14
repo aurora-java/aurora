@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -35,13 +36,13 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
-
 import uncertain.composite.CompositeMap;
+import uncertain.logging.ILogger;
 import uncertain.logging.LoggingContext;
 import uncertain.ocm.IObjectRegistry;
 import uncertain.proc.AbstractEntry;
 import uncertain.proc.ProcedureRunner;
+import uncertain.util.LoggingUtil;
 import aurora.database.DBUtil;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
@@ -51,6 +52,8 @@ import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
+
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 @SuppressWarnings("unchecked")
 public class AttachmentManager extends AbstractEntry{
@@ -202,6 +205,11 @@ public class AttachmentManager extends AbstractEntry{
 		            }
 				}
 				response.setHeader("Connection", "close");
+			} catch(Exception e){
+				if (!(e.getCause() instanceof SocketException)){
+					ILogger logger = LoggingContext.getLogger(context,ServiceInstance.LOGGING_TOPIC);
+					LoggingUtil.logException(e, logger);
+				}
 			} finally{
 				DBUtil.closeResultSet(rs);
 				DBUtil.closeStatement(pst);
@@ -447,8 +455,8 @@ public class AttachmentManager extends AbstractEntry{
 			}
 			
 		} catch (Exception ex) {
-			LoggingContext.getLogger(context,AttachmentManager.class.getCanonicalName()).log(ex.getMessage());
-			throw ex;
+			ILogger logger = LoggingContext.getLogger(context,ServiceInstance.LOGGING_TOPIC);
+			LoggingUtil.logException(ex, logger);
 		} 
 	}
 	
