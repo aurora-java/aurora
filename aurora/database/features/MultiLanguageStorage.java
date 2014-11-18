@@ -235,9 +235,11 @@ public class MultiLanguageStorage extends MultiLanguageDisplay {
                             .toLowerCase())
                             && field.isForUpdate()  && model.getOperation("update")==null) {
                         createMultiLanguageSql(context, field, "update");
-                    } else {
+                    } else if ("delete".equalsIgnoreCase(operation
+                            .toLowerCase())){
                         createMultiLanguageSql(context, field, "delete");
-                    }
+                    } else
+                        throw new RuntimeException("Unknown operation:"+operation);
                 }
         }
     }
