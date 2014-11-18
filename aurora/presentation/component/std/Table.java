@@ -18,7 +18,6 @@ import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
-import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.NavBarConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
@@ -209,8 +208,9 @@ public class Table extends Component {
 			CompositeMap column = (CompositeMap) it.next();
 			if (null == column.getChilds()) {
 				TableColumnConfig tcc = TableColumnConfig.getInstance(column);
-				column.putBoolean(GridColumnConfig.PROPERTITY_HIDDEN, tcc.isHidden());
-				column.putBoolean(GridColumnConfig.PROPERTITY_SORTABLE, tcc.isSortable());
+				if(tcc.isHidden())column.putBoolean(TableColumnConfig.PROPERTITY_HIDDEN, tcc.isHidden());
+				if(tcc.isSortable())column.putBoolean(TableColumnConfig.PROPERTITY_SORTABLE, tcc.isSortable());
+				if(tcc.isGroup()) column.putBoolean(TableColumnConfig.PROPERTITY_GROUP, tcc.isGroup());
 				JSONObject json = new JSONObject(column);
 				jsons.put(json);
 				sb.append("<TD dataindex='");
