@@ -14,6 +14,7 @@ public class TableColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_ALIGN = "align";
 	public static final String PROPERTITY_HIDDEN = "hidden";
 	public static final String PROPERTITY_SORTABLE = "sortable";
+	public static final String PROPERTITY_GROUP = "group";
 	public static final String PROPERTITY_RENDERER = "renderer";
 	public static final String PROPERTITY_FOOTER_RENDERER = "footerrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";
@@ -59,7 +60,13 @@ public class TableColumnConfig extends ComponentConfig {
 	public void setSortable(boolean hidden) {
 		putBoolean(PROPERTITY_SORTABLE, hidden);
 	}
-
+	
+	public boolean isGroup(){
+		return getBoolean(PROPERTITY_GROUP, false);
+	}
+	public void setGroup(boolean hidden){
+		putBoolean(PROPERTITY_GROUP, hidden);
+	}
 	public String getAlign() {
 		return getString(PROPERTITY_ALIGN, DEFAULT_ALIGN);
 	}
