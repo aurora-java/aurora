@@ -78,8 +78,9 @@ public class InputField extends Field {
 		
 		/**解决chrome,safari光标位置不居中问题**/
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(model.getRoot());
-		String[] browsers = UserAgentTools.getBrowser(serviceInstance.getRequest().getHeader("User-Agent"));
-		if(!"chrome".equals(browsers[1]) && "Safari".equals(browsers[1])){
+		String[] userAgent = UserAgentTools.getBrowser(serviceInstance.getRequest().getHeader("User-Agent"));
+		String browser = userAgent[1];
+		if(browser!=null && browser.toLowerCase().indexOf("chrome")==-1 && browser.toLowerCase().indexOf("safari")==-1){
 			Integer height = (Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT);
 			map.put("lineHeight", "line-height:"+ height+"px;");
 		}
