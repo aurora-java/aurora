@@ -26,7 +26,7 @@ public class ScreenTopToolbar extends Component implements IViewBuilder {
 	public static final String VERSION = "$Revision$";
 	
 	protected int getDefaultHeight() {
-		return 44;
+		return 35;
 	}
 	
 	@SuppressWarnings("unchecked")
