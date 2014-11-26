@@ -1,10 +1,12 @@
 package aurora.application.features;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.sql.SQLException;
 import java.util.Enumeration;
 
 import javax.servlet.ServletConfig;
@@ -25,12 +27,12 @@ import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
 import aurora.service.http.WebContextInit;
 
-public class HttpForward extends HttpServlet {	
+public class HttpForward extends HttpServlet {
 	private static final long serialVersionUID = -3144250964634670506L;
 	String KEY_ADDRESS = "address";
-	String KEY_PROCEDURE="procedure";
-	String KEY_OUTPUT="output";	
-	
+	String KEY_PROCEDURE = "procedure";
+	String KEY_OUTPUT = "output";
+
 	String procedure;
 	String returnPath;
 	String address;
@@ -38,58 +40,72 @@ public class HttpForward extends HttpServlet {
 	ProcedureRunner mRunner;
 	UncertainEngine mUncertainEngine;
 	DatabaseServiceFactory svcFactory;
-	
+
 	protected void service(HttpServletRequest request,
-			HttpServletResponse response) {	
-		
-		boolean is_check=false;		
+			HttpServletResponse response) throws IOException {
+
+		boolean is_check = false;
+		CompositeMap context = null;
+		String param = getParam(request);
 		try {
-			if(!mUncertainEngine.isRunning()){
-		        StringBuffer msg = new StringBuffer("Application failed to initialize");
-		        Throwable thr = mUncertainEngine.getInitializeException();
-		        if(thr!=null)
-		            msg.append(":").append(thr.getMessage());
-		        response.sendError(500, msg.toString());
-		        return;
-		    }		    
-			String param=getParam(request);
-			if(procedure!=null){
-				mProcManager=mUncertainEngine.getProcedureManager();
-				Procedure proc = mProcManager.loadProcedure(procedure);				
-				
-				CompositeMap context=new CompositeMap("context");
-				HttpSession httpSession=request.getSession();
-				Enumeration<String> enume=httpSession.getAttributeNames();
-				CompositeMap session=context.createChild("session");
-				while(enume.hasMoreElements()){
-					String key=enume.nextElement();
+			if (!mUncertainEngine.isRunning()) {
+				StringBuffer msg = new StringBuffer(
+						"Application failed to initialize");
+				Throwable thr = mUncertainEngine.getInitializeException();
+				if (thr != null)
+					msg.append(":").append(thr.getMessage());
+				response.sendError(500, msg.toString());
+				return;
+			}
+
+			if (procedure != null) {
+				mProcManager = mUncertainEngine.getProcedureManager();
+				Procedure proc = mProcManager.loadProcedure(procedure);
+
+				context = new CompositeMap("context");
+				HttpSession httpSession = request.getSession();
+				Enumeration<String> enume = httpSession.getAttributeNames();
+				CompositeMap session = context.createChild("session");
+				while (enume.hasMoreElements()) {
+					String key = enume.nextElement();
 					session.put(key, httpSession.getAttribute(key));
-				}			
-			
-				CompositeMap parameter=context.createChild("parameter");				
-				parameter.putString("param", param);				
-				
-				mRunner= new ProcedureRunner();
+				}
+
+				CompositeMap parameter = context.createChild("parameter");
+				parameter.putString("param", param);
+
+				mRunner = new ProcedureRunner();
 				mRunner.setProcedure(proc);
 				mRunner.setContext(context);
-				mRunner.run();						
-				Object msg=context.getObject(returnPath);
-				if(msg!=null){				
-					  response.sendError(500, msg.toString());
-				}else{
-					is_check=true;
-				}	
-				
-				BusinessModel bm=(BusinessModel)context.get("BusinessModel");
-				BusinessModelService service = svcFactory.getModelService(bm, context);
-				service.getServiceContext().freeConnection();				
-			}else{
-				is_check=true;
-			}	
-			if(is_check)
-				writeResponse(response, address+"?"+param);
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+				mRunner.run();
+				Object msg = context.getObject(returnPath);
+				if (msg != null) {
+					response.sendError(500, msg.toString());
+				} else {
+					is_check = true;
+				}
+			} else {
+				is_check = true;
+			}
+
+		} finally {
+			if (context != null) {
+				BusinessModel bm = (BusinessModel) context.get("BusinessModel");
+				BusinessModelService service = svcFactory.getModelService(bm,
+						context);
+				try {
+					service.getServiceContext().freeConnection();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		if (is_check) {
+			try {
+				writeResponse(response, address + "?" + param);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -105,7 +121,7 @@ public class HttpForward extends HttpServlet {
 			paramValues = request.getParameterValues(paramName);
 			for (i = 0, length = paramValues.length; i < length; i++) {
 				if (isFirst) {
-//					params.append("?");
+					// params.append("?");
 					isFirst = false;
 				} else {
 					params.append("&");
@@ -165,13 +181,16 @@ public class HttpForward extends HttpServlet {
 			}
 		}
 	}
-	
+
 	public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        mUncertainEngine= (UncertainEngine) this.getServletContext().getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
-        svcFactory=(DatabaseServiceFactory) mUncertainEngine.getObjectRegistry().getInstanceOfType(DatabaseServiceFactory.class);
-		procedure=super.getInitParameter(KEY_PROCEDURE);
-		returnPath=super.getInitParameter(KEY_OUTPUT);
-		address=super.getInitParameter(KEY_ADDRESS);
-    }
+		super.init(config);
+		mUncertainEngine = (UncertainEngine) this.getServletContext()
+				.getAttribute(WebContextInit.KEY_UNCERTAIN_ENGINE);
+		svcFactory = (DatabaseServiceFactory) mUncertainEngine
+				.getObjectRegistry().getInstanceOfType(
+						DatabaseServiceFactory.class);
+		procedure = super.getInitParameter(KEY_PROCEDURE);
+		returnPath = super.getInitParameter(KEY_OUTPUT);
+		address = super.getInitParameter(KEY_ADDRESS);
+	}
 }
