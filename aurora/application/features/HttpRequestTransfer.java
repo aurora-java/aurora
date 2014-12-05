@@ -63,7 +63,11 @@ public class HttpRequestTransfer implements ISingleton {
 		}
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getRemoteAddr();
-		}	
+		}
+		if(ip!=null){
+			String[] ips=ip.split(",");
+			ip=ips[0].trim();
+		}
 		req_map.put(KEY_ADDRESS, ip);
 	}
 
