@@ -86,6 +86,8 @@ public class Table extends Component {
 					new Boolean(tc.isAutoAppend()));
 		addConfig(TableConfig.PROPERTITY_CAN_WHEEL,
 				new Boolean(tc.isCanWheel()));
+		addConfig(TableConfig.PROPERTITY_GROUP_SELECT,
+				new Boolean(tc.isGroupSelect()));
 		map.put(CONFIG, getConfigString());
 		map.put(TableConfig.PROPERTITY_TAB_INDEX, new Integer(tc.getTabIndex()));
 	}

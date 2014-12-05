@@ -123,6 +123,7 @@ public class Grid extends Component {
 		addConfig(GridConfig.PROPERTITY_SUBMASK, gc.getSubMask() == null ? view_config.getDefaultGridSubmask() : gc.getSubMask());
 		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
 		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
+		addConfig(GridConfig.PROPERTITY_GROUP_SELECT, new Boolean(gc.isGroupSelect()));
 		Boolean editorborder= gc.hasEditorBorder(model)==null?view_config.getDefaultEditorBorder():gc.hasEditorBorder(model);
 		if(!editorborder.booleanValue())addConfig(GridConfig.PROPERTITY_EDITOR_BORDER, editorborder);
 		

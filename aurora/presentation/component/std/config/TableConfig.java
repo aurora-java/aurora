@@ -18,6 +18,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_SHOW_HEAD = "showhead";
 	public static final String PROPERTITY_CAN_WHEEL = "canwheel";
 	public static final String PROPERTITY_AUTO_APPEND = "autoappend";
+	public static final String PROPERTITY_GROUP_SELECT = "groupselect";
 
 	public static TableConfig getInstance() {
 		TableConfig model = new TableConfig();
@@ -124,6 +125,12 @@ public class TableConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_AUTO_APPEND, append);
 	}
 
+	public Boolean isGroupSelect(){
+		return getBoolean(PROPERTITY_GROUP_SELECT, true);
+	}
+	public void setGroupSelect(boolean nb){
+		putBoolean(PROPERTITY_GROUP_SELECT, nb);
+	}
 	public String getWidthStr() {
 		return getString(PROPERTITY_WIDTH);
 	}

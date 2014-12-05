@@ -23,6 +23,7 @@ public class GridConfig extends ComponentConfig {
 	public static final String PROPERTITY_AUTO_ADJUST = "autoadjust";
 	public static final String PROPERTITY_SUBMASK = "submask";
 	public static final String PROPERTITY_EDITOR_BORDER = "editorborder";
+	public static final String PROPERTITY_GROUP_SELECT = "groupselect";
 	
 //	public static final String COLUMN_DATAINDEX = "dataindex";
 //	public static final String COLUMN_LOCK = "lock";
@@ -141,6 +142,12 @@ public class GridConfig extends ComponentConfig {
 	}
 	public void setEditorBorder(boolean nb){
 		putBoolean(PROPERTITY_EDITOR_BORDER, nb);
+	}
+	public Boolean isGroupSelect(){
+		return getBoolean(PROPERTITY_GROUP_SELECT, true);
+	}
+	public void setGroupSelect(boolean nb){
+		putBoolean(PROPERTITY_GROUP_SELECT, nb);
 	}
 	public CompositeMap getColumns(){
 		CompositeMap context = getObjectContext();
