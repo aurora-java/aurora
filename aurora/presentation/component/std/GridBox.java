@@ -13,6 +13,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.application.ApplicationViewConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.BoxConfig;
 import aurora.presentation.component.std.config.GridBoxConfig;
 import aurora.presentation.component.std.config.GridLayoutConfig;
 
@@ -56,7 +57,7 @@ public class GridBox extends Component {
 		Map map = context.getMap();
 		GridBoxConfig gbc = GridBoxConfig.getInstance(view);
 		String labelSeparator = gbc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():gbc.getLabelSeparator();
-		processColumns(gbc.getColumns().getChilds());
+		processColumns(gbc.getColumns().getChilds(),gbc.getLabelWidth(model));
 		int padding = gbc.getPadding(model,3);
 		if(gbc.getIsField()){
 			addConfig(GridBoxConfig.PROPERTITY_IS_FIELD, Boolean.TRUE);
@@ -73,11 +74,14 @@ public class GridBox extends Component {
 		map.put(CONFIG, getConfigString());
 	}
 	
-	private void processColumns(List children) {
+	private void processColumns(List children,Integer labelwidth) {
 		Iterator it = children.iterator();
 		JSONArray jsons = new JSONArray();
 		while (it.hasNext()) {
 			CompositeMap column = (CompositeMap) it.next();
+			if(null ==column.getObject(BoxConfig.PROPERTITY_LABEL_WIDTH)){
+				column.put(BoxConfig.PROPERTITY_LABEL_WIDTH,labelwidth);
+			}
 			jsons.put(new JSONObject(column));
 		}
 		addConfig(GridBoxConfig.PROPERTITY_COLUMNS, jsons);
