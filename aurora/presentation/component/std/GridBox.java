@@ -79,7 +79,7 @@ public class GridBox extends Component {
 		JSONArray jsons = new JSONArray();
 		while (it.hasNext()) {
 			CompositeMap column = (CompositeMap) it.next();
-			if(null ==column.getObject(BoxConfig.PROPERTITY_LABEL_WIDTH)){
+			if(null ==column.get(BoxConfig.PROPERTITY_LABEL_WIDTH)){
 				column.put(BoxConfig.PROPERTITY_LABEL_WIDTH,labelwidth);
 			}
 			jsons.put(new JSONObject(column));
