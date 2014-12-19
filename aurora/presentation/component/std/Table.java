@@ -75,7 +75,7 @@ public class Table extends Component {
 		generateColumns(map, cols, hasFooterBar(tc.getColumns()));
 		createGridEditors(session, context);
 		createNavgationToolBar(session, context);
-		String title = session.getLocalizedPrompt(tc.getTitle());
+		String title = session.getLocalizedPrompt(tc.getTitle(context.getModel()));
 		if (null != title && !"".equals(title)) {
 			title = "<TR><TD class='table_title' colspan='" + cols.size()
 					+ "'>" + title + "</TD></TR>";

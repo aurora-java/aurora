@@ -40,8 +40,8 @@ public class TableConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_SHOW_HEAD, isShow);
 	}
 
-	public String getTitle() {
-		return getString(PROPERTITY_TITLE,"");
+	public String getTitle(CompositeMap model) {
+		return uncertain.composite.TextParser.parse(getString(PROPERTITY_TITLE,""), model);
 	}
 	
 	public void setTitle(String title) {
