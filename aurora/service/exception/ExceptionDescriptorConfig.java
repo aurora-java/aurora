@@ -4,6 +4,7 @@
 package aurora.service.exception;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import uncertain.composite.CompositeMap;
@@ -45,6 +46,23 @@ public class ExceptionDescriptorConfig implements IExceptionDescriptor {
 
     public CompositeMap process(ServiceContext context, Throwable exception) {
         prepareMessageProvider(context);
+        // In future, consider the following change so that any sub class of configured exception
+        // class can be mapped
+        /*
+        IExceptionDescriptor desc = null;
+        try{
+        for(Iterator it = mClassMap.entrySet().iterator(); it.hasNext(); ){
+            Map.Entry et = (Map.Entry)it.next();
+            Class cls = Class.forName( et.getKey().toString());
+            if(cls.isAssignableFrom(exception.getClass())){
+                desc = (IExceptionDescriptor)et.getValue();
+                break;
+            }
+        }
+        }catch(ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        */
         IExceptionDescriptor desc = (IExceptionDescriptor)mClassMap.get(exception.getClass().getName());
         if(desc!=null)
             return desc.process(context, exception);
