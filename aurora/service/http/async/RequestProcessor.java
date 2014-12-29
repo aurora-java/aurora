@@ -31,9 +31,9 @@ import aurora.transaction.UserTransactionImpl;
 
 public class RequestProcessor implements IEndPoint {
     
-    AsyncServlet owner;
+    IFacadeServlet owner;
 
-    public RequestProcessor(AsyncServlet owner) {
+    public RequestProcessor(IFacadeServlet owner) {
         this.owner = owner;
     }
     
