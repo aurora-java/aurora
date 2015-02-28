@@ -22,6 +22,7 @@ import aurora.presentation.component.std.config.NavBarConfig;
 import aurora.presentation.component.std.config.TableColumnConfig;
 import aurora.presentation.component.std.config.TableConfig;
 
+@SuppressWarnings("unchecked")
 public class Table extends Component {
 
 	public Table(IObjectRegistry registry) {
@@ -160,7 +161,7 @@ public class Table extends Component {
 		CompositeMap columns = view.getChild(TableConfig.PROPERTITY_COLUMNS);
 		TableConfig tc = TableConfig.getInstance(view);
 		String bindTarget = tc.getBindTarget();
-		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
+//		map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
 		if (null == columns)
 			return;
 		processSelectable(map, view, columns,bindTarget);
