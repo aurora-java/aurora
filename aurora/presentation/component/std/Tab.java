@@ -1,7 +1,6 @@
 package aurora.presentation.component.std;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class Tab extends Component {
 		super(registry);
 	}
 
-	public static final String VERSION = "$Revision$";
+	public static final String VERSION = "$Revision: 8602 $";
 	private static final String DEFAULT_CLASS = "item-tab";
 	private static final String VALID_SCRIPT = "validscript";
 	private static final String TABS = "tabs";
@@ -44,7 +43,7 @@ public class Tab extends Component {
 		
 		Integer bodyWidth = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_WIDTH)).intValue() - 2);
 		Integer bodyHeight = new Integer(((Integer)map.get(ComponentConfig.PROPERTITY_HEIGHT)).intValue() - 25);
-		map.put("bodywidth", bodyWidth);
+//		map.put("bodywidth", bodyWidth);
 		map.put("headwidth", new Integer(bodyWidth.intValue()-36));
 		map.put("bodyheight", bodyHeight);
 		map.put("strips", createTabStrips(session,context,sb));
@@ -81,7 +80,7 @@ public class Tab extends Component {
 					String ref = tc.getRef();
 					String bodyClass = tc.getBodyClass();
 					String bodyStyle = tc.getBodyStyle();
-					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='width:"+bodywidth+"px;height:"+bodyheight+"px;"+bodyStyle+"'");
+					sb.append("<div class='tab "+bodyClass+"' hideFocus tabIndex='-1' style='"+bodyStyle+"'");
 					if("".equals(ref)){
 						String hostid =  IDGenerator.getInstance().generate();
 						sb.append(" id='"+hostid+"'>");
