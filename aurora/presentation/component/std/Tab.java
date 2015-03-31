@@ -156,7 +156,7 @@ public class Tab extends Component {
 					if(disabled){
 						sb.append(" scroll-disabled");
 					}
-					sb.append("' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'><div style='height:26px;width:"+(width+6)+"px'>");
+					sb.append("' "+tabStyle+" unselectable='on' "+((!"".equals(id)) ? "id='"+id+"'" : "") +" onselectstart='return false;'>");
 					sb.append("<div class='strip-left "+tabClass+"'></div>");
 					sb.append("<div class='strip-center "+tabClass+"' style='width:"+width+"px;'>");
 					if(closeable){
@@ -164,7 +164,7 @@ public class Tab extends Component {
 					}
 					sb.append(prompt+"</div>");
 					sb.append("<div class='strip-right "+tabClass+"'></div>");
-					sb.append("</div></div>");
+					sb.append("</div>");
 					
 					tab.putBoolean(TabConfig.PROPERTITY_SELECTED, Boolean.valueOf(selected));
 					String ref = uncertain.composite.TextParser.parse(tc.getRef(), model);
