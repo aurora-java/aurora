@@ -30,6 +30,7 @@ public class GridColumnConfig extends ComponentConfig {
 	public static final String PROPERTITY_MAX_ADJUST_WIDTH = "maxadjustwidth";
 	public static final String PROPERTITY_SHOW_TITLE = "showtitle";
 	public static final String PROPERTITY_GROUP = "group";
+	public static final String PROPERTITY_FULL_PROMPT = "fullprompt";
 	
 	
 	private static final String DEFAULT_ALIGN = "left";
@@ -207,5 +208,13 @@ public class GridColumnConfig extends ComponentConfig {
 	}
 	public void setEditorFunction(String func){
 		putString(PROPERTITY_EDITOR_FUNCTION, func);
+	}
+
+	public String getFullPrompt(){
+		return getString(PROPERTITY_FULL_PROMPT);		
+	}
+	
+	public void setFullPrompt(String fullPrompt){
+		putString(PROPERTITY_FULL_PROMPT, fullPrompt);
 	}
 }

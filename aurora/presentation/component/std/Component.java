@@ -366,7 +366,7 @@ public class Component {
 		return label;
 	}
 
-	private CompositeMap getDataSet(BuildSession session, String dataSetName) {
+	protected CompositeMap getDataSet(BuildSession session, String dataSetName) {
 		CompositeMap dataset = null;
 		ServiceInstance svc = (ServiceInstance) session.getInstanceOfType(IService.class);
 		ScreenConfig screen = ScreenConfig.createScreenConfig(svc.getServiceConfigData());

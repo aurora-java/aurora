@@ -20,7 +20,6 @@ import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
-import aurora.presentation.component.std.config.DataSetFieldConfig;
 import aurora.presentation.component.std.config.GridColumnConfig;
 import aurora.presentation.component.std.config.GridConfig;
 import aurora.presentation.component.std.config.NavBarConfig;
@@ -329,6 +328,7 @@ public class Grid extends Component {
 						column.putBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, column.getBoolean(GridColumnConfig.PROPERTITY_AUTO_ADJUST, true));
 						column.putInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, column.getInt(GridColumnConfig.PROPERTITY_MAX_ADJUST_WIDTH, 300));
 						column.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget)),model)));
+						column.putString(GridColumnConfig.PROPERTITY_FULL_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(column.getString(GridColumnConfig.PROPERTITY_FULL_PROMPT,getFieldFullPrompt(session, column, bindTarget)),model)));
 					String  editorFunction = column.getString(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION);
 					if(editorFunction!=null) column.put(GridColumnConfig.PROPERTITY_EDITOR_FUNCTION, uncertain.composite.TextParser.parse(editorFunction, model));
 					float cwidth = column.getInt(ComponentConfig.PROPERTITY_WIDTH, COLUMN_WIDTH);
@@ -379,6 +379,7 @@ public class Grid extends Component {
 				if(!parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true))
 					parent.putBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, parent.getBoolean(GridColumnConfig.PROPERTITY_FOR_EXPORT, true));
 				parent.putString(GridColumnConfig.PROPERTITY_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(parent.getString(GridColumnConfig.PROPERTITY_PROMPT,getFieldPrompt(session, column, bindTarget)),model)));
+				parent.putString(GridColumnConfig.PROPERTITY_FULL_PROMPT,session.getLocalizedPrompt(uncertain.composite.TextParser.parse(parent.getString(GridColumnConfig.PROPERTITY_FULL_PROMPT,getFieldFullPrompt(session, column, bindTarget)),model)));
 				toJSONForParentColumn(parent,session,model,bindTarget);
 				column.put("_parent", new JSONObject(parent));
 			}
@@ -782,12 +783,16 @@ public class Grid extends Component {
 							boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 							if(hidden) continue;
 							String prompt = getFieldPrompt(session, column, dataSet);
+							String fullPrompt = getFieldFullPrompt(session, column, dataSet);
+							if("".equals(fullPrompt)){
+								fullPrompt = prompt;
+							}
 							String headTitle = session.getLocalizedPrompt(prompt);
 							if(headTitle!=null && headTitle.equals(prompt)){
 								headTitle = uncertain.composite.TextParser.parse(prompt, model);
 							}
 							GridColumnConfig gcc = GridColumnConfig.getInstance(column);
-							hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
+							hsb.append("<TD title='"+fullPrompt+"' class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
 							if(gcc.getHeadStyle() != null){
 								hsb.append(" style='").append(gcc.getHeadStyle()).append("");
 							}
@@ -851,12 +856,16 @@ public class Grid extends Component {
 					boolean hidden =  column.getBoolean(GridColumnConfig.PROPERTITY_HIDDEN, false);
 					if(hidden)continue;
 					String prompt = getFieldPrompt(session, column, dataSet);
+					String fullPrompt = getFieldFullPrompt(session, column, dataSet);
+					if("".equals(fullPrompt)){
+						fullPrompt = prompt;
+					}
 					String headTitle = session.getLocalizedPrompt(prompt);
 					if(headTitle!=null && headTitle.equals(prompt)){
 						headTitle = uncertain.composite.TextParser.parse(prompt, model);
 					}
 					GridColumnConfig gcc = GridColumnConfig.getInstance(column);					
-					hsb.append("<TD class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
+					hsb.append("<TD title='"+fullPrompt+"' class='grid-hc' atype='grid.head' style='visibility:"+(hidden?"hidden":"")+"' colspan='"+column.getInt(COL_SPAN,1)+"' rowspan='"+column.getInt(ROW_SPAN)+"' dataindex='"+column.getString(GridColumnConfig.PROPERTITY_NAME,"")+"'><div");
 					if(gcc.getHeadStyle() != null){
 						hsb.append(" style='").append(gcc.getHeadStyle()).append("");
 					}
@@ -868,6 +877,29 @@ public class Grid extends Component {
 		sb.append(hsb);
 		sb.append("</TBODY></TABLE>");		
 		return sb.toString();
+	}
+	private String getFieldFullPrompt(BuildSession session, CompositeMap field, String dataset) {
+		String label = field.getString(GridColumnConfig.PROPERTITY_FULL_PROMPT, "");
+		if ("".equals(label)) {
+			String name = field.getString(ComponentConfig.PROPERTITY_NAME, "");
+			CompositeMap ds = getDataSet(session, dataset);
+			if (ds != null) {
+				CompositeMap fieldcm = ds.getChild(DataSetConfig.PROPERTITY_FIELDS);
+				if (fieldcm != null) {
+					List fields = fieldcm.getChilds();
+					Iterator it = fields.iterator();
+					while (it.hasNext()) {
+						CompositeMap fieldMap = (CompositeMap) it.next();
+						String fn = fieldMap.getString(ComponentConfig.PROPERTITY_NAME, "");
+						if (name.equals(fn)) {
+							label = fieldMap.getString(GridColumnConfig.PROPERTITY_FULL_PROMPT, "");
+							break;
+						}
+					}
+				}
+			}
+		}
+		return label;
 	}
 	
 }
