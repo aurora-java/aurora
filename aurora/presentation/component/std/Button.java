@@ -84,6 +84,7 @@ public class Button extends Field {
 			addConfig(ButtonConfig.PROPERTITY_DISABLED, Boolean.valueOf(disabled));
 		}
 		
+		addConfig(ButtonConfig.PROPERTITY_ICON_ALIGN, bc.getIconAlign());
 		String icon = bc.getIcon();
 		String btnstyle = bc.getButtonStyle();
 		if(!"".equals(icon)){
