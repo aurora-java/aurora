@@ -23,6 +23,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="target/aurora-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/AuroraDependency/Library/ojdbc14.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
