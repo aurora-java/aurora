@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/c3p0-0.9.1.2.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/commons-fileupload.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/jotm-client.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/ow2-jta-1.1-spec.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/xapool.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/AuroraDependency/Library/ojdbc14.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/freemarker-2.3.18.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/druid-0.2.7.jar"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
