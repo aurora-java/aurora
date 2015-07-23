@@ -16,6 +16,7 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
+import aurora.presentation.component.std.config.ButtonConfig;
 import aurora.presentation.component.std.config.ComponentConfig;
 import aurora.presentation.component.std.config.DataSetConfig;
 import aurora.presentation.component.std.config.NavBarConfig;
@@ -74,7 +75,7 @@ public class Table extends Component {
 		List cols = new ArrayList();
 		createHeads(map, view, session, cols);
 		generateColumns(map, cols, hasFooterBar(tc.getColumns()));
-		createGridEditors(session, context);
+		createTableEditors(session, context);
 		createNavgationToolBar(session, context);
 		String title = session.getLocalizedPrompt(tc.getTitle(context.getModel()));
 		if (null != title && !"".equals(title)) {
@@ -82,6 +83,7 @@ public class Table extends Component {
 					+ "'>" + title + "</TD></TR>";
 			map.put(TableConfig.PROPERTITY_TITLE, title);
 		}
+		creatToolBar(session,context,cols);
 		if (!tc.isAutoAppend())
 			addConfig(TableConfig.PROPERTITY_AUTO_APPEND,
 					new Boolean(tc.isAutoAppend()));
@@ -132,7 +134,7 @@ public class Table extends Component {
 		}
 	}
 
-	private void createGridEditors(BuildSession session, ViewContext context)
+	private void createTableEditors(BuildSession session, ViewContext context)
 			throws IOException {
 		CompositeMap view = context.getView();
 		Map map = context.getMap();
@@ -364,7 +366,83 @@ public class Table extends Component {
 		}
 		return false;
 	}
-
+	
+	private CompositeMap createButton(CompositeMap button, String text, String clz,String style,String function){
+		if("".equals(button.getString(ButtonConfig.PROPERTITY_ICON,""))){
+			button.put(ButtonConfig.PROPERTITY_ICON, "null");
+			button.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, clz);
+			button.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, style);
+		}
+		button.put(ButtonConfig.PROPERTITY_TEXT,button.getString(ButtonConfig.PROPERTITY_TEXT, text));
+		if(!"".equals(function))button.put(ButtonConfig.PROPERTITY_CLICK, function);
+		return button;
+	}
+	
+	private boolean creatToolBar(BuildSession session, ViewContext context,List cols) throws IOException{
+		CompositeMap view = context.getView();
+		Map map = context.getMap();
+		CompositeMap model = context.getModel();
+		
+		CompositeMap toolbar = view.getChild(TableConfig.PROPERTITY_TOOLBAR);
+		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
+		
+		StringBuilder sb = new StringBuilder();
+		boolean hasToolBar = false;
+		if(toolbar != null && toolbar.getChilds() != null) {
+			hasToolBar = true;
+			CompositeMap tb = new CompositeMap(TableConfig.PROPERTITY_TOOLBAR);
+			tb.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
+//			String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+getDefaultWidth());
+//			String wstr = uncertain.composite.TextParser.parse(widthStr, model);
+//			Integer width = Integer.valueOf("".equals(wstr) ?  "150" : wstr);
+			Integer width = (Integer)map.get(ComponentConfig.PROPERTITY_WIDTH);
+			
+			tb.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_tb");
+			tb.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
+			tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-toolbar");
+			Iterator it = toolbar.getChildIterator();
+			while(it.hasNext()){
+				CompositeMap item = (CompositeMap)it.next();
+//				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+				if("button".equals(item.getName())){
+					String type = item.getString("type");
+					String fileName = uncertain.composite.TextParser.parse(item.getString("filename",""),model);
+					if(!"".equals(type)){
+						if("add".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"table-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+						}else if("delete".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"table-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
+						}else if("save".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"table-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
+						}else if("clear".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"table-clear","background-position:0px -52px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
+						}else if("excel".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
+						}else if("excelmemo".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls_memory','"+fileName+"')}");
+						}else if("excel2007".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -126px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
+						}else if("txt".equalsIgnoreCase(type)){
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -107px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"')}");
+						}else if("customize".equalsIgnoreCase(type)){
+							String path = model.getObject("/request/@context_path").toString();
+							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"table-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize('"+path+"')}");
+						}
+					}
+				}
+				tb.addChild(item);
+			}
+			sb.append("<tr><td colspan=\""+cols.size()+"\">");
+			try {
+				sb.append(session.buildViewAsString(model, tb));
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
+			sb.append("</td></tr>");
+		}
+		map.put(TableConfig.PROPERTITY_TOOLBAR, sb.toString());
+		return hasToolBar;
+	}
 	private boolean createNavgationToolBar(BuildSession session,
 			ViewContext context) throws IOException {
 		boolean hasNavBar = false;

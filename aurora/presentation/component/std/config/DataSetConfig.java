@@ -47,7 +47,10 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_NOTIFICATION = "notification";
 	public static final String PROPERTITY_MODIFIED_CHECK = "modifiedcheck";
 	
-	
+	//Hybris
+	public static final String PROPERTITY_DTO_NAME = "dtoname";
+	public static final String PROPERTITY_HYBRIS_KEY = "hybriskey";
+
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
 	public static final int DEFAULT_MAX_PAGE_SIZE = 1000;
 	public static final int DEFAULT_PAGE_SIZE = 10;
@@ -277,5 +280,21 @@ public class DataSetConfig extends ComponentConfig {
 	public void addField(DataSetFieldConfig field){
 		CompositeMap columns = getFields();
 		columns.addChild(field.getObjectContext());
+	}
+
+	//Hybris
+	public String getDtoName(){
+		return getString(PROPERTITY_DTO_NAME, "");
+	}
+
+	public void setDtoName(final String value){
+		putString(PROPERTITY_DTO_NAME, value);
+	}
+	public String getHybrisKey(){
+		return getString(PROPERTITY_HYBRIS_KEY, "");
+	}
+
+	public void setHybrisKey(final String value){
+		putString(PROPERTITY_HYBRIS_KEY, value);
 	}
 }

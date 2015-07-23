@@ -12,6 +12,7 @@ public class TableConfig extends ComponentConfig {
 	public static final String PROPERTITY_COLUMNS = "columns";
 	public static final String PROPERTITY_EDITORS = "editors";
 	public static final String PROPERTITY_DATASET = "dataset";
+	public static final String PROPERTITY_TOOLBAR = "toolBar";
 	public static final String PROPERTITY_NAVBAR = "navbar";
 	public static final String PROPERTITY_ROW_RENDERER = "rowrenderer";
 	public static final String PROPERTITY_PERCENT_WIDTH = "percentwidth";

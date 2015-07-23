@@ -292,6 +292,15 @@ public class DataSet extends Component {
 			String submitUrl = uncertain.composite.TextParser.parse(dsc.getSubmitUrl(), model);
 			addConfig(DataSetConfig.PROPERTITY_SUBMITURL,submitUrl);
 		}
+		//Hybris
+		if (!"".equals(dsc.getDtoName())){
+			String dtoName = uncertain.composite.TextParser.parse(dsc.getDtoName(), model);
+			addConfig(DataSetConfig.PROPERTITY_DTO_NAME, dtoName);
+		}
+		if (!"".equals(dsc.getHybrisKey())){
+			String hybrisKey = uncertain.composite.TextParser.parse(dsc.getHybrisKey(), model);
+			addConfig(DataSetConfig.PROPERTITY_HYBRIS_KEY, hybrisKey);
+		}
 		if(!"".equals(dsc.getBindTarget()))addConfig(DataSetConfig.PROPERTITY_BINDTARGET, uncertain.composite.TextParser.parse(dsc.getBindTarget(), model));
 		if(!"".equals(dsc.getBindName()))addConfig(DataSetConfig.PROPERTITY_BINDNAME, uncertain.composite.TextParser.parse(dsc.getBindName(), model));
 		if(dsc.isFetchAll(model))addConfig(DataSetConfig.PROPERTITY_FETCHALL, new Boolean(dsc.isFetchAll(model)));
