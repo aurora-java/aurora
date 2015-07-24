@@ -451,7 +451,7 @@ public class Table extends Component {
 		CompositeMap model = context.getModel();
 		TableConfig tc = TableConfig.getInstance(view);
 		StringBuffer sb = new StringBuffer();
-
+		String dataset = tc.getBindTarget();
 		if (tc.hasNavBar()) {
 			hasNavBar = true;
 			CompositeMap navbar = new CompositeMap("navBar");
@@ -461,8 +461,10 @@ public class Table extends Component {
 			navbar.put(ComponentConfig.PROPERTITY_ID,
 					map.get(ComponentConfig.PROPERTITY_ID) + "_navbar");
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-navbar");
-			navbar.put(NavBarConfig.PROPERTITY_DATASET, tc.getBindTarget());
-			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE,
+			navbar.put(NavBarConfig.PROPERTITY_DATASET, dataset);
+			CompositeMap ds = getDataSet(session, dataset);
+			boolean isHybris = !"".equals(ds.getString(DataSetConfig.PROPERTITY_HYBRIS_KEY,""));
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE,isHybris?"nocount":
 					view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE, "complex"));
 			navbar.put(
 					NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,

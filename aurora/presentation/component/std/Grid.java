@@ -616,7 +616,7 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuilder sb = new StringBuilder();
-		String dataset = (String)map.get(ComponentConfig.PROPERTITY_BINDTARGET);
+		String dataset = gc.getBindTarget();
 		
 		boolean hasNav = gc.hasNavBar(model);
 		if(hasNav){
@@ -635,7 +635,10 @@ public class Grid extends Component {
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBarConfig.PROPERTITY_DATASET, dataset);
-			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE,"complex"));
+			//Hybris
+			CompositeMap ds = getDataSet(session, dataset);
+			boolean isHybris = !"".equals(ds.getString(DataSetConfig.PROPERTITY_HYBRIS_KEY,""));
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, isHybris?"nocount":view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE,"complex"));
 			navbar.put(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,10)));
 			navbar.put(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
 			sb.append("<tr><td>");
