@@ -28,185 +28,186 @@ import aurora.service.http.HttpServiceInstance;
 
 /**
  * Parse JSON request parameter into CompositeMap JSONRequest
- * 
+ *
  * @author Zhou Fan
- * 
  */
 
 public class JSONServiceInterpreter {
-	// public static final String PARAMETER = "parameter";
+    // public static final String PARAMETER = "parameter";
 
-	public static final String DEFAULT_JSON_CONTENT_TYPE = "application/json;charset=utf-8";
+    public static final String DEFAULT_JSON_CONTENT_TYPE = "application/json;charset=utf-8";
 
-	public static final String HEAD_JSON_PARAMETER = "json-parameter";
+    public static final String HEAD_JSON_PARAMETER = "json-parameter";
 
-	public static final String DEFAULT_JSON_PARAMETER = "_request_data";
+    public static final String DEFAULT_JSON_PARAMETER = "_request_data";
 
-	public static final String KEY_WRITE_BACK_INPUT = "write_back_input";
+    public static final String KEY_WRITE_BACK_INPUT = "write_back_input";
 
-	static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
+    static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
 
-	public static String JSON_ACCESS_PARAMTER = "json_access";
+    public static String JSON_ACCESS_PARAMTER = "json_access";
 
-	public JSONServiceInterpreter() {
-	}
+    public JSONServiceInterpreter() {
+    }
 
-	public int preParseParameter(JSONServiceContext ct) throws Exception {
-		if (!isJSONRequest(ct.getRequest(), ct))
-			return EventModel.HANDLE_NORMAL;
-		ServiceContext service_context = ct;
-		HttpServletRequest request = ct.getRequest();
-		// HttpServletResponse response = ct.getResponse();
-		request.setCharacterEncoding("utf-8");
-		String jparam = request.getHeader(HEAD_JSON_PARAMETER);
-		if (jparam == null)
-			jparam = DEFAULT_JSON_PARAMETER;
+    public int preParseParameter(JSONServiceContext ct) throws Exception {
+        if (!isJSONRequest(ct.getRequest(), ct))
+            return EventModel.HANDLE_NORMAL;
+        ServiceContext service_context = ct;
+        HttpServletRequest request = ct.getRequest();
+        // HttpServletResponse response = ct.getResponse();
+        request.setCharacterEncoding("utf-8");
+        String jparam = request.getHeader(HEAD_JSON_PARAMETER);
+        if (jparam == null)
+            jparam = DEFAULT_JSON_PARAMETER;
 
-		String content = request.getParameter(jparam);
-		if (content != null) {
-			service_context.getParameter().remove(jparam);
-			JSONObject jobj = new JSONObject(content);
-			CompositeMap root = JSONAdaptor.toMap(jobj);
-			if (root == null)
-				return EventModel.HANDLE_STOP;
-			CompositeMap param = root.getChild("parameter");
-			if (param != null) {
-				param.putAll(root);
-				service_context.setParameter(param);
-			}
-			return EventModel.HANDLE_STOP;
-		} else
-			return EventModel.HANDLE_NORMAL;
+        String content = request.getParameter(jparam);
+        if (content != null) {
+            service_context.getParameter().remove(jparam);
+            JSONObject jobj = new JSONObject(content);
+            CompositeMap root = JSONAdaptor.toMap(jobj);
+            if (root == null)
+                return EventModel.HANDLE_STOP;
+            CompositeMap param = root.getChild("parameter");
+            if (param != null) {
+                param.putAll(root);
+                service_context.setParameter(param);
+            }
+            return EventModel.HANDLE_STOP;
+        } else
+            return EventModel.HANDLE_NORMAL;
 
-	}
+    }
 
-	void prepareResponse(HttpServletResponse response)
+    void prepareResponse(HttpServletResponse response)
 
-	{
-		response.setContentType(DEFAULT_JSON_CONTENT_TYPE);
-		response.setHeader("Cache-Control", "no-cache, must-revalidate");
-	}
+    {
+        response.setContentType(DEFAULT_JSON_CONTENT_TYPE);
+        response.setHeader("Cache-Control", "no-cache, must-revalidate");
+    }
 
-	public void writeResponse(ServiceContext service_context)
-			throws IOException, JSONException {
-		if (!isJSONRequest(service_context))
-			return;
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
-				.getInstance(service_context.getObjectContext());
+    public void writeResponse(ServiceContext service_context)
+            throws IOException, JSONException {
+        if (!isJSONRequest(service_context))
+            return;
+        HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
+                .getInstance(service_context.getObjectContext());
 
-		String output = null;
-		Set<String> arrays_set = null;
+        String output = null;
+        Set<String> arrays_set = null;
 
-		ServiceOutputConfig cfg = svc.getServiceOutputConfig();
-		if (cfg != null) {
-			output = cfg.getOutput();
-			String names_str = cfg.getArrays();
-			if (names_str != null) {
-				String[] arrays = names_str.split(",");
-				arrays_set = new HashSet<String>();
-				for (String s : arrays)
-					arrays_set.add(s);
-			}
-		}
-		JSONObject json = new JSONObject();
-		// Write success flag
-		json.put("success", service_context.isSuccess());
-		String impliedJsonString = null;
-		// Write service invoke result
-		boolean write_result = service_context.getBoolean("write_result", true);
-		if (write_result) {
-			// CompositeMap result = context_map.getChild("result");
-			CompositeMap result = null;
-			if (output != null) {
-				Object obj = service_context.getObjectContext().getObject(
-						output);
-				//mod by jessen 2014-09-18 
-				//<service-output output="/model/data/@field" /> can do output for plain text originally
-				if (obj instanceof CompositeMap)
-					result = (CompositeMap) obj;
-				else if (obj instanceof CharSequence)
-					impliedJsonString = obj.toString();
-				else if (obj instanceof JSONObject)
-					impliedJsonString = obj.toString();
-				else
-					throw new IllegalArgumentException(
-							"Target for JSON output is illegal:" + obj);
-				// if (!(obj instanceof CompositeMap))
-				// throw new IllegalArgumentException(
-				// "Target for JSON output is not instance of CompositeMap: "
-				// + obj);
+        ServiceOutputConfig cfg = svc.getServiceOutputConfig();
+        if (cfg != null) {
+            output = cfg.getOutput();
+            String names_str = cfg.getArrays();
+            if (names_str != null) {
+                String[] arrays = names_str.split(",");
+                arrays_set = new HashSet<String>();
+                for (String s : arrays)
+                    arrays_set.add(s);
+            }
+        } else {
+            return;
+        }
+        JSONObject json = new JSONObject();
+        // Write success flag
+        json.put("success", service_context.isSuccess());
+        String impliedJsonString = null;
+        // Write service invoke result
+        boolean write_result = service_context.getBoolean("write_result", true);
+        if (write_result) {
+            // CompositeMap result = context_map.getChild("result");
+            CompositeMap result = null;
+            if (output != null) {
+                Object obj = service_context.getObjectContext().getObject(
+                        output);
+                //mod by jessen 2014-09-18
+                //<service-output output="/model/data/@field" /> can do output for plain text originally
+                if (obj instanceof CompositeMap)
+                    result = (CompositeMap) obj;
+                else if (obj instanceof CharSequence)
+                    impliedJsonString = obj.toString();
+                else if (obj instanceof JSONObject)
+                    impliedJsonString = obj.toString();
+                else
+                    throw new IllegalArgumentException(
+                            "Target for JSON output is illegal:" + obj);
+                // if (!(obj instanceof CompositeMap))
+                // throw new IllegalArgumentException(
+                // "Target for JSON output is not instance of CompositeMap: "
+                // + obj);
 
-			} else
-				result = service_context.getModel();
-			if (result != null) {
-				JSONObject o = JSONAdaptor.toJSONObject(result, arrays_set);
-				json.put("result", o);
-			}
-		}
-		prepareResponse(svc.getResponse());
-		PrintWriter out = svc.getResponse().getWriter();
-		if (impliedJsonString != null) {
-			out.write(impliedJsonString);
-		} else {
-			json.write(out);
-		}
-	}
+            } else
+                result = service_context.getModel();
+            if (result != null) {
+                JSONObject o = JSONAdaptor.toJSONObject(result, arrays_set);
+                json.put("result", o);
+            }
+        }
+        prepareResponse(svc.getResponse());
+        PrintWriter out = svc.getResponse().getWriter();
+        if (impliedJsonString != null) {
+            out.write(impliedJsonString);
+        } else {
+            json.write(out);
+        }
+    }
 
-	public void onCreateSuccessResponse(ServiceContext service_context)
-			throws IOException, JSONException {
-		if (isJSONRequest(service_context))
-			writeResponse(service_context);
-	}
+    public void onCreateSuccessResponse(ServiceContext service_context)
+            throws IOException, JSONException {
+        if (isJSONRequest(service_context))
+            writeResponse(service_context);
+    }
 
-	public void onCreateFailResponse(ProcedureRunner runner)
-			throws IOException, JSONException {
-		ServiceContext context = ServiceContext.createServiceContext(runner
-				.getContext());
-		if (!isJSONRequest(context))
-			return;
-		// log exception
-		ILogger logger = LoggingContext.getLogger(context.getObjectContext(),
-				ServiceInstance.LOGGING_TOPIC);
-		Throwable thr = runner.getException();
-		if (thr != null) {
-			LoggingUtil.logException(thr, logger);
-		}
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
-				.getInstance(context.getObjectContext());
-		HttpServletResponse response = svc.getResponse();
-		/*
+    public void onCreateFailResponse(ProcedureRunner runner)
+            throws IOException, JSONException {
+        ServiceContext context = ServiceContext.createServiceContext(runner
+                .getContext());
+        if (!isJSONRequest(context))
+            return;
+        // log exception
+        ILogger logger = LoggingContext.getLogger(context.getObjectContext(),
+                ServiceInstance.LOGGING_TOPIC);
+        Throwable thr = runner.getException();
+        if (thr != null) {
+            LoggingUtil.logException(thr, logger);
+        }
+        HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
+                .getInstance(context.getObjectContext());
+        HttpServletResponse response = svc.getResponse();
+        /*
 		 * if(response.isCommitted()){ logger.info(
 		 * "response is already commited, no JSON response will be written");
 		 * return; }
 		 */
-		prepareResponse(response);
-		PrintWriter out = response.getWriter();
-		out.println("{ \"success\":false ");
-		CompositeMap error = context.getError();
-		if (error != null) {
-			out.println(",\"error\":");
-			out.println(JSONAdaptor.toJSONObject(error).toString());
-		}
-		out.println("} ");
-		out.flush();
-	}
+        prepareResponse(response);
+        PrintWriter out = response.getWriter();
+        out.println("{ \"success\":false ");
+        CompositeMap error = context.getError();
+        if (error != null) {
+            out.println(",\"error\":");
+            out.println(JSONAdaptor.toJSONObject(error).toString());
+        }
+        out.println("} ");
+        out.flush();
+    }
 
-	private boolean isJSONRequest(ServiceContext service_context) {
-		HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
-				.getInstance(service_context.getObjectContext());
-		return isJSONRequest(svc.getRequest(), service_context);
-	}
+    private boolean isJSONRequest(ServiceContext service_context) {
+        HttpServiceInstance svc = (HttpServiceInstance) ServiceInstance
+                .getInstance(service_context.getObjectContext());
+        return isJSONRequest(svc.getRequest(), service_context);
+    }
 
-	private boolean isJSONRequest(HttpServletRequest request,
-			ServiceContext context) {
-		String httptype = request.getHeader("x-requested-with");
-		if ("XMLHttpRequest".equals(httptype)) {
-			return true;
-		} else if ("true".equals(request.getParameter(JSON_ACCESS_PARAMTER))) {
-			return true;
-		} else if (context.getRequestType() != null) {
-			return false;
-		}
-		return true;
-	}
+    private boolean isJSONRequest(HttpServletRequest request,
+                                  ServiceContext context) {
+        String httptype = request.getHeader("x-requested-with");
+        if ("XMLHttpRequest".equals(httptype)) {
+            return true;
+        } else if ("true".equals(request.getParameter(JSON_ACCESS_PARAMTER))) {
+            return true;
+        } else if (context.getRequestType() != null) {
+            return false;
+        }
+        return true;
+    }
 }
