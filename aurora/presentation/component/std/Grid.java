@@ -84,10 +84,18 @@ public class Grid extends Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		CompositeMap view = context.getView();
-		int mDefaultMarginSize = -1;
-		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
-		if (view_config != null) {
-			mDefaultMarginSize = view_config.getDefaultMarginWidth();           
+		int mDefaultMarginSize = ApplicationViewConfig.DEFAULT_MARGIN_WIDTH;
+		boolean mDefaultAutoAppend = ApplicationViewConfig.DEFAULT_AUTO_APPEND;
+		boolean mDefaultGridSubmask = ApplicationViewConfig.DEFAULT_GRID_SUBMASK;
+		boolean mDefaultEditorBorder = ApplicationViewConfig.DEFAULT_EDITOR_BORDER;
+		if(null!=mApplicationConfig){
+			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+			if (null != view_config) {
+				mDefaultMarginSize = view_config.getDefaultMarginWidth();
+				mDefaultAutoAppend = view_config.getDefaultAutoAppend();
+				mDefaultGridSubmask = view_config.getDefaultGridSubmask();
+				mDefaultEditorBorder = view_config.getDefaultEditorBorder();
+			}
 		}
 		if(mDefaultMarginSize != -1){
 			view.putInt(ComponentConfig.PROPERTITY_MARGIN_WIDTH, mDefaultMarginSize);
@@ -117,14 +125,14 @@ public class Grid extends Component {
 		map.put(TABLE_HEIGHT, new Integer(height.intValue()-sh)<DEFALUT_HEAD_HEIGHT*2?DEFALUT_HEAD_HEIGHT*2:new Integer(height.intValue()-sh));
 		String rowRenderer = gc.getRowRenderer();
 		if(rowRenderer!=null) addConfig(GridConfig.PROPERTITY_ROW_RENDERER, rowRenderer);
-		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, new Boolean(gc.isAutoFocus()));
-		addConfig(GridConfig.PROPERTITY_AUTO_APPEND, gc.isAutoAppend() == null ? view_config.getDefaultAutoAppend() : gc.isAutoAppend());
-		addConfig(GridConfig.PROPERTITY_SUBMASK, gc.getSubMask() == null ? view_config.getDefaultGridSubmask() : gc.getSubMask());
-		addConfig(GridConfig.PROPERTITY_CAN_PASTE, new Boolean(gc.isCanPaste()));
-		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, new Boolean(gc.isCanWheel()));
-		addConfig(GridConfig.PROPERTITY_GROUP_SELECT, new Boolean(gc.isGroupSelect()));
-		Boolean editorborder= gc.hasEditorBorder(model)==null?view_config.getDefaultEditorBorder():gc.hasEditorBorder(model);
-		if(!editorborder.booleanValue())addConfig(GridConfig.PROPERTITY_EDITOR_BORDER, editorborder);
+		if(!gc.isAutoFocus()) addConfig(GridConfig.PROPERTITY_AUTO_FOCUS, Boolean.valueOf(gc.isAutoFocus()));
+		addConfig(GridConfig.PROPERTITY_AUTO_APPEND, Boolean.valueOf(gc.isAutoAppend(mDefaultAutoAppend)));
+		addConfig(GridConfig.PROPERTITY_SUBMASK, gc.getSubMask(mDefaultGridSubmask));
+		addConfig(GridConfig.PROPERTITY_CAN_PASTE, Boolean.valueOf(gc.isCanPaste()));
+		addConfig(GridConfig.PROPERTITY_CAN_WHEEL, Boolean.valueOf(gc.isCanWheel()));
+		addConfig(GridConfig.PROPERTITY_GROUP_SELECT, Boolean.valueOf(gc.isGroupSelect()));
+		boolean editorborder= gc.hasEditorBorder(model,mDefaultEditorBorder);
+		if(!editorborder)addConfig(GridConfig.PROPERTITY_EDITOR_BORDER, Boolean.valueOf(editorborder));
 		
 		processRowNumber(map,view);
 		processSelectable(map,view);
@@ -166,8 +174,8 @@ public class Grid extends Component {
 					id= IDGenerator.getInstance().generate();
 				}
 				if(id.equals(dds)){
-					selectable = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
-					showCheckAll = new Boolean(ds.getBoolean(DataSetConfig.PROPERTITY_SHOW_CHECKALL, true));
+					selectable = Boolean.valueOf(ds.getBoolean(DataSetConfig.PROPERTITY_SELECTABLE, false));
+					showCheckAll = Boolean.valueOf(ds.getBoolean(DataSetConfig.PROPERTITY_SHOW_CHECKALL, true));
 					selectionmodel = ds.getString(DataSetConfig.PROPERTITY_SELECTION_MODEL, "multiple");
 					break;
 				}
@@ -397,7 +405,7 @@ public class Grid extends Component {
 			Iterator it = editors.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap editor = (CompositeMap)it.next();
-				editor.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+				editor.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 				editor.put(ComponentConfig.PROPERTITY_STYLE, "position:absolute;left:-1000px;top:-1000px;");
 				try {
 					sb.append(session.buildViewAsString(model, editor));
@@ -453,7 +461,7 @@ public class Grid extends Component {
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
-//				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+//				item.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					String fileName = uncertain.composite.TextParser.parse(item.getString("filename",""),model);
@@ -630,17 +638,23 @@ public class Grid extends Component {
 			
 //			Integer width = Integer.valueOf(view.getString(ComponentConfig.PROPERTITY_WIDTH));
 			navbar.put(ComponentConfig.PROPERTITY_ID, map.get(ComponentConfig.PROPERTITY_ID)+"_navbar");
-			navbar.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+			navbar.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 			navbar.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(width.intValue()));
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "grid-navbar");
 //			navbar.put(PROPERTITY_STYLE, "border:none;border-top:1px solid #cccccc;");
 			navbar.put(NavBarConfig.PROPERTITY_DATASET, dataset);
-			//Hybris
-			CompositeMap ds = getDataSet(session, dataset);
-			boolean isHybris = !"".equals(ds.getString(DataSetConfig.PROPERTITY_HYBRIS_KEY,""));
-			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, isHybris?"nocount":view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE,"complex"));
+			DataSetConfig dc = DataSetConfig.getInstance(getDataSet(session, dataset));
+			boolean mDefaultAutoCount = ApplicationViewConfig.DEFAULT_AUTO_COUNT;
+			if (mApplicationConfig != null) {
+				ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+				if (null != view_config) {
+					mDefaultAutoCount = view_config.getDefaultAutoCount();
+				}
+			}
+			boolean autoCount = dc.isAutoCount(mDefaultAutoCount);
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE,autoCount?"complex":"tiny"));
 			navbar.put(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT, new Integer(view.getInt(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,10)));
-			navbar.put(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,new Boolean(view.getBoolean(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
+			navbar.put(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,Boolean.valueOf(view.getBoolean(NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,true)));
 			sb.append("<tr><td>");
 			try {
 				sb.append(session.buildViewAsString(model, navbar));

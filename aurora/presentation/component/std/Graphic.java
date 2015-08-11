@@ -53,10 +53,10 @@ public class Graphic extends Component {
 			addConfig(GraphicConfig.PROPERTITY_DROP_TO, gc.getDropTo());
 		}
 		if(gc.isMoveable()){
-			addConfig(GraphicConfig.PROPERTITY_MOVEABLE, new Boolean(gc.isMoveable()));
+			addConfig(GraphicConfig.PROPERTITY_MOVEABLE, Boolean.valueOf(gc.isMoveable()));
 		}
 		if(gc.isEditable()){
-			addConfig(GraphicConfig.PROPERTITY_EDITABLE, new Boolean(gc.isEditable()));
+			addConfig(GraphicConfig.PROPERTITY_EDITABLE, Boolean.valueOf(gc.isEditable()));
 		}
 		if(null!= gc.getRenderer()){
 			addConfig(GraphicConfig.PROPERTITY_RENDERER, gc.getRenderer());

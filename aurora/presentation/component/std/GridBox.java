@@ -51,12 +51,18 @@ public class GridBox extends Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
 		super.onCreateViewContent(session, context);
-		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+		String mDefaultLabelSeparator = ApplicationViewConfig.DEFAULT_LABEL_SEPARATOR;
+		if(null!=mApplicationConfig){
+			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+			if(null!=view_config){
+				mDefaultLabelSeparator = view_config.getDefaultLabelSeparator();
+			}
+		}
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
 		Map map = context.getMap();
 		GridBoxConfig gbc = GridBoxConfig.getInstance(view);
-		String labelSeparator = gbc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():gbc.getLabelSeparator();
+		String labelSeparator = gbc.getLabelSeparator(mDefaultLabelSeparator);
 		processColumns(gbc.getColumns().getChilds(),gbc.getLabelWidth(model));
 		int padding = gbc.getPadding(model,3);
 		if(gbc.getIsField()){

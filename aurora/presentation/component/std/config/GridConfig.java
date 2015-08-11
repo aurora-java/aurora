@@ -89,8 +89,8 @@ public class GridConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_AUTO_ADJUST, autoAdjust);
 	}
 	
-	public Boolean isAutoAppend(){
-		return getBoolean(PROPERTITY_AUTO_APPEND);		
+	public boolean isAutoAppend(boolean defaultvalue){
+		return getBoolean(PROPERTITY_AUTO_APPEND,defaultvalue);		
 	}
 	public void setAutoAppend(Boolean append){
 		putBoolean(PROPERTITY_AUTO_APPEND, append);
@@ -115,8 +115,8 @@ public class GridConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_SHOW_ROWNUMBER, srn);
 	}
 	
-	public Boolean getSubMask(){
-		return getBoolean(PROPERTITY_SUBMASK);		
+	public Boolean getSubMask(boolean defaultvalue){
+		return getBoolean(PROPERTITY_SUBMASK,defaultvalue);		
 	}
 	public void setSubmask(Boolean sb){
 		putBoolean(PROPERTITY_SUBMASK, sb);
@@ -124,8 +124,8 @@ public class GridConfig extends ComponentConfig {
 	
 	
 	public boolean hasNavBar(CompositeMap model){
-		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_NAVBAR), model);
-		if(null == str||"".equals(str)){
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_NAVBAR,""), model);
+		if("".equals(str)){
 			return false;
 		}
 		return Boolean.valueOf(str).booleanValue();
@@ -133,12 +133,12 @@ public class GridConfig extends ComponentConfig {
 	public void setNavBar(boolean nb){
 		putBoolean(PROPERTITY_NAVBAR, nb);
 	}
-	public Boolean hasEditorBorder(CompositeMap model){
-		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITOR_BORDER), model);
-		if(null == str||"".equals(str)){
-			return null;
+	public boolean hasEditorBorder(CompositeMap model,boolean defaultvalue){
+		String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITOR_BORDER,""), model);
+		if("".equals(str)){
+			return defaultvalue;
 		}
-		return Boolean.valueOf(str);
+		return Boolean.valueOf(str).booleanValue();
 	}
 	public void setEditorBorder(boolean nb){
 		putBoolean(PROPERTITY_EDITOR_BORDER, nb);

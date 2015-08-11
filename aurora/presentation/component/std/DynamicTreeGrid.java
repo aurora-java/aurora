@@ -44,7 +44,7 @@ public class DynamicTreeGrid extends Grid {
 		if(tc.getRenderer()!=null)addConfig(TreeConfig.PROPERTITY_RENDERER, tc.getRenderer());
 		addConfig(TreeConfig.PROPERTITY_FIELD_ID, tc.getIdField(model));
 		addConfig(TreeConfig.PROPERTITY_FIELD_PARENT, tc.getParentField(model));
-		addConfig(TreeConfig.PROPERTITY_SHOWCHECKBOX,  new Boolean(tc.isShowCheckBox()));
+		addConfig(TreeConfig.PROPERTITY_SHOWCHECKBOX,  Boolean.valueOf(tc.isShowCheckBox()));
 		addConfig(TreeConfig.PROPERTITY_FIELD_CHECKED, tc.getCheckField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_EXPAND, tc.getExpandField());
 		addConfig(TreeConfig.PROPERTITY_FIELD_SEQUENCE, tc.getSequenceField(model));

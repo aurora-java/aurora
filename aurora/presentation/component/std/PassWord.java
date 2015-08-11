@@ -22,7 +22,7 @@ public class PassWord extends TextField {
 		super.onCreateViewContent(session, context);
 		Map map = context.getMap();		
 		map.put(INPUT_TYPE, DEFAULT_INPUT_TYPE);
-		addConfig("detectCapsLock", new Boolean(false));
+		addConfig("detectCapsLock", Boolean.FALSE);
 		map.put(CONFIG, getConfigString());
 	}
 }

@@ -13,9 +13,7 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.TextParser;
 import uncertain.ocm.IObjectRegistry;
-import aurora.application.ApplicationConfig;
 import aurora.application.ApplicationViewConfig;
-import aurora.application.IApplicationConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -48,14 +46,21 @@ public class Radio extends Component {
 		CompositeMap view = view_context.getView();	
 		
 		RadioConfig rc = RadioConfig.getInstance(view);
+		String mDefaultRadioSeparator = ApplicationViewConfig.DEFAULT_RADIO_SEPARATOR;
+		if (mApplicationConfig != null) {
+	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+	   	     if (view_config != null) {
+	   	    	mDefaultRadioSeparator = view_config.getDefaultRadioSeparator();      
+	   	     }
+	   	}
 		String layout = rc.getLayout();
 		String labelField = rc.getLabelField();
 		String valueField = rc.getValueField();
-		
+		String radioSeparator = rc.getRadioSeparator(mDefaultRadioSeparator);
 		CompositeMap items = rc.getItems();
 		if(items!=null){
 			try {
-				createOptions(session,view,map,items,layout,labelField,valueField, rc.getLabelExpression());
+				createOptions(session,view,map,items,layout,labelField,valueField, rc.getLabelExpression(),radioSeparator);
 			} catch (JSONException e) {
 				throw new IOException(e);
 			}
@@ -65,7 +70,7 @@ public class Radio extends Component {
 				CompositeMap options = (CompositeMap)model.getObject(ds);
 				if(options!=null)
 				try {
-					createOptions(session,view,map,options,layout,labelField,valueField, rc.getLabelExpression());
+					createOptions(session,view,map,options,layout,labelField,valueField, rc.getLabelExpression(),radioSeparator);
 				} catch (JSONException e) {
 					throw new IOException(e);
 				}
@@ -80,18 +85,11 @@ public class Radio extends Component {
 	
 	
 	
-	private void createOptions(BuildSession session,CompositeMap view,Map map, CompositeMap items,String layout,String labelField,String valueField,String expression) throws JSONException {
+	private void createOptions(BuildSession session,CompositeMap view,Map map, CompositeMap items,String layout,String labelField,String valueField,String expression,String radioSeparator) throws JSONException {
 		StringBuffer sb = new StringBuffer();
 		List children = items.getChilds();
 		List options = new ArrayList();
 		
-		String mDefaultRadioSeparator = null;
-		if (mApplicationConfig != null) {
-	   	     ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
-	   	     if (view_config != null) {
-	   	    	mDefaultRadioSeparator = view_config.getDefaultRadioSeparator();      
-	   	     }
-	   	}
 		if(children!=null){
 			Iterator it = children.iterator();
 			while(it.hasNext()){
@@ -107,7 +105,6 @@ public class Radio extends Component {
 				
 				JSONObject option = new JSONObject(item);
 				options.add(option);
-				String radioSeparator = view.getString(RadioConfig.PROPERTITY_RADIO_SEPARATOR,mDefaultRadioSeparator == null?":":mDefaultRadioSeparator);
 				
 				if(!"".equals(label)){
 					label = radioSeparator+label;
