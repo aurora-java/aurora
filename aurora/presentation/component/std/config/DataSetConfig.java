@@ -91,7 +91,7 @@ public class DataSetConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_AUTO_QUERY, autoQuery);
 	}
 	public boolean isAutoQuery(CompositeMap model){
-		String autoQueryStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_PAGE_SIZE,""),model);
+		String autoQueryStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_QUERY,""),model);
 		if("".equals(autoQueryStr)){
 			return false;
 		}else{
