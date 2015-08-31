@@ -49,12 +49,10 @@ public class DataSetConfig extends ComponentConfig {
 	
 	//Hybris
 	public static final String PROPERTITY_DTO_NAME = "dtoname";
-	public static final String PROPERTITY_HYBRIS_KEY = "hybriskey";
+	public static final String PROPERTITY_REST_DATA_FORMAT = "restdataformat";
 
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
 	public static final int DEFAULT_MAX_PAGE_SIZE = 1000;
-	public static final int DEFAULT_PAGE_SIZE = 10;
-	
 	
 	public String getSortType(){
 		return getString(PROPERTITY_SORT_TYPE);
@@ -92,8 +90,13 @@ public class DataSetConfig extends ComponentConfig {
 	public void setAutoQuery(boolean autoQuery){
 		putBoolean(PROPERTITY_AUTO_QUERY, autoQuery);
 	}
-	public boolean isAutoQuery(){
-		return getBoolean(PROPERTITY_AUTO_QUERY, false);
+	public boolean isAutoQuery(CompositeMap model){
+		String autoQueryStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_QUERY,""),model);
+		if("".equals(autoQueryStr)){
+			return false;
+		}else{
+			return Boolean.valueOf(autoQueryStr).booleanValue();
+		}
 	}
 	
 	public String getQueryUrl(){
@@ -150,8 +153,11 @@ public class DataSetConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_FETCHALL, fetchAll);
 	}
 	public boolean isFetchAll(CompositeMap model){
-		String fetchAllStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_FETCHALL,"false"),model);
-		return "true".equals(fetchAllStr);
+		String fetchAllStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_FETCHALL,""),model);
+		if("".equals(fetchAllStr)){
+			return false;
+		}
+		return Boolean.valueOf(fetchAllStr).booleanValue();
 	}
 	
 	public int getMaxPageSize(){
@@ -160,13 +166,12 @@ public class DataSetConfig extends ComponentConfig {
 	public void setMaxPageSize(int size){
 		putInt(PROPERTITY_MAX_PAGESIZE, size);
 	}
-	public int getPageSize(CompositeMap model){
+	public Integer getPageSize(CompositeMap model,int defaultvalue){
 		String pageSizeStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_PAGESIZE,""),model);
 		if("".equals(pageSizeStr)){
-			return DEFAULT_PAGE_SIZE;
-		}else {
-			return Integer.parseInt(pageSizeStr);
+			return Integer.valueOf(defaultvalue);
 		}
+		return Integer.valueOf(pageSizeStr);
 	}
 	public void setPageSize(int size){
 		putInt(PROPERTITY_PAGESIZE, size);
@@ -175,8 +180,8 @@ public class DataSetConfig extends ComponentConfig {
 	public void setAutoCount(Boolean autocount){
 		putBoolean(PROPERTITY_AUTO_COUNT, autocount);
 	}
-	public Boolean isAutoCount(){
-		return getBoolean(PROPERTITY_AUTO_COUNT);
+	public boolean isAutoCount(boolean defaultvalue){
+		return getBoolean(PROPERTITY_AUTO_COUNT,defaultvalue);
 	}
 	
 	public void setSelectable(boolean selectable){
@@ -222,8 +227,11 @@ public class DataSetConfig extends ComponentConfig {
 		putBoolean(PROPERTITY_AUTO_PAGE_SIZE, autoPageSize);
 	}
 	public boolean isAutoPageSize(CompositeMap model){
-		String autoPageSize = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_PAGE_SIZE,"false"),model);
-		return "true".equals(autoPageSize);
+		String autoPageSizeStr = uncertain.composite.TextParser.parse(getString(PROPERTITY_AUTO_PAGE_SIZE,""),model);
+		if("".equals(autoPageSizeStr)){
+			return false;
+		}
+		return Boolean.valueOf(autoPageSizeStr).booleanValue();
 	}    
     public void setCanQuery(boolean canquery){
 		putBoolean(PROPERTITY_CAN_QUERY, canquery);
@@ -290,11 +298,11 @@ public class DataSetConfig extends ComponentConfig {
 	public void setDtoName(final String value){
 		putString(PROPERTITY_DTO_NAME, value);
 	}
-	public String getHybrisKey(){
-		return getString(PROPERTITY_HYBRIS_KEY, "");
+	public String getRestDataFormat(){
+		return getString(PROPERTITY_REST_DATA_FORMAT, "");
 	}
 
-	public void setHybrisKey(final String value){
-		putString(PROPERTITY_HYBRIS_KEY, value);
+	public void setRestDataFormat(final String value){
+		putString(PROPERTITY_REST_DATA_FORMAT, value);
 	}
 }

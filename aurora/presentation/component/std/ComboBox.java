@@ -41,10 +41,10 @@ public class ComboBox extends TextField {
 		if(cbc.getRenderer()!=null)addConfig(ComboBoxConfig.PROPERTITY_RENDERER, cbc.getRenderer());
 //		addConfig(ComboBoxConfig.PROPERTITY_VALUE_FIELD, cbc.getValueField());
 //		addConfig(ComboBoxConfig.PROPERTITY_DISPLAY_FIELD, cbc.getDisplayField());
-		addConfig(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(cbc.isFetchRecord()));
+		addConfig(ComboBoxConfig.PROPERTITY_FETCH_RECORD, Boolean.valueOf(cbc.isFetchRecord()));
 		boolean isTranChara = cbc.isTransformCharacter();
 		if(!isTranChara)addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
-		if(cbc.isBlankOption())addConfig(ComboBoxConfig.PROPERTITY_BLANK_OPTION, new Boolean(true));
+		if(cbc.isBlankOption())addConfig(ComboBoxConfig.PROPERTITY_BLANK_OPTION, Boolean.TRUE);
 		map.put(CONFIG, getConfigString());
 	}
 

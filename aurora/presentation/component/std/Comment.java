@@ -128,7 +128,7 @@ public class Comment extends Component {
 		textArea
 				.put(ComponentConfig.PROPERTITY_STYLE, "width:99%;height:150px");
 		if(null == userId){
-			textArea.put("readonly", new Boolean(true));
+			textArea.put("readonly", Boolean.TRUE);
 		}
 		return session.buildViewAsString(model, textArea);
 	}
@@ -144,7 +144,7 @@ public class Comment extends Component {
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
 		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
 		if(null == userId){
-			button.put("disabled", new Boolean(true));
+			button.put("disabled", Boolean.TRUE);
 		}
 		return session.buildViewAsString(model, button);
 	}

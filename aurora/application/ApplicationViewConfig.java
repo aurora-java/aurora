@@ -29,8 +29,20 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_CLIENT_RESIZE = "defaultclientresize";
 	public static final String KEY_DEFAULT_EDITOR_BORDER = "defaulteditorborder";
 	
-	private static final String DEFAULT_THEME = "default";
-
+	public static final String DEFAULT_THEME = "default";
+	public static final boolean DEFAULT_FUZZY_FETCH = false;
+	public static final boolean DEFAULT_MODIFIED_CHECK = true;
+	public static final boolean DEFAULT_AUTO_COUNT = true;
+	public static final boolean DEFAULT_AUTO_ADJUST_GRID = true;
+	public static final boolean DEFAULT_GRID_SUBMASK = true;
+	public static final boolean DEFAULT_CLIENT_RESIZE = true;
+	public static final boolean DEFAULT_AUTO_APPEND = false;
+	public static final boolean DEFAULT_EDITOR_BORDER = true;
+	public static final int DEFAULT_PAGE_SIZE = 10;
+	public static final int DEFAULT_MARGIN_WIDTH = -1;
+	public static final String DEFAULT_LABEL_SEPARATOR = ":";
+	public static final String DEFAULT_RADIO_SEPARATOR = ":";
+	
 	public String getDefaultPackage() {
 		return getString(KEY_DEFAULT_PACKAGE);
 	}
@@ -72,7 +84,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 
 	public String getDefaultLabelSeparator() {
-		return getString(KEY_DEFAULT_LABEL_SEPARATOR,":");
+		return getString(KEY_DEFAULT_LABEL_SEPARATOR,DEFAULT_LABEL_SEPARATOR);
 	}
 
 	public void setDefaultLabelSeparator(String labelSeparator) {
@@ -80,7 +92,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	
 	public int getDefaultMarginWidth() {
-		return getInt(KEY_DEFAULT_MARGIN_WIDTH,-1);
+		return getInt(KEY_DEFAULT_MARGIN_WIDTH,DEFAULT_MARGIN_WIDTH);
 	}
 
 	public void setDefaultMarginWidth(int w) {
@@ -88,7 +100,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 
 	public String getDefaultRadioSeparator() {
-		return getString(KEY_DEFAULT_RADIO_SEPARATOR);
+		return getString(KEY_DEFAULT_RADIO_SEPARATOR,DEFAULT_RADIO_SEPARATOR);
 	}
 
 	public void setDefaultRadioSeparator(String radioseparator) {
@@ -96,7 +108,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	
 	public boolean getDefaultAutoCount() {
-		return getBoolean(KEY_DEFAULT_AUTO_COUNT,true);
+		return getBoolean(KEY_DEFAULT_AUTO_COUNT,DEFAULT_AUTO_COUNT);
 	}
 	
 
@@ -109,44 +121,44 @@ public class ApplicationViewConfig extends DynamicObject {
 	}
 	
 	public boolean getDefaultAutoAdjustGrid() {
-		return getBoolean(KEY_DEFAULT_AUTO_ADJUST_GRID,true);
+		return getBoolean(KEY_DEFAULT_AUTO_ADJUST_GRID,DEFAULT_AUTO_ADJUST_GRID);
 	}
 	public void setDefaultModifiedCheck(boolean modifiedCheck) {
 		putBoolean(KEY_DEFAULT_MODIFIED_CHECK, modifiedCheck);
 	}
 	
 	public boolean getDefaultGridSubmask() {
-		return getBoolean(KEY_DEFAULT_GRID_SUBMASK,true);
+		return getBoolean(KEY_DEFAULT_GRID_SUBMASK,DEFAULT_GRID_SUBMASK);
 	}
 	public void setDefaultGridSubmask(boolean submask) {
 		putBoolean(KEY_DEFAULT_GRID_SUBMASK, submask);
 	}
 	public boolean getDefaultFuzzyFetch() {
-		return getBoolean(KEY_DEFAULT_FUZZY_FETCH,false);
+		return getBoolean(KEY_DEFAULT_FUZZY_FETCH,DEFAULT_FUZZY_FETCH);
 	}
 	public void setDefaultFuzzyFetch(boolean fuzzyFetch) {
 		putBoolean(KEY_DEFAULT_FUZZY_FETCH, fuzzyFetch);
 	}
 	public boolean getDefaultClientResize() {
-		return getBoolean(KEY_DEFAULT_CLIENT_RESIZE,true);
+		return getBoolean(KEY_DEFAULT_CLIENT_RESIZE,DEFAULT_CLIENT_RESIZE);
 	}
 	public void setDefaultClientResize(boolean fuzzyFetch) {
 		putBoolean(KEY_DEFAULT_CLIENT_RESIZE, fuzzyFetch);
 	}
 	
 	public boolean getDefaultModifiedCheck() {
-		return getBoolean(KEY_DEFAULT_MODIFIED_CHECK,true);
+		return getBoolean(KEY_DEFAULT_MODIFIED_CHECK,DEFAULT_MODIFIED_CHECK);
 	}
 	
 	public boolean getDefaultAutoAppend() {
-		return getBoolean(KEY_DEFAULT_AUTO_APPEND,false);
+		return getBoolean(KEY_DEFAULT_AUTO_APPEND,DEFAULT_AUTO_APPEND);
 	}
 
 	public void setDefaultAutoAppend(boolean autoAppend) {
 		putBoolean(KEY_DEFAULT_AUTO_APPEND, autoAppend);
 	}
 	public boolean getDefaultEditorBorder() {
-		return getBoolean(KEY_DEFAULT_EDITOR_BORDER,true);
+		return getBoolean(KEY_DEFAULT_EDITOR_BORDER,DEFAULT_EDITOR_BORDER);
 	}
 	
 	public void setDefaultEditorBorder(boolean editorborder) {
@@ -155,10 +167,10 @@ public class ApplicationViewConfig extends DynamicObject {
 
 	public int getDefaultPageSize() {
 		try {
-			return getInt(KEY_DEFAULT_PAGE_SIZE, -1);
+			return getInt(KEY_DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE);
 		} catch (NumberFormatException e) {
 		}
-		return -1;
+		return DEFAULT_PAGE_SIZE;
 	}
 
 	public void setDefaultPageSize(int size) {

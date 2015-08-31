@@ -48,7 +48,7 @@ public class NavBar extends ToolBar {
 			String type = nbc.getNavBarType();
 			map.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE, type);
 			map.put(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT, new Integer(nbc.getMaxPageCount()));
-			if("simple".equalsIgnoreCase(type)||"tiny".equalsIgnoreCase(type)||"nocount".equalsIgnoreCase(type)){
+			if("simple".equalsIgnoreCase(type)||"tiny".equalsIgnoreCase(type)){
 				view.put(ComponentConfig.PROPERTITY_CLASSNAME, nbc.getClassName()+" simple-navbar");
 				createSimpleNavBar(session, context);
 			}else{
@@ -94,10 +94,10 @@ public class NavBar extends ToolBar {
 		CompositeMap button = new CompositeMap("numberField");
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.putString(ComponentConfig.PROPERTITY_ID, inputId);
-		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
-		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(30));
-		button.put(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, new Boolean(false));
-		button.put(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
+		button.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
+		button.put(ComponentConfig.PROPERTITY_WIDTH, Integer.valueOf(30));
+		button.put(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, Boolean.FALSE);
+		button.put(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, Boolean.FALSE);
 		view.addChild(button);
 		
 		String text = "<div class='item-label' atype='pageInfo' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
@@ -119,11 +119,11 @@ public class NavBar extends ToolBar {
 			String comboBoxId = IDGenerator.getInstance().generate();
 			map.put("comboBoxId", comboBoxId);
 			CompositeMap comboBox = new CompositeMap("comboBox");
-			comboBox.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+			comboBox.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 			comboBox.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 			comboBox.putString(ComponentConfig.PROPERTITY_ID, comboBoxId);
-			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(50));
-			comboBox.put(ComboBoxConfig.PROPERTITY_FETCH_RECORD, new Boolean(false));
+			comboBox.put(ComponentConfig.PROPERTITY_WIDTH, Integer.valueOf(50));
+			comboBox.put(ComboBoxConfig.PROPERTITY_FETCH_RECORD, Boolean.FALSE);
 			view.addChild(comboBox);
 			String pageSizeInfo2="<div class='item-label' atype='pageSizeInfo2' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:5px;margin-right:5px;'>    </div>";
 			CompositeMap pagesize2 = loader.loadFromString(pageSizeInfo2,"UTF-8");
@@ -150,7 +150,7 @@ public class NavBar extends ToolBar {
 		button.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		button.put(ComponentConfig.PROPERTITY_WIDTH, new Integer(16));
 		button.put(ButtonConfig.PROPERTITY_ICON, "null");
-		button.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+		button.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 		button.put(ButtonConfig.PROPERTITY_BUTTON_CLASS, clz);
 		button.put(ButtonConfig.PROPERTITY_TITLE, title);
 		button.put(ButtonConfig.PROPERTITY_BUTTON_STYLE, style);

@@ -36,8 +36,8 @@ public class BoxConfig extends GridLayoutConfig {
         putBoolean(PROPERTITY_SHOWBORDER, show);
     }
     
-    public String getLabelSeparator(){
-    	return getString(PROPERTITY_LABEL_SEPARATOR);
+    public String getLabelSeparator(String defaultvalue){
+    	return getString(PROPERTITY_LABEL_SEPARATOR,defaultvalue);
     }
     public void setLabelSeparator(String labelSeparator){
     	putString(PROPERTITY_LABEL_SEPARATOR, labelSeparator);

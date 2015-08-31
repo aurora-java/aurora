@@ -27,7 +27,13 @@ public class Box extends GridLayout {
 	
 	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
 		BoxConfig bc = new BoxConfig();
-		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+		String mDefaultLabelSeparator = ApplicationViewConfig.DEFAULT_LABEL_SEPARATOR;
+		if(null!=mApplicationConfig){
+			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+			if(null!=view_config){
+				mDefaultLabelSeparator = view_config.getDefaultLabelSeparator();
+			}
+		}
 		bc.initialize(view);
 		Writer out = session.getWriter();
 		String vlabel = field.getString(ComponentConfig.PROPERTITY_PROMPT);
@@ -37,7 +43,7 @@ public class Box extends GridLayout {
 		int labelWidth = bc.getLabelWidth(model);
 		int rowspan = field.getInt(BoxConfig.PROPERTITY_ROWSPAN, 1);
 		
-		String labelSeparator = bc.getLabelSeparator()==null?view_config.getDefaultLabelSeparator():bc.getLabelSeparator();
+		String labelSeparator = bc.getLabelSeparator(mDefaultLabelSeparator);
 		
 		StringBuilder str = new StringBuilder();
 		if(!"".equals(label)) {

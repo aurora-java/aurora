@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import uncertain.composite.CompositeMap;
 import uncertain.composite.CompositeUtil;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationViewConfig;
 import aurora.application.AuroraApplication;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
@@ -86,17 +87,17 @@ public class Table extends Component {
 		creatToolBar(session,context,cols);
 		if (!tc.isAutoAppend())
 			addConfig(TableConfig.PROPERTITY_AUTO_APPEND,
-					new Boolean(tc.isAutoAppend()));
+					Boolean.valueOf(tc.isAutoAppend()));
 		addConfig(TableConfig.PROPERTITY_CAN_WHEEL,
-				new Boolean(tc.isCanWheel()));
+				Boolean.valueOf(tc.isCanWheel()));
 		addConfig(TableConfig.PROPERTITY_GROUP_SELECT,
-				new Boolean(tc.isGroupSelect()));
+				Boolean.valueOf(tc.isGroupSelect()));
 		map.put(CONFIG, getConfigString());
 		map.put(TableConfig.PROPERTITY_TAB_INDEX, new Integer(tc.getTabIndex()));
 	}
 
 	private void processSelectable(Map map, CompositeMap view, CompositeMap cols,String bindTarget) {
-		Boolean selectable = new Boolean(false);
+		Boolean selectable = Boolean.FALSE;
 		String selectionmodel = "multiple";
 		CompositeMap root = view.getRoot();
 		List list = CompositeUtil.findChilds(root, "dataSet");
@@ -110,7 +111,7 @@ public class Table extends Component {
 					id = IDGenerator.getInstance().generate();
 				}
 				if (id.equals(bindTarget)) {
-					selectable = new Boolean(dsc.isSelectable());
+					selectable = Boolean.valueOf(dsc.isSelectable());
 					selectionmodel = dsc.getSelectionModel();
 					break;
 				}
@@ -403,7 +404,7 @@ public class Table extends Component {
 			Iterator it = toolbar.getChildIterator();
 			while(it.hasNext()){
 				CompositeMap item = (CompositeMap)it.next();
-//				item.put(ComponentConfig.PROPERTITY_IS_CUST, new Boolean(false));
+//				item.put(ComponentConfig.PROPERTITY_IS_CUST, Boolean.FALSE);
 				if("button".equals(item.getName())){
 					String type = item.getString("type");
 					String fileName = uncertain.composite.TextParser.parse(item.getString("filename",""),model);
@@ -462,17 +463,24 @@ public class Table extends Component {
 					map.get(ComponentConfig.PROPERTITY_ID) + "_navbar");
 			navbar.put(ComponentConfig.PROPERTITY_CLASSNAME, "table-navbar");
 			navbar.put(NavBarConfig.PROPERTITY_DATASET, dataset);
-			CompositeMap ds = getDataSet(session, dataset);
-			boolean isHybris = !"".equals(ds.getString(DataSetConfig.PROPERTITY_HYBRIS_KEY,""));
-			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE,isHybris?"nocount":
-					view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE, "complex"));
+			DataSetConfig dc = DataSetConfig.getInstance(getDataSet(session, dataset));
+			boolean mDefaultAutoCount = ApplicationViewConfig.DEFAULT_AUTO_COUNT;
+			if (mApplicationConfig != null) {
+				ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+				if (null != view_config) {
+					mDefaultAutoCount = view_config.getDefaultAutoCount();
+				}
+			}
+			boolean autoCount = dc.isAutoCount(mDefaultAutoCount);
+			navbar.put(NavBarConfig.PROPERTITY_NAVBAR_TYPE,
+					view.getString(NavBarConfig.PROPERTITY_NAVBAR_TYPE, autoCount?"complex":"tiny"));
 			navbar.put(
 					NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,
 					new Integer(view.getInt(NavBarConfig.PROPERTITY_MAX_PAGE_COUNT,
 							10)));
 			navbar.put(
 					NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE,
-					new Boolean(view.getBoolean(
+					Boolean.valueOf(view.getBoolean(
 							NavBarConfig.PROPERTITY_PAGE_SIZE_EDITABLE, true)));
 			sb.append("<caption align='bottom'>");
 			try {

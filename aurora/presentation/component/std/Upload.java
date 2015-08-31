@@ -124,7 +124,7 @@ public class Upload extends Component {
 		tb.setNameSpaceURI(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE);
 		tb.put(TableConfig.PROPERTITY_PERCENT_WIDTH, new Integer(100));
 		tb.put(ComponentConfig.PROPERTITY_CLASSNAME, "atmList");
-		tb.put(TableConfig.PROPERTITY_SHOW_HEAD, new Boolean(false));
+		tb.put(TableConfig.PROPERTITY_SHOW_HEAD, Boolean.FALSE);
 		tb.put(ComponentConfig.PROPERTITY_BINDTARGET, id + "_ds");
 		tb.put(ComponentConfig.PROPERTITY_STYLE, "border:none;background-color:#fff");
 		CompositeMap tb_columns = new CompositeMap(TableConfig.PROPERTITY_COLUMNS);

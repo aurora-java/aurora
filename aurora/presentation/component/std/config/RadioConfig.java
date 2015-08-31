@@ -82,8 +82,8 @@ public class RadioConfig extends ComponentConfig {
 	public void setOptions(String options){
 		putString(PROPERTITY_OPTIONS, options);
 	}
-	public String getRadioSeparator(){
-		return getString(PROPERTITY_RADIO_SEPARATOR);
+	public String getRadioSeparator(String defaultvalue){
+		return getString(PROPERTITY_RADIO_SEPARATOR,defaultvalue);
 	}
 	public void setRadioSeparator(String radioseparator){
 		putString(PROPERTITY_RADIO_SEPARATOR, radioseparator);

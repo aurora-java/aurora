@@ -77,8 +77,8 @@ public class Accordion extends Component {
 							/ (singleMode ? 1 : numAccordions));
 				}
 				Iterator it = childs.iterator();
-				addConfig(AccordionConfig.PROPERTITY_SINGLE_MODE, new Boolean(singleMode));
-				addConfig(AccordionConfig.PROPERTITY_SHOW_ICON, new Boolean(showIcon));
+				addConfig(AccordionConfig.PROPERTITY_SINGLE_MODE, Boolean.valueOf(singleMode));
+				addConfig(AccordionConfig.PROPERTITY_SHOW_ICON, Boolean.valueOf(showIcon));
 				while (it.hasNext()) {
 					CompositeMap accordion = (CompositeMap) it.next();
 					if ((isSelected == false || singleMode == false)

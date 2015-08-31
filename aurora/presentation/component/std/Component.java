@@ -150,8 +150,13 @@ public class Component {
 		Map map = context.getMap();
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
-		ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
-		
+		boolean mDefaultClientResize = ApplicationViewConfig.DEFAULT_CLIENT_RESIZE;
+		if(null!=mApplicationConfig){
+			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+			if(null!=view_config){
+				mDefaultClientResize = view_config.getDefaultClientResize();
+			}
+		}
 		Boolean isCust = cc.isCust();
 		/** ID属性 * */
 		id = cc.getId();
@@ -159,7 +164,7 @@ public class Component {
 		if (id == null || "".equals(id)) {
 			id = IDGenerator.getInstance().generate();
 		}else if(isCust==null){
-			isCust =  new Boolean(true);
+			isCust =  Boolean.TRUE;
 		}
 		addConfig(ComponentConfig.PROPERTITY_IS_CUST,isCust);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
@@ -230,7 +235,7 @@ public class Component {
 		String value = cc.getValue();
 		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
 		
-		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, cc.isClientResize()==null?view_config.getDefaultClientResize():cc.isClientResize());
+		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, Boolean.valueOf(cc.isClientResize(mDefaultClientResize)));
 		
 		/** 是否隐藏 **/
 		boolean hidden = cc.getHidden(false);

@@ -63,8 +63,8 @@ public class DataSetFieldConfig extends ComponentConfig  {
     	return getBoolean(PROPERTITY_REQUIRED, false);
     }
     public boolean getRequired(CompositeMap model){
-    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_REQUIRED), model);
-		if(null == str||"".equals(str)){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_REQUIRED,""), model);
+		if("".equals(str)){
 			return false;
 		}
 		return Boolean.valueOf(str).booleanValue();
@@ -82,8 +82,8 @@ public class DataSetFieldConfig extends ComponentConfig  {
 		return getBoolean(PROPERTITY_READONLY, false);
     }
     public boolean getReadOnly(CompositeMap model){
-    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_READONLY), model);
-		if(null == str||"".equals(str)){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_READONLY,""), model);
+		if("".equals(str)){
 			return false;
 		}
 		return Boolean.valueOf(str).booleanValue();
@@ -95,8 +95,8 @@ public class DataSetFieldConfig extends ComponentConfig  {
     	return getBoolean(PROPERTITY_EDITABLE, true);
     }
     public boolean getEditable(CompositeMap model){
-    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITABLE), model);
-		if(null == str||"".equals(str)){
+    	String str = uncertain.composite.TextParser.parse(getString(PROPERTITY_EDITABLE,""), model);
+		if("".equals(str)){
 			return true;
 		}
 		return Boolean.valueOf(str).booleanValue();
@@ -303,8 +303,8 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	public void setFetchSingle(boolean fetchSingle) {
 		putBoolean(PROPERTITY_FETCH_SINGLE, fetchSingle);
 	}
-	public Boolean getFuzzyFetch() {
-		return getBoolean(PROPERTITY_FUZZY_FETCH);
+	public boolean getFuzzyFetch(boolean defaultvalue) {
+		return getBoolean(PROPERTITY_FUZZY_FETCH,defaultvalue);
 	}
 	public void setFuzzyFetch(boolean fuzzyFetch) {
 		putBoolean(PROPERTITY_FUZZY_FETCH, fuzzyFetch);

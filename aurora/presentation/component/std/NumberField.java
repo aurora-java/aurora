@@ -9,7 +9,6 @@ import uncertain.ocm.IObjectRegistry;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.NumberFieldConfig;
-import aurora.presentation.component.std.config.SpinnerConfig;
 
 @SuppressWarnings("unchecked")
 public class NumberField extends TextField {	
@@ -29,10 +28,10 @@ public class NumberField extends TextField {
 		
 		NumberFieldConfig nfc = NumberFieldConfig.getInstance(view);
 		
-		if(!nfc.isAllowDecimals())addConfig(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, new Boolean(false));
-		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, new Boolean(false));
-		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, new Boolean(false));
-		if(!nfc.isAllowPad()) addConfig(NumberFieldConfig.PROPERTITY_ALLOWPAD, new Boolean(false));
+		if(!nfc.isAllowDecimals())addConfig(NumberFieldConfig.PROPERTITY_ALLOWDECIMALS, Boolean.FALSE);
+		if(!nfc.isAllowNegative())addConfig(NumberFieldConfig.PROPERTITY_ALLOWNEGATIVE, Boolean.FALSE);
+		if(!nfc.isAllowFormat())addConfig(NumberFieldConfig.PROPERTITY_ALLOWFORMAT, Boolean.FALSE);
+		if(!nfc.isAllowPad()) addConfig(NumberFieldConfig.PROPERTITY_ALLOWPAD, Boolean.FALSE);
 		if (null != nfc.getMin())
 			addConfig(NumberFieldConfig.PROPERTITY_MIN, TextParser.parse(nfc.getMin(), model));
 		if (null != nfc.getMax())
