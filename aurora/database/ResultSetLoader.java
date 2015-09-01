@@ -46,7 +46,7 @@ public class ResultSetLoader {
     {
         consumer.newRow(elementName);
         for(int i=1; i<=meta.getColumnCount(); i++){
-            String name = meta.getColumnName(i);
+            String name = meta.getColumnLabel(i);
             name = getFieldName(name);
             Object value = rs.getObject(i);
             consumer.loadField(name, value);
