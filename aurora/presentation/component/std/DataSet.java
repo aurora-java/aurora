@@ -158,6 +158,11 @@ public class DataSet extends Component {
 								DataSetFieldConfig.PROPERTITY_FETCH_REMOTE,
 								sdfc.getFetchRemote());
 					if (null != field
+							.getString(DataSetFieldConfig.PROPERTITY_FETCH_RECORD))
+						field.putBoolean(
+								DataSetFieldConfig.PROPERTITY_FETCH_RECORD,
+								sdfc.getFetchRecord());
+					if (null != field
 							.getString(DataSetFieldConfig.PROPERTITY_FETCH_SINGLE))
 						field.putBoolean(
 								DataSetFieldConfig.PROPERTITY_FETCH_SINGLE,

@@ -393,7 +393,7 @@ public class Component {
 	
 	public boolean isHidden(CompositeMap view, CompositeMap model){
 		CompositeMap cd = model.getParent().getChild(CustomizationDataProvider.DEFAULT_CUSTOM_DATA);
-		if(cd!=null){
+		if(cd!=null && view!=null){
 			List list = cd.getChilds();
 			Iterator it = list.iterator();
 			String fid = view.getString(ComponentConfig.PROPERTITY_ID, "");

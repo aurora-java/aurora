@@ -157,7 +157,8 @@
                 <ss:attribute name="validator" document="自定义校验函数\n函数参数为 function(record,name,value)\n返回值:\n(1)校验成功返回true\n(2)校验失败返回错误的描述信息(文本格式)"/>
                 <ss:attribute name="datatype" document="field的数据类型" type="ss:String"/>
                 <ss:attribute name="typeCase" document="textField中输入大小写类型" type="ss:String"/>
-                <ss:attribute name="fetchRemote" document="lov是否通过输入内容自动查询返回给文本框" type="ss:boolean"/>
+                <ss:attribute name="fetchRemote" default="true" document="lov是否通过输入内容自动查询返回给文本框" type="ss:boolean"/>
+                <ss:attribute name="fetchRecord" default="true" document="comboBox输入的内容是否要匹配值列表" type="ss:boolean"/>
                 <ss:attribute name="type" document="chart的每一组数据的显示类型，有line,spline,column,bar,area,areaspline等" type="ss:String"/>
                 <ss:attribute name="tooltip" document="该field对应的提示信息"/>
             </ss:attributes>

@@ -68,70 +68,118 @@ public class GridLayout extends Component implements IViewBuilder{
 		glc.initialize(view);
 		return glc.getColumn(model, UNLIMITED);
 	}
-	private void buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
-		if(isHidden(field, model)) return;
-		beforeBuildCell(session, model, view, field);
-		GridLayoutConfig glc = new GridLayoutConfig();
-		glc.initialize(view);
-		Writer out = session.getWriter();
-		int padding = glc.getPadding(model,GridLayoutConfig.DEFAULT_PADDING);
-		int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN,1);
-		int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN,1);
-		String hostId = glc.getHostId();
-		IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
-		out.write("<td class='");
-		if(builder instanceof GridLayout){
-			out.write(DEFAULT_TD_CONTAINER);
-		} else{
-			out.write(DEFAULT_TD_CELL);
-		}
-		if(glc.isWrapperAdjust()){
-			String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
-//			if(null == width){
-//				try{
-//					Class kls = (Class) session.getCurrentPackage().getClassRegistry().getFeatures(field).get(0);
-//					width = Component.class.getDeclaredMethod("getDefaultWidth").invoke(kls.newInstance()).toString();
-//				}catch (Exception e) {
-//				}
-//			}
-			if(null!=width 
-//					&& Integer.parseInt(width)>0
-			){
-				out.write("' width='"+width);
+	private String buildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field,StringBuilder upper,StringBuilder under) throws Exception{
+		if(isHidden(field, model)) return "";
+		StringBuilder sb = new StringBuilder();
+
+		String beforeCell = beforeBuildCell(session, model, view, field);
+		String afterCell = afterBuildCell(session, model, view, field);
+		String upperCell = upperBuildCell(session, model, view, field);
+		String underCell = underBuildCell(session, model, view, field);
+		sb.append(beforeCell);
+		if(null!=field){
+			GridLayoutConfig glc = new GridLayoutConfig();
+			glc.initialize(view);
+			String hostId = glc.getHostId();
+			int padding = glc.getPadding(model,GridLayoutConfig.DEFAULT_PADDING);
+			int colspan = field.getInt(GridLayoutConfig.PROPERTITY_COLSPAN,1);
+			int rowspan = field.getInt(GridLayoutConfig.PROPERTITY_ROWSPAN,1);
+			sb.append("<td class='");
+			IViewBuilder builder = session.getPresentationManager().getViewBuilder(field);
+			if(builder instanceof GridLayout){
+				String labelPosition = view.getString(BoxConfig.PROPERTITY_LABEL_POSITION,"");
+				String labelAlign = view.getString(BoxConfig.PROPERTITY_LABEL_ALIGN,"");
+				if(!"".equals(labelPosition) && "".equals(field.getString(BoxConfig.PROPERTITY_LABEL_POSITION, "")))
+					field.put(BoxConfig.PROPERTITY_LABEL_POSITION, labelPosition);
+				if(!"".equals(labelAlign) && "".equals(field.getString(BoxConfig.PROPERTITY_LABEL_ALIGN, "")))
+					field.put(BoxConfig.PROPERTITY_LABEL_ALIGN, labelAlign);
+				sb.append(DEFAULT_TD_CONTAINER);
+			} else{
+				sb.append(DEFAULT_TD_CELL);
 			}
-		}
-		if(colspan > 1)out.write("' colspan='"+(colspan*2-1));
-		if(rowspan > 1)out.write("' rowspan='"+rowspan);
-		out.write("' style='padding:"+padding+"px");
-//		if(GridBoxConfig.TAG_NAME.equals(field.getName())){
-//			GridBoxConfig gbc = GridBoxConfig.getInstance(field);
-////			boolean isField = gbc.getIsField();
-////			if(isField){
-////				String gridboxid = TextParser.parse(gbc.getId(),model);
-////				if(null == gridboxid || "".equals(gridboxid)){
-////					gridboxid = IDGenerator.getInstance().generate();
-////				}
-////				field.putString(ComponentConfig.PROPERTITY_ID, gridboxid);
-////				field.putInt(GridBoxConfig.PROPERTITY_PADDING, padding);
-//////				out.write("' id='"+gridboxid);
-////			}
-//		}
-		out.write("'>");
-		if(null != hostId){
-			transferHostId(field,hostId);
-		}
-		session.buildView(model, field);
-		if(builder instanceof GridLayout){}else{			
+			if(glc.isWrapperAdjust()){
+				String width = field.getString(ComponentConfig.PROPERTITY_WIDTH);
+	//			if(null == width){
+	//				try{
+	//					Class kls = (Class) session.getCurrentPackage().getClassRegistry().getFeatures(field).get(0);
+	//					width = Component.class.getDeclaredMethod("getDefaultWidth").invoke(kls.newInstance()).toString();
+	//				}catch (Exception e) {
+	//				}
+	//			}
+				if(null!=width 
+	//					&& Integer.parseInt(width)>0
+				){
+					sb.append("' width='"+width);
+				}
+			}
+			if(colspan > 1){
+				int n = 1,m=0;
+				if(!"".equals(beforeCell)){
+					n++;
+					m=1;
+				}
+				if(!"".equals(afterCell)){
+					n++;
+					m=1;
+				}
+				sb.append("' colspan='"+(colspan*n-m));
+			}
+			if(rowspan > 1){
+				int n = 1,m=0;
+				if(!"".equals(upperCell)){
+					n++;
+					m=1;
+				}
+				if(!"".equals(underCell)){
+					n++;
+					m=1;
+				}
+				sb.append("' rowspan='"+(rowspan*n-m));
+			}
+			sb.append("' style='padding:"+padding+"px");
+	//		if(GridBoxConfig.TAG_NAME.equals(field.getName())){
+	//			GridBoxConfig gbc = GridBoxConfig.getInstance(field);
+	////			boolean isField = gbc.getIsField();
+	////			if(isField){
+	////				String gridboxid = TextParser.parse(gbc.getId(),model);
+	////				if(null == gridboxid || "".equals(gridboxid)){
+	////					gridboxid = IDGenerator.getInstance().generate();
+	////				}
+	////				field.putString(ComponentConfig.PROPERTITY_ID, gridboxid);
+	////				field.putInt(GridBoxConfig.PROPERTITY_PADDING, padding);
+	//////				out.write("' id='"+gridboxid);
+	////			}
+	//		}
+			sb.append("'>");
+			if(null != hostId){
+				transferHostId(field,hostId);
+			}
+			sb.append(session.buildViewAsString(model, field));
+			if(builder instanceof GridLayout){}else{			
 //			addInvalidMsg(field, out);
+			}
+		}else{
+			sb.append("<td class='"+DEFAULT_TD_CELL+"'>");
 		}
-		out.write("</td>");	
+		sb.append("</td>");	
+		sb.append(afterCell);
+		upper.append(upperCell);
+		under.append(underCell);
+		return sb.toString();
 	}
 		
-	
-	protected void beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+	protected String underBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		return "";
+	}
+	protected String upperBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		return "";
+	}
+	protected String beforeBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		return "";
 	}
 	
-	protected void afterBuildCell(BuildSession session, CompositeMap model, CompositeMap field) throws Exception{
+	protected String afterBuildCell(BuildSession session, CompositeMap model, CompositeMap view, CompositeMap field) throws Exception{
+		return "";
 	}
 	
 	protected void buildHead(BuildSession session, CompositeMap model,CompositeMap view, int rows ,int columns) throws Exception{
@@ -160,29 +208,59 @@ public class GridLayout extends Component implements IViewBuilder{
 		return view.getString(ComponentConfig.PROPERTITY_STYLE, "");
 	}
 	
-	private void buildRows(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
-		Writer out = session.getWriter();
+	private String buildRows(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
+		StringBuilder sb = new StringBuilder();
 		while(it.hasNext()){
-			out.write("<tr>");
+			StringBuilder upper = new StringBuilder();
+			StringBuilder cell = new StringBuilder();
+			StringBuilder under = new StringBuilder();
 			CompositeMap field = (CompositeMap)it.next();
 			field.putInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
 			field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
-			buildCell(session,model,view,field);	
-			out.write("</tr>");
+			cell.append(buildCell(session,model,view,field,upper,under));
+			if(upper.length()!=0){
+				sb.append("<tr>");
+				sb.append(upper);	
+				sb.append("</tr>");
+			}
+			sb.append("<tr>");
+			sb.append(cell);	
+			sb.append("</tr>");
+			if(under.length()!=0){
+				sb.append("<tr>");
+				sb.append(under);	
+				sb.append("</tr>");
+			}
 		}
+		return sb.toString();
 	}
 	
 	
-	private void buildColumns(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
-		Writer out = session.getWriter();
-		out.write("<tr>");
+	private String buildColumns(BuildSession session, CompositeMap model, CompositeMap view, Iterator it) throws Exception{
+		StringBuilder sb = new StringBuilder();
+		StringBuilder upper = new StringBuilder();
+		StringBuilder cell = new StringBuilder();
+		StringBuilder under = new StringBuilder();
 		while(it.hasNext()){
 			CompositeMap field = (CompositeMap)it.next();
 			field.putInt(GridLayoutConfig.PROPERTITY_ROWSPAN, 1);
 			field.putInt(GridLayoutConfig.PROPERTITY_COLSPAN, 1);
-			buildCell(session,model,view,field);		
+			cell.append(buildCell(session,model,view,field,upper,under));	
 		}
-		out.write("</tr>");
+		if(upper.length()!=0){
+			sb.append("<tr>");
+			sb.append(upper);
+			sb.append("</tr>");
+		}
+		sb.append("<tr>");
+		sb.append(cell);
+		sb.append("</tr>");
+		if(under.length()!=0){
+			sb.append("<tr>");
+			sb.append(under);
+			sb.append("</tr>");
+		}
+		return sb.toString();
 	}
 	
 
@@ -275,17 +353,20 @@ public class GridLayout extends Component implements IViewBuilder{
 		try {
 			buildTop(session, model, view, map, rows, columns,id);
 			if (it != null && rows!=0 && columns!=0) {
+				StringBuilder sb = new StringBuilder();
 				if(rows == UNLIMITED){
-					buildRows(session, model, view, it);
+					sb.append(buildRows(session, model, view, it));
 				}else if(columns == UNLIMITED){
-					buildColumns(session, model, view, it);
+					sb.append(buildColumns(session, model, view, it));
 				}else{
 					int[] rowspans = new int[columns];
 					for(int i=0;i<columns;i++){
 						rowspans[i]=0;
 					}
 					for( int n=0; n<rows; n++){
-						out.write("<tr>");
+						StringBuilder upper = new StringBuilder();
+						StringBuilder cell = new StringBuilder();
+						StringBuilder under = new StringBuilder();
 						int k=0;
 						for(int j=0;j<columns;j++){
 							if(rowspans[j]>0){
@@ -327,15 +408,27 @@ public class GridLayout extends Component implements IViewBuilder{
 									
 								}
 								rows = (int)Math.ceil((double)cl/columns);
-								buildCell(session,model,view, field);
+								cell.append(buildCell(session,model,view,field,upper,under));	
 							}else{
-								out.write("<th class='layout-th'></th><td class='layout-td-cell'></td>");
-//								break;
+								cell.append(buildCell(session,model,view,null,upper,under));	
 							}
 						}
-						out.write("</tr>");
+						if(upper.length()!=0){
+							sb.append("<tr>");
+							sb.append(upper);
+							sb.append("</tr>");
+						}
+						sb.append("<tr>");
+						sb.append(cell);
+						sb.append("</tr>");
+						if(under.length()!=0){
+							sb.append("<tr>");
+							sb.append(under);
+							sb.append("</tr>");
+						}
 					}
 				}
+				out.append(sb);
 			}
 			buildBottom(session, model, view,columns);
 		} catch (Exception e) {

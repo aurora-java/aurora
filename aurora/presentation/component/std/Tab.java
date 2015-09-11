@@ -48,7 +48,7 @@ public class Tab extends Component {
 		map.put("bodyheight", bodyHeight);
 		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
-		if(((Integer)map.get("stripswidth")).intValue() <= bodyWidth.intValue()-36){
+		if(((Integer)map.get("stripswidth")).intValue() <= bodyWidth.intValue()-32){
 			map.put("display", "none");
 		}
 		map.put(VALID_SCRIPT, sb.toString());
@@ -175,7 +175,7 @@ public class Tab extends Component {
 				}
 			}
 		}
-		map.put("stripswidth", new Integer(stripswidth));
+		map.put("stripswidth", new Integer(stripswidth+4));
 		addConfig("items", jsons);
 		map.put("items", jsons.toString());
 		return sb.toString();

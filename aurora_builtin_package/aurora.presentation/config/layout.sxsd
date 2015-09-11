@@ -26,6 +26,8 @@
                 <ss:attribute name="prompt" document="box的prompt" type="bm:Prompts"/>
                 <ss:attribute name="labelWidth" document="prompt的宽度" type="ss:int"/>
                 <ss:attribute name="labelSeparator" default=":" document="prompt后面的符号" type="ss:String"/>
+                <ss:attribute name="labelPosition" default="left" document="prompt的位置，left|top|right|bottom" type="ss:String"/>
+                <ss:attribute name="labelAlign" default="left" document="prompt的对齐方式，left|center|right" type="ss:String"/>
                 <!--add by shengbo.huang @2011/11/3-->
                 <ss:attribute name="showBorder" document="是否显示边框" type="ss:boolean"/>
                 <!--end-->
@@ -52,7 +54,7 @@
             <ss:extensions>
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:ContainerField"/>
-                <ss:extension base="a:ComplexField"/> 
+                <ss:extension base="a:ComplexField"/>
             </ss:extensions>
             <ss:elements>
                 <ss:element ref="a:BaseViewComponent"/>
@@ -88,7 +90,7 @@
             </ss:attributes>
         </ss:element>
         <ss:element name="a:queryForm" document="queryForm布局">
-        	<ss:extensions>
+            <ss:extensions>
                 <ss:extension base="a:Component"/>
                 <ss:extension base="a:ContainerField"/>
                 <ss:extension base="a:ComplexField"/>
@@ -98,24 +100,24 @@
                 <ss:attribute name="expand" default="false" document="是否展开" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
-				<ss:element ref="a:formToolBar"/>
+                <ss:element ref="a:formToolBar"/>
                 <ss:element ref="a:formBody"/>
             </ss:elements>
         </ss:element>
         <ss:element name="a:formToolBar" document="queryForm头部">
-        	<ss:extensions>
-        		<ss:extension base="a:hBox"/>
-    		</ss:extensions>
+            <ss:extensions>
+                <ss:extension base="a:hBox"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:formBody" document="queryForm体部">
-        	<ss:extensions>
-        		<ss:extension base="a:box"/>
-    		</ss:extensions>
+            <ss:extensions>
+                <ss:extension base="a:box"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:formButton" document="queryForm按钮，用于展开和关闭queryForm体部">
-        	<ss:extensions>
-        		<ss:extension base="a:button"/>
-    		</ss:extensions>
+            <ss:extensions>
+                <ss:extension base="a:button"/>
+            </ss:extensions>
         </ss:element>
         <ss:element name="a:fieldSet">
             <ss:extensions>

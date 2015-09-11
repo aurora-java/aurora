@@ -18,7 +18,7 @@ public class FieldGroup extends HBox {
 		super(registry);
 	}
 
-	protected void beforeBuildCell(BuildSession session, CompositeMap model,
+	protected String beforeBuildCell(BuildSession session, CompositeMap model,
 			CompositeMap view, CompositeMap field) throws Exception {
 		FieldGroupConfig fgc = FieldGroupConfig.getInstance(view);
 		int padding = fgc.getPadding(model, FieldGroupConfig.DEFAULT_PADDING);
@@ -40,5 +40,6 @@ public class FieldGroup extends HBox {
 					"margin-right:" + padding + "px;"
 							+ child.getString(ComponentConfig.PROPERTITY_STYLE));
 		}
+		return "";
 	}
 }

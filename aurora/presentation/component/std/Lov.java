@@ -37,12 +37,12 @@ public class Lov extends TextField {
 //		addConfig(LovConfig.PROPERTITY_LOV_MODEL, lc.getLovModel());
 //		addConfig(LovConfig.PROPERTITY_LOV_SERVICE, lc.getLovService());
 //		addConfig(LovConfig.PROPERTITY_LOV_WIDTH, new Integer(lc.getLovWidth()));
-//		addConfig(LovConfig.PROPERTITY_LOV_AUTO_QUERY, new Boolean(lc.getLovAutoQuery()));
+//		addConfig(LovConfig.PROPERTITY_LOV_AUTO_QUERY, Boolean.valueOf(lc.getLovAutoQuery()));
 //		addConfig(LovConfig.PROPERTITY_LOV_LABEL_WIDTH, new Integer(lc.getLovLabelWidth()));
 //		addConfig(LovConfig.PROPERTITY_LOV_HEIGHT, new Integer(lc.getLovHeight()));
 //		addConfig(LovConfig.PROPERTITY_LOV_GRID_HEIGHT, new Integer(lc.getLovGridHeight()));
-//		addConfig(LovConfig.PROPERTITY_FETCH_REMOTE, new Boolean(lc.getFetchRemote()));
-//		addConfig(LovConfig.PROPERTITY_FETCH_SINGLE, new Boolean(lc.getFetchSingle()));
+//		addConfig(LovConfig.PROPERTITY_FETCH_REMOTE, Boolean.valueOf(lc.getFetchRemote()));
+//		addConfig(LovConfig.PROPERTITY_FETCH_SINGLE, Boolean.valueOf(lc.getFetchSingle()));
 //		
 //		String renderer = lc.getAutocompleteRenderer();
 //		if(renderer != null)addConfig(LovConfig.PROPERTITY_AUTOCOMPLETE_RENDERER, renderer);

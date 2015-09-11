@@ -53,8 +53,8 @@ public class InputFieldConfig extends FieldConfig {
         putInt(PROPERTITY_MAX_LENGHT, ml);
     }
     
-    public boolean isTransformCharacter(){
-        return getBoolean(PROPERTITY_CHARA_TRANSFORM, true);
+    public boolean isTransformCharacter(boolean defaultvalue){
+        return getBoolean(PROPERTITY_CHARA_TRANSFORM, defaultvalue);
     }
     public void setTransformCharacter(boolean tc){
         putBoolean(PROPERTITY_CHARA_TRANSFORM, tc);

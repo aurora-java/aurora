@@ -28,6 +28,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final String KEY_DEFAULT_FUZZY_FETCH = "defaultfuzzyfetch";
 	public static final String KEY_DEFAULT_CLIENT_RESIZE = "defaultclientresize";
 	public static final String KEY_DEFAULT_EDITOR_BORDER = "defaulteditorborder";
+	public static final String KEY_DEFAULT_TRANSFORM_CHARACTER = "defaulttransformcharacter";
 	
 	public static final String DEFAULT_THEME = "default";
 	public static final boolean DEFAULT_FUZZY_FETCH = false;
@@ -38,6 +39,7 @@ public class ApplicationViewConfig extends DynamicObject {
 	public static final boolean DEFAULT_CLIENT_RESIZE = true;
 	public static final boolean DEFAULT_AUTO_APPEND = false;
 	public static final boolean DEFAULT_EDITOR_BORDER = true;
+	public static final boolean DEFAULT_TRANSFORM_CHARACTER = true;
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	public static final int DEFAULT_MARGIN_WIDTH = -1;
 	public static final String DEFAULT_LABEL_SEPARATOR = ":";
@@ -163,6 +165,14 @@ public class ApplicationViewConfig extends DynamicObject {
 	
 	public void setDefaultEditorBorder(boolean editorborder) {
 		putBoolean(KEY_DEFAULT_EDITOR_BORDER, editorborder);
+	}
+	
+	public boolean getDefaultTransformCharacter() {
+		return getBoolean(KEY_DEFAULT_TRANSFORM_CHARACTER,DEFAULT_TRANSFORM_CHARACTER);
+	}
+	
+	public void setDefaultTransformCharacter(boolean transformCharacter) {
+		putBoolean(KEY_DEFAULT_TRANSFORM_CHARACTER, transformCharacter);
 	}
 
 	public int getDefaultPageSize() {
