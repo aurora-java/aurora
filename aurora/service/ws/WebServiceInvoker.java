@@ -41,7 +41,8 @@ public class WebServiceInvoker extends AbstractEntry {
 	int readTimeout = DEFAULT_READ_TIMEOUT;
 	String user;
 	String password;
-	
+	String soapAction;
+
 	boolean noCDATA = false;
 
 	public static final String WS_INVOKER_ERROR_CODE = "aurora.service.ws.invoker_error";
@@ -90,7 +91,7 @@ public class WebServiceInvoker extends AbstractEntry {
 
 			// set request header
 			addAuthorization(httpUrlConnection, context);
-			httpUrlConnection.setRequestProperty("SOAPAction", "urn:anonOutInOp");
+			httpUrlConnection.setRequestProperty("SOAPAction", soapAction == null ? "urn:anonOutInOp" : soapAction);
 			httpUrlConnection.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
 			httpUrlConnection.connect();
 			OutputStream os = httpUrlConnection.getOutputStream();
@@ -250,5 +251,13 @@ public class WebServiceInvoker extends AbstractEntry {
 
 	public void setNoCDATA(boolean noCDATA) {
 		this.noCDATA = noCDATA;
+	}
+	
+	public String getSoapAction() {
+		return soapAction;
+	}
+
+	public void setSoapAction(String soapAction) {
+		this.soapAction = soapAction;
 	}
 }
