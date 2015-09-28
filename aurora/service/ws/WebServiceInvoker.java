@@ -59,13 +59,14 @@ public class WebServiceInvoker extends AbstractEntry {
 			throw BuiltinExceptionFactory.createAttributeMissing(this, "inputPath");
 		}
 		CompositeMap context = runner.getContext();
+		String url_real = TextParser.parse(url, context);
 		Object inputObject = context.getObject(inputPath);
 		if (inputObject == null)
 			throw BuiltinExceptionFactory.createDataFromXPathIsNull(this, inputPath);
 		if (!(inputObject instanceof CompositeMap))
 			throw BuiltinExceptionFactory.createInstanceTypeWrongException(inputPath, CompositeMap.class, inputObject.getClass());
 
-		URI uri = new URI(url);
+		URI uri = new URI(url_real);
 		URL url = uri.toURL();
 		PrintWriter out = null;
 		BufferedReader br = null;
