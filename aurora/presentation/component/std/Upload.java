@@ -39,10 +39,12 @@ public class Upload extends Component {
 		addStyleSheet(session, context, "table/Table-min.css");
 		addStyleSheet(session, context, "upload/upload.css");
 		addJavaScript(session, context, "table/Table-min.js");
+		addJavaScript(session, context, "upload/resumable.js");
 		addJavaScript(session, context, "upload/html5upload.js");
 		addJavaScript(session, context, "upload/swfupload.js");
 		addJavaScript(session, context, "upload/swfupload.queue.js");
 		addJavaScript(session, context, "upload/handler.js");
+		
 	}
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{	
@@ -90,7 +92,8 @@ public class Upload extends Component {
 		addConfig(UploadConfig.PROPERTITY_TOTAL_FILE_SIZE, new Integer(uc.getTotalFileSize()));
 		addConfig(UploadConfig.PROPERTITY_FILE_TYPE, uc.getFileType());
 		addConfig(UploadConfig.PROPERTITY_DELETE_CONTROL, uc.getDeleteControl());
-		
+		addConfig("user_id", model.getObject("/session/@user_id"));
+		addConfig(UploadConfig.PROPERTITY_TYPE, uc.getType());
 		addConfig(UploadConfig.PROPERTITY_UPLOAD_URL, uncertain.composite.TextParser.parse(uc.getUploadURL(context_path + "/atm_upload.svc"), model));
 		addConfig(UploadConfig.PROPERTITY_DELETE_URL, uncertain.composite.TextParser.parse(uc.getDeleteURL(context_path + "/atm_delete.svc"), model));
 		addConfig(UploadConfig.PROPERTITY_DOWNLOAD_URL, uncertain.composite.TextParser.parse(uc.getDownloadURL(context_path + "/atm_download.svc"), model));
@@ -200,14 +203,15 @@ public class Upload extends Component {
 	
 	private boolean isSupportFileAPI(HttpServletRequest request){
 		Map m = new HashMap();
-		m.put("chrome", 7);
+		m.put("chrome", 13);
 		m.put("firefox", 4);
 		m.put("opera", 12);
-		m.put("safari", 5);
+		m.put("safari", 6);
+		m.put("msie", 10);
 		String agent = request.getHeader("User-Agent");
+		System.out.println(agent);
 		String[] browsers = UserAgentTools.getBrowser(agent);
 		String browser1 = browsers[0];
-		if("MSIE 10.0".equals(browser1)) return true;
 		String browser = browsers[1];
 		String version = browsers[2];
 		Iterator it = m.keySet().iterator();
