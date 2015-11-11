@@ -209,7 +209,6 @@ public class Upload extends Component {
 		m.put("safari", 6);
 		m.put("msie", 10);
 		String agent = request.getHeader("User-Agent");
-		System.out.println(agent);
 		String[] browsers = UserAgentTools.getBrowser(agent);
 		String browser1 = browsers[0];
 		String browser = browsers[1];
