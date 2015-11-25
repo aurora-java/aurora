@@ -38,6 +38,7 @@ public class Tab extends Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
+		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		StringBuffer sb = new StringBuffer();
 		
@@ -54,6 +55,11 @@ public class Tab extends Component {
 		map.put(VALID_SCRIPT, sb.toString());
 		//map.put(PROPERTITY_SELECTED, new Integer(0));
 		//addConfig(PROPERTITY_SELECTED, new Integer(0));
+		
+		if("iframe".equalsIgnoreCase(view.getString("loadtype"))){
+			addConfig("loadtype", "iframe");
+		}
+		
 		map.put(CONFIG, getConfigString());
 	}
 	
