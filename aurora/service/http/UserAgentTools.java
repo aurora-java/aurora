@@ -320,7 +320,7 @@ public class UserAgentTools {
             res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 9"))>-1 || userAgent.indexOf("Trident/4.0")>-1) {
-            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE",getVersionNumber(userAgent,pos+4));
         }else if (userAgent.indexOf("Trident/6.0")>-1) {
             res = getArray("MSIE","MSIE10","10");
         }else if (userAgent.indexOf("Trident/7.0")>-1) {
