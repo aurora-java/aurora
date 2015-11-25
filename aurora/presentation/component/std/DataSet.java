@@ -370,6 +370,10 @@ public class DataSet extends Component {
 					dsc.getRestDataFormat(), model);
 			addConfig(DataSetConfig.PROPERTITY_REST_DATA_FORMAT, restDataFormat);
 		}
+		if (dsc.isHybrisWS()) {
+			addConfig(DataSetConfig.PROPERTITY_HYBRIS_WS, true);
+		}
+		
 		if (!"".equals(dsc.getBindTarget()))
 			addConfig(DataSetConfig.PROPERTITY_BINDTARGET,
 					uncertain.composite.TextParser.parse(dsc.getBindTarget(),
