@@ -624,7 +624,7 @@ public class Grid extends Component {
 		Map map = context.getMap();
 		CompositeMap model = context.getModel();
 		StringBuilder sb = new StringBuilder();
-		String dataset = gc.getBindTarget();
+		String dataset = (String) map.get(ComponentConfig.PROPERTITY_BINDTARGET);
 		
 		boolean hasNav = gc.hasNavBar(model);
 		if(hasNav){
