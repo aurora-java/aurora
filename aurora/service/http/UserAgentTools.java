@@ -297,30 +297,34 @@ public class UserAgentTools {
             res = getArray("Opera","Opera Mobi","Opera Mobi "+ver2);
         }
     } else
-    if (userAgent.indexOf("MSIE")>-1) {
+    if (userAgent.indexOf("MSIE")>-1 || userAgent.indexOf("Trident")>-1) {
         if ((pos=userAgent.indexOf("MSIE 6.0"))>-1) {
-            res = getArray("MSIE","MSIE6","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 5.0"))>-1) {
-            res = getArray("MSIE","MSIE5","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 5.5"))>-1) {
-            res = getArray("MSIE","MSIE5.5","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 5."))>-1) {
-            res = getArray("MSIE","MSIE5.x","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 4"))>-1) {
-            res = getArray("MSIE","MSIE4","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 7"))>-1 && userAgent.indexOf("Trident/4.0")<0) {
-            res = getArray("MSIE","MSIE7","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 8"))>-1 || userAgent.indexOf("Trident/4.0")>-1) {
-            res = getArray("MSIE","MSIE8","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE","MSIE"+getVersionNumber(userAgent,pos+4));
         } else
         if ((pos=userAgent.indexOf("MSIE 9"))>-1 || userAgent.indexOf("Trident/4.0")>-1) {
-            res = getArray("MSIE","MSIE9","MSIE"+getVersionNumber(userAgent,pos+4));
+            res = getArray("MSIE","MSIE",getVersionNumber(userAgent,pos+4));
+        }else if (userAgent.indexOf("Trident/6.0")>-1) {
+            res = getArray("MSIE","MSIE10","10");
+        }else if (userAgent.indexOf("Trident/7.0")>-1) {
+            res = getArray("MSIE","MSIE","11");
         } else
         res = getArray("MSIE","MSIE?","MSIE?"+getVersionNumber(userAgent,userAgent.indexOf("MSIE")+4)+"");
     } else

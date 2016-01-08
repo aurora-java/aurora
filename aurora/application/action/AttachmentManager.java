@@ -66,14 +66,14 @@ public class AttachmentManager extends AbstractEntry{
 	public static final String PROPERTITY_URL = "url";
 	public static final String PROPERTITY_RANDOM_NAME = "random_name";
 	
-	private static final String SAVE_TYPE_DATABASE = "db";
-	private static final String SAVE_TYPE_FILE = "file";
+	protected static final String SAVE_TYPE_DATABASE = "db";
+	protected static final String SAVE_TYPE_FILE = "file";
 	
 	
 	public int Buffer_size = 500 * 1024;
 	
 	
-	private static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
+	protected static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
 	
 	private String fileType = "*.*";
 	private String fileSize = "";
@@ -86,7 +86,7 @@ public class AttachmentManager extends AbstractEntry{
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
-	private DatabaseServiceFactory databasefactory;
+	protected DatabaseServiceFactory databasefactory;
 	IObjectRegistry registry;
 
 	public AttachmentManager(IObjectRegistry registry) {
@@ -435,13 +435,17 @@ public class AttachmentManager extends AbstractEntry{
 				conn = getContextConnection(context);
 	            InputStream in = fileItem.getInputStream();
 	            String attach_id = aid.toString();
-	            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
-	            	writeBLOB(conn, in, attach_id);	            	
-	            }else if(SAVE_TYPE_FILE.equalsIgnoreCase(getSaveType())){
-	            	writeFile(context,conn, in, attach_id, file_name);
+	            try {
+		            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
+		            	writeBLOB(conn, in, attach_id);	            	
+		            }else if(SAVE_TYPE_FILE.equalsIgnoreCase(getSaveType())){
+		            	writeFile(context,conn, in, attach_id, file_name);
+		            }
+	            }finally{
+	            	if(in!=null) in.close();
+		            fileItem.delete();
 	            }
 	            
-	            fileItem.delete();
 	            params.put("success", "true");
 	            
 	            if(url==null){
@@ -461,7 +465,7 @@ public class AttachmentManager extends AbstractEntry{
 	}
 	
 	
-	private void writeFile(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception {
+	protected void writeFile(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception {
 		if("".equals(fileName)) return;
 		if("true".equals(getRandomName())) {
 			fileName = IDGenerator.getInstance().generate();
@@ -495,7 +499,7 @@ public class AttachmentManager extends AbstractEntry{
         }
 	}
 
-	private long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
+	protected long writeBLOB(Connection conn, InputStream instream, String aid) throws Exception {
 		if(conn.getAutoCommit()){
 			conn.setAutoCommit(false);
 		}

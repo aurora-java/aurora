@@ -47,9 +47,11 @@ public class DataSetConfig extends ComponentConfig {
 	public static final String PROPERTITY_NOTIFICATION = "notification";
 	public static final String PROPERTITY_MODIFIED_CHECK = "modifiedcheck";
 	
+	
 	//Hybris
 	public static final String PROPERTITY_DTO_NAME = "dtoname";
 	public static final String PROPERTITY_REST_DATA_FORMAT = "restdataformat";
+	public static final String PROPERTITY_HYBRIS_WS = "hybrisws";
 
 	public static final String DEFAULT_SELECTION_MODEL = "multiple";
 	public static final int DEFAULT_MAX_PAGE_SIZE = 1000;
@@ -304,5 +306,10 @@ public class DataSetConfig extends ComponentConfig {
 
 	public void setRestDataFormat(final String value){
 		putString(PROPERTITY_REST_DATA_FORMAT, value);
+	}
+	
+	
+	public boolean isHybrisWS(){
+		return getBoolean(PROPERTITY_HYBRIS_WS, false);
 	}
 }

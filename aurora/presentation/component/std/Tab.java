@@ -38,6 +38,7 @@ public class Tab extends Component {
 	
 	public void onCreateViewContent(BuildSession session, ViewContext context) throws IOException{
 		super.onCreateViewContent(session, context);
+		CompositeMap view = context.getView();
 		Map map = context.getMap();
 		StringBuffer sb = new StringBuffer();
 		
@@ -48,12 +49,17 @@ public class Tab extends Component {
 		map.put("bodyheight", bodyHeight);
 		map.put("strips", createTabStrips(session,context,sb));
 		map.put("bodys", createTabBodys(session,context));
-		if(((Integer)map.get("stripswidth")).intValue() <= bodyWidth.intValue()-36){
+		if(((Integer)map.get("stripswidth")).intValue() <= bodyWidth.intValue()-32){
 			map.put("display", "none");
 		}
 		map.put(VALID_SCRIPT, sb.toString());
 		//map.put(PROPERTITY_SELECTED, new Integer(0));
 		//addConfig(PROPERTITY_SELECTED, new Integer(0));
+		
+		if("iframe".equalsIgnoreCase(view.getString("loadtype"))){
+			addConfig("loadtype", "iframe");
+		}
+		
 		map.put(CONFIG, getConfigString());
 	}
 	
@@ -175,7 +181,7 @@ public class Tab extends Component {
 				}
 			}
 		}
-		map.put("stripswidth", new Integer(stripswidth));
+		map.put("stripswidth", new Integer(stripswidth+4));
 		addConfig("items", jsons);
 		map.put("items", jsons.toString());
 		return sb.toString();

@@ -35,6 +35,7 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	public static final String PROPERTITY_LOV_HEIGHT = "lovheight";
 	public static final String PROPERTITY_LOV_GRID_HEIGHT = "lovgridheight";
 	public static final String PROPERTITY_FETCH_REMOTE = "fetchremote";
+	public static final String PROPERTITY_FETCH_RECORD = "fetchrecord";
 	public static final String PROPERTITY_AUTOCOMPLETE_RENDERER = "autocompleterenderer";
 	public static final String PROPERTITY_FETCH_SINGLE = "fetchsingle";
 	public static final String PROPERTITY_LOV_PAGESIZE = "lovpagesize";
@@ -278,6 +279,14 @@ public class DataSetFieldConfig extends ComponentConfig  {
 	
 	public void setFetchRemote(boolean fetchRemote) {
 		putBoolean(PROPERTITY_FETCH_REMOTE, fetchRemote);
+	}
+	
+	public boolean getFetchRecord() {
+		return getBoolean(PROPERTITY_FETCH_RECORD, true);
+	}
+	
+	public void setFetchRecord(boolean fetchRecord) {
+		putBoolean(PROPERTITY_FETCH_RECORD, fetchRecord);
 	}
 	
 	public String getAutocompleteRenderer() {

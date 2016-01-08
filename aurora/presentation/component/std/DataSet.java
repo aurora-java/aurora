@@ -158,6 +158,11 @@ public class DataSet extends Component {
 								DataSetFieldConfig.PROPERTITY_FETCH_REMOTE,
 								sdfc.getFetchRemote());
 					if (null != field
+							.getString(DataSetFieldConfig.PROPERTITY_FETCH_RECORD))
+						field.putBoolean(
+								DataSetFieldConfig.PROPERTITY_FETCH_RECORD,
+								sdfc.getFetchRecord());
+					if (null != field
 							.getString(DataSetFieldConfig.PROPERTITY_FETCH_SINGLE))
 						field.putBoolean(
 								DataSetFieldConfig.PROPERTITY_FETCH_SINGLE,
@@ -365,6 +370,10 @@ public class DataSet extends Component {
 					dsc.getRestDataFormat(), model);
 			addConfig(DataSetConfig.PROPERTITY_REST_DATA_FORMAT, restDataFormat);
 		}
+		if (dsc.isHybrisWS()) {
+			addConfig(DataSetConfig.PROPERTITY_HYBRIS_WS, true);
+		}
+		
 		if (!"".equals(dsc.getBindTarget()))
 			addConfig(DataSetConfig.PROPERTITY_BINDTARGET,
 					uncertain.composite.TextParser.parse(dsc.getBindTarget(),

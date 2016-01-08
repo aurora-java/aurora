@@ -5,6 +5,7 @@ import java.util.Map;
 
 import uncertain.composite.CompositeMap;
 import uncertain.ocm.IObjectRegistry;
+import aurora.application.ApplicationViewConfig;
 import aurora.presentation.BuildSession;
 import aurora.presentation.ViewContext;
 import aurora.presentation.component.std.config.ComponentConfig;
@@ -43,6 +44,13 @@ public class InputField extends Field {
 		super.onCreateViewContent(session, context);
 		CompositeMap view = context.getView();
 		CompositeMap model = context.getModel();
+		boolean mDefaultTransformCharacter = ApplicationViewConfig.DEFAULT_TRANSFORM_CHARACTER;
+		if (mApplicationConfig != null) {
+			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
+			if (null != view_config) {
+				mDefaultTransformCharacter = view_config.getDefaultTransformCharacter();
+			}
+		}
 		InputFieldConfig ifc = new InputFieldConfig();
 		ifc.initialize(view);
 		Map map = context.getMap();
@@ -58,7 +66,7 @@ public class InputField extends Field {
 		
 		
 		/** 是否转换全角 **/
-		boolean isTranChara = ifc.isTransformCharacter();
+		boolean isTranChara = ifc.isTransformCharacter(mDefaultTransformCharacter);
 		if(!isTranChara)addConfig(InputFieldConfig.PROPERTITY_CHARA_TRANSFORM, isTranChara);
 		
 		/** 是否自动全选 **/
