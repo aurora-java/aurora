@@ -3,14 +3,13 @@ package aurora.application.action;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.sql.Blob;
@@ -35,6 +34,9 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import uncertain.composite.CompositeMap;
 import uncertain.logging.ILogger;
@@ -57,24 +59,25 @@ import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 @SuppressWarnings("unchecked")
 public class AttachmentManager extends AbstractEntry{
-	
+
 	public static final String VERSION = "$Revision$";
-	
+
 	public static final String PROPERTITY_ACTION_TYPE = "actiontype";
 	public static final String PROPERTITY_SAVE_TYPE = "savetype";
 	public static final String PROPERTITY_SAVE_PATH = "savepath";
 	public static final String PROPERTITY_URL = "url";
 	public static final String PROPERTITY_RANDOM_NAME = "random_name";
-	
+
 	protected static final String SAVE_TYPE_DATABASE = "db";
 	protected static final String SAVE_TYPE_FILE = "file";
-	
-	
+	protected static final String SAVE_TYPE_FTP = "ftp";
+
+
 	public int Buffer_size = 500 * 1024;
-	
-	
+
+
 	protected static final String FND_UPLOAD_FILE_TYPE = "fnd.fnd_upload_file_type";
-	
+
 	private String fileType = "*.*";
 	private String fileSize = "";
 	private String saveType;
@@ -83,17 +86,21 @@ public class AttachmentManager extends AbstractEntry{
 	private String useSubFolder = null;
 	private String randomName = "true";
 	private String dataSourcename = null;
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
 	protected DatabaseServiceFactory databasefactory;
 	IObjectRegistry registry;
+    private String ftpHost;
+    private int ftpPort = 21;
+    private String ftpUserName;
+    private String ftpPassword;
 
-	public AttachmentManager(IObjectRegistry registry) {
+    public AttachmentManager(IObjectRegistry registry) {
 		this.registry=registry;
 		databasefactory = (DatabaseServiceFactory) registry.getInstanceOfType(DatabaseServiceFactory.class);
 	}
-	
+
 	public Connection getContextConnection(CompositeMap context) throws SQLException {
 		if (context == null)
 			throw new IllegalStateException("Can not get context from ServiceThreadLocal!");
@@ -105,7 +112,7 @@ public class AttachmentManager extends AbstractEntry{
 		}
 		return conn;
 	}
-	
+
 	public void run(ProcedureRunner runner) throws Exception {
 		CompositeMap context = runner.getContext();
 		String actionType = getActionType();
@@ -118,7 +125,7 @@ public class AttachmentManager extends AbstractEntry{
 				preRunner.stop();
 			}
 		}else if("update".equalsIgnoreCase(actionType)){
-			doUpdate(context);	
+			doUpdate(context);
 			ProcedureRunner preRunner=runner;
 			while(preRunner.getCaller()!=null){
 				preRunner=preRunner.getCaller();
@@ -133,10 +140,10 @@ public class AttachmentManager extends AbstractEntry{
 			while(preRunner.getCaller()!=null){
 				preRunner=preRunner.getCaller();
 				preRunner.stop();
-			}				
+			}
 		}
 	}
-	
+
 	private void doDownload(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
@@ -153,7 +160,7 @@ public class AttachmentManager extends AbstractEntry{
 			try {
 				pst = conn.prepareStatement("select file_name,file_size,mime_type, file_path, content from fnd_atm_attachment t where t.attachment_id = ?");
 				pst.setObject(1,aid);
-				rs = pst.executeQuery(); 
+				rs = pst.executeQuery();
 				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
 				String path = rs.getString(4);
 				String fileName = rs.getString(1);
@@ -161,47 +168,35 @@ public class AttachmentManager extends AbstractEntry{
 				String mimeType = rs.getString(3);
 				HttpServletResponse response = serviceInstance.getResponse();
 				response.setHeader("cache-control", "must-revalidate");
-				response.setHeader("pragma", "public");	
+				response.setHeader("pragma", "public");
 				response.setHeader("Content-Type", mimeType);
 				response.setHeader("Content-disposition", "attachment;" + processFileName(serviceInstance.getRequest(),fileName));
-				
-				 try{                	
+
+				 try{
                 	Class.forName("org.apache.catalina.startup.Bootstrap");
                 	if (fileSize > 0)
-                		response.setContentLength(fileSize);    
+                		response.setContentLength(fileSize);
                 }catch(ClassNotFoundException e){}
 				if(path!=null){
-					File file = new File(path);
-					if(file.exists()){
-				        os = response.getOutputStream();
-				        is = new FileInputStream(path);
-		                rbc = Channels.newChannel(is);
-		                wbc = Channels.newChannel(os);
-		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
-		                int size=-1;
-		                while( (size = rbc.read(buf))>0){
-		                	buf.flip();
-		                    wbc.write(buf);
-		                    buf.compact();
-		                    os.flush();
-		                }
-					}
+                    if(SAVE_TYPE_FTP.equalsIgnoreCase(getSaveType())){
+                        // ftp
+                        downLoadFromFtp(context,path,response.getOutputStream());
+                    } else {
+                        File file = new File(path);
+                        if (file.exists()) {
+                            os = response.getOutputStream();
+                            is = new FileInputStream(path);
+                            IOUtils.copy(is,os);
+                            os.flush();
+                        }
+                    }
 				}else{
 					Blob content = rs.getBlob(5);
-		            if (content != null) { 
-		                
+		            if (content != null) {
 		                os = response.getOutputStream();
 		                is = content.getBinaryStream();
-		                rbc = Channels.newChannel(is);
-		                wbc = Channels.newChannel(os);
-		                ByteBuffer buf = ByteBuffer.allocate(Buffer_size);
-		                int size = -1;
-		                while ((size = rbc.read(buf)) > 0) {
-		                	buf.flip();
-		                    wbc.write(buf);
-		                    buf.compact();
-		                    os.flush();
-		                }
+		                IOUtils.copy(is,os);
+                        os.flush();
 		            }
 				}
 				response.setHeader("Connection", "close");
@@ -213,18 +208,51 @@ public class AttachmentManager extends AbstractEntry{
 			} finally{
 				DBUtil.closeResultSet(rs);
 				DBUtil.closeStatement(pst);
-				try{if(is!=null) is.close();
-                }catch(Exception ex){}
-                try{if(os!=null) os.close();
-                }catch(Exception ex){}
+                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(os);
 			}
 		}
 	}
-	
+
+    private FTPClient connect(CompositeMap context) throws IOException {
+
+        FTPClient client = new FTPClient();
+        client.connect(ftpHost, ftpPort);
+        client.login(ftpUserName, ftpPassword);
+        int code = client.getReplyCode();
+        if (!FTPReply.isPositiveCompletion(code)) {
+            client.disconnect();
+            throw new IOException("ftp reply code:" + code);
+        }
+        client.setFileType(FTPClient.BINARY_FILE_TYPE);
+        return  client;
+    }
+
+    private void closeClient(FTPClient client){
+        if(client != null){
+            try {
+                client.disconnect();
+            }catch (Exception e){
+
+            }
+        }
+    }
+
+    private void downLoadFromFtp(CompositeMap context, String path, OutputStream outputStream) throws Exception {
+        FTPClient client = null;
+        try {
+            client = connect(context);
+            client.retrieveFile(path,outputStream);
+        } finally {
+            closeClient(client);
+            IOUtils.closeQuietly(outputStream);
+        }
+    }
+
 	private void doDelete(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
-		
+
 		CompositeMap params = service.getParameter();
 		Object aid = serviceInstance.getRequest().getAttribute("attachment_id");
 		if(aid ==null) aid = (Object)params.getObject("/parameter/record/@attachment_id");
@@ -235,14 +263,18 @@ public class AttachmentManager extends AbstractEntry{
 			try {
 				pst = conn.prepareStatement("select file_path from fnd_atm_attachment t where t.attachment_id = ?");
 				pst.setObject(1,aid);
-				rs = pst.executeQuery(); 
+				rs = pst.executeQuery();
 				if (!rs.next()) throw new IllegalArgumentException("attachment_id not set");
 				String path = rs.getString(1);
 				if(path!=null){
-					File file = new File(path);
-					if(file.exists()){
-						file.delete();
-					}
+                    if(SAVE_TYPE_FTP.equalsIgnoreCase(getSaveType())){
+                        deleteFromFtp(context,path);
+                    }else{
+					    File file = new File(path);
+					    if(file.exists()){
+					    	file.delete();
+				    	}
+                    }
 				}
 				pst = conn.prepareStatement("delete from fnd_atm_attachment at where at.attachment_id = ?");
 				pst.setObject(1,aid);
@@ -258,16 +290,25 @@ public class AttachmentManager extends AbstractEntry{
 			}
 		}
 	}
-	
-	
-	
-	
+
+    private void deleteFromFtp(CompositeMap context, String path) throws Exception {
+        FTPClient client = null;
+        try {
+            client = connect(context);
+            client.deleteFile(path);
+        } finally {
+            closeClient(client);
+        }
+    }
+
+
+
 	private void doUpdate(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
 		CompositeMap params = service.getParameter();
 		Object aid = (Object)params.getObject("@attachment_id");
-		
+
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload up = new ServletFileUpload(factory);
 		List items = up.parseRequest(serviceInstance.getRequest());
@@ -279,7 +320,7 @@ public class AttachmentManager extends AbstractEntry{
 				fileItem = fi;
 			}
 		}
-		
+
 		if(aid!=null && !"".equals(aid)){
 			Connection conn = getContextConnection(context);
 			PreparedStatement pst = null;
@@ -300,24 +341,20 @@ public class AttachmentManager extends AbstractEntry{
 					delFile.delete();
 				}
 				if(fileItem != null){
-					long size = 0;int b;
 					FileOutputStream fos = null;
 					InputStream ins = null;
 					try {
 			            fos = new FileOutputStream(delFile);
 			            ins = fileItem.getInputStream();
-			            while(( b = ins.read())>=0){
-			                fos.write(b);
-			                size++;
-			            }
+                        long size = IOUtils.copy(ins,fos);
 			            pst = conn.prepareStatement("update fnd_atm_attachment a set a.file_size = ? where a.attachment_id = ?");
 						pst.setObject(1,size);
 						pst.setObject(2,aid);
 						pst.executeUpdate();
 					}finally {
-			            if(ins!=null)ins.close();
-			            if(fos!=null)fos.close();
-			           DBUtil.closeStatement(pst);
+                        IOUtils.closeQuietly(ins);
+                        IOUtils.closeQuietly(fos);
+                        DBUtil.closeStatement(pst);
 					}
 				}
 			}else {
@@ -333,7 +370,7 @@ public class AttachmentManager extends AbstractEntry{
 					pst = nativeConn.prepareStatement("select content from fnd_atm_attachment t where t.attachment_id = ? for update");
 					pst.setObject(1,aid);
 					rs = pst.executeQuery();
-					
+
 //					st = nativeConn.createStatement();
 //					st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
 //					rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
@@ -345,34 +382,27 @@ public class AttachmentManager extends AbstractEntry{
 						throw new IllegalArgumentException("Warning: can't update fnd_atm_attachment.content for recrd " + aid);
 					}
 					outstream = blob.getBinaryOutputStream(0);
-					int chunk = blob.getChunkSize();
-					byte[] buff = new byte[chunk];
-					int le;
-					while ((le = instream.read(buff)) != -1) {
-						outstream.write(buff, 0, le);
-						size += le;
-					}
+                    size = IOUtils.copy(instream, outstream);
 					pst = nativeConn.prepareStatement("update fnd_atm_attachment a set a.file_size = ? where a.attachment_id = ?");
 					pst.setObject(1,size);
 					pst.setObject(2,aid);
 					pst.executeUpdate();
-					
+
 //		            st.executeUpdate("update fnd_atm_attachment a set a.file_size = "+size+" where a.attachment_id = "+aid);
 				} finally {
-					if(outstream!=null)outstream.close();
-					if(instream!=null)instream.close();
+					IOUtils.closeQuietly(instream);
+					IOUtils.closeQuietly(outstream);
 					DBUtil.closeResultSet(rs);
 					DBUtil.closeStatement(pst);
 				}
 			}
 		}
 	}
-	
-	
+
 	private void doUpload(CompositeMap context) throws Exception{
 		ServiceContext service = ServiceContext.createServiceContext(context);
 		HttpServiceInstance serviceInstance = (HttpServiceInstance) ServiceInstance.getInstance(context);
-		
+
 		CompositeMap params = service.getParameter();
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload up = new ServletFileUpload(factory);
@@ -402,7 +432,7 @@ public class AttachmentManager extends AbstractEntry{
 				} else {
 					List fts = Arrays.asList(getFileType().split(";"));
 					List fsz = Arrays.asList(getFileSize().split(";"));
-					String name = fileItem.getName().toLowerCase(); 
+					String name = fileItem.getName().toLowerCase();
 					String ft = name.substring(name.lastIndexOf(".")+1,name.length());
 					int index = fts.indexOf("*."+ft);
 					if("*.*".equals(getFileType()) || index !=-1){
@@ -415,9 +445,9 @@ public class AttachmentManager extends AbstractEntry{
 						if(!"".equals(fl) && fileItem.getSize() > 1024*Integer.valueOf(fl)){
 							throw new Exception("上传文件超出大小限制!");
 						}
-						files.add(fileItem);							
+						files.add(fileItem);
 					}else {
-						throw new Exception("文件类型不匹配!只允许 " + fts);	
+						throw new Exception("文件类型不匹配!只允许 " + fts);
 					}
 				}
 			}
@@ -437,17 +467,19 @@ public class AttachmentManager extends AbstractEntry{
 	            String attach_id = aid.toString();
 	            try {
 		            if(SAVE_TYPE_DATABASE.equalsIgnoreCase(getSaveType())){
-		            	writeBLOB(conn, in, attach_id);	            	
+		            	writeBLOB(conn, in, attach_id);
 		            }else if(SAVE_TYPE_FILE.equalsIgnoreCase(getSaveType())){
 		            	writeFile(context,conn, in, attach_id, file_name);
-		            }
+		            } else if(SAVE_TYPE_FTP.equalsIgnoreCase(getSaveType())){
+                        uploadToFtp(context,conn, in, attach_id, file_name);
+                    }
 	            }finally{
 	            	if(in!=null) in.close();
 		            fileItem.delete();
 	            }
-	            
+
 	            params.put("success", "true");
-	            
+
 	            if(url==null){
 		            PrintWriter out = serviceInstance.getResponse().getWriter();
 		            out.write(aid.toString());
@@ -457,15 +489,53 @@ public class AttachmentManager extends AbstractEntry{
 			if(url!=null){
 				serviceInstance.getResponse().sendRedirect(url);
 			}
-			
+
 		} catch (Exception ex) {
 			ILogger logger = LoggingContext.getLogger(context,ServiceInstance.LOGGING_TOPIC);
 			LoggingUtil.logException(ex, logger);
-		} 
+		}
 	}
-	
-	
-	protected void writeFile(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception {
+
+
+    private void uploadToFtp(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception{
+        FTPClient client = null;
+        PreparedStatement pst = null;
+        try {
+            client = connect(context);
+            if("".equals(fileName)) return;
+            if("true".equals(getRandomName())) {
+                fileName = IDGenerator.getInstance().generate();
+            }
+            String datePath = sdf.format(new Date());
+            String path = getSavePath(ServiceContext.createServiceContext(context).getModel()).replaceAll("\\\\", "/");
+            if(path.charAt(path.length()-1)!='/') path += "/";
+            if("true".equalsIgnoreCase(getUseSubFolder())) path += datePath;
+
+
+            client.cwd("/");
+            for(String d : path.split("/")) {
+                if(d.length() > 0){
+                    client.mkd(d);
+                    client.cwd(d);
+                }
+            }
+            String filePath = path + "/" + fileName;
+
+            client.storeFile(filePath, instream);
+
+            pst = conn.prepareStatement("update fnd_atm_attachment a set a.file_path = ? where a.attachment_id = ?");
+            pst.setObject(1, filePath);
+            pst.setObject(2, aid);
+            pst.executeUpdate();
+        }finally {
+            closeClient(client);
+            DBUtil.closeStatement(pst);
+        }
+    }
+
+
+
+    protected void writeFile(CompositeMap context,Connection conn,InputStream instream, String aid,String fileName) throws Exception {
 		if("".equals(fileName)) return;
 		if("true".equals(getRandomName())) {
 			fileName = IDGenerator.getInstance().generate();
@@ -513,11 +583,11 @@ public class AttachmentManager extends AbstractEntry{
 		try {
 			pst = nativeConn.prepareStatement("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=?");
 			pst.setObject(1, aid);
-			pst.executeUpdate();			
-			
+			pst.executeUpdate();
+
 //			st = nativeConn.createStatement();
 //			st.executeUpdate("update fnd_atm_attachment t set t.content = empty_blob() where t.attachment_id=" + aid);
-			
+
 			pst = nativeConn.prepareStatement("select content from fnd_atm_attachment t where t.attachment_id = ? for update");
 			pst.setObject(1, aid);
 			rs = pst.executeQuery();
@@ -525,8 +595,8 @@ public class AttachmentManager extends AbstractEntry{
 //			rs = st.executeQuery("select content from fnd_atm_attachment t where t.attachment_id = " + aid + " for update");
 			if (!rs.next())
 				throw new IllegalArgumentException("attachment_id not set");
-			
-			
+
+
 			BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
 			rs.close();
 
@@ -561,7 +631,7 @@ public class AttachmentManager extends AbstractEntry{
 	public void setSaveType(String saveType) {
 		this.saveType = saveType;
 	}
-	
+
 	public String getFileType() {
 		return fileType;
 	}
@@ -569,7 +639,7 @@ public class AttachmentManager extends AbstractEntry{
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
 	}
-	
+
 	public String getFileSize() {
 		return fileSize;
 	}
@@ -582,7 +652,7 @@ public class AttachmentManager extends AbstractEntry{
 		String sp = getSavePath();
 		return sp == null ? "." : uncertain.composite.TextParser.parse(sp, model);
 	}
-	
+
 	public String getSavePath() {
 		return savePath;
 	}
@@ -598,7 +668,7 @@ public class AttachmentManager extends AbstractEntry{
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
 	}
-	
+
 	public String processFileName(HttpServletRequest request, String filename) throws UnsupportedEncodingException {
 		String userAgent = request.getHeader("User-Agent");
 		String new_filename = URLEncoder.encode(filename, "UTF8");
@@ -638,7 +708,7 @@ public class AttachmentManager extends AbstractEntry{
 		}
 		return rtn;
 	}
-	
+
 //	public static String toUtf8String(String s) {
 //		StringBuffer sb = new StringBuffer();
 //		for (int i = 0; i < s.length(); i++) {
@@ -680,7 +750,7 @@ public class AttachmentManager extends AbstractEntry{
 	public void setRandomName(String randomName) {
 		this.randomName = randomName;
 	}
-	
+
 	public String getDataSourceName() {
 		return dataSourcename;
 	}
@@ -689,5 +759,35 @@ public class AttachmentManager extends AbstractEntry{
 		this.dataSourcename = name;
 	}
 
+    public String getFtpHost() {
+        return ftpHost;
+    }
 
+    public void setFtpHost(String ftpHost) {
+        this.ftpHost = ftpHost;
+    }
+
+    public int getFtpPort() {
+        return ftpPort;
+    }
+
+    public void setFtpPort(int ftpPort) {
+        this.ftpPort = ftpPort;
+    }
+
+    public String getFtpUserName() {
+        return ftpUserName;
+    }
+
+    public void setFtpUserName(String ftpUserName) {
+        this.ftpUserName = ftpUserName;
+    }
+
+    public String getFtpPassword() {
+        return ftpPassword;
+    }
+
+    public void setFtpPassword(String ftpPassword) {
+        this.ftpPassword = ftpPassword;
+    }
 }
