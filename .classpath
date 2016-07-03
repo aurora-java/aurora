@@ -3,12 +3,17 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/uncertain"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/c3p0-0.9.1.2.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/commons-fileupload.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/jotm-client.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/ow2-jta-1.1-spec.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/xapool.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/servlet-api.jar"/>
-	<classpathentry kind="lib" path="/AuroraDependency/Library/ojdbc14.jar"/>
-	<classpathentry kind="output" path=""/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/commons-fileupload.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/druid-0.2.7.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/freemarker-2.3.18.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/jotm-client.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/mysql-connector-java-5.1.12-bin.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/ow2-jta-1.1-spec.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/rhino1_7R4.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/sqlserverjdbc.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/xapool.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
