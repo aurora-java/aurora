@@ -27,8 +27,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import oracle.sql.BLOB;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -38,13 +36,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import uncertain.composite.CompositeMap;
-import uncertain.logging.ILogger;
-import uncertain.logging.LoggingContext;
-import uncertain.ocm.IObjectRegistry;
-import uncertain.proc.AbstractEntry;
-import uncertain.proc.ProcedureRunner;
-import uncertain.util.LoggingUtil;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
+
 import aurora.database.DBUtil;
 import aurora.database.service.BusinessModelService;
 import aurora.database.service.DatabaseServiceFactory;
@@ -54,8 +47,14 @@ import aurora.presentation.component.std.IDGenerator;
 import aurora.service.ServiceContext;
 import aurora.service.ServiceInstance;
 import aurora.service.http.HttpServiceInstance;
-
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
+import oracle.sql.BLOB;
+import uncertain.composite.CompositeMap;
+import uncertain.logging.ILogger;
+import uncertain.logging.LoggingContext;
+import uncertain.ocm.IObjectRegistry;
+import uncertain.proc.AbstractEntry;
+import uncertain.proc.ProcedureRunner;
+import uncertain.util.LoggingUtil;
 
 @SuppressWarnings("unchecked")
 public class AttachmentManager extends AbstractEntry{
@@ -216,7 +215,7 @@ public class AttachmentManager extends AbstractEntry{
 
     private FTPClient connect(CompositeMap context) throws IOException {
 
-        FTPClient client = new FTPClient();
+    	FTPClient client = new FTPClient();
         client.connect(ftpHost, ftpPort);
         client.login(ftpUserName, ftpPassword);
         int code = client.getReplyCode();

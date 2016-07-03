@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path=""/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/uncertain"/>
 	<classpathentry kind="lib" path="/aurora-dependency/Library/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="/aurora-dependency/Library/commons-fileupload.jar"/>
@@ -15,5 +14,8 @@
 	<classpathentry kind="lib" path="/aurora-dependency/Library/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/aurora-dependency/Library/sqlserverjdbc.jar"/>
 	<classpathentry kind="lib" path="/aurora-dependency/Library/xapool.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_02"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/commons-vfs2-2.1.jar"/>
+	<classpathentry kind="lib" path="/aurora-dependency/Library/commons-net-3.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
