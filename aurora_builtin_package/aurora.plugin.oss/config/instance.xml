@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<u:instance-config xmlns:u="uncertain.pkg">
+	<u:instances>
+		<u:configurable-instance configFile="oss.config">
+			<u:description>提供OSS附件存储的配置文件</u:description>
+			<u:implement-types>
+				<u:type typeName="aurora.plugin.oss.IOssConfig" />
+			</u:implement-types>
+		</u:configurable-instance>
+	</u:instances>
+</u:instance-config>

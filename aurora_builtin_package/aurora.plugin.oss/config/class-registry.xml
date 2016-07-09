@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-registry>
+  <package-mapping packageName="aurora.plugin.oss" />
+  <class-mapping className="aurora.plugin.oss.OssConfig" elementName="OssConfig" nameSpace="aurora.plugin.oss"/>
+</class-registry>
