@@ -1,0 +1,10 @@
+/AccessCheck.class
+/AccessCheckRule.class
+/AccessCheckRuleConfig.class
+/CacheBasedResourceAccessChecker.class
+/DefaultResourceAccessChecker.class
+/HttpSessionCleaner.class
+/IAccessCheckRuleProvider.class
+/IAccessRule.class
+/IResourceAccessChecker.class
+/ResourceNotDefinedException.class

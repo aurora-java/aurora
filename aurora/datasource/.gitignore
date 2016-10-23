@@ -1,0 +1,6 @@
+/DataSourceConfig.class
+/DatabaseConnection.class
+/IDataSourceFactory.class
+/INamedDataSourceProvider.class
+/JNDIDataSourceFactory.class
+/NamedDataSourceProvider.class

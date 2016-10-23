@@ -1,0 +1,12 @@
+/AbstractModelAction.class
+/AbstractQueryAction.class
+/BatchApply.class
+/ModelBatchUpdate.class
+/ModelDelete.class
+/ModelExecute.class
+/ModelInsert.class
+/ModelJoin.class
+/ModelQuery.class
+/ModelUpdate.class
+/ServiceInitiator.class
+/Transaction.class

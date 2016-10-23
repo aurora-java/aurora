@@ -1,0 +1,17 @@
+/BuildEventSequence.class
+/BuildSession.class
+/DefaultResourceMapper.class
+/DefaultViewBuilder.class
+/FreeMarkerProvider.class
+/IFreeMarkerTemplateProvider.class
+/IResourceUrlMapper.class
+/IViewBuilder.class
+/PresentationManager.class
+/ResourceDispatchServlet.class
+/TagParseUtil.class
+/TemplateBasedView.class
+/ViewComponent.class
+/ViewComponentPackage.class
+/ViewConfigurationError.class
+/ViewContext.class
+/ViewCreationException.class
