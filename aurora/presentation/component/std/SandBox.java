@@ -123,7 +123,7 @@ public class SandBox extends Component {
 		button.put(ButtonConfig.PROPERTITY_ICON, null);
 		button.put(ButtonConfig.PROPERTITY_TEXT, "Try");
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
-		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id
+		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$au('" + id
 				+ "').send()}");
 		try {
 			return session.buildViewAsString(model, button);

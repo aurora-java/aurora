@@ -27,7 +27,7 @@ public class DefaultViewBuilder implements IViewBuilder, ISingleton {
         throws IOException
     {
         /*
-    	if(text.indexOf("$(") !=-1){
+    	if(text.indexOf("$au(") !=-1){
             text = text.replaceAll("\\$\\(", "\\$\\$\\(");
         }
         */

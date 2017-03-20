@@ -616,7 +616,7 @@ public class Chart extends Component {
 		if (null != bindTarget && !"".equals(bindTarget)) {
 			bindTarget = uncertain.composite.TextParser
 					.parse(bindTarget, model);
-			map.put(BINDING, new String("$('" + id + "').bind('" + bindTarget
+			map.put(BINDING, new String("$au('" + id + "').bind('" + bindTarget
 					+ "');\n"));
 		}
 

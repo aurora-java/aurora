@@ -258,7 +258,7 @@ public class DataSet extends Component {
 			String[] ts = attachTab.split(",");
 			for (int i = 0; i < ts.length; i++) {
 				String tid = ts[i];
-				sb.append("$('"
+				sb.append("$au('"
 						+ map.get(ComponentConfig.PROPERTITY_ID)
 						+ "').on('valid',function(ds, record, name, valid){if(!valid && !Ext.get('"
 						+ tid + "').hasActiveFx()) Ext.get('" + tid

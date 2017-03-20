@@ -1,3 +1,5 @@
-#Tue Apr 28 16:59:15 GMT+08:00 2009
 eclipse.preferences.version=1
+encoding//aurora/service/http/AbstractFacadeServlet.java=UTF-8
+encoding//aurora/service/http/ImageCodeServlet.java=UTF-8
+encoding//aurora/service/http/WSDLServlet.java=UTF-8
 encoding/<project>=UTF-8

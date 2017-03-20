@@ -75,15 +75,15 @@ public class NavBar extends ToolBar {
 
 		String dataset = nbc.getDataset();
 		if(!THEME_MAC.equals(theme)){
-			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));			
+			view.addChild(createButton("nav-firstpage","background-position:1px 1px;","function(){$au('"+dataset+"').firstPage()}",session.getLocalizedPrompt("HAP_FIRST_PAGE")));			
 		}
-		view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$('"+dataset+"').prePage()}",session.getLocalizedPrompt("HAP_PREVIOUS_PAGE")));
+		view.addChild(createButton("nav-prepage","background-position:0px -31px;","function(){$au('"+dataset+"').prePage()}",session.getLocalizedPrompt("HAP_PREVIOUS_PAGE")));
 		CompositeLoader loader = new CompositeLoader();
 		if(!THEME_MAC.equals(theme)) {
 			view.addChild(createSeparator());
 		}else{
-			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
-			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
+			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$au('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
+			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$au('"+dataset+"').query($au('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
 		}
 		String pagetext = "<div class='item-label' atype='currentPage' style='"+(THEME_MAC.equals(theme) ? "display:none;" : "")+"margin-left:2px;margin-right:2px;'>&#160;</div>";
 		CompositeMap pageinfo = loader.loadFromString(pagetext,"UTF-8");
@@ -106,9 +106,9 @@ public class NavBar extends ToolBar {
 		
 		if(!THEME_MAC.equals(theme)) {
 			view.addChild(createSeparator());
-			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
-			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
-			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$('"+dataset+"').query($('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
+			view.addChild(createButton("nav-nextpage","background-position:1px -47px;","function(){$au('"+dataset+"').nextPage()}",session.getLocalizedPrompt("HAP_NEXT_PAGE")));
+			view.addChild(createButton("nav-lastpage","background-position:1px -15px","function(){$au('"+dataset+"').lastPage()}",session.getLocalizedPrompt("HAP_LAST_PAGE")));
+			view.addChild(createButton("nav-refresh","background-position:0px -64px;","function(){$au('"+dataset+"').query($au('"+dataset+"').currentPage)}",session.getLocalizedPrompt("HAP_REFRESH")));
 			view.addChild(createSeparator());
 		}
 		

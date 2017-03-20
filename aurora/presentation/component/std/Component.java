@@ -35,13 +35,13 @@ import aurora.service.ServiceInstance;
  */
 @SuppressWarnings("unchecked")
 public class Component {
-	
+
 	public static final String VERSION = "$Revision$";
 
 	protected static final String CONFIG = "config";
 	protected static final String WRAP_CSS = "wrapClass";
 	protected static final String BINDING = "binding";
-	
+
 	public static final String THEME_DEFAULT = "default";
 	public static final String THEME_MAC = "mac";
 	public static final String THEME_HLS = "hls";
@@ -51,17 +51,17 @@ public class Component {
 	private JSONObject listeners = new JSONObject();
 	private StringBuilder bsb = new StringBuilder();
 	private JSONObject config = new JSONObject();
-	protected ApplicationConfig mApplicationConfig;	
-	
-	public Component(IObjectRegistry registry){
-        mApplicationConfig = (ApplicationConfig) registry.getInstanceOfType(IApplicationConfig.class);
+	protected ApplicationConfig mApplicationConfig;
+
+	public Component(IObjectRegistry registry) {
+		mApplicationConfig = (ApplicationConfig) registry.getInstanceOfType(IApplicationConfig.class);
 	}
 
 	public void onPreparePageContent(BuildSession session, ViewContext context) throws IOException {
 
-		addStyleSheet(session, context, "base/Aurora-all-min.css");
+		addStyleSheet(session, context, "base/Aurora-all.css");
 		addJavaScript(session, context, "base/ext-core-min.js");
-		addJavaScript(session, context, "base/Aurora-all-min.js");
+		addJavaScript(session, context, "base/Aurora-all.js");
 		addJavaScript(session, context, "locale/aurora-lang-" + session.getLanguage() + ".js");
 
 	}
@@ -83,29 +83,32 @@ public class Component {
 		CompositeMap vwc = null;
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
-		
+
 		String vws = null;
 		Integer vw = null;
 		if (root != null) {
 			vws = (String) root.getObject("/parameter/@_vw");
 			if (vws == null) {
 				vwc = (CompositeMap) root.getObject("/cookie/@vw");
-				if (vwc != null&& !vwc.get("value").equals("NaN")) {
+				if (vwc != null && !vwc.get("value").equals("NaN")) {
 					vw = vwc.getInt("value");
 				}
 			} else {
 				vw = Integer.valueOf(vws);
 			}
 		}
-		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, ""+ getDefaultWidth());
+		String widthStr = view.getString(ComponentConfig.PROPERTITY_WIDTH, "" + getDefaultWidth());
 		String wstr = uncertain.composite.TextParser.parse(widthStr, model);
 		Integer width = "".equals(wstr) ? new Integer(getDefaultWidth()) : Integer.valueOf(wstr);
 		map.put(ComponentConfig.PROPERTITY_OLD_WIDTH, width);
 		Integer marginWidth = cc.getMarginWidth(model);
 		if (marginWidth != null && vw != null) {
-			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
-			//中集特殊做法！
-			//width = new Integer((vw.intValue() - marginWidth.intValue()) < width.intValue() ? (vw.intValue() - marginWidth.intValue()) : width.intValue());
+			width = new Integer((vw.intValue() - marginWidth.intValue()) > 0 ? (vw.intValue() - marginWidth.intValue())
+					: width.intValue());
+			// 中集特殊做法！
+			// width = new Integer((vw.intValue() - marginWidth.intValue()) <
+			// width.intValue() ? (vw.intValue() - marginWidth.intValue()) :
+			// width.intValue());
 			addConfig(ComponentConfig.PROPERTITY_MARGIN_WIDTH, marginWidth);
 		}
 		return width;
@@ -116,7 +119,7 @@ public class Component {
 		CompositeMap vhc = null;
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
-		
+
 		String vhs = null;
 		Integer vh = null;
 		if (root != null) {
@@ -124,7 +127,7 @@ public class Component {
 			if (vhs == null) {
 				vhc = (CompositeMap) root.getObject("/cookie/@vh");
 				if (vhc != null && !vhc.get("value").equals("NaN")) {
-					
+
 					vh = vhc.getInt("value");
 				}
 			} else {
@@ -136,8 +139,11 @@ public class Component {
 		Integer height = "".equals(hstr) ? new Integer(getDefaultHeight()) : Integer.valueOf(hstr);
 		Integer marginHeight = cc.getMarginHeight(model);
 		if (marginHeight != null && vh != null) {
-//			height = new Integer((vh.intValue() - marginHeight.intValue()) > height.intValue() ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
-			height = new Integer((vh.intValue() - marginHeight.intValue()) > 0 ? (vh.intValue() - marginHeight.intValue()) : height.intValue());
+			// height = new Integer((vh.intValue() - marginHeight.intValue()) >
+			// height.intValue() ? (vh.intValue() - marginHeight.intValue()) :
+			// height.intValue());
+			height = new Integer((vh.intValue() - marginHeight.intValue()) > 0
+					? (vh.intValue() - marginHeight.intValue()) : height.intValue());
 			addConfig(ComponentConfig.PROPERTITY_MARGIN_HEIGHT, marginHeight);
 		}
 		return height;
@@ -151,9 +157,9 @@ public class Component {
 		ComponentConfig cc = new ComponentConfig();
 		cc.initialize(view);
 		boolean mDefaultClientResize = ApplicationViewConfig.DEFAULT_CLIENT_RESIZE;
-		if(null!=mApplicationConfig){
+		if (null != mApplicationConfig) {
 			ApplicationViewConfig view_config = mApplicationConfig.getApplicationViewConfig();
-			if(null!=view_config){
+			if (null != view_config) {
 				mDefaultClientResize = view_config.getDefaultClientResize();
 			}
 		}
@@ -163,19 +169,19 @@ public class Component {
 		id = uncertain.composite.TextParser.parse(id, model);
 		if (id == null || "".equals(id)) {
 			id = IDGenerator.getInstance().generate();
-		}else if(isCust==null){
-			isCust =  Boolean.TRUE;
+		} else if (isCust == null) {
+			isCust = Boolean.TRUE;
 		}
-		addConfig(ComponentConfig.PROPERTITY_IS_CUST,isCust);
+		addConfig(ComponentConfig.PROPERTITY_IS_CUST, isCust);
 		map.put(ComponentConfig.PROPERTITY_ID, id);
 		addConfig(ComponentConfig.PROPERTITY_ID, id);
 
 		String hostId = cc.getHostId();
-		if(null != hostId){
+		if (null != hostId) {
 			addConfig(ComponentConfig.PROPERTITY_HOST_ID, hostId);
-		}else{
+		} else {
 			String rootHostId = (String) root.getObject("/parameter/@_hostid");
-			if(null != rootHostId){
+			if (null != rootHostId) {
 				addConfig(ComponentConfig.PROPERTITY_HOST_ID, rootHostId);
 			}
 		}
@@ -185,41 +191,50 @@ public class Component {
 			clazz += " " + className;
 		}
 		map.put(WRAP_CSS, clazz);
-		
+
 		map.put(ComponentConfig.PROPERTITY_TAB_INDEX, cc.getTabIndex());
 
 		/** Width属性 * */
 		Integer width = getComponentWidth(model, view, map);
 		if (width.intValue() != 0) {
 			Integer minWidth = cc.getMinWidth();
-			if (minWidth!=null) {
-				if(minWidth>width) width=minWidth; 
+			if (minWidth != null) {
+				if (minWidth > width)
+					width = minWidth;
 				addConfig(ComponentConfig.PROPERTITY_MIN_WIDTH, minWidth);
 			}
 			map.put(ComponentConfig.PROPERTITY_WIDTH, width);
-			addConfig(ComponentConfig.PROPERTITY_WIDTH, width);			
+			addConfig(ComponentConfig.PROPERTITY_WIDTH, width);
 		}
 		Integer minWidth = cc.getMinWidth();
-		if (minWidth!=null) {
+		if (minWidth != null) {
 			addConfig(ComponentConfig.PROPERTITY_MIN_WIDTH, minWidth);
 		}
-		
-		
+
 		/** Height属性 * */
 		Integer height = getComponentHeight(model, view, map);
 		if (height.intValue() != 0) {
 			Integer minHeight = cc.getMinHeight();
-			if (minHeight!=null) {
-				if(minHeight>height) height=minHeight; 
+			if (minHeight != null) {
+				if (minHeight > height)
+					height = minHeight;
 				addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, minHeight);
+			} else if (this.getClass().equals(Grid.class)) {
+				// grid增加了默认最小高度250
+				if (height < 250) {
+					height = 250;
+				}
+				addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, 250);
+			} else if (this.getClass().equals(Tab.class)) {
+				// Tab增加了默认最小高度300
+				if (height < 300) {
+					height = 300;
+				}
+				addConfig(ComponentConfig.PROPERTITY_MIN_HEIGHT, 300);
 			}
 			map.put(ComponentConfig.PROPERTITY_HEIGHT, height);
 			addConfig(ComponentConfig.PROPERTITY_HEIGHT, height);
 		}
-		
-		
-		
-		
 
 		/** NAME属性 * */
 		String name = cc.getName();
@@ -233,15 +248,15 @@ public class Component {
 
 		/** 值 * */
 		String value = cc.getValue();
-		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ?  "" : value);
-		
+		map.put(ComponentConfig.PROPERTITY_VALUE, value == null ? "" : value);
+
 		addConfig(ComponentConfig.PROPERTITY_CLIENT_RESIZE, Boolean.valueOf(cc.isClientResize(mDefaultClientResize)));
-		
+
 		/** 是否隐藏 **/
 		boolean hidden = cc.getHidden(false);
-		if(hidden != false)
-		addConfig(FieldConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
-		
+		if (hidden != false)
+			addConfig(FieldConfig.PROPERTITY_HIDDEN, Boolean.valueOf(hidden));
+
 		/** 组件注册事件 * */
 		CompositeMap events = view.getChild(ComponentConfig.PROPERTITY_EVENTS);
 		if (events != null) {
@@ -251,11 +266,13 @@ public class Component {
 				while (it.hasNext()) {
 					CompositeMap event = (CompositeMap) it.next();
 					EventConfig eventConfig = EventConfig.getInstance(event);
-					String eventName = eventConfig.getEventName();// event.getString(ComponentConfig.PROPERTITY_EVENT_NAME,// "");
-					String handler = eventConfig.getHandler();// event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER,// "");
+					String eventName = eventConfig.getEventName();// event.getString(ComponentConfig.PROPERTITY_EVENT_NAME,//
+																	// "");
+					String handler = eventConfig.getHandler();// event.getString(ComponentConfig.PROPERTITY_EVENT_HANDLER,//
+																// "");
 					if (!"".equals(eventName) && !"".equals(handler))
 						handler = uncertain.composite.TextParser.parse(handler, model);
-						addEvent(id, eventName, handler);
+					addEvent(id, eventName, handler);
 				}
 
 			}
@@ -268,7 +285,7 @@ public class Component {
 		if (!bindTarget.equals("")) {
 			bindTarget = uncertain.composite.TextParser.parse(bindTarget, model);
 			map.put(ComponentConfig.PROPERTITY_BINDTARGET, bindTarget);
-			bsb.append("$('" + id + "').bind('" + bindTarget + "','" + name + "');\n");
+			bsb.append("$au('" + id + "').bind('" + bindTarget + "','" + name + "');\n");
 			map.put(BINDING, bsb.toString());
 		}
 	}
@@ -308,12 +325,16 @@ public class Component {
 	/**
 	 * 增加事件
 	 * 
-	 * @param id 组件ID
-	 * @param eventName  事件名
-	 * @param handler 事件函数
+	 * @param id
+	 *            组件ID
+	 * @param eventName
+	 *            事件名
+	 * @param handler
+	 *            事件函数
 	 */
 	protected void addEvent(String id, String eventName, String handler) {
-		// esb.append("$('"+id+"').on('" + eventName + "'," + handler + ");\n");
+		// esb.append("$au('"+id+"').on('" + eventName + "'," + handler +
+		// ");\n");
 		try {
 			listeners.put(eventName, new JSONFunction(handler));
 		} catch (JSONException e) {
@@ -323,8 +344,10 @@ public class Component {
 	/**
 	 * 增加配置信息.
 	 * 
-	 * @param key 名称
-	 * @param value 值
+	 * @param key
+	 *            名称
+	 * @param value
+	 *            值
 	 */
 	protected void addConfig(String key, Object value) {
 		try {
@@ -342,8 +365,8 @@ public class Component {
 	protected String getConfigString() {
 		return config.toString();
 	}
-	
-	protected JSONObject getConfig(){
+
+	protected JSONObject getConfig() {
 		return config;
 	}
 
@@ -390,15 +413,15 @@ public class Component {
 		}
 		return dataset;
 	}
-	
-	public boolean isHidden(CompositeMap view, CompositeMap model){
+
+	public boolean isHidden(CompositeMap view, CompositeMap model) {
 		CompositeMap cd = model.getParent().getChild(CustomizationDataProvider.DEFAULT_CUSTOM_DATA);
-		if(cd!=null && view!=null){
+		if (cd != null && view != null) {
 			List list = cd.getChilds();
 			Iterator it = list.iterator();
 			String fid = view.getString(ComponentConfig.PROPERTITY_ID, "");
-			while(it.hasNext()){
-				CompositeMap record = (CompositeMap)it.next();
+			while (it.hasNext()) {
+				CompositeMap record = (CompositeMap) it.next();
 				String id = record.getString(CustomSourceCode.KEY_ID_VALUE);
 				String mt = record.getString(CustomSourceCode.KEY_MOD_TYPE);
 				String ak = record.getString(CustomSourceCode.KEY_ATTRIB_KEY);
@@ -406,37 +429,38 @@ public class Component {
 				String an = record.getString(CustomSourceCode.KEY_ARRAY_NAME);
 				String idf = record.getString(CustomSourceCode.KEY_INDEX_FIELD);
 				String idv = record.getString(CustomSourceCode.KEY_INDEX_VALUE);
-				if("set_attrib".equals(mt) && id.equals(fid)&&"hidden".equals(ak)&&"true".equals(av)&&an==null&&idf==null&&idv==null){
+				if ("set_attrib".equals(mt) && id.equals(fid) && "hidden".equals(ak) && "true".equals(av) && an == null
+						&& idf == null && idv == null) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
-	public int getChildLength(CompositeMap view, CompositeMap model){
+
+	public int getChildLength(CompositeMap view, CompositeMap model) {
 		int count = 0;
 		Iterator it = view.getChildIterator();
-		if(it!=null)
-		while(it.hasNext()){
-			CompositeMap field = (CompositeMap)it.next();
-			if(isHidden(field,model)){
-				continue;
-			}else{
-				count ++;
+		if (it != null)
+			while (it.hasNext()) {
+				CompositeMap field = (CompositeMap) it.next();
+				if (isHidden(field, model)) {
+					continue;
+				} else {
+					count++;
+				}
 			}
-		}
 		return count;
 	}
-	
-	protected void transferHostId(CompositeMap view , String hostid){
-		if(AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(view.getNamespaceURI())){
+
+	protected void transferHostId(CompositeMap view, String hostid) {
+		if (AuroraApplication.AURORA_FRAMEWORK_NAMESPACE.equals(view.getNamespaceURI())) {
 			view.putString(ComponentConfig.PROPERTITY_HOST_ID, hostid);
-		}else{
+		} else {
 			Iterator it = view.getChildIterator();
-			if(null!=it){
-				while(it.hasNext()){
-					transferHostId((CompositeMap) it.next(),hostid);
+			if (null != it) {
+				while (it.hasNext()) {
+					transferHostId((CompositeMap) it.next(), hostid);
 				}
 			}
 		}

@@ -131,7 +131,7 @@ public class AttachmentManager extends AbstractEntry {
 			sqlServiceContext.initConnection(registry, null);
 			conn = sqlServiceContext.getNamedConnection(null);
 		}
-		return conn;
+		return conn; 
 	}
 
 	public void run(ProcedureRunner runner) throws Exception {

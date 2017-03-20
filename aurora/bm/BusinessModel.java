@@ -95,11 +95,12 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public static final String KEY_HAS_CACHE_JOIN_FIELDS = "hascachejoinfields";
 
 	public static final String KEY_NEED_DATABASE_JOIN = "_needdatabasejoin";
-	
+
 	public static final String KEY_CUSTOMIZATION_ENABLED = "customizationenabled";
-	
+
 	public static final String KEY_CUSTOMIZATION_TAG = "tag";
-	
+
+	public static final String KEY_TRACE = "trace";
 
 	static final Field[] EMPTY_FIELDS = new Field[0];
 
@@ -137,7 +138,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	BusinessModel parent;
 
 	List<RelationFields> cacheJoinList;
-//	IObjectRegistry mObjectRegistry;
+	// IObjectRegistry mObjectRegistry;
 
 	/** Iterates through all fields that is for query */
 	public class BaseQueryFieldIterator implements IParameterIterator {
@@ -202,7 +203,10 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 				f = getField(name);
 				if (f == null)
 					// throw new
-					// ConfigurationError("Cant' find field '"+name+"' in BusinessModel. Make sure the 'field' property in query-field refers to a pre-defined BusinessModel field");
+					// ConfigurationError("Cant' find field '"+name+"' in
+					// BusinessModel. Make sure the 'field' property in
+					// query-field refers to a pre-defined BusinessModel
+					// field");
 					throw BmBuiltinExceptionFactory.createNamedFieldNotFound(name, map);
 				if (f.isReferenceField())
 					f = f.getReferredField();
@@ -228,8 +232,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 				id = -1;
 				return;
 			}
-			while (id < fieldsArray.length
-					&& (!fieldsArray[id].isForOperation(operation, default_value) || fieldsArray[id].isReferenceField()))
+			while (id < fieldsArray.length && (!fieldsArray[id].isForOperation(operation, default_value)
+					|| fieldsArray[id].isReferenceField()))
 				id++;
 			if (id >= fieldsArray.length)
 				id = -1;
@@ -337,10 +341,12 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 		else
 			return null;
 	}
-	public void addQueryField(CompositeMap queryField){
+
+	public void addQueryField(CompositeMap queryField) {
 		CompositeMap childs_map = object_context.getChild(SECTION_QUERY_FIELDS);
-		if (childs_map == null){
-			childs_map = object_context.createChild("bm", AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE, SECTION_QUERY_FIELDS);
+		if (childs_map == null) {
+			childs_map = object_context.createChild("bm", AuroraApplication.AURORA_BUSINESS_MODEL_NAMESPACE,
+					SECTION_QUERY_FIELDS);
 		}
 		childs_map.addChild(queryField);
 	}
@@ -386,6 +392,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public void addField(Field f) {
 		getChildSectionNotNull(SECTION_FIELDS).addChild(f.getObjectContext());
 	}
+
 	public void addRefField(Field f) {
 		getChildSectionNotNull(SECTION_REF_FIELDS).addChild(f.getObjectContext());
 	}
@@ -460,13 +467,17 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 						String name = field.getString(Field.KEY_NAME);
 						if (name == null)
 							// throw new
-							// ConfigurationError("<primary-key>: Must set 'name' property for a primary key field. Config source:"+field.toXML());
+							// ConfigurationError("<primary-key>: Must set
+							// 'name' property for a primary key field. Config
+							// source:"+field.toXML());
 							throw BuiltinExceptionFactory.createAttributeMissing(field.asLocatable(), "name");
 						Field f = getField(name.toLowerCase());
 						// (Field)fieldMap.get(name.toLowerCase());
 						if (f == null)
 							// throw new
-							// ConfigurationError("<primary-key>: Field '"+name+"' is not found in field definition. Config source:"+field.toXML());
+							// ConfigurationError("<primary-key>: Field
+							// '"+name+"' is not found in field definition.
+							// Config source:"+field.toXML());
 							throw BmBuiltinExceptionFactory.createNamedFieldNotFound(name, field);
 						f.setPrimaryKey(true);
 						pkFieldsArray[n++] = f;
@@ -486,7 +497,8 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			String name = f.getName();
 			if (name == null)
 				// throw new
-				// ConfigurationError("Field No."+(i+1)+" has no name: "+f.getObjectContext().toXML());
+				// ConfigurationError("Field No."+(i+1)+" has no name:
+				// "+f.getObjectContext().toXML());
 				throw BuiltinExceptionFactory.createAttributeMissing(field_map.asLocatable(), "name");
 			if (fieldMap.containsKey(name.toLowerCase()))
 				throw BuiltinExceptionFactory.createChildDuplicate(field_map.asLocatable(), "field", "name", name);
@@ -531,26 +543,29 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			CompositeMap relation_map = (CompositeMap) it.next();
 			Relation relation = Relation.getInstance(relation_map);
 			// check if has cache join
-			checkHashJoin(relation,extraNeedQueryRelationFields,cached_relName_map);
+			checkHashJoin(relation, extraNeedQueryRelationFields, cached_relName_map);
 
 			String name = relation.getName().toLowerCase();
 			relationMap.put(name, relation);
 			relationArray[n++] = relation;
 		}
-		// scan fields, and mark field that ref to a BM using cache join to be not for select
-		if(cached_relName_map.size() ==0 )
+		// scan fields, and mark field that ref to a BM using cache join to be
+		// not for select
+		if (cached_relName_map.size() == 0)
 			return;
-		reBuildCacheJoinFields(extraNeedQueryRelationFields,cached_relName_map);
+		reBuildCacheJoinFields(extraNeedQueryRelationFields, cached_relName_map);
 
 	}
-	private void reBuildCacheJoinFields(HashSet<String> extraNeedQueryRelationFields,Map<String, RelationFields> cached_relName_map){
+
+	private void reBuildCacheJoinFields(HashSet<String> extraNeedQueryRelationFields,
+			Map<String, RelationFields> cached_relName_map) {
 		for (Field fld : fieldsArray) {
-			if(extraNeedQueryRelationFields.size()>0){
+			if (extraNeedQueryRelationFields.size() > 0) {
 				String fldName = fld.getName().toLowerCase();
-				if(fld.isForSelect())
+				if (fld.isForSelect())
 					extraNeedQueryRelationFields.remove(fldName);
-				else{
-					if(extraNeedQueryRelationFields.contains(fldName)){
+				else {
+					if (extraNeedQueryRelationFields.contains(fldName)) {
 						fld.setForSelect(true);
 						extraNeedQueryRelationFields.remove(fldName);
 					}
@@ -563,7 +578,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 					setHasCacheJoinFields(true);
 					fld.setForSelect(false);
 					fld.setCacheJoinField(true);
-					if(!cacheJoinList.contains(relationFields)){
+					if (!cacheJoinList.contains(relationFields)) {
 						cacheJoinList.add(relationFields);
 					}
 				}
@@ -576,10 +591,12 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			f.setForUpdate(false);
 			addField = true;
 		}
-		if(addField)
+		if (addField)
 			loadFields();
 	}
-	private void checkHashJoin(Relation relation,HashSet<String> extraNeedQueryRelationFields,Map<String, RelationFields> cached_relName_map){
+
+	private void checkHashJoin(Relation relation, HashSet<String> extraNeedQueryRelationFields,
+			Map<String, RelationFields> cached_relName_map) {
 		HashSet<String> relationCacheLocalFields = null;
 		try {
 			relationCacheLocalFields = getRelationCacheLocalFields(relation);
@@ -615,14 +632,15 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 		}
 		return localFieldList;
 	}
-	private boolean hasUseCacheJoin(String modelName) throws Exception{
+
+	private boolean hasUseCacheJoin(String modelName) throws Exception {
 		CompositeLoader cl = modelFactory.getCompositeLoader();
-		if(cl == null){
+		if (cl == null) {
 			cl = CompositeLoader.createInstanceForOCM();
 			cl.setDefaultExt(ModelFactory.DEFAULT_MODEL_EXTENSION);
 		}
-		CompositeMap model= cl.loadFromClassPath(modelName, cl.getDefaultExt());
-		if(model != null)
+		CompositeMap model = cl.loadFromClassPath(modelName, cl.getDefaultExt());
+		if (model != null)
 			return model.getBoolean(KEY_USE_CACHE_JOIN, false);
 		return false;
 	}
@@ -634,6 +652,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public Relation[] getRelations() {
 		return relationArray;
 	}
+
 	public void addRelation(Relation relation) {
 		CompositeMap relations = getChildSectionNotNull(SECTION_RELATIONS);
 		relations.addChild(relation.getObjectContext());
@@ -645,6 +664,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			return null;
 		return (DataFilter[]) DynamicObject.castToArray(lst, DataFilter.class);
 	}
+
 	public void setDataFilters(CompositeMap dataFilters) {
 		object_context.replaceChild(DataFilter.KEY_DATA_FILTERS, dataFilters);
 	}
@@ -799,9 +819,9 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 			String name = op.getName();
 			if (name == null) {
 				/*
-				 * if(defaultOperation!=null) throw new
-				 * ConfigurationError("Can only have one default operation");
-				 * defaultOperation = op;
+				 * if(defaultOperation!=null) throw new ConfigurationError(
+				 * "Can only have one default operation"); defaultOperation =
+				 * op;
 				 */
 				throw BuiltinExceptionFactory.createAttributeMissing(item.asLocatable(), "name");
 			} else {
@@ -992,7 +1012,7 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public void setCacheJoinList(List<RelationFields> cacheJoinList) {
 		this.cacheJoinList = cacheJoinList;
 	}
-	
+
 	public boolean getCustomizationenabled() {
 		return getBoolean(KEY_CUSTOMIZATION_ENABLED, false);
 	}
@@ -1000,12 +1020,20 @@ public class BusinessModel extends DynamicObject implements Cloneable {
 	public void setCustomizationenabled(boolean b) {
 		putBoolean(KEY_CUSTOMIZATION_ENABLED, b);
 	}
-	
+
 	public String getTag() {
 		return getString(KEY_CUSTOMIZATION_TAG);
 	}
 
 	public void setTag(String b) {
 		putString(KEY_CUSTOMIZATION_TAG, b);
+	}
+
+	public boolean getTrace() {
+		return getBoolean(KEY_TRACE, true);
+	}
+
+	public void setTrace(boolean b) {
+		putBoolean(KEY_TRACE, b);
 	}
 }

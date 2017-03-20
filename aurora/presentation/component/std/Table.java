@@ -410,24 +410,24 @@ public class Table extends Component {
 					String fileName = uncertain.composite.TextParser.parse(item.getString("filename",""),model);
 					if(!"".equals(type)){
 						if("add".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"table-add","background-position:0px 0px;","function(){$('"+dataset+"').create()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_NEW"),"table-add","background-position:0px 0px;","function(){$au('"+dataset+"').create()}");
 						}else if("delete".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"table-delete","background-position:0px -35px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_DELETE"),"table-delete","background-position:0px -35px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"').remove()}");
 						}else if("save".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"table-save","background-position:0px -17px;","function(){$('"+dataset+"').submit()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_SAVE"),"table-save","background-position:0px -17px;","function(){$au('"+dataset+"').submit()}");
 						}else if("clear".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"table-clear","background-position:0px -52px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_CLEAR"),"table-clear","background-position:0px -52px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"').clear()}");
 						}else if("excel".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls','"+fileName+"')}");
 						}else if("excelmemo".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls_memory','"+fileName+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -69px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xls_memory','"+fileName+"')}");
 						}else if("excel2007".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -126px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -126px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('xlsx','"+fileName+"')}");
 						}else if("txt".equalsIgnoreCase(type)){
-							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -107px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_EXPORT"),"table-excel","background-position:0px -107px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"')._export('txt','"+fileName+"')}");
 						}else if("customize".equalsIgnoreCase(type)){
 							String path = model.getObject("/request/@context_path").toString();
-							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"table-cust","background-position:0px -88px;","function(){$('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize('"+path+"')}");
+							item = createButton(item,session.getLocalizedPrompt("HAP_CUST"),"table-cust","background-position:0px -88px;","function(){$au('"+map.get(ComponentConfig.PROPERTITY_ID)+"').customize('"+path+"')}");
 						}
 					}
 				}

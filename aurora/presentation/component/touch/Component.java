@@ -82,7 +82,7 @@ public class Component implements IFeature {
 					String handler = eventConfig.getHandler();
 					if (!"".equals(eventName) && !"".equals(handler))
 						handler = uncertain.composite.TextParser.parse(handler, model);
-					sb.append("$('#").append(id).append("')").append(".on('").append(eventName).append("',").append(handler).append(");");
+					sb.append("$au('#").append(id).append("')").append(".on('").append(eventName).append("',").append(handler).append(");");
 				}
 				sb.append("</script>");
 				map.put(ComponentConfig.PROPERTITY_EVENTS, sb.toString());

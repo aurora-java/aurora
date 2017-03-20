@@ -112,7 +112,7 @@ public class Comment extends Component {
 		buffer.append("<div class='comment-txt'>" + content + "</div>");
 		buffer.append("</div>");
 		if (null != author_id && author_id.toString().equals(userId)) {
-			buffer.append("<div class='comment-bar'><a href='javascript:$(\""
+			buffer.append("<div class='comment-bar'><a href='javascript:$au(\""
 					+ id + "\").remove(\"" + commentId + "\")'>删除</a></div>");
 		}
 		buffer.append("</li>");
@@ -142,7 +142,7 @@ public class Comment extends Component {
 		button.put(ButtonConfig.PROPERTITY_ICON, null);
 		button.put(ButtonConfig.PROPERTITY_TEXT, "发 表 评 论");
 		button.put(ComponentConfig.PROPERTITY_WIDTH, 100);
-		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id+ "').post()}");
+		button.put(ButtonConfig.PROPERTITY_CLICK, "function(){$au('" + id+ "').post()}");
 		if(null == userId){
 			button.put("disabled", Boolean.TRUE);
 		}

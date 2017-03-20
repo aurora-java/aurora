@@ -125,7 +125,7 @@ public class QueryForm extends Component implements IViewBuilder {
 			out.write(null == queryhook ? "queryfield:'"+queryfield+"'": "queryhook:"+queryhook);
 			out.write("});");
 			if (null != ds)
-				out.write("$('" + id + "').bind('" + ds + "');");
+				out.write("$au('" + id + "').bind('" + ds + "');");
 			out.write("</script>");
 		} catch (Exception e) {
 			throw new ViewCreationException(e);
@@ -144,7 +144,7 @@ public class QueryForm extends Component implements IViewBuilder {
 		String queryPrompt = qfc.getDefaultQueryPromt();
 		String queryId = id + "_query";
 		String style = "";
-		String searchFunction = "function(){$('" + id + "').doSearch()}";
+		String searchFunction = "function(){$au('" + id + "').doSearch()}";
 		boolean createSearchButton = qfc.isCreateSearchButton();
 		if (null == formToolBar || null == formToolBar.getChildIterator()) {
 			if(null == formToolBar){
@@ -219,7 +219,7 @@ public class QueryForm extends Component implements IViewBuilder {
 			btn.putString(ComponentConfig.PROPERTITY_STYLE, "float:right");
 			btn.putString(ButtonConfig.PROPERTITY_TEXT, session.getLocalizedPrompt(DEFAULT_MORE_PROMPT));
 			btn.putInt(ComponentConfig.PROPERTITY_WIDTH, 80);
-			btn.putString(ButtonConfig.PROPERTITY_CLICK, "function(){$('" + id + "').trigger()}");
+			btn.putString(ButtonConfig.PROPERTITY_CLICK, "function(){$au('" + id + "').trigger()}");
 			formToolBar.addChild(btn);
 			return true;
 		}
@@ -286,7 +286,7 @@ public class QueryForm extends Component implements IViewBuilder {
 			if(!hasEnterDown){
 				EventConfig evt = EventConfig.getInstance();
 				evt.setEventName(EventConfig.EVENT_ENTERDOWN);
-				evt.setHandler("function(){$('" + id + "').doSearch()}");
+				evt.setHandler("function(){$au('" + id + "').doSearch()}");
 				events.addChild(evt.getObjectContext());			
 			}
 		}

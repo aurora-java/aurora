@@ -42,7 +42,7 @@ public class ToogleButton extends Field {
 		Map map = context.getMap();
 		String clickEvent = bc.getClick();
 		if(!"".equals(clickEvent)){
-			if(clickEvent.indexOf("${") != -1)  //和$()有冲突
+			if(clickEvent.indexOf("${") != -1)  //和$au()有冲突
 			clickEvent = uncertain.composite.TextParser.parse(clickEvent, model);
 			addEvent(id, "click", clickEvent);
 		}

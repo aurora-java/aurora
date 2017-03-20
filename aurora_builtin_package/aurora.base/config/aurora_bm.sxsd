@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ss:schema xmlns:e="aurora.service.exception" xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema">
+<ss:schema xmlns:e="aurora.service.exception" xmlns:p="uncertain.proc" xmlns:ss="http://www.uncertain-framework.org/schema/simple-schema" xmlns:a="http://www.aurora-framework.org/application" xmlns:bm="http://www.aurora-framework.org/schema/bm">
     <ss:types>
         <ss:complexType name="bm:feature" document="所有可以放置在bm的features部分的tag，必须继承此类型"/>
         <ss:simpleType name="bm:ExtendModeType">
@@ -169,6 +169,7 @@
                 <ss:attribute name="maxPageSize" default="500" document="每页允许的最大记录数"/>
                 <ss:attribute name="useCacheJoin" document="是否启用cache数据来替代数据库join" type="ss:boolean"/>
                 <ss:attribute name="defaultDisplayField" document="默认的界面显示用的field"/>
+                <ss:attribute name="trace" default="true" document="是否需要进行日志输出" type="ss:boolean"/>
             </ss:attributes>
             <ss:elements>
                 <ss:element ref="bm:description"/>
